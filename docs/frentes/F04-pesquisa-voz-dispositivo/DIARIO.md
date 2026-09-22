@@ -48,3 +48,10 @@ Na interrupção do Devin, a revisão 2 estava salva mas NÃO commitada. A PR #1
 - Orçamento pipeline conferido: US$ 0,030 STT + 0,012 LLM + 0,054 TTS-1 = US$ 0,096 nas premissas; câmbio apenas hipotético. Naturalidade, latência e desempenho em campo continuam a medir.
 - Validação documental: revisão dos sete itens do brief, referências e unidades do orçamento, `git diff --check`. Sem chamadas pagas, conta, chave, dados reais ou código de piloto.
 - Próximo passo: commit/push e PR substituta da #1; integrar síntese na ARQUITETURA da F02. Regente fará merge e fechamento da #1.
+
+## 22/09/2026 · Entrega recuperada
+
+- Relatório revisado no commit `6444fb373ca4c84740f300191837adc7b9398f85`, enviado para `origin/fino/f04-voz`.
+- PR substituta aberta: https://github.com/LucasOl1337/VidaNova/pull/3 (base `main`). Substitui a #1; fechamento e merge reservados ao Regente.
+- Síntese técnica e custo incorporados na seção 5.2 da ARQUITETURA, PR própria da F02. Report das duas entregas ao Regente pelo Maestri no fechamento F02.
+- Estado: pesquisa concluída e revisada; aguarda integração do Regente. Nenhum piloto implementado ou teste com pessoa realizado. Futuras decisões de provedor, base legal, cidade e seleção seguem pendentes.
