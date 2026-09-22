@@ -69,3 +69,12 @@ Propostas não equivalem a aprovação e não alteram DECISOES.md.
 - Relida evolução de PRD na main (Coração da ideia e controlador) e alinhada proposta Apache-2.0 à F03 integrada na PR #2. Nenhum arquivo reservado foi alterado.
 - Validação documental: seis itens do brief cobertos; referências e links locais conferidos; soma US$ 0,096 conferida; diff sem erros de espaço. Código/testes/build não se aplicam à etapa 1; cenários futuros estão explicitamente separados.
 - Próximo passo: commit/push/PR F02 própria, report das duas PRs ao Regente e aguardar OK. Etapa 2 não iniciada.
+
+## 2026-09-22 · Entrega da etapa 1
+
+- Arquitetura no commit `9b296fa`, enviada a `origin/fino/f02-base`.
+- PR F02 aberta para `main`: https://github.com/LucasOl1337/VidaNova/pull/4.
+- PR F04 recuperada: https://github.com/LucasOl1337/VidaNova/pull/3, head `2a40cb1`; revisão final registrada na #1, com orientação para integrar a substituta. Fechamento/merge ficam com Regente.
+- Status: etapa 1 concluída; nenhum código da etapa 2 iniciado. Os dois worktrees próprios estão limpos após envio.
+- Report final pelo Maestri ao Regente leva ambas as PRs, resumo e pendências. Próxima ação: aguardar revisão/OK explícito do Regente antes de etapa 2.
+- Pendências do Lucas preservadas: confirmação humana da seleção, licença, controlador/base legal, titularidade de recebimento, cidade e publicação. Nenhuma dessas decisões foi tomada por agente.
