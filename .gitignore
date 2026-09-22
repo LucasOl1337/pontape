@@ -1,0 +1,13 @@
+.worktrees/
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+dist/
+build/
+.next/
+.astro/
+.vercel/
+coverage/
+*.log
