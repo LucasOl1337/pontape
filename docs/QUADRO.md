@@ -36,6 +36,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 6. Quem decide a seleção do candidato
 7. Licença open source
 8. Quando abrir o repositório
+9. Responsável legal pelos dados dos candidatos (LGPD)
 
 ## Feito
 

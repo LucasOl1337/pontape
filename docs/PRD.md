@@ -4,6 +4,25 @@ Rascunho v0.1 · 22/09/2026 · dono: Regente · fonte: [spec 01 do Lucas](fontes
 
 Este é o documento-guia do produto. Mudança de escopo passa pelo Lucas; o Regente atualiza o texto. Agente que achar furo ou contradição anota no próprio `DIARIO.md` e avisa o Regente.
 
+## Coração da ideia
+
+Validado pelo Lucas em 22/09/2026, em ordem de prioridade. Se algo no resto do documento brigar com esta lista, vale a lista.
+
+1. **Objetivo:** tirar do desamparo quem quer mudar de vida de verdade e não tem condição nem pro primeiro passo.
+2. **A raiz:** dinheiro sozinho não resolve. Acertar a pessoa certa e dar a ela uma trilha completa até o emprego.
+3. **A IA é o filtro:** entrevista rápida por voz, sem precisar ler. Entende quem está pronto e ajuda a pessoa a pensar no que pode realizar.
+4. **Transparência total:** cada real que entra e sai aparece ao vivo, com comprovante, custo de operação incluído. É o que gera confiança pra doar.
+5. **O básico vem da doação:** comida por alguns dias, roupa nova e limpa, higiene.
+6. **Trabalho:** rede de emprego e pessoas ou empresas que se oferecem pra contratar o candidato certo.
+7. **IA contínua:** o selecionado segue com acesso a uma IA simples.
+8. **Gargalo, achar o candidato:** voluntários com dispositivo, panfleto, pontos públicos, site.
+9. **Gargalo, o dispositivo:** levar a conversa por voz, com apoio visual, até quem não tem celular nem intimidade com tecnologia.
+10. **O site:** hero com o projeto e a intenção; depois blocos modulares com funcionamento, módulos, pontos fortes, gargalos, dinheiro e ajuda que falta.
+11. **Open source:** aceita qualquer ajuda; entra só o que o Lucas ou um admin aprovar.
+12. **Destino:** organização sem fins lucrativos de verdade, com nome próprio e domínio.
+
+Em uma frase: a IA acha e prepara quem quer mudar de vida, a doação dá o empurrão inicial, a rede dá o emprego, e tudo fica à vista, sempre.
+
 ## 1. Em uma frase
 
 Uma organização sem fins lucrativos e open source que encontra pessoas em situação de vulnerabilidade que querem mudar de vida, dá o básico pra elas se reerguerem (comida, roupa, higiene), conecta com trabalho e com IA, e mostra ao vivo cada real que entra e sai.
@@ -109,6 +128,7 @@ Requisitos: mobile-first, rápido em celular barato, acessível (WCAG AA), PT-BR
 6. **Quem decide a seleção.** Só a IA, voluntário, admin, ou IA recomenda e humano confirma?
 7. **Licença open source.** MIT, Apache 2.0, AGPL? A pesquisa traz recomendação.
 8. **Repositório público.** O repo nasceu privado. Abre quando nome e licença estiverem decididos?
+9. **Responsável legal pelos dados.** Quem é o controlador dos dados dos candidatos (LGPD) e com qual base legal, antes de entrevistar gente de verdade?
 
 ## 11. Riscos
 
