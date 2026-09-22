@@ -28,4 +28,11 @@
 
 ## Próximo passo
 
-Revisar os relatórios, fechar a entrega Git e avisar o Regente com PR e dúvidas ainda dependentes de Lucas.
+Avisar o Regente com a PR e as dúvidas ainda dependentes de Lucas. Ele revisa e integra na `main`.
+
+## 22/09/2026 · Entrega para revisão
+
+- Três relatórios e diário commitados e enviados na branch `bruto/f03-pesquisa`.
+- PR para `main` aberta: [#2 · F03: pesquisa doações, estrutura jurídica e nomes](https://github.com/LucasOl1337/VidaNova/pull/2).
+- Revisão de links: 70 URLs externas únicas testadas; cinco páginas oficiais retornaram bloqueio HTTP 403/401 para cliente automatizado, sem afetar as consultas RDAP e INPI. Links relativos locais válidos; `git diff --check` sem erro.
+- Próximo responsável: Regente, para revisar e levar ao Lucas as decisões de titularidade/CNPJ para captação, nome, licença e cidade/UF do piloto.
