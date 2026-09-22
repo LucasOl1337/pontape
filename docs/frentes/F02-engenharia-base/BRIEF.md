@@ -25,7 +25,7 @@ Esqueleto na stack aprovada: lint, typecheck, teste e build rodando; CI no GitHu
 
 ## Delegação
 
-A F04 (pesquisa de voz e dispositivo) é sua pra briefar ao SubAgente, revisar e integrar. O brief dela está em [`../F04-pesquisa-voz-dispositivo/BRIEF.md`](../F04-pesquisa-voz-dispositivo/BRIEF.md). Crie o worktree dele em `.worktrees/devin` na branch `devin/f04-voz`.
+A F04 (pesquisa de voz e dispositivo) é sua pra briefar ao SubAgente, revisar e integrar. O brief dela está em [`../F04-pesquisa-voz-dispositivo/BRIEF.md`](../F04-pesquisa-voz-dispositivo/BRIEF.md). O worktree dele já existe em `.worktrees/devin`, branch `devin/f04-voz`.
 
 ## Limites
 
