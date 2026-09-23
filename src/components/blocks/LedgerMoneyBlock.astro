@@ -1,0 +1,50 @@
+---
+import Icon from '../site/Icon.astro';
+import BlockHead from '../site/BlockHead.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { OUT_CATEGORIES } from '../../lib/ledger-view/phrases';
+import { formatCents, sumMoney } from '../../lib/ledger-view/money';
+
+interface Props { real: LedgerEvent[]; example: LedgerEvent[] }
+const { real, example } = Astro.props;
+const panels = [{ mode: 'real', totals: sumMoney(real) }, { mode: 'example', totals: sumMoney(example) }] as const;
+---
+<section class="block block--paper reveal" id="dinheiro" aria-labelledby="t-money"
+  data-speech="Quanto entrou, quanto saiu e pra onde foi. Hoje entrou zero real e saiu zero real. A doação só abre quando existir uma conta oficial do projeto. Aqui nunca vai ter número inventado.">
+  <BlockHead number="03" label="Dinheiro" listen="dinheiro" />
+  <h2 id="t-money">Quanto entrou, quanto saiu, pra onde foi.</h2>
+  <p class="lead">Até o custo pra manter o projeto de pé aparece aqui.</p>
+  {panels.map(({ mode, totals }) => (
+    <div data-money={mode} hidden={mode !== 'real'}>
+      {mode === 'example' && <p class="sample-banner"><span>EXEMPLO · valores fictícios.</span></p>}
+      <div class="money">
+        <div class="totals">
+          <div class="total total--in"><span class="total-label">Entrou</span><span class="total-value" data-total-in>{formatCents(totals.inCents)}</span></div>
+          <div class="total"><span class="total-label">Saiu</span><span class="total-value">{formatCents(totals.outCents)}</span></div>
+          <div class="total total--balance"><span class="total-label">Em caixa</span><span class="total-value" data-total-balance>{formatCents(totals.balanceCents)}</span></div>
+        </div>
+        <div class="money-part">
+          <h3>Pra onde foi</h3>
+          <ul class="bars">
+            {OUT_CATEGORIES.map(c => {
+              const value = totals.outByCategory[c.id] ?? 0n;
+              const share = totals.outCents > 0n ? Number((value * 1000n) / totals.outCents) / 10 : 0;
+              return (
+                <li>
+                  <div class="bar-head"><span class="bar-name"><Icon name={c.icon} />{c.name}</span><span class="bar-value">{formatCents(value)}<small>{Math.round(share)}%</small></span></div>
+                  <div class="bar-track" aria-hidden="true"><div class:list={['bar-fill', { 'has-value': value > 0n }]} style={`--fill:${c.color};--p:${share}%`}></div></div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        {mode === 'real' && totals.inCents === 0n && (
+          <div class="why-zero">
+            <h3>Por que está zerado?</h3>
+            <p>A doação só abre quando existir uma conta oficial do projeto. Assim todo real tem dono, nota e prestação de contas. Aqui nunca vai ter número inventado. <a href="/#gargalo-receber-doacao-do-jeito-certo">Ver esse gargalo</a></p>
+          </div>
+        )}
+      </div>
+    </div>
+  ))}
+</section>

@@ -14,7 +14,8 @@
     "typecheck": "astro check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "npm run lint && npm run typecheck && npm test && npm run build"
+    "check": "npm run lint && npm run typecheck && npm test && npm run build && npm run budget",
+    "budget": "node scripts/check-budget.mjs"
   },
   "dependencies": {
     "@astrojs/react": "7.0.0",

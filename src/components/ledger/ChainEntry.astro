@@ -1,0 +1,55 @@
+---
+import Icon from '../site/Icon.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { projectSourceUrl } from '../../lib/ledger/schema';
+import { EVIDENCE, PROJECT_KIND, TYPES, phrase } from '../../lib/ledger-view/phrases';
+import { formatCents } from '../../lib/ledger-view/money';
+import { DECISION_TITLES } from '../../data/site/decisions';
+import { REPOSITORY_OPEN, formatDay } from '../../data/site/project';
+
+interface Props { event: LedgerEvent; correctedBy?: string; hidden?: boolean }
+const { event: e, correctedBy, hidden = false } = Astro.props;
+const p = e.payload;
+const type = TYPES[p.type];
+const shortHash = (h: string) => `${h.slice(0, 4)} ${h.slice(4, 8)}`;
+const delta = p.type === 'finance' ? BigInt(p.amountCents) : 0n;
+const sourceUrl = projectSourceUrl(p);
+// D013: decision title is site content read from DECISOES.md, never part of the hashed event.
+const decisionTitle = p.type === 'project' && p.action === 'decision_recorded' ? DECISION_TITLES[p.decisionId] : undefined;
+const recorded = new Date(e.recordedAt);
+const recordedText = `${recorded.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}, às ${recorded.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' })}`;
+---
+<li class="chain-entry" data-seq={e.sequence} data-type={p.type} hidden={hidden}>
+  <span class="chain-node" aria-hidden="true">{e.sequence}</span>
+  <div class="chain-card">
+    <div class="chain-meta">
+      <span class="type-chip"><Icon name={type.icon} />{type.label}{p.type === 'project' && ` · ${PROJECT_KIND[p.action]}`}</span>
+      <span class="sr-only">Ação nº {e.sequence}.</span>
+      <time datetime={p.occurredOn}>{formatDay(p.occurredOn)}</time>
+    </div>
+    <p class="chain-title">{phrase(p)}</p>
+    {decisionTitle && <p class="chain-context">{decisionTitle}</p>}
+    <p class="chain-facts">
+      {p.type === 'finance' && <>
+        <span class:list={['chain-amount', { 'is-in': delta > 0n }]} data-amount>{delta > 0n ? '+' : '−'} {formatCents(delta < 0n ? -delta : delta)}</span>
+        <span><Icon name="clock" /> {EVIDENCE[p.evidence]}</span>
+      </>}
+      {sourceUrl && <>
+        <a href={sourceUrl} rel="noopener">Ver a fonte<Icon name="arrow-right" /></a>
+        {!REPOSITORY_OPEN && <span>Repositório ainda fechado</span>}
+      </>}
+      {p.type === 'candidate' && <span>Só a contagem. Sem nome, rosto, apelido ou lugar.</span>}
+      {p.type === 'field' && <span>Sem dizer quem recebeu nem onde.</span>}
+      {p.correctionOf && p.type !== 'finance' && <span>Corrige a ação nº {p.correctionOf}</span>}
+      {correctedBy && <span class="chain-corrected"><Icon name="undo" /> {p.type === 'finance' ? 'Estornada' : 'Corrigida'} pela nº {correctedBy}</span>}
+    </p>
+    <div class="chain-seal">
+      <Icon name="link" /><code title="Marca desta ação">{shortHash(e.hash)}</code>
+      <span>{e.sequence === '1' ? 'começo da corrente' : `presa na nº ${Number(e.sequence) - 1}`}</span>
+      <details class="chain-full">
+        <summary>marca inteira</summary>
+        <dl><dt>Marca desta ação</dt><dd>{e.hash}</dd><dt>Marca da anterior</dt><dd>{e.previousHash}</dd><dt>Registrada em</dt><dd>{recordedText}</dd></dl>
+      </details>
+    </div>
+  </div>
+</li>
