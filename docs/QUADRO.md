@@ -10,7 +10,7 @@ Atualizado: 23/09/2026, 11:20 · **Site no ar em https://pontape.org** (D019), p
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F32b | Filtros da parte técnica em palavra de gente | design | `design/f32b-filtros` | despachada 11:20 | "Vida real" e "Candidato" viram "Entregas" e "Atendimento" |
+| F32b | Filtros da parte técnica em palavra de gente | design | [PR #74](https://github.com/LucasOl1337/pontape/pull/74) integrada 11:30 | Feito. Design/UI em espera |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | [PR #67](https://github.com/LucasOl1337/pontape/pull/67) integrada 10:40: cadernos viraram páginas em `/construir/*` | #67 a #69, #71 (ordem da escada, D028) e #72 (Cores à direita) integradas | Varredura: 960×600, onde o degrau 7 e o Sua vez rolam por dentro |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
