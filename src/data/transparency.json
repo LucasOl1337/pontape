@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-22",
+  "currency": "BRL",
+  "donationsEnabled": false,
+  "status": "Doações ainda não habilitadas",
+  "receivedCents": 0,
+  "spentCents": 0
+}
