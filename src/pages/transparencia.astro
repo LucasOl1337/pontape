@@ -1,27 +1,52 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LedgerHeroBlock from '../components/blocks/LedgerHeroBlock.astro';
-import LedgerVerifyBlock from '../components/blocks/LedgerVerifyBlock.astro';
+import Icon from '../components/site/Icon.astro';
+import ListenButton from '../components/site/ListenButton.astro';
+import VerifyPanel from '../components/ledger/VerifyPanel.astro';
 import LedgerActionsBlock from '../components/blocks/LedgerActionsBlock.astro';
 import LedgerMoneyBlock from '../components/blocks/LedgerMoneyBlock.astro';
 import LedgerHowToBlock from '../components/blocks/LedgerHowToBlock.astro';
 import LedgerTypesBlock from '../components/blocks/LedgerTypesBlock.astro';
 import { getExampleLedger, getPublicLedger } from '../lib/ledger-view/source';
+import { sumMoney, formatCents } from '../lib/ledger-view/money';
+import { phrase } from '../lib/ledger-view/phrases';
+import { PROJECT_NAME, formatDay } from '../data/site/project';
 import { SHARE } from '../data/site/share';
 
 const ledger = await getPublicLedger();
 const example = await getExampleLedger();
+const money = sumMoney(ledger.events);
+const last = ledger.events.at(-1);
+const recent = ledger.events.slice(-3).reverse();
+const recordedText = last && new Date(last.recordedAt).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' });
+const speech = `Livro público do ${PROJECT_NAME}. Aqui aparecem ${ledger.events.length} ações do projeto. Entrou ${formatCents(money.inCents)} e saiu ${formatCents(money.outCents)}. A doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não. Aperte Conferir para verificar o livro no seu aparelho.`;
 ---
-<BaseLayout
-  title={SHARE.transparencia.title}
-  description={SHARE.transparencia.description}
-  share="transparencia"
-  current="transparencia">
-  <LedgerHeroBlock ledger={ledger} />
-  <LedgerVerifyBlock />
-  <LedgerActionsBlock ledger={ledger} example={example} />
-  <LedgerMoneyBlock real={ledger.events} example={example.events} />
-  <LedgerHowToBlock />
-  <LedgerTypesBlock />
+<BaseLayout title={SHARE.transparencia.title} description={SHARE.transparencia.description} share="transparencia" current="transparencia">
+  <div class="r2-ledger-page">
+    <section class="r2-ledger-top pluma-wrap" id="livro" aria-labelledby="r2-ledger-title" data-speech={speech}>
+      <div class="r2-ledger-heading"><div><p class="r2-kicker">LIVRO PÚBLICO · {PROJECT_NAME}</p><h1 id="r2-ledger-title">Cada ação.<br /><span>À vista de todos.</span></h1><p>Toda ação aparece. Quem é a pessoa, não.</p></div><ListenButton target="livro" /></div>
+      <div class="r2-ledger-board">
+        <div class="r2-ledger-main">
+          <p>O livro tem <strong>{ledger.events.length} ações</strong>. Cada uma se prende à anterior. Aperte Conferir para refazer a conta no seu aparelho.</p>
+          <section id="conferir" aria-label="Conferir o livro">
+            <VerifyPanel data="ledger-real" list="ledger-chain-real" where="A conta roda no seu aparelho. Nada é enviado pra gente." />
+          </section>
+          <p class="r2-muted">{last ? `Último registro em ${recordedText}. A página é refeita quando entra uma ação nova.` : 'O livro ainda não tem ações. A página será refeita quando entrar uma ação.'}</p>
+        </div>
+        <div class="r2-ledger-side">
+          <div class="r2-ledger-totals"><div><span>Entrou</span><strong>{formatCents(money.inCents)}</strong></div><div><span>Saiu</span><strong>{formatCents(money.outCents)}</strong></div></div>
+          <p class="r2-muted">A doação ainda não abriu. O zero é real.</p>
+          <h2>Últimas ações</h2>
+          <ol class="r2-ledger-latest">{recent.map(event => <li><time datetime={event.payload.occurredOn}>{formatDay(event.payload.occurredOn)}</time><span>{phrase(event.payload)}</span></li>)}</ol>
+          {!recent.length && <p>Nenhuma ação publicada ainda.</p>}
+        </div>
+      </div>
+    </section>
+    <div class="r2-ledger-more pluma-wrap">
+      <details class="r2-ledger-expand" id="acoes-completas"><summary><span><small>01 / EXPLORAR</small><strong>Ver todas as ações</strong><em>Filtre por tipo ou abra o exemplo fictício.</em></span><Icon name="chevron-down" /></summary><div><LedgerActionsBlock ledger={ledger} example={example} /></div></details>
+      <details class="r2-ledger-expand"><summary><span><small>02 / DINHEIRO</small><strong>Quanto entrou e saiu</strong><em>Valores por categoria e por que estão zerados.</em></span><Icon name="chevron-down" /></summary><div><LedgerMoneyBlock real={ledger.events} example={example.events} /></div></details>
+      <details class="r2-ledger-expand"><summary><span><small>03 / ENTENDER</small><strong>Como conferir o livro</strong><em>O que a marca prova e o que fica fora.</em></span><Icon name="chevron-down" /></summary><div><LedgerHowToBlock /><LedgerTypesBlock /></div></details>
+    </div>
+  </div>
 </BaseLayout>
 <script>import '../scripts/ledger';</script>

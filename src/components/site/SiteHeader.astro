@@ -1,28 +1,16 @@
 ---
 import Icon from './Icon.astro';
-import LogoMark from './LogoMark.astro';
 import { PROJECT_NAME } from '../../data/site/project';
-
 interface Props { current?: 'home' | 'transparencia' }
 const { current = 'home' } = Astro.props;
-const onHome = current === 'home';
-const links = [
-  { href: onHome ? '#como-funciona' : '/#como-funciona', label: 'Como funciona' },
-  { href: onHome ? '#modulos' : '/#modulos', label: 'Módulos' },
-  { href: '/transparencia', label: 'Transparência', current: current === 'transparencia' },
-  { href: onHome ? '#gargalos' : '/#gargalos', label: 'Gargalos' },
-  { href: onHome ? '#contribuicoes' : '/#contribuicoes', label: 'Contribuir' },
-];
 ---
 <header class="site-header">
   <div class="site-header-inner">
-    <a class="logo" href="/" aria-label={`${PROJECT_NAME}, início`}><LogoMark /><span>{PROJECT_NAME}</span></a>
-    <nav class="site-nav" id="site-nav" aria-label="Principal">
-      <ul>
-        {links.map(l => <li><a href={l.href} aria-current={l.current ? 'page' : undefined}>{l.label}</a></li>)}
-      </ul>
+    <a class="logo" href="/" aria-label={`${PROJECT_NAME}, início`}><span class="logo-symbol" aria-hidden="true">{PROJECT_NAME.charAt(0).toLowerCase()}.</span><span>{PROJECT_NAME}</span></a>
+    <nav class="site-nav" aria-label="Principal">
+      <a href={current === 'home' ? '#como-funciona' : '/#como-funciona'}>Como funciona</a>
+      <a href={current === 'home' ? '#modulos' : '/#modulos'}>As partes</a>
+      <a href="/transparencia" aria-current={current === 'transparencia' ? 'page' : undefined}>Livro público <Icon name="arrow-right" /></a>
     </nav>
-    <button class="icon-btn" id="text-size-btn" type="button" aria-pressed="false" title="Aumentar o texto"><span aria-hidden="true">A+</span><span class="sr-only">Texto maior</span></button>
-    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><Icon name="menu" /><span>Menu</span></button>
   </div>
 </header>
