@@ -119,6 +119,48 @@ Não mexo: `design/prototipo/` e `design/compartilhamento/` (protótipos antigos
 
 Sai o 3 de hoje (Seleção), que virou o 1. Pra combinar, o §1 ("Em uma frase") pode começar pela escolha: "…que escolhe com IA e às claras quem quer mudar de vida, dá o básico…". O "Coração da ideia" já tem "A IA é o filtro" no 3; não precisa mexer.
 
+### Onde parei (proposta)
+
+Proposta mandada pro Regente às 13:23. Ele achou boa e levou ordem, nomes e frase pro Lucas; pediu pra seguir no código com Busca e Sistema como padrão.
+
+## 23/09/2026 · Código, esperando o OK do Lucas
+
+Commits `15e5ff7` e o seguinte, na branch `design/f37-sistema-primeiro`. A PR ainda não abriu.
+
+**O que mudou em relação à proposta**
+
+- **Frase de abertura mais curta.** A de 154 letras passou de 2 pra 3 linhas em 1920×914 e desceu os botões 31 px, justo no tamanho em que o Prumo está consertando o enquadramento. Medi cinco versões na bancada, trocando o texto na página e contando linhas em 1920×914, 1920×1080, 1440×900, 1366×768, 390 e 360. Ficou esta, com 133 letras, que ocupa as mesmas linhas da frase de hoje nos seis tamanhos (2, 3, 3, 2, 4 e 4):
+
+  > A IA vai ajudar a escolher com cuidado quem mais quer mudar. Tudo à vista. Quem entra ganha comida, roupa e ajuda pra achar trabalho.
+
+  "Quem mais quer mudar" sem o "de vida" porque o título logo em cima já diz "mudar de vida". "Tudo à vista." sozinho é o mesmo nome do passo 7.
+- A frase mora no `journey.ts` como `OPENING`, e o teste de jargão e o de travessão passam por ela.
+- `aiFrom: true` no Sistema. No `Escada.astro` troquei três linhas: a frase do degrau 0, o `RAIL_FROM` (agora `STEPS.findIndex(s => s.aiFrom) + 1`, igual ao que o Prumo vai escrever) e o `sr-only`, que sai "Desde o passo 1, Sistema, a IA vai junto da pessoa em todos os passos e continua depois do trabalho, sem prazo e de graça." Se a PR dele entrar antes, fico com a versão dele no rebase.
+
+**Onde a ordem velha saiu** (tudo da tabela da proposta)
+
+| Arquivo | O que ficou |
+|---|---|
+| `journey.ts` | Sistema, Busca, Conversa, Comida e roupa, Apoio da IA, Trabalho, Tudo à vista; `OPENING`; `aiFrom` |
+| `Escada.astro` | Frase do degrau 0, começo da linha da IA e `sr-only` |
+| `site-data.test.ts` | Teste da D032: um passo só com `aiFrom`, e é o primeiro; ele é a M3; a comida vem depois da conversa; a frase de abertura fala da IA antes da comida |
+| `modules.ts` | M3: "Escolher com cuidado quem quer mudar de vida de fato, e ir até essa pessoa." e o jeito de escolher no "O que é" e no "Como funciona". M7: "desde a escolha" |
+| `share.ts` | Descrição da home começa pela IA que escolhe com cuidado e pelo livro público |
+| `render.ts` (`og.png`) | Balança, pino, prato, IA, maleta |
+| `404.astro` | Sistema, Busca, Esta página, Comida, Trabalho |
+| `livro.ts` (`/transparencia`) | As atividades: a conversa antes da entrega |
+| `Regras.astro` (`/transparencia/tecnico`) | Contagens de candidato na ordem da escada |
+| `bottlenecks.ts` (`/construir/gargalos`) | Escolha justa em segundo, colada em Achar a pessoa certa |
+| `README.md`, `MAPA-DO-SITE.md`, `DIRECAO.md` | Ordem nova |
+
+**Verificação**
+
+- `npm run check` passa: lint, `astro check`, 144 testes, livro íntegro, build, orçamento. Home com 22,0 KB de 60, igual à main.
+- Na bancada `pontape-f37-design` (workspace 6): 360 sem rolagem lateral (`scrollWidth` 360). A escada, o título e os botões ficam nas mesmas posições da main em 1920×914 e em 360; o que muda de lugar é só o texto.
+- Estrutura, teclado, cores e `site.css` não mudaram; só dado e texto.
+
+Prints em `prints/`: `antes-*` é a main em `9de590d`, `depois-*` é esta branch. 1920×914 e 360×780 no Início e com o passo 1 aberto, a 404 em 1440×900 e a imagem de compartilhar (`*-og.png`).
+
 ### Onde parei
 
-Proposta escrita. Próximo passo: mandar pro Regente e começar o código pelo `journey.ts`, a frase de abertura e o teste, com Busca e Sistema. Se o Lucas escolher outro nome, é uma troca de palavra. A PR só abre com o OK dele.
+Esperando o OK do Lucas pela voz do Regente. Se ele trocar um nome (Chegar junto, Primeiro contato, A base), é trocar a palavra no `journey.ts`, na 404 e nos docs, refazer os prints e abrir a PR `F37 · A escada começa pelo sistema` com rebase na `main`. Servidores e bancada parados; sobem de novo em um minuto.

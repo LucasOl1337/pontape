@@ -22,8 +22,8 @@ export const NOW_LEAD: Record<ModuleStatus, string> = {
 };
 
 // What the ground of the staircase says to whoever just arrived (D032): the system comes first,
-// the basics and the job after it.
-export const OPENING = 'A nossa IA vai ajudar a escolher com cuidado quem mais quer mudar de vida, e tudo fica à vista. Quem entra ganha comida, roupa e ajuda pra achar trabalho.';
+// the basics and the job after it. Kept as long as the old one (F36 frames the page around it).
+export const OPENING = 'A IA vai ajudar a escolher com cuidado quem mais quer mudar. Tudo à vista. Quem entra ganha comida, roupa e ajuda pra achar trabalho.';
 
 // Candidate journey, PRD §4, in the words of whoever reads the home (F29). It starts with the system
 // (D032): the AI helps to choose with care, and how it chooses stays in the open. Then the person is
