@@ -10,7 +10,7 @@ const common = { occurredOn: '2000-01-01', correctionOf: null };
 const finance = (amountCents: string, category: string, extra: object = {}) =>
   ledgerPayloadSchema.parse({ ...common, type: 'finance', action: 'movement_recorded', currency: 'BRL', amountCents, category, evidence: 'pending', ...extra });
 const chain = (payloads: LedgerPayload[]) =>
-  chainPayloads(payloads.map((payload, i) => ({ recordedAt: `2000-01-01T12:0${i}:00.000Z`, payload })));
+  chainPayloads(payloads.map((payload, i) => ({ recordedAt: new Date(Date.UTC(2000, 0, 1, 12, i)).toISOString(), payload })));
 
 describe('frase de cada ação', () => {
   // Every action of the v1 contract, so a new action without a sentence fails here.

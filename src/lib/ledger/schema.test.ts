@@ -5,7 +5,7 @@ import { ledgerPayloadSchema, projectSourceUrl } from './schema';
 describe('contrato público do livro', () => {
   it('aceita as quatro famílias fictícias', () => {
     expect(fixture.notice).toContain('DADOS FICTÍCIOS');
-    expect(fixture.payloads.map((payload) => ledgerPayloadSchema.parse(payload).type))
+    expect([...new Set(fixture.payloads.map((payload) => ledgerPayloadSchema.parse(payload).type))])
       .toEqual(['project', 'finance', 'field', 'candidate']);
   });
 

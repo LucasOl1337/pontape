@@ -30,5 +30,9 @@ jobs:
         run: npm run typecheck
       - name: Testes
         run: npm test
+      - name: Livro público
+        run: npm run ledger:verify
       - name: Build estático
         run: npm run build
+      - name: Orçamento de assets
+        run: npm run budget

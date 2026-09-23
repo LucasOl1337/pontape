@@ -101,3 +101,10 @@ export function projectSourceUrl(payload: LedgerPayload): string | null {
     case 'pull_request_merged': return `${REPOSITORY_URL}/pull/${payload.pullRequest}`;
   }
 }
+
+/** One file is replaced atomically, keeping the current checkpoint and events together. */
+export const ledgerDocumentSchema = z.strictObject({
+  events: ledgerSchema,
+  checkpoint: ledgerCheckpointSchema,
+});
+export type LedgerDocument = z.infer<typeof ledgerDocumentSchema>;

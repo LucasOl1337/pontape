@@ -18,7 +18,7 @@ export function getPublicLedger(): PublicLedger {
 // hashes are the same on every build.
 export async function getExampleLedger(): Promise<LedgerEvent[]> {
   const items = fixture.payloads.map((payload, i) => ({
-    recordedAt: `2000-01-01T12:0${i}:00.000Z`,
+    recordedAt: new Date(Date.UTC(2000, 0, 1, 12, i)).toISOString(),
     payload: ledgerPayloadSchema.parse(payload),
   }));
   return ledgerSchema.parse(await chainPayloads(items));

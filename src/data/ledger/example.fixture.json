@@ -1,9 +1,179 @@
 {
   "notice": "DADOS FICTÍCIOS PARA TESTE E MODO EXEMPLO. Não são ações realizadas.",
   "payloads": [
-    { "type": "project", "action": "decision_recorded", "occurredOn": "2000-01-01", "correctionOf": null, "decisionId": "D999", "sourceCommit": "0000000000000000000000000000000000000000" },
-    { "type": "finance", "action": "movement_recorded", "occurredOn": "2000-01-01", "correctionOf": null, "currency": "BRL", "amountCents": "10000", "category": "donation", "evidence": "pending" },
-    { "type": "field", "action": "food_delivered", "occurredOn": "2000-01-01", "correctionOf": null, "quantity": "2" },
-    { "type": "candidate", "action": "referral_completed", "occurredOn": "2000-01-01", "correctionOf": null, "count": "1" }
+    {
+      "type": "project",
+      "action": "decision_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "decisionId": "D999",
+      "sourceCommit": "0000000000000000000000000000000000000000"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "10000",
+      "category": "donation",
+      "evidence": "pending"
+    },
+    {
+      "type": "field",
+      "action": "food_delivered",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "quantity": "2"
+    },
+    {
+      "type": "candidate",
+      "action": "referral_completed",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "count": "1"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "150000",
+      "category": "donation",
+      "evidence": "pending"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "-18000",
+      "category": "food",
+      "evidence": "pending"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "-25000",
+      "category": "clothing",
+      "evidence": "pending"
+    },
+    {
+      "type": "field",
+      "action": "clothing_delivered",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "quantity": "3"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "-9000",
+      "category": "hygiene",
+      "evidence": "pending"
+    },
+    {
+      "type": "field",
+      "action": "hygiene_delivered",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "quantity": "4"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "-12000",
+      "category": "operations",
+      "evidence": "not_published"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "-1500",
+      "category": "fee",
+      "evidence": "not_published"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "-5000",
+      "category": "refund",
+      "evidence": "pending"
+    },
+    {
+      "type": "finance",
+      "action": "reversal",
+      "occurredOn": "2000-01-01",
+      "correctionOf": "6",
+      "currency": "BRL",
+      "amountCents": "18000",
+      "category": "food",
+      "evidence": "pending"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "-16500",
+      "category": "food",
+      "evidence": "pending"
+    },
+    {
+      "type": "field",
+      "action": "food_delivered",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "quantity": "6"
+    },
+    {
+      "type": "candidate",
+      "action": "contact_completed",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "count": "5"
+    },
+    {
+      "type": "candidate",
+      "action": "interview_completed",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "count": "3"
+    },
+    {
+      "type": "candidate",
+      "action": "support_completed",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "count": "2"
+    },
+    {
+      "type": "finance",
+      "action": "movement_recorded",
+      "occurredOn": "2000-01-01",
+      "correctionOf": null,
+      "currency": "BRL",
+      "amountCents": "50000",
+      "category": "donation",
+      "evidence": "pending"
+    }
   ]
 }
