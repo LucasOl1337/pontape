@@ -167,6 +167,10 @@ Prints em `prints/`: `antes-*` é a main em `9de590d`, `depois-*` é esta branch
 
 Medido na bancada com o passo 1 aberto: a sugestão do Regente com "de qualquer pessoa" tinha 142 letras e, com "de todo mundo", ganhava uma linha em 390. Terminando em "à vista" ficam 123 letras, com as mesmas linhas da frase velha ou menos nos seis tamanhos (2, 2, 2, 2, 3, 3 contra 2, 3, 3, 2, 3, 4). "O dinheiro é pouco" fala do projeto, não da pessoa: ninguém lê ali que ficou de fora. Prints do passo 1 refeitos.
 
+## 23/09/2026 · OK do Lucas e PR
+
+O Lucas aprovou às 13:27 a ordem, **Sistema** e **Busca** (D032, ciente de que "Sistema" pode soar como cadeia), e às 13:40 a frase curta de abertura. O Regente passou o PRD §4 pra ordem nova. Rebase na `main` em `bb96f68` sem conflito (a PR 1 da F36 ainda não tinha entrado); `npm run check` verde depois do rebase, 144 testes, home com 22,0 KB.
+
 ### Onde parei
 
-Esperando o OK do Lucas pela voz do Regente, que está confirmando a frase curta de abertura com ele. Se ele trocar um nome (Chegar junto, Primeiro contato, A base), é trocar a palavra no `journey.ts`, na 404 e nos docs, refazer os prints e abrir a PR `F37 · A escada começa pelo sistema` com rebase na `main`. Servidores e bancada parados; sobem de novo em um minuto.
+PR `F37 · A escada começa pelo sistema` aberta e report mandado pro Regente. Se a PR 1 do Prumo entrar antes da minha, o conflito no `Escada.astro` é meu: fico com a estrutura dele e reaplico a frase do degrau 0 (`OPENING`) e o `aiFrom`. Se ele trocar um nome (Chegar junto, Primeiro contato, A base), é trocar a palavra no `journey.ts`, na 404 e nos docs, refazer os prints e abrir a PR `F37 · A escada começa pelo sistema` com rebase na `main`. Servidores e bancada parados; sobem de novo em um minuto.
