@@ -1,0 +1,56 @@
+/* Bento: a grade de blocos e o bloco (tile) com vidro, borda fina e luz que segue o ponteiro. */
+.bento{--cols:1;display:grid;gap:var(--gap);grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-auto-flow:row dense}
+@media (min-width:640px){
+  .bento{--cols:2}
+  .c2,.c3,.c4{grid-column:span 2}
+}
+@media (min-width:1024px){
+  .bento{--cols:4}
+  .bento--3{--cols:3}
+  .c3{grid-column:span 3}
+  .c4{grid-column:span 4}
+  .r2{grid-row:span 2}
+  .r3{grid-row:span 3}
+  .bento--3 .c4{grid-column:span 3}
+}
+
+.tile{
+  position:relative;isolation:isolate;display:flex;flex-direction:column;gap:12px;min-width:0;
+  padding:clamp(20px,.9rem + 1vw,32px);border-radius:var(--r-tile);border:1px solid var(--line);
+  background:linear-gradient(180deg,var(--tile-top),var(--tile-bottom)),var(--surface);
+  box-shadow:inset 0 1px 0 var(--highlight),var(--shadow-tile);color:var(--text);overflow:hidden;
+}
+/* Light that follows the pointer (site.ts sets --mx and --my): a soft fill and a brighter edge. */
+.tile::before,.tile::after{content:"";position:absolute;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .45s}
+.tile::before{inset:0;z-index:-1;background:radial-gradient(560px circle at var(--mx,50%) var(--my,0%),var(--spot),transparent 45%)}
+.tile::after{inset:-1px;padding:1px;background:radial-gradient(380px circle at var(--mx,50%) var(--my,0%),var(--spot-line),transparent 48%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+@media (hover:hover){ .tile:hover::before,.tile:hover::after{opacity:1} }
+
+/* A tile that is a button or a link as a whole */
+.tile--action{text-align:left;font:inherit;cursor:pointer;text-decoration:none;transition:translate .35s var(--ease-out),border-color .3s,box-shadow .35s}
+.tile--action:hover{translate:0 -2px;border-color:var(--line-2)}
+.tile--action:active{translate:0 0}
+.tile--action:focus-visible{outline-offset:4px;border-radius:var(--r-tile)}
+
+.tile-kicker{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tile-label{font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+:where(.tile) h3{font-size:var(--text-h3);letter-spacing:-.025em}
+:where(.tile) p{color:var(--text-2)}
+.tile-foot{margin-top:auto;padding-top:6px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* Icon in a small glass square */
+.glyph{--c:var(--text);display:inline-grid;place-items:center;width:44px;height:44px;flex:none;border-radius:13px;color:var(--c);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 16%,transparent),color-mix(in srgb,var(--c) 5%,transparent));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 26%,transparent),inset 0 1px 0 var(--highlight)}
+.glyph .icon{width:22px;height:22px}
+.glyph--lg{width:56px;height:56px;border-radius:16px}
+.glyph--lg .icon{width:26px;height:26px}
+
+/* Big faint icon in the corner of a tile */
+.tile-art{position:absolute;right:-18px;bottom:-18px;z-index:-1;width:150px;height:150px;color:var(--text);opacity:.05;pointer-events:none}
+.tile-art .icon{width:100%;height:100%;stroke-width:1}
+
+/* Number in a tile */
+.num-badge{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--font-mono);font-size:.875rem;color:var(--text);border:1px solid var(--line-2);background:var(--surface-2)}

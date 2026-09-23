@@ -1,4 +1,5 @@
-// Home page islands: journey tabs, module filters and dialog, compare, contributions, ledger teaser.
+// Home page islands: module filters and dialog, compare, contributions, ledger teaser.
+// The journey needs no script: it lights up with the scroll, in css.
 import { stopSpeech } from './site';
 import { mountVerify, readLedger } from './verify';
 
@@ -6,47 +7,16 @@ const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document
 const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll<T>(s)];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-/* ---------- Journey tabs ---------- */
-
-const track = $('[data-journey]');
-if (track) {
-  const tabs = $$<HTMLButtonElement>('[role="tab"]', track);
-  const panels = tabs.map(t => document.getElementById(t.getAttribute('aria-controls') ?? '')!);
-  let current = 0;
-  const select = (i: number, { focus = false } = {}) => {
-    current = Math.max(0, Math.min(tabs.length - 1, i));
-    tabs.forEach((tab, k) => {
-      tab.setAttribute('aria-selected', String(k === current));
-      tab.tabIndex = k === current ? 0 : -1;
-      tab.classList.toggle('done', k < current);
-      panels[k]!.hidden = k !== current;
-    });
-    const tab = tabs[current]!;
-    if (focus) tab.focus({ preventScroll: true });
-    if (track.scrollWidth > track.clientWidth) {
-      track.scrollTo({ left: tab.offsetLeft - (track.clientWidth - tab.offsetWidth) / 2, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
-    }
-    const panel = panels[current]!;
-    if (!reducedMotion.matches) { panel.classList.remove('swap'); void panel.offsetWidth; panel.classList.add('swap'); }
-  };
-  track.addEventListener('click', e => {
-    const tab = (e.target as Element).closest<HTMLButtonElement>('[role="tab"]');
-    if (tab) select(tabs.indexOf(tab));
-  });
-  track.addEventListener('keydown', e => {
-    const keys: Record<string, number> = { ArrowRight: current + 1, ArrowLeft: current - 1, Home: 0, End: tabs.length - 1 };
-    if (!(e.key in keys)) return;
-    e.preventDefault();
-    select(keys[e.key]!, { focus: true });
-  });
-  panels.forEach(panel => panel.addEventListener('click', e => {
-    const btn = (e.target as Element).closest<HTMLButtonElement>('[data-step]');
-    if (!btn || btn.disabled) return;
-    const step = btn.dataset.step!;
-    select(current + Number(step));
-    const same = $<HTMLButtonElement>(`[data-step="${step}"]`, panels[current]!);
-    (same && !same.disabled ? same : tabs[current]!).focus({ preventScroll: true });
-  }));
+// Re-layouts of a bento grid glide into place with a same-page view transition where the browser has it.
+// Each cell carries its own name in --vt; names are set only during the change.
+type ViewTransitionDoc = Document & { startViewTransition?: (cb: () => void) => { finished: Promise<void> } };
+function glide(grid: HTMLElement | null, change: () => void) {
+  const doc = document as ViewTransitionDoc;
+  if (!grid || !doc.startViewTransition || reducedMotion.matches) { change(); return; }
+  const root = document.documentElement;
+  grid.classList.add('is-gliding');
+  root.classList.add('vt-glide');
+  doc.startViewTransition(change).finished.finally(() => { grid.classList.remove('is-gliding'); root.classList.remove('vt-glide'); });
 }
 
 /* ---------- Modules: filters and dialog ---------- */
@@ -57,10 +27,11 @@ filters?.addEventListener('click', e => {
   if (!btn) return;
   const filter = btn.dataset.filter!;
   $$('[data-filter]', filters).forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-  const items = $$('[data-status-item]');
-  items.forEach(li => { li.hidden = filter !== 'all' && li.dataset.statusItem !== filter; });
-  $$('[data-filter-note]').forEach(p => { p.hidden = p.dataset.filterNote !== filter; });
-  $$('[data-empty-for]', $('#modulos')!).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
+  glide($('[data-module-grid]'), () => {
+    $$('[data-status-item]').forEach(li => { li.hidden = filter !== 'all' && li.dataset.statusItem !== filter; });
+    $$('[data-filter-note]').forEach(p => { p.hidden = p.dataset.filterNote !== filter; });
+    $$('[data-empty-for]', $('#modulos')!).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
+  });
 });
 
 const dialog = $<HTMLDialogElement>('#module-dialog');
@@ -88,9 +59,7 @@ document.addEventListener('click', e => {
 });
 const openFromHash = () => {
   const moduleMatch = location.hash.match(/^#m([1-9])$/i);
-  if (moduleMatch) { openModule(`M${moduleMatch[1]}`); return; }
-  const bottleneck = location.hash.startsWith('#gargalo-') && document.getElementById(location.hash.slice(1));
-  if (bottleneck instanceof HTMLDetailsElement) bottleneck.open = true;
+  if (moduleMatch) openModule(`M${moduleMatch[1]}`);
 };
 addEventListener('hashchange', openFromHash);
 openFromHash();
@@ -103,18 +72,19 @@ const CAPTIONS: Record<string, string> = {
 };
 $$<HTMLButtonElement>('[data-compare]').forEach(btn => btn.addEventListener('click', () => {
   $$('[data-compare]').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-  $('#compare-stairs')!.dataset.mode = btn.dataset.compare!;
+  $('#compare-path')!.dataset.mode = btn.dataset.compare!;
   $('#compare-caption')!.textContent = CAPTIONS[btn.dataset.compare!] ?? '';
 }));
 
 /* ---------- Open contributions ---------- */
 
 const contribFilters = $('[data-contrib-filters]');
+const contribGrid = $('[data-contrib-grid]');
 const moreBtn = $<HTMLButtonElement>('[data-contrib-more]');
 let contribFilter = 'all';
 let expanded = false;
 const renderContributions = () => {
-  $$('[data-contrib-grid] .contrib-card').forEach(card => {
+  $$('.contrib-card', contribGrid ?? document).forEach(card => {
     const match = contribFilter === 'all' || (contribFilter === 'first' ? card.dataset.first === 'true' : card.dataset.type === contribFilter);
     card.hidden = !match || (contribFilter === 'all' && !expanded && card.dataset.extra === 'true');
   });
@@ -125,13 +95,15 @@ contribFilters?.addEventListener('click', e => {
   if (!btn) return;
   contribFilter = btn.dataset.contrib!;
   $$('[data-contrib]', contribFilters).forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-  renderContributions();
+  glide(contribGrid, renderContributions);
 });
 moreBtn?.addEventListener('click', () => {
-  const firstHidden = $<HTMLElement>('[data-contrib-grid] .contrib-card[data-extra="true"]');
+  const firstHidden = $<HTMLElement>('.contrib-card[data-extra="true"]', contribGrid ?? document);
   expanded = true;
-  renderContributions();
-  firstHidden?.querySelector('a')?.focus();
+  glide(contribGrid, () => {
+    renderContributions();
+    firstHidden?.querySelector('a')?.focus({ preventScroll: true });
+  });
 });
 
 /* ---------- Ledger teaser (block 05) ---------- */

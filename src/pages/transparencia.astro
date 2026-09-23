@@ -21,7 +21,7 @@ const example = await getExampleLedger();
   <LedgerVerifyBlock />
   <LedgerActionsBlock ledger={ledger} example={example} />
   <LedgerMoneyBlock real={ledger.events} example={example.events} />
-  <LedgerHowToBlock />
+  <LedgerHowToBlock ledger={ledger} />
   <LedgerTypesBlock />
 </BaseLayout>
 <script>import '../scripts/ledger';</script>

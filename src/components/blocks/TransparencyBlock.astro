@@ -29,32 +29,42 @@ const speech = (events.length
   : 'O livro público ainda não foi publicado. Ele entra junto com o verificador aberto. ')
   + 'Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Cada ação fica presa na anterior, e o botão Conferir mostra se alguém mudou alguma coisa. Toda ação aparece. Quem é a pessoa, não.';
 ---
-<section class="block reveal" id="transparencia" aria-labelledby="t-transparency" data-speech={speech}>
-  <BlockHead number="05" label="Transparência" listen="transparencia" />
-  <h2 id="t-transparency">Tudo que a gente faz, à vista.</h2>
-  <p class="lead">Dinheiro, entrega na rua, passo de candidato e decisão do projeto. Cada ação vira uma linha presa na anterior, e qualquer pessoa confere.</p>
-  <p class="rule-strip"><Icon name="shield" /><strong>Toda ação aparece. Quem é a pessoa, não.</strong></p>
-  <ul class="type-counters" aria-label="Ações no livro por tipo">
-    {counters.map(c => (
-      <li><a class="type-counter" data-type={c.type} href={`/transparencia?tipo=${c.type}`}>
-        <span class="type-counter-label"><Icon name={TYPES[c.type].icon} />{TYPES[c.type].label}</span>
-        <span class="type-counter-value">{c.value}</span>
-        <span class="type-counter-note">{c.type === 'finance' ? `Entrou. ${c.note}.` : c.note}</span>
-      </a></li>
-    ))}
-  </ul>
-  <div class="ledger-teaser">
-    <div>
-      <h3>Últimas ações</h3>
-      {latest.length
-        ? <ol class="chain" id="teaser-chain">{latest.map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}</ol>
-        : <div class="chain-empty"><Icon name="receipt" /><p class="chain-empty-title">O livro oficial ainda não foi publicado.</p><p>Ele entra junto com o verificador aberto, com cada decisão e cada mudança do projeto desde o começo. Enquanto isso, dá pra ver como ele funciona num exemplo.</p></div>}
+<section class="section section--band" id="transparencia" aria-labelledby="t-transparency" data-speech={speech}>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <BlockHead number="05" label="Transparência" listen="transparencia" />
+      <h2 id="t-transparency">Tudo que a gente faz, <span class="grad">à vista.</span></h2>
+      <p class="lead">Dinheiro, entrega na rua, passo de candidato e decisão do projeto. Cada ação vira uma linha presa na anterior, e qualquer pessoa confere.</p>
     </div>
-    {latest.length > 0 && <VerifyPanel data="ledger-home" list="teaser-chain" />}
+    <div class="bento ledger-bento">
+      {counters.map(c => (
+        <a class="tile tile--action type-counter reveal" data-type={c.type} href={`/transparencia?tipo=${c.type}`}>
+          <span class="type-counter-label"><Icon name={TYPES[c.type].icon} />{TYPES[c.type].label}</span>
+          <span class="type-counter-value">{c.value}</span>
+          <span class="type-counter-note">{c.type === 'finance' ? `Entrou. ${c.note}.` : c.note}</span>
+        </a>
+      ))}
+      <div class="tile ledger-teaser c2 span-all reveal">
+        <div class="tile-kicker"><span class="tile-label">Últimas ações do livro</span><a class="link-arrow" href="/transparencia">Ver todas<Icon name="arrow-right" /></a></div>
+        {latest.length
+          ? <ol class="chain chain--compact" id="teaser-chain">{latest.map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}</ol>
+          : <div class="chain-empty"><Icon name="receipt" /><p class="chain-empty-title">O livro oficial ainda não foi publicado.</p><p>Ele entra junto com o verificador aberto, com cada decisão e cada mudança do projeto desde o começo. Enquanto isso, dá pra ver como ele funciona num exemplo.</p></div>}
+      </div>
+      <div class="tile verify-tile c2 span-all reveal">
+        <p class="tile-label">Conferir</p>
+        <h3>Não precisa confiar. Dá pra conferir.</h3>
+        <p>O botão refaz a conta de cada ação no seu aparelho. Se alguém tiver mudado ou apagado qualquer linha, aparece aqui.</p>
+        {latest.length > 0 && <VerifyPanel data="ledger-home" list="teaser-chain" />}
+        <div class="rule-box">
+          <span class="glyph rule-glyph"><Icon name="shield" /></span>
+          <p class="rule-line">Toda ação aparece. <span class="muted">Quem é a pessoa, não.</span></p>
+        </div>
+        <div class="actions">
+          <a class="btn btn--primary" href="/transparencia">Abrir o livro público<Icon name="arrow-right" /></a>
+          <a class="btn" href="/transparencia?exemplo">Ver um exemplo</a>
+        </div>
+      </div>
+    </div>
+    {latest.length > 0 && <LedgerData id="ledger-home" ledger={ledger} />}
   </div>
-  <div class="teaser-actions">
-    <a class="btn btn--primary" href="/transparencia">Abrir o livro público<Icon name="arrow-right" /></a>
-    <a class="btn" href="/transparencia?exemplo">Ver um exemplo</a>
-  </div>
-  {latest.length > 0 && <LedgerData id="ledger-home" ledger={ledger} />}
 </section>

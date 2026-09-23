@@ -23,7 +23,7 @@ const ledger = await getPublicLedger();
   <ForYouBlock />
   <ProblemBlock />
   <JourneyBlock />
-  <ModulesBlock />
+  <ModulesBlock ledger={ledger} />
   <TransparencyBlock ledger={ledger} />
   <BottlenecksBlock />
   <ContributionsBlock />
