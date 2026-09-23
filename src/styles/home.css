@@ -51,7 +51,7 @@
   .step[aria-selected="true"]::after{content:"";position:absolute;top:22%;bottom:22%;left:100%;width:calc(var(--gap) + 2px);
     background:linear-gradient(90deg,color-mix(in srgb,var(--sc) 55%,transparent),color-mix(in srgb,var(--sc) 25%,transparent));border-radius:0 4px 4px 0}
   /* The stair is always in sight here: no need for the step nav at the bottom of each panel */
-  .panel-nav{display:none}
+  .stairway .panel-nav{display:none}
   .stair-hint{position:absolute;top:0;left:0;width:calc(var(--indent) * 5);display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.75rem;line-height:1.35;color:var(--text-3)}
   .stage{min-height:0}
 }
@@ -130,7 +130,7 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .voice-btn:focus-visible{outline-offset:5px;border-radius:50%}
 
 /* The prism (tall drawing): five labels where the rays end */
-.prism{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch;width:100%;max-width:27rem;margin-inline:auto}
+.prism{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch;width:100%;max-width:min(27rem,44dvh);margin-inline:auto}
 .prism-stage{position:relative;min-width:0}
 .prism-svg{width:100%;height:auto;overflow:visible}
 .prism-label{position:absolute;font-family:var(--font-mono);font-size:.75rem;letter-spacing:.04em;color:var(--text-2);pointer-events:none}
