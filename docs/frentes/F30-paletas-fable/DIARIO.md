@@ -35,3 +35,14 @@
 - Tudo passa sem rolagem horizontal em 360. Cadernos e degrau seguem a paleta sem cor solta.
 - O ponto fraco apareceu no caderno do livro (`Confira você mesmo`): a segunda tinta clareada pro fundo escuro. Na Envelope, o vinho clareado (`#FFA6B4`) virou rosa-chiclete: barato. Refeito como coral queimado `#F89177` (mesma família quente do papel pardo, lê como lacre). Na Pêssego o verde do caderno estava menta demais; um pouco mais fundo (`#6BD3A3`). Na Anil o azul do caderno perdeu um pouco de croma (`#9CBEFC`) pra não parecer botão de sistema. Na Carvão a rubrica do cartão creme desceu pra `#A83111` (5,5:1 em vez de 4,8:1).
 - Cortei de vez: Kraft com carimbo verde (cheque) e Pêssego com ameixa (Ipê de novo). Nenhuma das seis finais me pareceu barata depois do ajuste; a mais arriscada segue sendo a Carvão, por ser escura, mas ela resolve o que a Noite errou (matiz quente, caderno como papel).
+
+## Estado final
+
+- Rebase sobre `origin/main` já com a [PR #67](https://github.com/LucasOl1337/pontape/pull/67) do Prumo (o caderno virou página); prints refeitos depois do rebase e `npm run check` repetido e verde (CSP com 4 hashes).
+- PR [#70 · F30 · Paletas, rodada 2](https://github.com/LucasOl1337/pontape/pull/70) aberta pra `main`, com os links `?cor=` das seis, os prints e o passo pra remover ou promover uma paleta. Report enviado ao Regente.
+- Bancada `anil-f30` (workspace 7) fica no ar sem abas próprias abertas, pronta pra uma rodada de ajuste se o Lucas pedir. Dev server local parado. Gerador OKLCH → hex e conferidor de contraste ficaram no scratchpad da sessão; se precisar refazer uma paleta, o caminho está descrito na seção "Método desta rodada".
+
+## Decisões propostas
+
+- Nenhum token novo foi necessário. Se o Lucas escolher a Carvão, vale uma passada do Prumo nas sombras duras (`box-shadow` com `--ink`) e nos hachurados do degrau, que em papel escuro ficam mais fortes do que no creme.
+- Depois da escolha, renomear `--red` pra `--accent` (proposta da F28, mantida).
