@@ -8,8 +8,8 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F18 | [Ensaio do lançamento](frentes/F18-ensaio-lancamento/BRIEF.md) | bruto | `bruto/f18-ensaio` | despachada | Checklist inteiro no build local, falhas viram issue |
-| F19 | [Cinco variantes visuais](frentes/F19-variantes-visuais/BRIEF.md) | Prisma, Crônica, Ábaco (Opus 5.5), Maracatu (GPT-6-Astra), Pluma (GPT-6-Sol) | `variante/v1..v5` | despachada | Lucas escolhe a direção entre as cinco (portas 4341 a 4345) |
+| F21 | [Comparativo das cinco variantes](frentes/F21-comparativo-variantes/BRIEF.md) | bruto | `bruto/f21-comparativo` | despachada | Mesma régua objetiva nas cinco, sem opinar sobre beleza |
+| F22 | [Variantes rodada 2: a escada](frentes/F22-variantes-escada/BRIEF.md) | Prisma, Crônica, Ábaco, Maracatu, Pluma | `variante/r2-v1..v5` | despachada | Escada como navegação, home curta (1 a 3 telas), tela cheia. Seletor em localhost:4321 |
 
 ## Fila
 
@@ -42,6 +42,9 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 | ID | Frente | Resultado |
 |---|---|---|
 | F14b | CSP gerada no build | [PR #29](https://github.com/LucasOl1337/VidaNova/pull/29) integrada. Build calcula o hash de todo script embutido e falha se faltar algum ou se aparecer `unsafe-inline` |
+| F19 | Variantes rodada 1 | PRs #38 (Pluma), #39 (Maracatu) e as outras em rascunho. Lucas: nenhuma escolhida; scroll longo demais; a escada da Crônica acertou o jeito de explicar ([feedback](fontes/2026-09-22-feedback-f19-r1.md)) |
+| F18 | Ensaio do lançamento | [PR #44](https://github.com/LucasOl1337/VidaNova/pull/44) integrada. CSP e console limpos, livro confere, 3G em ~3,7 s. Issues #40 a #43 abertas (ficam pra variante escolhida) |
+| F20 | Verificador mais leve | [PR #37](https://github.com/LucasOl1337/VidaNova/pull/37) integrada. zod/mini: menos 16 KB depois do Conferir |
 | F17 | Livro ao vivo | [PR #35](https://github.com/LucasOl1337/VidaNova/pull/35) integrada. Na primeira execução o bot registrou D015 e a #35 sozinho (33 fatos). Projeto entra automático; dinheiro, vida real e candidato seguem com o Regente |
 | F16 | Polimento pro lançamento | [PR #33](https://github.com/LucasOl1337/VidaNova/pull/33) integrada. Favicon, prévia de compartilhamento gerada no build, 404 com layout |
 | F07 livro real | Site ligado no livro oficial | [PR #34](https://github.com/LucasOl1337/VidaNova/pull/34) integrada. `/transparencia` mostra as ações reais e confere com o verificador da F08, carregado só no clique |
