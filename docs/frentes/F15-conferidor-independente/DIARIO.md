@@ -33,3 +33,11 @@ Avisar o Regente dessas lacunas; implementar JCS/SHA-256 em Python padrão a par
 - `npm run check`: passou, incluindo lint, tipos, testes e build. `git diff --check`: passou.
 - Sugestão ao EngenheiroFino: incluir o comando do conferidor e seus testes no CI após estabilizar o contrato e o livro real; não editei workflows nesta frente.
 - A PR #30 ainda está aberta. A conferência do novo `CONTRATO.md` e do livro em `src/data/ledger/ledger.json` segue pendente para o próximo marco.
+
+## 22/09/2026 · Contrato completado na branch da PR #30
+
+- A revisão da PR #30 (`2af6dcc`) resolveu as quatro lacunas: contêineres exatos, tabela completa de payloads e literais, identificador `vidanova-public-actions` e vetor com hash fixo. A ARQUITETURA §4.2 passou a apontar para o contrato. Li somente o `CONTRATO.md` dessa revisão e os livros/fixtures JSON como dados; não li `src/lib/ledger/*.ts` nem `design/prototipo/*.js`.
+- Completei a validação estrutural em Python diretamente a partir desse contrato: chaves fechadas, limites decimais, categorias/evidências, commits, duplicatas de fonte, correções, checkpoint e documento JCS exato. A data de fato é comparada ao dia de `recordedAt` em `America/Sao_Paulo`, com `zoneinfo` da biblioteca padrão.
+- O hash fixo do §7 (`a8183311…c3d454`) foi reproduzido pelo Python. A fixture fictícia de conformidade passou com 1 ação. Um payload com `name` extra e hash recalculado foi recusado antes de validar o hash.
+- O livro real **ainda na branch da PR #30** passou com 26 ações e saldo R$ 0,00. A versão anterior desse livro falhava na linha 15 pela nova regra da data brasileira; a revisão ajustou os dados e passou. Nenhum fato foi inferido do código proibido.
+- A PR #31 foi aberta como rascunho, com CI verde, enquanto aguardamos a integração da #30 na `main`. Ao integrar, rodar os mesmos comandos diretamente em `src/data/ledger/ledger.json` e atualizar a PR #31 antes de marcá-la pronta.
