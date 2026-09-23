@@ -8,9 +8,9 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F08 | [Livro público de ações](frentes/F08-livro-publico/BRIEF.md) | fino | `fino/f08-livro` | despachada | Schema, hash encadeado, verificador, livro semeado com ações reais |
+| F08 | [Livro público de ações](frentes/F08-livro-publico/BRIEF.md) | fino | `fino/f08-verificador` | contrato integrado (#26); núcleo em andamento | Hash encadeado, verificador, livro semeado com ações reais |
 | F07 | [Site v1 em código](frentes/F07-site-v1/BRIEF.md) | design | `design/f07-prep`, depois `design/f07-site` | etapa 0 em andamento; base já na main | Protótipo com `/transparencia` e contribuições abertas, depois código |
-| F10 | [Governança open source, sem licença](frentes/F10-governanca/BRIEF.md) | bruto | `bruto/f10-governanca` | despachada | GOVERNANCA, conduta, segurança, modelo de PR |
+| F14 | [Prontidão pra lançar](frentes/F14-prontidao-lancamento/BRIEF.md) | bruto | `bruto/f14-lancamento` | despachada | Cabeçalhos de segurança, 404, passo a passo do lançamento |
 
 ## Fila
 
@@ -31,7 +31,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 4. Doação antes de existir CNPJ. F03 recomenda **só captar depois de associação, CNPJ e conta própria**; Asaas como primeiro teste ([ESTRUTURA-JURIDICA.md](pesquisa/ESTRUTURA-JURIDICA.md), [DOACOES-E-TRANSPARENCIA.md](pesquisa/DOACOES-E-TRANSPARENCIA.md))
 5. Cidade do piloto
 6. Quem decide a seleção do candidato
-7. Licença open source. F03 e F02 recomendam **Apache-2.0**; AGPL-3.0 se a prioridade for obrigar quem copia a abrir o código
+7. Licença open source (e canal privado de denúncia e segurança, hoje "a definir"). F03 e F02 recomendam **Apache-2.0**; AGPL-3.0 se a prioridade for obrigar quem copia a abrir o código
 8. Quando abrir o repositório
 9. Responsável legal pelos dados dos candidatos (LGPD)
 10. Apelido por pessoa ("pessoa #014") no livro público, só com consentimento?
@@ -40,6 +40,8 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
 | ID | Frente | Resultado |
 |---|---|---|
+| F08 contrato | Formato do livro público | [PR #26](https://github.com/LucasOl1337/VidaNova/pull/26) integrada. Quatro famílias com campos fechados; candidato só como contagem agregada; [CONTRATO.md](transparencia/CONTRATO.md) |
+| F10 | Governança | [PR #25](https://github.com/LucasOl1337/VidaNova/pull/25) integrada. GOVERNANCA, conduta, segurança, modelo de PR; Regente ajustou o texto pra dizer a verdade sobre a integração na fase de fundação |
 | F02 etapa 2 | Base do código | [PR #23](https://github.com/LucasOl1337/VidaNova/pull/23) integrada. Astro + TS + React, ESLint, Vitest, CI verde; conferida pelo Regente num worktree limpo |
 | F13 | Contribuições abertas | [PR #24](https://github.com/LucasOl1337/VidaNova/pull/24) integrada. 17 issues (#6 a #22), 17 labels, 3 modelos, `docs/contribuicoes/contribuicoes.json` |
 | F01 | Direção visual e protótipo | [PR #5](https://github.com/LucasOl1337/VidaNova/pull/5) integrada. [DIRECAO](design/DIRECAO.md), [MAPA-DO-SITE](design/MAPA-DO-SITE.md), protótipo em `design/prototipo/`; propostas em D011 |
