@@ -37,7 +37,7 @@ Regra que concilia transparência total com dignidade (princípios 1 e 2): **tod
 
 ## 1. Em uma frase
 
-Uma organização sem fins lucrativos e open source que encontra pessoas em situação de vulnerabilidade que querem mudar de vida, dá o básico pra elas se reerguerem (comida, roupa, higiene), conecta com trabalho e com IA, e mostra ao vivo cada real que entra e sai.
+Uma organização sem fins lucrativos e open source que escolhe com IA, e às claras, pessoas em situação de vulnerabilidade que querem mudar de vida, dá o básico pra elas se reerguerem (comida, roupa, higiene), conecta com trabalho e com IA, e mostra ao vivo cada real que entra e sai.
 
 ## 2. O problema
 
@@ -59,15 +59,17 @@ Uma organização sem fins lucrativos e open source que encontra pessoas em situ
 
 ## 4. A jornada do candidato
 
-1. **Descoberta**: voluntário na rua, panfleto ("mude sua vida de graça"), ponto público ou site.
-2. **Entrevista**: conversa curta por voz com a IA, no celular do voluntário, num ponto público ou no site.
-3. **Seleção**: a IA filtra e recomenda quem está pronto pra mudar de vida. Quem decide no fim está em aberto (§10).
-4. **Ponte inicial**: comida por alguns dias, roupas novas e limpas, higiene básica. Pago com doação e publicado no painel.
+1. **Sistema de escolha**: com IA e com transparência, é a base de tudo e o que o PontaPé tem de diferente. Como os recursos não são infinitos, a IA ajuda desde o começo a escolher quem tem mais capacidade e desejo de mudar de vida, por parâmetros que a gente vai definir com muita pesquisa (F05). O jeito de escolher fica à vista. Quem decide no fim está em aberto (§10, pergunta 6).
+2. **Busca**: voluntário na rua, panfleto ("mude sua vida de graça"), ponto público ou site. Os "pontos" do trecho perdido do áudio de 23/09 entram aqui (§10, pergunta 11).
+3. **Entrevista**: conversa curta por voz com a IA, no celular do voluntário, num ponto público ou no site. É onde o sistema conhece a pessoa.
+4. **Ponte inicial**: pra quem entra, comida por alguns dias, roupas novas e limpas, higiene básica. Pago com doação e publicado no painel.
 5. **Apoio da IA**: a IA ajuda a pessoa a entender o que ela sabe fazer e o que quer (análise de vocação), organiza o que for preciso pra buscar trabalho e prepara a pessoa. Vem **antes** do trabalho (Lucas, 23/09).
 6. **Trabalho**: com a vocação clara, a pessoa é encaminhada pra rede de oportunidades; empregadores oferecem vaga.
 7. **Prova**: o resultado aparece no site, sem expor a pessoa.
 
-**A IA acompanha a pessoa do começo ao fim e nunca para.** Ela está em todos os passos, da conversa em diante, e continua depois do trabalho, sem prazo e de graça (Lucas, 23/09). Guardar o que a pessoa conta depende de ter responsável legal pelos dados (§10, pergunta 9, e D012).
+**A IA acompanha a pessoa do começo ao fim e nunca para.** Ela está em todos os passos, desde a escolha, e continua depois do trabalho, sem prazo e de graça (Lucas, 23/09). Guardar o que a pessoa conta depende de ter responsável legal pelos dados (§10, pergunta 9, e D012).
+
+No site, a escada mostra esses passos como Sistema, Busca, Conversa, Comida e roupa, Apoio da IA, Trabalho e Tudo à vista (D032).
 
 ## 5. Módulos
 
@@ -144,6 +146,7 @@ Requisitos: mobile-first, rápido em celular barato, acessível (WCAG AA), PT-BR
 8. **Repositório público.** O repo nasceu privado. Abre quando nome e licença estiverem decididos?
 9. **Responsável legal pelos dados.** Quem é o controlador dos dados dos candidatos (LGPD) e com qual base legal, antes de entrevistar gente de verdade?
 10. **Apelido por pessoa no livro público.** Evento de candidato sai sempre sem identidade. Pode ter um apelido fixo por pessoa ("pessoa #014") pra dar pra seguir a trajetória? Ajuda a confiança, mas numa cidade pequena junta data e ação e pode revelar quem é. Proposta: só com consentimento da pessoa.
+11. **Trecho perdido 3.** No áudio de 23/09 sobre a ordem da escada, depois do sistema de escolha, a transcrição embolou quando o Lucas falava dos "pontos" onde a gente acha a pessoa. O que vem ali?
 
 ## 11. Riscos
 

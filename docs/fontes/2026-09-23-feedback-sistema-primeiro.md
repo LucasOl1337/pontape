@@ -10,3 +10,7 @@ Com um [print da home](prints/home-ordem-2026-09-23.png) no computador. Organiza
 6. **A escada começa na escolha:** "não seria bem escolha, mas seria tipo sistema".
 7. **Depois do sistema vem achar a pessoa.** "Não vai ser Encontro, tem que deixar alguma outra palavra correta, mas é pra encontrar a pessoa mesmo."
 8. **Trecho perdido:** a partir daqui a transcrição embolou. Ele começou a falar de "pontos" onde a gente encontra a pessoa e não dá pra entender o resto. Pergunta aberta pro Lucas.
+
+## Resposta à proposta da F37 · 13:27
+
+O Lucas aprovou a ordem e a frase de abertura como o Design/UI propôs. No primeiro degrau fica **Sistema**, e no lugar do Encontro fica **Busca**.

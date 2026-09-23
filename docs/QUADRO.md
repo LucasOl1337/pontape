@@ -2,7 +2,7 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026, 13:22 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 23/09/2026, 13:30 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
 **Hoje:** home pro leigo (F29), cadernos em páginas (F31), transparência em duas camadas (F32) e paleta Anil (F33, D030) no ar. A escada da F34 foi **reprovada** (D031): a F36 acha o meio termo entre o antes e o agora. A ordem da escada muda de novo (D032): a F37 põe o sistema de escolha, com IA e transparência, no primeiro degrau. Às 13:04 todos os agentes reiniciaram com conversa nova, a pedido do Lucas; cada um retoma pelo BRIEF e pelo DIARIO. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
@@ -10,8 +10,8 @@ Atualizado: 23/09/2026, 13:22 · **Site no ar em https://pontape.org** (D019), p
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F36 | [Escada: meio termo entre o antes e o agora](frentes/F36-escada-meio-termo/BRIEF.md) | prumo | `prumo/f36-*` | Despachada 13:08 (D031) | Proposta no DIARIO com a causa do enquadramento |
-| F37 | [A escada começa pelo sistema](frentes/F37-sistema-primeiro/BRIEF.md) | design | `design/f37-sistema-primeiro` | Despachada 13:22 (D032) | Proposta de ordem, nome no lugar do Encontro e frase de abertura; a PR só entra com o OK do Lucas |
+| F36 | [Escada: meio termo entre o antes e o agora](frentes/F36-escada-meio-termo/BRIEF.md) | prumo | `prumo/f36-*` | Proposta aprovada 13:20: a F33 levou o ar de 72 px do botão Cores; o Brave do Lucas escala o texto em 1,18 | PR 1 volta a escada de antes; PR 2 conserta os números |
+| F37 | [A escada começa pelo sistema](frentes/F37-sistema-primeiro/BRIEF.md) | design | `design/f37-sistema-primeiro` | Proposta aprovada pelo Lucas 13:27: Sistema, Busca, Conversa, Comida e roupa, Apoio da IA, Trabalho, Tudo à vista (D032) | Código e PR |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
