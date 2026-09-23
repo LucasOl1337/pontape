@@ -21,3 +21,10 @@
 - O botão Conferir validou as 34 ações reais. O exemplo fictício validou 20 ações; ao alterar uma linha sem refazer sua marca, acusou a quebra na ação nº 2.
 - Ajustei a posição inicial do botão Ouvir e escondi o aviso temporário enquanto vazio. Próximo passo: check final, commit, PR em rascunho e reporte ao Regente. O servidor deve ficar na porta 4345 para Lucas revisar.
 - Check final passou após os ajustes: 127 testes, CSP válido, home 17,0 KB e livro 51,3 KB com verificador sob demanda. Abrir os 14 detalhes na largura de 360 px também não criou rolagem lateral.
+
+## 22/09/2026 · entrega
+
+- Dois commits pequenos na branch `variante/v5-pluma`: implementação (`8fc3e05`) e documentação com prints (`4fa7090`).
+- PR em rascunho para `main`: https://github.com/LucasOl1337/VidaNova/pull/38.
+- Servidor Astro em `http://127.0.0.1:4345` permanece ativo para revisão do Lucas. A aba da bancada é apenas de inspeção e pode ser fechada; os prints estão salvos.
+- Critérios do brief atendidos. Próximo passo: Lucas comparar as cinco direções; Regente decide a integração.
