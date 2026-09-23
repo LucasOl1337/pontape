@@ -1,33 +1,173 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroBlock from '../components/blocks/HeroBlock.astro';
-import ForYouBlock from '../components/blocks/ForYouBlock.astro';
-import ProblemBlock from '../components/blocks/ProblemBlock.astro';
-import JourneyBlock from '../components/blocks/JourneyBlock.astro';
-import ModulesBlock from '../components/blocks/ModulesBlock.astro';
-import TransparencyBlock from '../components/blocks/TransparencyBlock.astro';
-import BottlenecksBlock from '../components/blocks/BottlenecksBlock.astro';
-import ContributionsBlock from '../components/blocks/ContributionsBlock.astro';
-import HelpBlock from '../components/blocks/HelpBlock.astro';
-import OpenSourceBlock from '../components/blocks/OpenSourceBlock.astro';
-import { getPublicLedger } from '../lib/ledger-view/source';
+import Icon from '../components/site/Icon.astro';
+import ListenButton from '../components/site/ListenButton.astro';
+import Badge from '../components/site/Badge.astro';
 import { SHARE } from '../data/site/share';
+import { PROJECT_NAME, STATUS_DATE, formatDay, withName } from '../data/site/project';
+import { STEPS } from '../data/site/journey';
+import { MODULES, DETAIL_FIELDS } from '../data/site/modules';
+import { STATUSES } from '../data/site/statuses';
+import { BOTTLENECKS } from '../data/site/bottlenecks';
+import { CONTRIBUTIONS, CONTRIBUTION_TYPES } from '../data/site/contributions';
+import { getPublicLedger } from '../lib/ledger-view/source';
+import { sumMoney, formatCents } from '../lib/ledger-view/money';
 
 const ledger = await getPublicLedger();
+const money = sumMoney(ledger.events);
+const heroSpeech = `Aqui é o ${PROJECT_NAME}. A gente encontra quem quer recomeçar, ajuda com comida, roupa e higiene nos primeiros dias, e abre um caminho até o trabalho. A conversa vai ser por voz. O projeto ainda está em construção e não atende pessoas nem recebe doações. Toda ação do projeto aparece num livro público. Quem é a pessoa, não.`;
+const journeySpeech = STEPS.map((step, index) => `Passo ${index + 1}. ${step.title}. ${step.text}`).join(' ');
+const moduleSpeech = (module: (typeof MODULES)[number]) => `${module.name}. ${STATUSES[module.status].label}. ${module.summary} ${DETAIL_FIELDS.map(field => `${field.label}: ${withName(module[field.key])}`).join(' ')}`;
 ---
-<BaseLayout
-  title={SHARE.home.title}
-  description={SHARE.home.description}
-  share="home">
-  <HeroBlock ledger={ledger} />
-  <ForYouBlock />
-  <ProblemBlock />
-  <JourneyBlock />
-  <ModulesBlock />
-  <TransparencyBlock ledger={ledger} />
-  <BottlenecksBlock />
-  <ContributionsBlock />
-  <HelpBlock />
-  <OpenSourceBlock />
+<BaseLayout title={SHARE.home.title} description={SHARE.home.description} share="home" current="home">
+  <section class="pluma-hero" id="inicio" aria-labelledby="hero-title" data-speech={heroSpeech}>
+    <div class="pluma-wrap">
+      <div class="hero-topline"><p class="eyebrow"><span class="eyebrow-line"></span> Um projeto sem fins lucrativos, ainda em construção</p><ListenButton target="inicio" /></div>
+      <div class="hero-copy">
+        <h1 id="hero-title">Um primeiro passo.<br /><em>Uma vida em frente.</em></h1>
+        <p class="hero-lead">A gente encontra quem quer recomeçar, ajuda com o básico nos primeiros dias e abre um caminho até o trabalho.</p>
+        <div class="hero-actions">
+          <a class="text-link" href="#como-funciona">Entenda o caminho <Icon name="arrow-right" /></a>
+          <a class="text-link" href="/transparencia">Veja o livro público <Icon name="arrow-right" /></a>
+        </div>
+      </div>
+      <div class="voice-callout" id="pra-voce">
+        <div class="voice-symbol"><Icon name="speaker" /></div>
+        <div><strong>Prefere ouvir?</strong><p>Escute o que é este projeto. Você não precisa ler.</p></div>
+        <ListenButton target="inicio" big />
+      </div>
+      <p class="hero-honesty">O atendimento e as doações ainda não abriram. Esta página mostra o plano e o que já foi feito.</p>
+    </div>
+  </section>
+
+  <section class="pluma-section" id="problema" aria-labelledby="problem-title">
+    <div class="pluma-wrap section-grid">
+      <p class="section-label">01 / Por quê</p>
+      <div class="section-content">
+        <h2 id="problem-title">Ajuda de um dia não basta.</h2>
+        <p class="section-lead">Quem quer mudar precisa do primeiro apoio e de um caminho que continue depois.</p>
+        <div class="statement-list">
+          <p><span>01</span>Comida, roupa limpa e higiene abrem espaço para começar.</p>
+          <p><span>02</span>Uma conversa por voz ajuda a entender o que a pessoa quer fazer.</p>
+          <p><span>03</span>Trabalho e apoio contínuo ajudam essa mudança a seguir.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pluma-section" id="como-funciona" aria-labelledby="journey-title" data-speech={journeySpeech}>
+    <div class="pluma-wrap section-grid">
+      <div class="section-side"><p class="section-label">02 / O caminho</p><ListenButton target="como-funciona" /></div>
+      <div class="section-content">
+        <h2 id="journey-title">Sete passos, um de cada vez.</h2>
+        <p class="section-lead">A conversa começa por voz. Os próximos passos acontecem com gente acompanhando.</p>
+        <ol class="journey-list">
+          {STEPS.map((step, index) => <li>
+            <span class="item-number">{String(index + 1).padStart(2, '0')}</span>
+            <div><h3>{step.title}</h3><p>{step.text}</p><p class="item-meta">{step.who.join(' · ')}</p></div>
+            <Icon name={step.icon} />
+          </li>)}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="pluma-section" id="modulos" aria-labelledby="modules-title">
+    <div class="pluma-wrap section-grid">
+      <p class="section-label">03 / As partes</p>
+      <div class="section-content">
+        <h2 id="modules-title">Cada parte tem um estado claro.</h2>
+        <p class="section-lead">O projeto é feito de nove partes. Abra uma para ver o que já existe e o que ainda falta.</p>
+        <p class="as-of">Estado em <time datetime={STATUS_DATE}>{formatDay(STATUS_DATE)}</time></p>
+        <div class="module-list">
+          {MODULES.map(module => <details class="module-item" id={`modulo-${module.id}`}>
+            <summary><span class="item-number">{module.id}</span><span class="module-summary"><strong>{module.name}</strong><small>{module.summary}</small></span><Badge status={module.status} /><Icon name="chevron-down" /></summary>
+            <div class="module-detail">
+              <dl>{DETAIL_FIELDS.map(field => <div><dt>{field.label}</dt><dd>{withName(module[field.key])}</dd></div>)}</dl>
+              <ListenButton speech={moduleSpeech(module)} />
+            </div>
+          </details>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pluma-section pluma-section--accent" id="transparencia" aria-labelledby="transparency-title">
+    <div class="pluma-wrap section-grid">
+      <p class="section-label">04 / Confiança</p>
+      <div class="section-content">
+        <h2 id="transparency-title">Tudo que fazemos fica à vista.</h2>
+        <p class="section-lead">Cada ação entra num livro público. Qualquer pessoa pode conferir se alguma linha foi alterada. A identidade de quem recebe ajuda fica protegida.</p>
+        <p class="privacy-rule"><Icon name="shield" /> Toda ação aparece. Quem é a pessoa, não.</p>
+        <div class="quiet-numbers" aria-label="O projeto hoje">
+          <div><span>Entrou</span><strong>{formatCents(money.inCents)}</strong></div>
+          <div><span>Saiu</span><strong>{formatCents(money.outCents)}</strong></div>
+          <div><span>Ações registradas</span><strong>{ledger.events.length}</strong></div>
+        </div>
+        <p class="small-note">A doação ainda não abriu. Zero é o valor real até agora. O livro registra ações do projeto que já aconteceram.</p>
+        <a class="text-link" href="/transparencia">Abrir o livro e conferir <Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pluma-section" id="gargalos" aria-labelledby="bottlenecks-title">
+    <div class="pluma-wrap section-grid">
+      <p class="section-label">05 / Perguntas abertas</p>
+      <div class="section-content">
+        <h2 id="bottlenecks-title">O que ainda precisamos resolver.</h2>
+        <p class="section-lead">Também mostramos nossas dúvidas. Sua experiência pode ajudar a encontrar respostas.</p>
+        <div class="simple-details">
+          {BOTTLENECKS.map((b, index) => <details id={`gargalo-${b.id}`}>
+            <summary><span class="item-number">{String(index + 1).padStart(2, '0')}</span><strong>{b.title}</strong><Icon name="chevron-down" /></summary>
+            <div class="detail-body"><p><strong>Por que é difícil</strong>{b.why}</p><p><strong>O que já anda</strong>{b.progress}</p><p><strong>Quem pode ajudar</strong>{b.helpers}</p></div>
+          </details>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pluma-section" id="contribuicoes" aria-labelledby="contributions-title">
+    <div class="pluma-wrap section-grid">
+      <p class="section-label">06 / Contribuições</p>
+      <div class="section-content">
+        <h2 id="contributions-title">Ajude a construir.</h2>
+        <p class="section-lead">Estas tarefas estão descritas. O repositório ainda está fechado, então não dá para pegar uma agora.</p>
+        <ul class="contribution-list">
+          {CONTRIBUTIONS.map(c => <li>
+            <div><p class="item-meta">{CONTRIBUTION_TYPES[c.type].label} · {c.module}{c.goodFirst ? ' · Bom primeiro passo' : ''}</p><h3>{c.title}</h3><p>{c.summary}</p></div>
+            <span class="issue-number">Issue #{c.issueNumber}</span>
+          </li>)}
+        </ul>
+        <p class="small-note">As issues já existem. Quando o repositório abrir, os links estarão disponíveis.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pluma-section" id="ajudar" aria-labelledby="help-title">
+    <div class="pluma-wrap section-grid">
+      <p class="section-label">07 / Participar</p>
+      <div class="section-content">
+        <h2 id="help-title">Há mais de um jeito de ajudar.</h2>
+        <div class="help-list">
+          <div><Icon name="coin" /><h3>Doar</h3><p>Abre depois que existir uma conta oficial para receber e prestar contas.</p><span>Ainda não abriu</span></div>
+          <div><Icon name="people" /><h3>Ser voluntário</h3><p>O trabalho de campo começa com o piloto e com preparo para quem participar.</p><span>Planejado</span></div>
+          <div><Icon name="briefcase" /><h3>Oferecer vaga</h3><p>A rede de trabalho começa quando as primeiras pessoas estiverem prontas.</p><span>Planejado</span></div>
+          <div><Icon name="code" /><h3>Contribuir</h3><p>As tarefas já estão listadas. O repositório abre após a decisão sobre nome e licença.</p><span>Em construção</span></div>
+        </div>
+        <p class="small-note">Ainda não guardamos dados de contato. Nenhum formulário de inscrição está aberto.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pluma-section pluma-section--last" id="codigo-aberto" aria-labelledby="open-title">
+    <div class="pluma-wrap section-grid">
+      <p class="section-label">08 / Código aberto</p>
+      <div class="section-content">
+        <h2 id="open-title">As decisões também são públicas.</h2>
+        <p class="section-lead">Código, documentos e decisões estarão abertos. Qualquer pessoa poderá propor mudanças; uma pessoa responsável revisa antes de publicar.</p>
+        <p>O nome e a licença ainda estão em decisão. O repositório abre depois disso. O livro público já mostra as ações registradas do projeto.</p>
+        <a class="text-link" href="/transparencia">Ver ações registradas <Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
-<script>import '../scripts/home';</script>
