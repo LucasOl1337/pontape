@@ -64,4 +64,6 @@ Dúvidas:
 1. O exemplo agora é só a fixture da F08 (4 ações). "Simular uma ação chegando" saiu, e "Mudar uma linha escondido" continua. A F08 pode aumentar a fixture fictícia (gastos por categoria, estorno, entregas) pra o exemplo mostrar o dinheiro de verdade?
 2. Posso pôr `npm run budget` no CI, ou fica pra F02?
 
-Onde parei: abrindo a PR da etapa 1. Próximo: quando o núcleo da F08 entrar, trocar `getPublicLedger()` e o verificador pelos dela, e tirar os prints com o livro real (onde aparecem os títulos D013).
+PR: https://github.com/LucasOl1337/VidaNova/pull/32, com CI verde. A main trouxe a CSP gerada no build (F14b) no meio do caminho. Fiz merge: o gerador acrescenta os hashes dos blocos JSON do livro (não executam) e a CSP modelo continua sem Google. Aviso pro Regente: o `docs/operacao/LANCAMENTO.md` ainda diz que o Google Fonts segue permitido, e não segue mais.
+
+Onde parei: PR da etapa 1 aberta. Próximo: quando o núcleo da F08 entrar, trocar `getPublicLedger()` e o verificador pelos dela, e tirar os prints com o livro real (onde aparecem os títulos D013).
