@@ -1,0 +1,96 @@
+---
+import Icon from '../site/Icon.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { OUT_CATEGORIES } from '../../lib/ledger-view/phrases';
+import { formatCents, sumMoney } from '../../lib/ledger-view/money';
+import type { IconName } from '../site/icon-names';
+
+// Money flow (Sankey): everything that came in, split into where it went and what stays in the
+// till. Built at build time from the ledger sums (BigInt), so the picture is exactly the ledger.
+// Bands and bars are proportional; labels keep a minimum distance and a leader line points to
+// their bar. With no money yet, a dashed skeleton shows where each band will be.
+interface Props { events: LedgerEvent[]; mode: 'real' | 'example'; caption?: string }
+const { events, mode, caption } = Astro.props;
+const totals = sumMoney(events);
+const balance = totals.balanceCents > 0n ? totals.balanceCents : 0n;
+type Row = { id: string; name: string; icon: IconName; value: bigint };
+const rows: Row[] = [
+  ...OUT_CATEGORIES.map(c => ({ id: c.id, name: c.name, icon: c.icon, value: totals.outByCategory[c.id] ?? 0n })),
+  { id: 'balance', name: 'Em caixa', icon: 'coin' as IconName, value: balance },
+];
+const scaleCents = totals.inCents > totals.outCents ? totals.inCents : totals.outCents;
+const empty = scaleCents <= 0n;
+
+const LABEL = 48; // minimum distance between two labels
+const GAP = 6; // air between two bars on the right
+const H = rows.length * LABEL + 8;
+const W = 100; // viewBox width; the SVG stretches sideways, bars and labels stay in px
+const gaps = GAP * Math.max(rows.filter(r => r.value > 0n).length - 1, 0);
+const px = (cents: bigint) => empty ? 0 : (Number(cents) / Number(scaleCents)) * (H - 24 - gaps);
+const sourceH = empty ? 2 : px(scaleCents);
+const sourceTop = (H - sourceH) / 2;
+
+// Right side: bars stacked in order, each with its own band from the source.
+let source = sourceTop;
+let target = (H - px(scaleCents) - gaps) / 2;
+const flows = rows.map((r, i) => {
+  const h = r.value > 0n ? Math.max(px(r.value), 2) : 0;
+  const ty0 = empty ? i * LABEL + LABEL / 2 + 4 : target;
+  const f = { ...r, h, ty0, sy0: source, sy1: source + px(r.value), labelY: ty0 + h / 2,
+    share: empty ? 0 : Math.round((Number(r.value) / Number(scaleCents)) * 1000) / 10 };
+  source += px(r.value);
+  if (h) target += h + GAP;
+  return f;
+});
+// Labels start at their bar's center, get pushed down apart, then back up from the bottom edge.
+flows.forEach((f, i) => { if (i) f.labelY = Math.max(f.labelY, flows[i - 1]!.labelY + LABEL); });
+for (let i = flows.length - 1; i >= 0; i--) {
+  const max = i === flows.length - 1 ? H - LABEL / 2 : flows[i + 1]!.labelY - LABEL;
+  flows[i]!.labelY = Math.max(LABEL / 2, Math.min(flows[i]!.labelY, max));
+}
+const n = (v: number) => v.toFixed(1);
+const band = (f: (typeof flows)[number]) => empty || !f.h
+  ? `M0 ${n(H / 2)}C${W / 2} ${n(H / 2)} ${W / 2} ${n(f.ty0)} ${W} ${n(f.ty0)}`
+  : `M0 ${n(f.sy0)}C${W / 2} ${n(f.sy0)} ${W / 2} ${n(f.ty0)} ${W} ${n(f.ty0)}V${n(f.ty0 + f.h)}C${W / 2} ${n(f.ty0 + f.h)} ${W / 2} ${n(f.sy1)} 0 ${n(f.sy1)}Z`;
+---
+<figure class:list={['flow', { 'flow--empty': empty }]} data-flow={mode}>
+  <div class="flow-grid" style={`--h:${H}px`}>
+    <div class="flow-source">
+      <span class="flow-label">Entrou</span>
+      <span class="flow-value">{formatCents(totals.inCents)}</span>
+      <span class="flow-note">em doações</span>
+    </div>
+    <div class="flow-canvas" aria-hidden="true">
+      <span class="flow-bar flow-bar--source" style={`top:${n(sourceTop)}px;height:${n(sourceH)}px`}></span>
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" focusable="false">
+        {flows.map(f => <path class:list={['flow-band', { 'is-zero': empty || !f.h }]} data-cat={f.id} d={band(f)} vector-effect="non-scaling-stroke" />)}
+      </svg>
+      {flows.map(f => <span class:list={['flow-bar', { 'is-zero': !f.h }]} data-cat={f.id} style={`top:${n(f.h ? f.ty0 : f.ty0 - 8)}px;height:${n(f.h || 16)}px`}></span>)}
+    </div>
+    <div class="flow-targets" aria-hidden="true">
+      <svg class="flow-leaders" viewBox={`0 0 12 ${H}`} preserveAspectRatio="none" focusable="false">
+        {flows.map(f => <path data-cat={f.id} d={`M0 ${n(f.ty0 + f.h / 2)}L12 ${n(f.labelY)}`} vector-effect="non-scaling-stroke" />)}
+      </svg>
+      <ul>
+        {flows.map(f => (
+          <li data-cat={f.id} style={`--y:${n(f.labelY)}px`}>
+            <span class="flow-target-name"><Icon name={f.icon} />{f.name}</span>
+            <span class="flow-target-value">{formatCents(f.value)}{!empty && <small>{f.share.toLocaleString('pt-BR')}%</small>}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+  <details class="flow-table">
+    <summary>Ver os números em tabela</summary>
+    <table>
+      <caption class="sr-only">Pra onde foi o dinheiro{mode === 'example' ? ', no exemplo fictício' : ''}</caption>
+      <thead><tr><th scope="col">Destino</th><th scope="col">Valor</th>{!empty && <th scope="col">Parte do que entrou</th>}</tr></thead>
+      <tbody>
+        <tr><th scope="row">Entrou em doações</th><td>{formatCents(totals.inCents)}</td>{!empty && <td>100%</td>}</tr>
+        {flows.map(f => <tr><th scope="row">{f.name}</th><td>{formatCents(f.value)}</td>{!empty && <td>{f.share.toLocaleString('pt-BR')}%</td>}</tr>)}
+      </tbody>
+    </table>
+  </details>
+</figure>

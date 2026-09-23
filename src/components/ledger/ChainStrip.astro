@@ -1,0 +1,55 @@
+---
+import Icon from '../site/Icon.astro';
+import HashPrint from './HashPrint.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { TYPES, phrase } from '../../lib/ledger-view/phrases';
+import { shortHash } from '../../scripts/hashprint';
+
+// The chain, newest first: each block points to the one before it. `link` turns blocks into links
+// (home); without it they are buttons that drive the inspector (/transparencia).
+// `head` keeps only the newest blocks, then a jump, then block nº 1: the kickoff of the chain.
+interface Props { events: LedgerEvent[]; id: string; label: string; link?: (seq: string) => string; head?: number; more?: string }
+const { events, id, label, link, head, more } = Astro.props;
+const newest = events.toReversed();
+const cut = head !== undefined && newest.length > head + 1;
+const shown = cut ? newest.slice(0, head) : newest;
+const skipped = cut ? newest.length - head - 1 : 0;
+const genesis = cut ? events[0] : undefined;
+const items = [...shown, ...(genesis ? [genesis] : [])];
+---
+<div class="chain-strip" id={id}>
+  <ol class="chain-blocks" aria-label={label} data-roving>
+    {items.map((e, i) => {
+      const p = e.payload;
+      const Tag = link ? 'a' : 'button';
+      const isGenesis = e.sequence === '1';
+      return (
+        <>
+          {genesis && e === genesis && (
+            <li class="chain-gap">
+              {more
+                ? <a href={more} data-roving-item tabindex="-1"><span class="chain-gap-count">+{skipped}</span><span>{skipped === 1 ? 'ação' : 'ações'} no meio</span><Icon name="arrow-right" /></a>
+                : <span><span class="chain-gap-count">+{skipped}</span>{skipped === 1 ? 'ação' : 'ações'}</span>}
+            </li>
+          )}
+          <li class="chain-block" data-seq={e.sequence} data-type={p.type}>
+            <Tag class="block-card" {...(link ? { href: link(e.sequence) } : { type: 'button', 'data-select': e.sequence, 'aria-pressed': 'false' })}
+              data-roving-item tabindex={i === 0 ? '0' : '-1'}>
+              <span class="block-top">
+                <span class="block-seq">nº {e.sequence}</span>
+                <span class="type-tag" data-type={p.type}><Icon name={TYPES[p.type].icon} /><span class="sr-only">{TYPES[p.type].label}.</span></span>
+              </span>
+              <span class="block-what">{phrase(p)}</span>
+              <HashPrint hash={e.hash} />
+              <span class="block-hashes">
+                <span data-role="hash"><span class="k">marca</span> {shortHash(e.hash)}</span>
+                <span data-role="prev"><span class="k">{isGenesis ? 'começo' : 'anterior'}</span> {isGenesis ? 'pontapé inicial' : shortHash(e.previousHash)}</span>
+              </span>
+              <span class="block-state" aria-hidden="true"></span>
+            </Tag>
+          </li>
+        </>
+      );
+    })}
+  </ol>
+</div>

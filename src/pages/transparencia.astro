@@ -1,9 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/ledger.css';
+import Icon from '../components/site/Icon.astro';
 import LedgerHeroBlock from '../components/blocks/LedgerHeroBlock.astro';
 import LedgerVerifyBlock from '../components/blocks/LedgerVerifyBlock.astro';
+import LedgerChainBlock from '../components/blocks/LedgerChainBlock.astro';
 import LedgerActionsBlock from '../components/blocks/LedgerActionsBlock.astro';
-import LedgerMoneyBlock from '../components/blocks/LedgerMoneyBlock.astro';
+import MoneyBlock from '../components/blocks/MoneyBlock.astro';
+import TimelineBlock from '../components/blocks/TimelineBlock.astro';
 import LedgerHowToBlock from '../components/blocks/LedgerHowToBlock.astro';
 import LedgerTypesBlock from '../components/blocks/LedgerTypesBlock.astro';
 import { getExampleLedger, getPublicLedger } from '../lib/ledger-view/source';
@@ -18,10 +22,29 @@ const example = await getExampleLedger();
   share="transparencia"
   current="transparencia">
   <LedgerHeroBlock ledger={ledger} />
+  <div class="explorer-bar" id="explorador">
+    <div class="explorer-bar-inner">
+      <div class="segmented" role="group" aria-label="Qual livro mostrar">
+        <button type="button" data-mode="real" aria-pressed="true">Livro de verdade</button>
+        <button type="button" data-mode="example" aria-pressed="false">Exemplo fictício</button>
+      </div>
+      <form class="search search--bar" action="/transparencia" method="get" role="search" data-search>
+        <label class="sr-only" for="busca-livro">Procurar ação por número ou marca</label>
+        <div class="search-row">
+          <Icon name="search" />
+          <input id="busca-livro" name="acao" type="search" autocomplete="off" spellcheck="false" placeholder="nº ou marca" />
+          <button class="btn btn--small" type="submit">Procurar</button>
+        </div>
+      </form>
+      <p class="explorer-mode" data-mode-panel="example" hidden><Icon name="alert" />Mostrando o exemplo. Nada disso aconteceu.</p>
+    </div>
+  </div>
   <LedgerVerifyBlock />
+  <LedgerChainBlock ledger={ledger} example={example} />
   <LedgerActionsBlock ledger={ledger} example={example} />
-  <LedgerMoneyBlock real={ledger.events} example={example.events} />
-  <LedgerHowToBlock />
+  <MoneyBlock real={ledger.events} example={example.events} number="04" />
+  <TimelineBlock real={ledger.events} example={example.events} number="05" />
+  <LedgerHowToBlock events={ledger.events} />
   <LedgerTypesBlock />
 </BaseLayout>
 <script>import '../scripts/ledger';</script>

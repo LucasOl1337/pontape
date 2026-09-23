@@ -1,6 +1,9 @@
 ---
-import { LOGO_RECTS, LOGO_STROKE, LOGO_VIEWBOX } from '../../lib/share/logo';
+import { LOGO_RECTS, LOGO_VIEWBOX } from '../../lib/share/logo';
+
+// Same three rising blocks as the favicon and the share card, drawn in line for the dark explorer:
+// the last step lit in the action color.
 ---
 <svg class="logo-mark" viewBox={`0 0 ${LOGO_VIEWBOX.width} ${LOGO_VIEWBOX.height}`} aria-hidden="true" focusable="false">
-  {LOGO_RECTS.map(r => <rect x={r.x} y={r.y} width={r.width} height={r.height} rx="2" fill={r.fill} stroke={LOGO_STROKE} stroke-width="2" />)}
+  {LOGO_RECTS.map((r, i) => <rect x={r.x} y={r.y} width={r.width} height={r.height} rx="2" class={i === LOGO_RECTS.length - 1 ? 'lit' : undefined} />)}
 </svg>

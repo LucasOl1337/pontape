@@ -1,0 +1,11 @@
+---
+import type { LedgerEvent } from '../../lib/ledger/schema';
+
+// Every action as one bead, oldest to newest. Purely visual (the result is said in words by the
+// Conferir panel), so it stays out of the accessibility tree.
+interface Props { events: LedgerEvent[]; id: string }
+const { events, id } = Astro.props;
+---
+<ol class="chain-map" id={id} aria-hidden="true">
+  {events.map(e => <li data-seq={e.sequence} data-type={e.payload.type}></li>)}
+</ol>

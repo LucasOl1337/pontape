@@ -1,10 +1,11 @@
 ---
 import Icon from './Icon.astro';
 
-// Reads aloud the element with id `target` (its data-speech), or `speech` when given.
-interface Props { target?: string; speech?: string; big?: boolean }
-const { target, speech, big = false } = Astro.props;
+// Reads aloud the element with id `target` (its data-speech, or else its dt/dd fields after `lead`),
+// or `speech` when given.
+interface Props { target?: string; speech?: string; lead?: string; big?: boolean }
+const { target, speech, lead, big = false } = Astro.props;
 ---
-<button class={big ? 'voice-btn' : 'listen-btn'} type="button" data-listen={target} data-speech={speech} aria-pressed="false">
+<button class={big ? 'voice-btn' : 'listen-btn'} type="button" data-listen={target} data-speech={speech} data-lead={lead} aria-pressed="false">
   <Icon name="speaker" /><span class="label">Ouvir</span>
 </button>

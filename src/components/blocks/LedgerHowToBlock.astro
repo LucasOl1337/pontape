@@ -1,9 +1,20 @@
 ---
 import Icon from '../site/Icon.astro';
 import BlockHead from '../site/BlockHead.astro';
+import HashPrint from '../ledger/HashPrint.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { canonicalize } from '../../lib/ledger/canonical';
 import { ledgerTrust } from '../../lib/ledger/published';
 import { REPOSITORY_OPEN } from '../../data/site/project';
+import { shortHash } from '../../scripts/hashprint';
 
+// The three steps, worked on the newest real action: its exact text, its mark, and the next link.
+interface Props { events: LedgerEvent[] }
+const { events } = Astro.props;
+const last = events.at(-1);
+// Everything but the mark itself: exactly what the SHA-256 receives.
+const unsigned = last && { schemaVersion: last.schemaVersion, sequence: last.sequence, previousHash: last.previousHash, recordedAt: last.recordedAt, payload: last.payload };
+const text = unsigned ? canonicalize(unsigned) : '';
 // F08 trust state (src/data/ledger/trust.json): say plainly what is not active yet.
 const TRUST = [
   { label: 'Assinatura das marcas', value: ledgerTrust.signature === 'not_configured' ? 'ainda não configurada' : 'ativa' },
@@ -11,26 +22,48 @@ const TRUST = [
   { label: 'Cópia fora do projeto', value: ledgerTrust.mirror === 'not_configured' ? 'ainda não ativa' : 'ativa' },
 ];
 ---
-<section class="block reveal" id="como-conferir" aria-labelledby="t-how-verify"
+<section class="block" id="como-conferir" aria-labelledby="t-how-verify"
   data-speech="Como qualquer pessoa confere. Um: cada ação vira um texto, sempre no mesmo formato. Dois: esse texto passa por uma conta pública chamada SHA-256, que devolve uma marca. Mudou uma vírgula, a marca muda inteira. Três: cada ação guarda a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela. O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e a auditoria de fora.">
-  <BlockHead number="04" label="Como conferir" listen="como-conferir" />
-  <h2 id="t-how-verify">Como qualquer pessoa confere.</h2>
-  <p class="lead">Não precisa confiar na gente, nem no nosso botão. A conta é pública e dá pra refazer em qualquer computador.</p>
-  <ol class="explain-steps">
-    <li><span class="num" aria-hidden="true">1</span><h3>Cada ação vira um texto padrão.</h3><p>Sempre os mesmos campos, na mesma ordem. Sem nome de ninguém.</p></li>
-    <li><span class="num" aria-hidden="true">2</span><h3>O texto vira uma marca.</h3><p>Uma conta pública, a <code>SHA-256</code>, transforma o texto numa marca. Mudou uma vírgula, a marca muda inteira.</p></li>
-    <li><span class="num" aria-hidden="true">3</span><h3>Cada marca segura a anterior.</h3><p>A ação nova leva junto a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela.</p></li>
+  <BlockHead number="06" label="Como conferir" listen="como-conferir" />
+  <div class="block-intro">
+    <h2 id="t-how-verify">Como qualquer pessoa confere.</h2>
+    <p class="lead">Não precisa confiar na gente, nem no nosso botão. A conta é pública e dá pra refazer em qualquer computador. Aqui ela está feita na ação mais nova do livro.</p>
+  </div>
+  <ol class="derivation">
+    <li class="panel">
+      <p class="step-num">1 · Texto padrão</p>
+      <h3>Cada ação vira um texto.</h3>
+      <p>Sempre os mesmos campos, na mesma ordem. Sem nome de ninguém.</p>
+      {last && <pre class="canon"><code>{text}</code></pre>}
+    </li>
+    <li class="panel">
+      <p class="step-num">2 · SHA-256</p>
+      <h3>O texto vira uma marca.</h3>
+      <p>Uma conta pública, a <code>SHA-256</code>, transforma o texto numa marca. Mudou uma vírgula, a marca muda inteira.</p>
+      {last && <p class="derived"><HashPrint hash={last.hash} class="hashprint--big" /><code>{shortHash(last.hash)}</code><span>marca da nº {last.sequence}</span></p>}
+    </li>
+    <li class="panel">
+      <p class="step-num">3 · Corrente</p>
+      <h3>Cada marca segura a anterior.</h3>
+      <p>A ação nova leva junto a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela.</p>
+      {last && events.length > 1 && <p class="derived"><code>"previousHash":"{last.previousHash.slice(0, 8)}…"</code><span>a nº {last.sequence} guarda a marca da nº {Number(last.sequence) - 1}</span></p>}
+    </li>
   </ol>
-  <div class="not-proven">
-    <h3>O que o livro não prova</h3>
-    <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Assinar as marcas e carimbar a data num serviço público estão em estudo.</p>
+  <div class="how-grid">
+    <div class="panel not-proven">
+      <h3>O que o livro não prova</h3>
+      <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Assinar as marcas e carimbar a data num serviço público estão em estudo.</p>
+    </div>
+    <div class="panel">
+      <h3>Estado da confiança</h3>
+      <dl class="trust-list">
+        {TRUST.map(t => <div><dt>{t.label}</dt><dd><span class="status-dot" data-status="planned" aria-hidden="true"></span>{t.value}</dd></div>)}
+      </dl>
+    </div>
   </div>
   <div class="link-row">
     <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro inteiro</a>
     <a class="btn" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="shield" />Baixar a marca de controle</a>
   </div>
   <p class="verify-cli">Guarde a marca de controle num lugar seu. Numa próxima visita, ela mostra se alguém refez o livro. No computador, o verificador aberto confere tudo sem internet: <code>npm run ledger:verify</code>, com o passo a passo em <code>docs/transparencia/COMO-CONFERIR.md</code>.{!REPOSITORY_OPEN && ' O repositório ainda está fechado.'}</p>
-  <dl class="trust-list">
-    {TRUST.map(t => <div><dt>{t.label}</dt><dd><Icon name="clock" />{t.value}</dd></div>)}
-  </dl>
 </section>

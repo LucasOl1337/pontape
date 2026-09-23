@@ -11,13 +11,25 @@ const RULES = {
 } as const;
 const speech = 'O que entra no livro, e o que nunca entra. ' + TYPE_ORDER.map(t => `${TYPES[t].label}: entra ${RULES[t][0]} Nunca entra: ${RULES[t][1]}`).join(' ');
 ---
-<section class="block block--paper reveal" id="o-que-entra" aria-labelledby="t-types" data-speech={speech}>
-  <BlockHead number="05" label="O que entra" listen="o-que-entra" />
-  <h2 id="t-types">O que entra no livro. E o que nunca entra.</h2>
-  <ul class="type-legend">
-    {TYPE_ORDER.map(t => (
-      <li data-type={t}><span class="type-chip"><Icon name={TYPES[t].icon} />{TYPES[t].label}</span>
-        <dl><dt>Entra</dt><dd>{RULES[t][0]}</dd><div class="never"><dt>Nunca entra</dt><dd>{RULES[t][1]}</dd></div></dl></li>
-    ))}
-  </ul>
+<section class="block" id="o-que-entra" aria-labelledby="t-types" data-speech={speech}>
+  <BlockHead number="07" label="O que entra" listen="o-que-entra" />
+  <div class="block-intro">
+    <h2 id="t-types">O que entra no livro. E o que nunca entra.</h2>
+    <p class="lead">O formato é fechado: não tem campo de texto livre, então não tem onde escrever o nome de ninguém.</p>
+  </div>
+  <div class="panel schema">
+    <table>
+      <caption class="sr-only">O que entra e o que nunca entra, por tipo de ação</caption>
+      <thead><tr><th scope="col">Tipo</th><th scope="col">Entra</th><th scope="col">Nunca entra</th></tr></thead>
+      <tbody>
+        {TYPE_ORDER.map(t => (
+          <tr data-type={t}>
+            <th scope="row"><span class="type-tag" data-type={t}><Icon name={TYPES[t].icon} /></span>{TYPES[t].label}</th>
+            <td>{RULES[t][0]}</td>
+            <td class="never"><Icon name="x-circle" />{RULES[t][1]}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 </section>

@@ -6,17 +6,21 @@ import { PROJECT_NAME } from '../../data/site/project';
 interface Props { current?: 'home' | 'transparencia' }
 const { current = 'home' } = Astro.props;
 const onHome = current === 'home';
+const at = (hash: string) => (onHome ? hash : `/${hash}`);
 const links = [
-  { href: onHome ? '#como-funciona' : '/#como-funciona', label: 'Como funciona' },
-  { href: onHome ? '#modulos' : '/#modulos', label: 'Módulos' },
-  { href: '/transparencia', label: 'Transparência', current: current === 'transparencia' },
-  { href: onHome ? '#gargalos' : '/#gargalos', label: 'Gargalos' },
-  { href: onHome ? '#contribuicoes' : '/#contribuicoes', label: 'Contribuir' },
+  { href: '/transparencia', label: 'Livro', current: current === 'transparencia' },
+  { href: at('#dinheiro'), label: 'Dinheiro' },
+  { href: at('#como-funciona'), label: 'Como funciona' },
+  { href: at('#modulos'), label: 'Módulos' },
+  { href: at('#gargalos'), label: 'Gargalos' },
+  { href: at('#contribuicoes'), label: 'Contribuir' },
 ];
 ---
 <header class="site-header">
   <div class="site-header-inner">
-    <a class="logo" href="/" aria-label={`${PROJECT_NAME}, início`}><LogoMark /><span>{PROJECT_NAME}</span></a>
+    <a class="logo" href="/" aria-label={`${PROJECT_NAME}, início`}>
+      <LogoMark /><span class="logo-name">{PROJECT_NAME}</span><span class="logo-path" aria-hidden="true">/ {onHome ? 'início' : 'livro'}</span>
+    </a>
     <nav class="site-nav" id="site-nav" aria-label="Principal">
       <ul>
         {links.map(l => <li><a href={l.href} aria-current={l.current ? 'page' : undefined}>{l.label}</a></li>)}
