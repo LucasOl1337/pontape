@@ -2,7 +2,7 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026, 12:50 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 23/09/2026, 12:48 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
 **Hoje:** home pro leigo (F29), cadernos em páginas e varredura (F31), transparência em duas camadas (F32) no ar. O Lucas escolheu a paleta **Anil** (D030): F33 promove ela e tira o seletor; F34 cuida do celular, do trilho da IA e dos números em cima dos botões. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
@@ -10,8 +10,8 @@ Atualizado: 23/09/2026, 12:50 · **Site no ar em https://pontape.org** (D019), p
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F34 | [Celular, trilho da IA e números](frentes/F34-celular/BRIEF.md) | prumo | `prumo/f34-*` | despachada 12:30 | F33 já na main; reproduzir o print do Lucas e seguir |
-| F32b | Filtros da parte técnica em palavra de gente | design | [PR #74](https://github.com/LucasOl1337/pontape/pull/74) integrada 11:30 | Feito. Design/UI em espera |
+| F35 | Renomear `--red` pra `--accent` | anil | `anil/f35-accent` | despachada 12:48 | Só nome, zero pixel diferente |
+| F32b | Filtros da parte técnica em palavra de gente | design | [PR #74](https://github.com/LucasOl1337/pontape/pull/74) integrada 11:01 | Feito. Design/UI em espera |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
@@ -47,12 +47,13 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
 | ID | Frente | Resultado |
 |---|---|---|
-| F33 | A Anil vira a paleta do site | [PR #80](https://github.com/LucasOl1337/pontape/pull/80) integrada 12:50 (D030). Seletor fora; favicon, ícone e imagens de compartilhar na Anil. Proposta pra depois da F34: renomear `--red` pra `--accent` |
-| F32 | Transparência que um leigo entende | [PR #73](https://github.com/LucasOl1337/pontape/pull/73) integrada 11:20 (D029). `/transparencia` em palavra de gente, com a corrente desenhada; tudo técnico em `/transparencia/tecnico`. Decisões com frase simples na sexta coluna do DECISOES. Primeira camada de 40,5 pra 28 KB |
-| F30 | Paletas, rodada 2 (Anil, Fable) | [PR #70](https://github.com/LucasOl1337/pontape/pull/70) integrada 11:00. Anil, Pauta, Envelope, Pêssego e Carvão no lugar das reprovadas, cada uma a partir de um material; pesquisa em [PALETAS.md](pesquisa/PALETAS.md). Aguardando o Lucas escolher |
-| F29 | Home que um leigo entende | [PR #66](https://github.com/LucasOl1337/pontape/pull/66) integrada 09:55. Um título, menu com quatro itens, degrau enxuto, caderno "Construir junto" no lugar da faixa "Nesta edição" |
-| F28 | Paletas com seletor | [PR #64](https://github.com/LucasOl1337/pontape/pull/64) integrada 09:40 (D025). Jornal, Mata, Mar, Ipê, Sol e Noite em `src/styles/palettes.css`, teste de contraste AA, `?cor=<nome>`. Ajuste da `theme-color` na [PR #65](https://github.com/LucasOl1337/pontape/pull/65) |
-| F27 | Tirar o Ouvir e o A+ | [PR #63](https://github.com/LucasOl1337/pontape/pull/63) integrada 09:25 (D024). HTML da home de 92 KB pra 77 KB |
+| F34 | Celular, trilho da IA e números | PRs [#81](https://github.com/LucasOl1337/pontape/pull/81) a [#84](https://github.com/LucasOl1337/pontape/pull/84) integradas até 12:48: números a 8 px do chão e ícone sem invadir; corrimão da IA colado nos degraus; tela baixa sem rolagem; todo alvo solto com 44 px no celular. O texto por trás da escada no print era outra janela vista pela opacidade do Omarchy, não o site |
+| F33 | A Anil vira a paleta do site | [PR #80](https://github.com/LucasOl1337/pontape/pull/80) integrada 12:20 (D030). Seletor fora; favicon, ícone e imagens de compartilhar na Anil. Proposta pra depois da F34: renomear `--red` pra `--accent` |
+| F32 | Transparência que um leigo entende | [PR #73](https://github.com/LucasOl1337/pontape/pull/73) integrada 10:58 (D029). `/transparencia` em palavra de gente, com a corrente desenhada; tudo técnico em `/transparencia/tecnico`. Decisões com frase simples na sexta coluna do DECISOES. Primeira camada de 40,5 pra 28 KB |
+| F30 | Paletas, rodada 2 (Anil, Fable) | [PR #70](https://github.com/LucasOl1337/pontape/pull/70) integrada 10:35. Anil, Pauta, Envelope, Pêssego e Carvão no lugar das reprovadas, cada uma a partir de um material; pesquisa em [PALETAS.md](pesquisa/PALETAS.md). Aguardando o Lucas escolher |
+| F29 | Home que um leigo entende | [PR #66](https://github.com/LucasOl1337/pontape/pull/66) integrada 09:49. Um título, menu com quatro itens, degrau enxuto, caderno "Construir junto" no lugar da faixa "Nesta edição" |
+| F28 | Paletas com seletor | [PR #64](https://github.com/LucasOl1337/pontape/pull/64) integrada 09:31 (D025). Jornal, Mata, Mar, Ipê, Sol e Noite em `src/styles/palettes.css`, teste de contraste AA, `?cor=<nome>`. Ajuste da `theme-color` na [PR #65](https://github.com/LucasOl1337/pontape/pull/65) |
+| F27 | Tirar o Ouvir e o A+ | [PR #63](https://github.com/LucasOl1337/pontape/pull/63) integrada 09:29 (D024). HTML da home de 92 KB pra 77 KB |
 | F26 | Vigília noturna de polimento | [#58](https://github.com/LucasOl1337/pontape/pull/58), [#59](https://github.com/LucasOl1337/pontape/pull/59) integradas de madrugada; [#60](https://github.com/LucasOl1337/pontape/pull/60), [#61](https://github.com/LucasOl1337/pontape/pull/61) e [#62](https://github.com/LucasOl1337/pontape/pull/62) revisadas e integradas pelo Regente em 23/09 de manhã. Pausou às 00:51 por mensagem ambígua; executores dispensados |
 | F24 | Ensaio pós-lançamento | [PR #58](https://github.com/LucasOl1337/pontape/pull/58); falhas viraram as issues #54 a #57 |
 | F14b | CSP gerada no build | [PR #29](https://github.com/LucasOl1337/VidaNova/pull/29) integrada. Build calcula o hash de todo script embutido e falha se faltar algum ou se aparecer `unsafe-inline` |
