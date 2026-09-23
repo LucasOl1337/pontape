@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LedgerHeroBlock from '../components/blocks/LedgerHeroBlock.astro';
-import LedgerVerifyBlock from '../components/blocks/LedgerVerifyBlock.astro';
 import LedgerActionsBlock from '../components/blocks/LedgerActionsBlock.astro';
 import LedgerMoneyBlock from '../components/blocks/LedgerMoneyBlock.astro';
 import LedgerHowToBlock from '../components/blocks/LedgerHowToBlock.astro';
@@ -18,10 +17,9 @@ const example = await getExampleLedger();
   share="transparencia"
   current="transparencia">
   <LedgerHeroBlock ledger={ledger} />
-  <LedgerVerifyBlock />
   <LedgerActionsBlock ledger={ledger} example={example} />
   <LedgerMoneyBlock real={ledger.events} example={example.events} />
-  <LedgerHowToBlock />
+  <LedgerHowToBlock ledger={ledger} />
   <LedgerTypesBlock />
 </BaseLayout>
 <script>import '../scripts/ledger';</script>

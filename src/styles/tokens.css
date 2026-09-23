@@ -1,38 +1,90 @@
-/* Tokens da direção visual: docs/design/DIRECAO.md. Único lugar das cores, fontes e medidas. */
+/* Prisma (F19 v1). Único lugar das cores, fontes e medidas.
+   Escuro é a base; claro entra com data-theme="light" (o script do <head> segue o aparelho ou a escolha salva).
+   O espectro dos cinco raios do prisma é a paleta: comida, roupa, higiene, trabalho, IA. */
 :root{
-  /* Espaço (grade de 4px) e medidas da base F02 */
-  --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem; --space-6:1.5rem;
-  --space-8:2rem; --space-12:3rem; --space-16:4rem; --space-24:6rem;
-  --content-width:75rem; --radius-card:1rem; --border-width:2px;
+  color-scheme:dark;
 
-  --color-paper:#F4F1EA; --color-paper-2:#E9E4D8; --color-white:#FFFFFF;
-  --color-ink:#16181D; --color-ink-2:#4A4F5A;
-  --color-indigo:#1F3FD1; --color-indigo-dark:#1730A8; --color-indigo-light:#DCE2FF;
-  --color-sun:#FF6B3D; --color-sun-light:#FFD8CB;
-  --color-live:#12663C; --color-live-bg:#DDF3E6;
-  --color-building:#F4C20D; --color-building-bg:#FFF3C4;
-  --color-bottleneck:#C62A1F; --color-bottleneck-text:#A31F16; --color-bottleneck-bg:#FDE2DF;
-  --color-planned:#5B606B;
-  --color-type-finance:#9A3412; --color-type-finance-bg:#FFE4D6;
-  --color-type-field:#1730A8; --color-type-field-bg:#DCE2FF;
-  --color-type-candidate:#5B21B6; --color-type-candidate-bg:#EDE4FB;
-  --color-type-project:#16181D; --color-type-project-bg:#E9E4D8;
+  /* Superfícies */
+  --bg:#07080B; --bg-2:#0A0C10;
+  --surface:#0E1015; --surface-2:#14171D; --surface-3:#1A1E26;
+  --glass:rgba(10,12,16,.72);
+  --tile-top:rgba(255,255,255,.055); --tile-bottom:rgba(255,255,255,.015);
+  --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14); --line-3:rgba(255,255,255,.26);
+  --highlight:rgba(255,255,255,.08);
+  --spot:rgba(255,255,255,.07); --spot-line:rgba(255,255,255,.4);
+  --grid-line:rgba(255,255,255,.045);
+  --shadow-tile:0 1px 1px rgba(0,0,0,.5), 0 16px 40px -18px rgba(0,0,0,.7);
+  --shadow-pop:0 30px 90px -20px rgba(0,0,0,.85), 0 0 0 1px var(--line-2);
 
-  --font-poster:"Archivo","Arial Narrow",system-ui,sans-serif;
-  --font-text:"Atkinson Hyperlegible Next",system-ui,sans-serif;
-  --font-mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;
+  /* Texto */
+  --text:#EDEEF1; --text-2:#A6ACB8; --text-3:#8A919E;
+  --accent:#86B0FF; --focus:#86B0FF;
+  --btn-bg:#EDEEF1; --btn-text:#07080B; --btn-bg-hover:#FFFFFF;
 
-  --text-display:clamp(2.5rem, 1.326rem + 5.217vw, 5.5rem);
-  --text-h2:clamp(2rem, 1.413rem + 2.609vw, 3.5rem);
-  --text-h3:clamp(1.3125rem, 1.19rem + .5435vw, 1.625rem);
-  --text-lead:clamp(1.25rem, 1.152rem + .4348vw, 1.5rem);
-  --text-body:1.125rem;
+  /* Espectro do prisma */
+  --s1:#FF8A5C; --s2:#FFC857; --s3:#4FE0BD; --s4:#6FA3FF; --s5:#B894FF;
+  --spectrum:linear-gradient(90deg,var(--s1),var(--s2) 25%,var(--s3) 50%,var(--s4) 75%,var(--s5));
+  --grad-text:linear-gradient(100deg,#FFB08F 0%,#FFD98A 22%,#8CF0D6 45%,#9CC0FF 70%,#D2BCFF 100%);
+
+  /* Estado dos módulos */
+  --live:#5BE0A0; --live-bg:rgba(91,224,160,.12);
+  --building:#F7C95C; --building-bg:rgba(247,201,92,.12);
+  --bottleneck:#FF8F8F; --bottleneck-bg:rgba(255,143,143,.12);
+  --planned:#A6ACB8; --planned-bg:rgba(166,172,184,.1);
+
+  /* Tipos do livro */
+  --type-finance:var(--s2); --type-field:var(--s3); --type-candidate:var(--s5); --type-project:var(--s4);
+  --ok:#5BE0A0; --ok-bg:rgba(91,224,160,.1); --bad:#FF8F8F; --bad-bg:rgba(255,143,143,.1);
+
+  /* Nomes que src/lib/ledger-view/phrases.ts usa nas barras de gasto */
+  --color-sun:var(--s1); --color-indigo:var(--s4); --color-ink-2:#8A919E; --color-paper-2:#3A3F4A;
+
+  /* Tipografia */
+  --font-sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --text-display:clamp(2.625rem,1.2rem + 6.1vw,6rem);
+  --text-h2:clamp(2.125rem,1.45rem + 2.9vw,3.75rem);
+  --text-h3:clamp(1.25rem,1.14rem + .45vw,1.5rem);
+  --text-lead:clamp(1.1875rem,1.08rem + .45vw,1.4375rem);
+  --text-body:1.0625rem;
   --text-small:.9375rem;
+  --text-micro:.8125rem;
 
-  --gutter:16px;
-  --border:2px solid var(--color-ink);
-  --shadow:4px 4px 0 var(--shadow-color, var(--color-ink));
-  --ease:cubic-bezier(.2,.8,.2,1);
+  /* Medidas */
+  --content:76rem; --narrow:46rem;
+  --gutter:16px; --gap:12px;
+  --r-tile:22px; --r-inner:14px; --r-pill:999px;
+  --section:clamp(4.5rem,3rem + 7vw,9rem);
+  --ease:cubic-bezier(.2,.8,.2,1); --ease-out:cubic-bezier(.16,1,.3,1);
 }
-@media (min-width:600px){ :root{ --gutter:24px } }
-@media (min-width:960px){ :root{ --gutter:32px } }
+@media (min-width:600px){ :root{ --gutter:24px; --gap:14px } }
+@media (min-width:960px){ :root{ --gutter:40px; --gap:16px; --r-tile:26px } }
+
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#F6F6F7; --bg-2:#EFEFF1;
+  --surface:#FFFFFF; --surface-2:#F7F7F8; --surface-3:#EEEFF2;
+  --glass:rgba(250,250,251,.74);
+  --tile-top:rgba(255,255,255,1); --tile-bottom:rgba(255,255,255,.72);
+  --line:rgba(10,12,16,.08); --line-2:rgba(10,12,16,.13); --line-3:rgba(10,12,16,.24);
+  --highlight:rgba(255,255,255,.9);
+  --spot:rgba(36,89,216,.05); --spot-line:rgba(36,89,216,.45);
+  --grid-line:rgba(10,12,16,.05);
+  --shadow-tile:0 1px 2px rgba(10,12,16,.05), 0 14px 36px -20px rgba(10,12,16,.22);
+  --shadow-pop:0 30px 90px -24px rgba(10,12,16,.35), 0 0 0 1px var(--line-2);
+
+  --text:#0A0C10; --text-2:#4A505B; --text-3:#5E6470;
+  --accent:#2459D8; --focus:#2459D8;
+  --btn-bg:#0A0C10; --btn-text:#FFFFFF; --btn-bg-hover:#23262D;
+
+  --s1:#C2410C; --s2:#8F5E00; --s3:#08775E; --s4:#2459D8; --s5:#6D3FE0;
+  --grad-text:linear-gradient(100deg,#D2491A 0%,#B07000 24%,#0B8A6C 46%,#2459D8 70%,#7443E6 100%);
+
+  --live:#0D7443; --live-bg:rgba(13,116,67,.09);
+  --building:#865600; --building-bg:rgba(200,140,0,.13);
+  --bottleneck:#BA2D25; --bottleneck-bg:rgba(186,45,37,.08);
+  --planned:#555B66; --planned-bg:rgba(85,91,102,.08);
+
+  --ok:#0D7443; --ok-bg:rgba(13,116,67,.08); --bad:#BA2D25; --bad-bg:rgba(186,45,37,.07);
+  --color-ink-2:#5E6470; --color-paper-2:#C9CCD3;
+}

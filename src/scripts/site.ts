@@ -1,4 +1,5 @@
-// Shared by every page: Listen (browser speech), header menu, A+ text size, toast, dialog close.
+// Shared by every page: Listen (browser speech), header menu, theme, A+ text size, toast, dialog close,
+// the light that follows the pointer on tiles, and which elements travel between pages.
 const root = document.documentElement;
 root.classList.replace('no-js', 'js');
 
@@ -99,9 +100,62 @@ textSizeBtn?.addEventListener('click', () => {
   toast(on ? 'Texto maior ligado.' : 'Texto no tamanho normal.');
 });
 
-let scrollTicking = false;
-addEventListener('scroll', () => {
-  if (scrollTicking) return;
-  scrollTicking = true;
-  requestAnimationFrame(() => { header?.classList.toggle('scrolled', scrollY > 8); scrollTicking = false; });
-}, { passive: true });
+/* ---------- Theme: dark or light, saved on this device ---------- */
+
+const themeBtn = $('#theme-btn');
+const themeColor = $<HTMLMetaElement>('meta[name="theme-color"]');
+const setTheme = (theme: 'light' | 'dark') => {
+  root.dataset.theme = theme;
+  themeBtn?.setAttribute('aria-pressed', String(theme === 'light'));
+  themeColor?.setAttribute('content', theme === 'light' ? '#F6F6F7' : '#07080B');
+};
+setTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
+themeBtn?.addEventListener('click', () => {
+  const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+  const apply = () => setTheme(next);
+  const doc = document as Document & { startViewTransition?: (cb: () => void) => { finished: Promise<void> } };
+  if (doc.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // The new colours open as a circle from the button (motion.css).
+    const r = themeBtn.getBoundingClientRect();
+    root.style.setProperty('--vx', `${r.left + r.width / 2}px`);
+    root.style.setProperty('--vy', `${r.top + r.height / 2}px`);
+    root.classList.add('vt-theme');
+    doc.startViewTransition(apply).finished.finally(() => root.classList.remove('vt-theme'));
+  } else apply();
+  try { localStorage.setItem('theme', next); } catch { /* no storage: the choice lasts this visit */ }
+});
+matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+  let saved: string | null = null;
+  try { saved = localStorage.getItem('theme'); } catch { /* same */ }
+  if (!saved) setTheme(e.matches ? 'light' : 'dark');
+});
+
+/* ---------- Light that follows the pointer on tiles ---------- */
+
+if (matchMedia('(hover: hover)').matches) {
+  let frame = 0;
+  document.addEventListener('pointermove', e => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      const tile = (e.target as Element).closest?.<HTMLElement>('.tile');
+      if (!tile) return;
+      const r = tile.getBoundingClientRect();
+      tile.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      tile.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+  }, { passive: true });
+}
+
+/* ---------- Between pages: only what is on screen travels ---------- */
+// Elements with data-vt carry a view-transition-name (css). If one is off screen when the page
+// changes, it would fly in from far away; drop its name so the page just fades.
+const onScreen = (el: Element) => {
+  const r = el.getBoundingClientRect();
+  return r.bottom > 0 && r.top < innerHeight;
+};
+const pruneTravellers = () => document.querySelectorAll<HTMLElement>('[data-vt]').forEach(el => {
+  el.style.viewTransitionName = onScreen(el) ? el.dataset.vt! : 'none';
+});
+addEventListener('pageswap', pruneTravellers);
+addEventListener('pagereveal', pruneTravellers);

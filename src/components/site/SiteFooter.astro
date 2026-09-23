@@ -3,12 +3,17 @@ import LogoMark from './LogoMark.astro';
 import { PROJECT_NAME, STATUS_DATE, formatDay } from '../../data/site/project';
 ---
 <footer class="site-footer">
-  <p class="footer-brand"><LogoMark /><span>{PROJECT_NAME}</span></p>
-  <p>Um degrau de cada vez. Tudo à vista.</p>
-  <div class="footer-columns">
-    <div><h2>Transparência</h2><p><a href="/transparencia">Livro público de todas as ações</a>. Qualquer pessoa confere.</p></div>
-    <div><h2>Organização</h2><p>Projeto sem fins lucrativos, ainda sem registro formal. Quando tiver CNPJ, ele aparece aqui. Ainda não tem canal oficial de contato.</p></div>
-    <div><h2>Privacidade</h2><p>Nada de foto, nome ou história de ninguém sem autorização por escrito. Nenhum dado pessoal é coletado por enquanto.</p></div>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <p class="footer-brand"><LogoMark /><span>{PROJECT_NAME}</span></p>
+      <p class="footer-tag">O pontapé inicial. Um degrau de cada vez, tudo à vista.</p>
+    </div>
+    <div class="footer-columns">
+      <div><h2>Transparência</h2><p><a href="/transparencia">Livro público de todas as ações</a>. Qualquer pessoa confere.</p></div>
+      <div><h2>Organização</h2><p>Projeto sem fins lucrativos, ainda sem registro formal. Quando tiver CNPJ, ele aparece aqui. Ainda não tem canal oficial de contato.</p></div>
+      <div><h2>Privacidade</h2><p>Nada de foto, nome ou história de ninguém sem autorização por escrito. Nenhum dado pessoal é coletado por enquanto.</p></div>
+    </div>
+    <p class="footer-note">Estado dos blocos em <time datetime={STATUS_DATE}>{formatDay(STATUS_DATE)}</time>. Código aberto assim que o repositório abrir.</p>
+    <p class="footer-wordmark" aria-hidden="true">{PROJECT_NAME}</p>
   </div>
-  <p class="footer-note">O nome {PROJECT_NAME} é provisório. Estado dos blocos em <time datetime={STATUS_DATE}>{formatDay(STATUS_DATE)}</time>. Código aberto assim que o repositório abrir.</p>
 </footer>

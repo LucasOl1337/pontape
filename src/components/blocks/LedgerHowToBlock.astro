@@ -3,6 +3,17 @@ import Icon from '../site/Icon.astro';
 import BlockHead from '../site/BlockHead.astro';
 import { ledgerTrust } from '../../lib/ledger/published';
 import { REPOSITORY_OPEN } from '../../data/site/project';
+import type { LedgerView } from '../../lib/ledger-view/source';
+
+interface Props { ledger: LedgerView }
+const { ledger } = Astro.props;
+// The drawings in steps 1 and 2 use the newest real line: its fields in fixed order, and its mark.
+const sample = ledger.events.at(-1);
+const clip = (v: unknown) => { const t = JSON.stringify(v); return t.length > 16 ? `${t.slice(0, 14)}…"` : t; };
+const sampleText = sample
+  ? `{\n${Object.keys(sample.payload).sort().map(k => `  "${k}": ${clip((sample.payload as Record<string, unknown>)[k])}`).join(',\n')}\n}`
+  : '{\n  "type": "project",\n  "action": "decision_recorded"\n}';
+const sampleHash = sample ? `${sample.hash.slice(0, 4)} ${sample.hash.slice(4, 8)} ${sample.hash.slice(8, 12)} …` : '0000 0000 …';
 
 // F08 trust state (src/data/ledger/trust.json): say plainly what is not active yet.
 const TRUST = [
@@ -11,26 +22,49 @@ const TRUST = [
   { label: 'Cópia fora do projeto', value: ledgerTrust.mirror === 'not_configured' ? 'ainda não ativa' : 'ativa' },
 ];
 ---
-<section class="block reveal" id="como-conferir" aria-labelledby="t-how-verify"
+<section class="section section--band" id="como-conferir" aria-labelledby="t-how-verify"
   data-speech="Como qualquer pessoa confere. Um: cada ação vira um texto, sempre no mesmo formato. Dois: esse texto passa por uma conta pública chamada SHA-256, que devolve uma marca. Mudou uma vírgula, a marca muda inteira. Três: cada ação guarda a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela. O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e a auditoria de fora.">
-  <BlockHead number="04" label="Como conferir" listen="como-conferir" />
-  <h2 id="t-how-verify">Como qualquer pessoa confere.</h2>
-  <p class="lead">Não precisa confiar na gente, nem no nosso botão. A conta é pública e dá pra refazer em qualquer computador.</p>
-  <ol class="explain-steps">
-    <li><span class="num" aria-hidden="true">1</span><h3>Cada ação vira um texto padrão.</h3><p>Sempre os mesmos campos, na mesma ordem. Sem nome de ninguém.</p></li>
-    <li><span class="num" aria-hidden="true">2</span><h3>O texto vira uma marca.</h3><p>Uma conta pública, a <code>SHA-256</code>, transforma o texto numa marca. Mudou uma vírgula, a marca muda inteira.</p></li>
-    <li><span class="num" aria-hidden="true">3</span><h3>Cada marca segura a anterior.</h3><p>A ação nova leva junto a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela.</p></li>
-  </ol>
-  <div class="not-proven">
-    <h3>O que o livro não prova</h3>
-    <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Assinar as marcas e carimbar a data num serviço público estão em estudo.</p>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <BlockHead number="03" label="Como conferir" listen="como-conferir" />
+      <h2 id="t-how-verify">Como qualquer pessoa confere.</h2>
+      <p class="lead">Não precisa confiar na gente, nem no nosso botão. A conta é pública e dá pra refazer em qualquer computador.</p>
+    </div>
+    <div class="bento bento--3 howto">
+      <div class="tile explain reveal">
+        <span class="num-badge" aria-hidden="true">1</span>
+        <h3>Cada ação vira um texto padrão.</h3>
+        <p>Sempre os mesmos campos, na mesma ordem. Sem nome de ninguém.</p>
+        <pre class="explain-art explain-json" aria-hidden="true">{sampleText}</pre>
+      </div>
+      <div class="tile explain reveal">
+        <span class="num-badge" aria-hidden="true">2</span>
+        <h3>O texto vira uma marca.</h3>
+        <p>Uma conta pública, a <code>SHA-256</code>, transforma o texto numa marca. Mudou uma vírgula, a marca muda inteira.</p>
+        <p class="explain-art explain-hash" aria-hidden="true"><span class="mono">SHA-256</span><Icon name="arrow-right" /><span class="mono">{sampleHash}</span></p>
+      </div>
+      <div class="tile explain reveal">
+        <span class="num-badge" aria-hidden="true">3</span>
+        <h3>Cada marca segura a anterior.</h3>
+        <p>A ação nova leva junto a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela.</p>
+        <p class="explain-art explain-links" aria-hidden="true"><span></span><i></i><span></span><i></i><span></span></p>
+      </div>
+      <div class="tile not-proven c2 reveal">
+        <span class="glyph"><Icon name="alert" /></span>
+        <h3>O que o livro não prova</h3>
+        <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Assinar as marcas e carimbar a data num serviço público estão em estudo.</p>
+      </div>
+      <div class="tile downloads reveal">
+        <h3>Leve uma cópia</h3>
+        <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro inteiro</a>
+        <a class="btn" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="shield" />Baixar a marca de controle</a>
+      </div>
+      <div class="tile trust c4 reveal">
+        <p class="verify-cli">Guarde a marca de controle num lugar seu. Numa próxima visita, ela mostra se alguém refez o livro. No computador, o verificador aberto confere tudo sem internet: <code>npm run ledger:verify</code>, com o passo a passo em <code>docs/transparencia/COMO-CONFERIR.md</code>.{!REPOSITORY_OPEN && ' O repositório ainda está fechado.'}</p>
+        <dl class="trust-list">
+          {TRUST.map(t => <div><dt>{t.label}</dt><dd><Icon name="clock" />{t.value}</dd></div>)}
+        </dl>
+      </div>
+    </div>
   </div>
-  <div class="link-row">
-    <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro inteiro</a>
-    <a class="btn" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="shield" />Baixar a marca de controle</a>
-  </div>
-  <p class="verify-cli">Guarde a marca de controle num lugar seu. Numa próxima visita, ela mostra se alguém refez o livro. No computador, o verificador aberto confere tudo sem internet: <code>npm run ledger:verify</code>, com o passo a passo em <code>docs/transparencia/COMO-CONFERIR.md</code>.{!REPOSITORY_OPEN && ' O repositório ainda está fechado.'}</p>
-  <dl class="trust-list">
-    {TRUST.map(t => <div><dt>{t.label}</dt><dd><Icon name="clock" />{t.value}</dd></div>)}
-  </dl>
 </section>

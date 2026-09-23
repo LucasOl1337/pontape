@@ -5,6 +5,7 @@ import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
 import type { LedgerView } from '../../lib/ledger-view/source';
 import { TYPES } from '../../lib/ledger-view/phrases';
+import { SHARE } from '../../data/site/share';
 
 interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
@@ -16,33 +17,53 @@ const shortHash = (h: string) => `${h.slice(0, 4)} ${h.slice(4, 8)}`;
 const recorded = last && new Date(last.recordedAt);
 const recordedText = recorded && `${recorded.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}, às ${recorded.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' })}`;
 const art = events.slice(-4).reverse();
+const stats = [
+  { vt: 'stat-actions', label: 'Ações no livro', value: String(events.length), live: events.length > 0 },
+  { vt: 'stat-in', label: 'Entrou', value: brl.format(snapshot.receivedCents / 100) },
+  { vt: 'stat-out', label: 'Saiu', value: brl.format(snapshot.spentCents / 100) },
+  { vt: 'stat-hash', label: 'Marca mais recente', value: last ? shortHash(last.hash) : 'nenhuma' },
+];
 const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.length ? `Hoje o livro tem ${events.length} ações.` : 'O livro oficial ainda não foi publicado.'} Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não.`;
 ---
-<section class="page-hero" id="livro" aria-labelledby="page-title" data-speech={speech}>
-  <div class="page-hero-inner">
+<section class="hero page-hero" id="livro" aria-labelledby="page-title" data-speech={speech}>
+  <div class="hero-bg" aria-hidden="true"><span class="hero-grid"></span><span class="hero-glow"></span></div>
+  <div class="wrap">
     <div class="page-hero-grid">
-      <div>
-        <div class="kicker">
-          <span class="chip">Livro público</span>
+      <div class="page-hero-copy">
+        <div class="hero-kicker">
+          <span class="chip"><Icon name="shield" />Livro público</span>
           <span class="chip">Transparência total</span>
           <ListenButton target="livro" />
         </div>
-        <h1 id="page-title">Tudo que o projeto faz, <span class="highlight">à vista.</span></h1>
+        <h1 id="page-title">{SHARE.transparencia.lead} <span class="grad">{SHARE.transparencia.highlight}</span></h1>
         <p class="lead">Cada ação entra aqui: dinheiro, entrega na rua, passo de candidato e decisão do projeto. Cada linha fica presa na anterior. Qualquer pessoa confere, sem pedir licença.</p>
         <p class="rule-strip"><Icon name="shield" /><strong>Toda ação aparece. Quem é a pessoa, não.</strong></p>
+        <div class="actions hero-actions">
+          <a class="btn btn--primary" href="#conferir"><Icon name="shield" />Conferir agora</a>
+          <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro</a>
+        </div>
       </div>
       <ol class:list={['chain-art', { 'chain-art--waiting': !art.length }]} aria-hidden="true">
         {art.length
-          ? art.map((e, i) => <>{i > 0 && <li class="art-link"></li>}<li data-type={e.payload.type}><Icon name={TYPES[e.payload.type].icon} /><span>{shortHash(e.hash)}</span><span class="art-seq">nº {e.sequence}</span></li></>)
-          : [1, 2, 3].map(i => <>{i > 1 && <li class="art-link"></li>}<li><Icon name="clock" /><span>aguardando</span><span class="art-seq">nº {i}</span></li></>)}
+          ? art.map((e, i) => (
+            <li data-type={e.payload.type} style={`--i:${i}`}>
+              <span class="chain-art-icon"><Icon name={TYPES[e.payload.type].icon} /></span>
+              <span class="chain-art-seq mono">nº {e.sequence}</span>
+              <span class="chain-art-hash mono">{shortHash(e.hash)}</span>
+              <span class="chain-art-prev mono">{e.sequence === '1' ? 'começo' : `← ${shortHash(e.previousHash)}`}</span>
+            </li>
+          ))
+          : [1, 2, 3].map(i => <li style={`--i:${i - 1}`}><span class="chain-art-icon"><Icon name="clock" /></span><span class="chain-art-seq mono">nº {i}</span><span class="chain-art-hash mono">aguardando</span></li>)}
       </ol>
     </div>
-    <div class="scoreboard" role="group" aria-label="O livro hoje">
-      <div class="scoreboard-item"><span class="scoreboard-label">Ações no livro</span><span class="scoreboard-value">{events.length}</span></div>
-      <div class="scoreboard-item"><span class="scoreboard-label">Entrou</span><span class="scoreboard-value">{brl.format(snapshot.receivedCents / 100)}</span></div>
-      <div class="scoreboard-item"><span class="scoreboard-label">Saiu</span><span class="scoreboard-value">{brl.format(snapshot.spentCents / 100)}</span></div>
-      <div class="scoreboard-item"><span class="scoreboard-label">Marca mais recente</span><span class="scoreboard-value">{last ? shortHash(last.hash) : 'nenhuma'}</span></div>
-      <p class="scoreboard-note"><Icon name="clock" /><span>{last
+    <div class="stats" role="group" aria-label="O livro hoje">
+      {stats.map(s => (
+        <div class="tile stat" style={`view-transition-name:${s.vt}`} data-vt={s.vt}>
+          <span class="stat-label">{s.live && <span class="live-dot" aria-hidden="true"></span>}{s.label}</span>
+          <span class="stat-value">{s.value}</span>
+        </div>
+      ))}
+      <p class="stats-note"><Icon name="clock" /><span>{last
         ? `Livro estático. Última ação registrada em ${recordedText}. A página é refeita sempre que entra uma ação nova.`
         : 'O livro oficial ainda não foi publicado. Quando for, aparece aqui a hora da última ação registrada. Nada nesta página se chama ao vivo enquanto não for.'}</span></p>
     </div>

@@ -9,7 +9,7 @@ const onHome = current === 'home';
 const links = [
   { href: onHome ? '#como-funciona' : '/#como-funciona', label: 'Como funciona' },
   { href: onHome ? '#modulos' : '/#modulos', label: 'Módulos' },
-  { href: '/transparencia', label: 'Transparência', current: current === 'transparencia' },
+  { href: '/transparencia', label: 'Livro público', current: current === 'transparencia' },
   { href: onHome ? '#gargalos' : '/#gargalos', label: 'Gargalos' },
   { href: onHome ? '#contribuicoes' : '/#contribuicoes', label: 'Contribuir' },
 ];
@@ -22,7 +22,12 @@ const links = [
         {links.map(l => <li><a href={l.href} aria-current={l.current ? 'page' : undefined}>{l.label}</a></li>)}
       </ul>
     </nav>
-    <button class="icon-btn" id="text-size-btn" type="button" aria-pressed="false" title="Aumentar o texto"><span aria-hidden="true">A+</span><span class="sr-only">Texto maior</span></button>
-    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><Icon name="menu" /><span>Menu</span></button>
+    <div class="header-tools">
+      <button class="icon-btn" id="theme-btn" type="button" aria-pressed="false" title="Tema claro">
+        <Icon name="sun" class="theme-sun" /><Icon name="moon" class="theme-moon" /><span class="sr-only">Tema claro</span>
+      </button>
+      <button class="icon-btn" id="text-size-btn" type="button" aria-pressed="false" title="Aumentar o texto"><span aria-hidden="true">A+</span><span class="sr-only">Texto maior</span></button>
+      <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><Icon name="menu" /><span class="sr-only">Menu</span></button>
+    </div>
   </div>
 </header>

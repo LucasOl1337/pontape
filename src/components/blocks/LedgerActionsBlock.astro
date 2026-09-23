@@ -3,6 +3,8 @@ import Icon from '../site/Icon.astro';
 import BlockHead from '../site/BlockHead.astro';
 import ChainEntry from '../ledger/ChainEntry.astro';
 import LedgerData from '../ledger/LedgerData.astro';
+import VerifyPanel from '../ledger/VerifyPanel.astro';
+import ListenButton from '../site/ListenButton.astro';
 import type { LedgerEvent } from '../../lib/ledger/schema';
 import type { LedgerView } from '../../lib/ledger-view/source';
 import { TYPES, TYPE_ORDER, type LedgerType } from '../../lib/ledger-view/phrases';
@@ -22,50 +24,68 @@ const EMPTY: Record<LedgerType, [string, string]> = {
   project: ['Nenhuma ação do projeto publicada ainda.', 'O livro oficial entra junto com o verificador aberto, com cada decisão e cada mudança desde o começo.'],
 };
 ---
-<section class="block" id="acoes" aria-labelledby="t-actions" data-ledger-actions>
-  <BlockHead number="02" label="Todas as ações" speech="Todas as ações do livro, da mais nova pra mais antiga. Cada linha mostra o dia, o tipo de ação, o valor quando tem, a situação do comprovante e a marca que prende ela na anterior." />
-  <h2 id="t-actions">Todas as ações, da mais nova pra mais antiga.</h2>
-  <p class="lead">Cada linha mostra o dia, o tipo de ação, o valor quando tem, a situação do comprovante e a marca que prende ela na anterior.</p>
-  <div class="ledger-toolbar">
-    <div class="segmented" role="group" aria-label="Qual livro mostrar">
-      <button type="button" data-mode="real" aria-pressed="true">Livro de verdade</button>
-      <button type="button" data-mode="example" aria-pressed="false">Ver um exemplo</button>
+<section class="section section--band" id="acoes" aria-labelledby="t-actions" data-ledger-actions>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <BlockHead number="01" label="Todas as ações" speech="Todas as ações do livro, da mais nova pra mais antiga. Cada linha mostra o dia, o tipo de ação, o valor quando tem, a situação do comprovante e a marca que prende ela na anterior." />
+      <h2 id="t-actions">Todas as ações, da mais nova pra mais antiga.</h2>
+      <p class="lead">Cada linha mostra o dia, o tipo de ação, o valor quando tem, a situação do comprovante e a marca que prende ela na anterior.</p>
     </div>
-    {lists.map(({ mode, view: { events } }) => (
-      <div class="filters" role="group" aria-label="Filtrar por tipo de ação" data-type-filters={mode} hidden={mode !== 'real'}>
-        <button class="filter" type="button" data-type-filter="all" aria-pressed="true">Todas<span class="count">{events.length}</span></button>
-        {TYPE_ORDER.map(t => <button class="filter" type="button" data-type-filter={t} aria-pressed="false"><Icon name={TYPES[t].icon} />{TYPES[t].label}<span class="count">{count(events, t)}</span></button>)}
+    <div class="ledger-toolbar">
+      <div class="segmented" role="group" aria-label="Qual livro mostrar">
+        <button type="button" data-mode="real" aria-pressed="true">Livro de verdade</button>
+        <button type="button" data-mode="example" aria-pressed="false">Ver um exemplo</button>
       </div>
-    ))}
-  </div>
-  <p class="decision-note"><Icon name="doc" /><span>O título de cada decisão vem do <code>DECISOES.md</code> e fica fora da marca. O Conferir prova a linha, não o título.</span></p>
-  <p class="sample-banner" data-example-only hidden><span>EXEMPLO · dados fictícios do contrato do livro, pra mostrar como ele fica com dinheiro, entregas e candidatos. Nada disso aconteceu.</span></p>
-  <div class="sample-tools" data-example-only hidden>
-    <button class="btn" type="button" data-tamper><Icon name="pen" />Mudar uma linha escondido</button>
-    <button class="btn" type="button" data-untamper hidden><Icon name="undo" />Desfazer a mudança</button>
-  </div>
-  {lists.map(({ mode, view }) => {
-    const events = view.events;
-    const corrected = correctionsOf(events);
-    return (
-      <div class:list={['ledger-list', { 'is-sample': mode === 'example' }]} data-ledger-list={mode} hidden={mode !== 'real'}>
-        <ol class="chain" id={`ledger-chain-${mode}`}>
-          {events.toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}
-        </ol>
-        {!events.length && (
-          <div class="chain-empty" data-empty-for="all">
-            <Icon name="receipt" /><p class="chain-empty-title">O livro oficial ainda não foi publicado.</p>
-            <p>Ele entra junto com o verificador aberto, com cada decisão e cada mudança do projeto desde o começo. Até lá, veja como ele funciona no exemplo.</p>
-            <p><button class="btn" type="button" data-mode="example">Ver um exemplo</button></p>
-          </div>
-        )}
-        {TYPE_ORDER.filter(t => events.length && !count(events, t)).map(t => (
-          <div class="chain-empty" data-empty-for={t} hidden>
-            <Icon name={TYPES[t].icon} /><p class="chain-empty-title">{EMPTY[t][0]}</p><p>{EMPTY[t][1]}</p>
-          </div>
-        ))}
-        <LedgerData id={`ledger-${mode}`} ledger={view} />
+      {lists.map(({ mode, view: { events } }) => (
+        <div class="filters" role="group" aria-label="Filtrar por tipo de ação" data-type-filters={mode} hidden={mode !== 'real'}>
+          <button class="filter" type="button" data-type-filter="all" aria-pressed="true">Todas<span class="count">{events.length}</span></button>
+          {TYPE_ORDER.map(t => <button class="filter" type="button" data-type-filter={t} aria-pressed="false"><Icon name={TYPES[t].icon} />{TYPES[t].label}<span class="count">{count(events, t)}</span></button>)}
+        </div>
+      ))}
+    </div>
+    <div class="ledger-layout">
+      <aside class="tile verify-stage" id="conferir" aria-labelledby="t-verify"
+        data-speech="Confira você mesmo. O botão refaz a conta de cada ação no seu aparelho. Se alguém tiver mudado ou apagado qualquer linha, aparece aqui. Nada é enviado pra gente.">
+        <div class="eyebrow-row"><p class="eyebrow"><span class="eyebrow-num"><Icon name="shield" /></span>Conferir</p><ListenButton target="conferir" /></div>
+        <h2 id="t-verify">Confira você mesmo.</h2>
+        <p>O botão refaz a conta de cada ação no seu aparelho. Se alguém tiver mudado ou apagado qualquer linha, aparece aqui, e a lista ao lado mostra onde.</p>
+        <VerifyPanel data="ledger-real" list="ledger-chain-real" where="Roda no seu aparelho. Nada é enviado pra gente.">
+          <a href="#como-conferir">Como funciona</a>
+        </VerifyPanel>
+        <div class="sample-tools" data-example-only hidden>
+          <p>No exemplo dá pra fazer o teste: mude uma linha escondido e confira de novo.</p>
+          <button class="btn" type="button" data-tamper><Icon name="pen" />Mudar uma linha escondido</button>
+          <button class="btn" type="button" data-untamper hidden><Icon name="undo" />Desfazer a mudança</button>
+        </div>
+      </aside>
+      <div class="ledger-main">
+        <p class="decision-note"><Icon name="doc" /><span>O título de cada decisão vem do <code>DECISOES.md</code> e fica fora da marca. O Conferir prova a linha, não o título.</span></p>
+        <p class="sample-banner" data-example-only hidden><span class="mono">EXEMPLO</span><span>Dados fictícios do contrato do livro, pra mostrar como ele fica com dinheiro, entregas e candidatos. Nada disso aconteceu.</span></p>
+        {lists.map(({ mode, view }) => {
+          const events = view.events;
+          const corrected = correctionsOf(events);
+          return (
+            <div class:list={['ledger-list', { 'is-sample': mode === 'example' }]} data-ledger-list={mode} hidden={mode !== 'real'}>
+              <ol class="chain" id={`ledger-chain-${mode}`}>
+                {events.toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}
+              </ol>
+              {!events.length && (
+                <div class="tile chain-empty" data-empty-for="all">
+                  <Icon name="receipt" /><p class="chain-empty-title">O livro oficial ainda não foi publicado.</p>
+                  <p>Ele entra junto com o verificador aberto, com cada decisão e cada mudança do projeto desde o começo. Até lá, veja como ele funciona no exemplo.</p>
+                  <p><button class="btn" type="button" data-mode="example">Ver um exemplo</button></p>
+                </div>
+              )}
+              {TYPE_ORDER.filter(t => events.length && !count(events, t)).map(t => (
+                <div class="tile chain-empty" data-empty-for={t} hidden>
+                  <Icon name={TYPES[t].icon} /><p class="chain-empty-title">{EMPTY[t][0]}</p><p>{EMPTY[t][1]}</p>
+                </div>
+              ))}
+              <LedgerData id={`ledger-${mode}`} ledger={view} />
+            </div>
+          );
+        })}
       </div>
-    );
-  })}
+    </div>
+  </div>
 </section>

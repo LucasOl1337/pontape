@@ -1,0 +1,37 @@
+---
+import { prismDrawing } from './prism';
+
+// Decorative: the figure around it carries the words (labels, list of rays and caption).
+interface Props { drawing: ReturnType<typeof prismDrawing>; id: string; class?: string }
+const { drawing: d, id, class: className } = Astro.props;
+---
+<svg class:list={['prism-svg', className]} viewBox={d.viewBox} aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id={`${id}-beam`} x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" class="stop-beam-0" />
+      <stop offset="1" class="stop-beam-1" />
+    </linearGradient>
+    <linearGradient id={`${id}-glass`} x1="0" x2="0.6" y1="0" y2="1">
+      <stop offset="0" class="stop-glass-0" />
+      <stop offset="1" class="stop-glass-1" />
+    </linearGradient>
+    {d.rays.map((_, k) => (
+      <linearGradient id={`${id}-ray${k + 1}`} x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" class={`stop-ray stop-ray--${k + 1}`} />
+        <stop offset="1" class={`stop-ray stop-ray--${k + 1} stop-ray-end`} />
+      </linearGradient>
+    ))}
+    <filter id={`${id}-blur`} x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation="9" /></filter>
+  </defs>
+  <g class="prism-glow" filter={`url(#${id}-blur)`}>
+    <path class="beam-glow" d={d.beam} pathLength="100" />
+    {d.rays.map((ray, k) => <path class={`ray-glow ray-${k + 1}`} d={ray} fill={`url(#${id}-ray${k + 1})`} />)}
+  </g>
+  <path class="beam" d={d.beam} stroke={`url(#${id}-beam)`} pathLength="100" />
+  <path class="beam-spark" d={d.beam} pathLength="100" />
+  {d.rays.map((ray, k) => <path class={`ray ray-${k + 1}`} d={ray} fill={`url(#${id}-ray${k + 1})`} />)}
+  <path class="prism-body" d={d.body} fill={`url(#${id}-glass)`} />
+  <path class="prism-fan" d={d.fan} />
+  <path class="prism-edge" d={d.edge} />
+  <path class="prism-shine" d={d.shine} />
+</svg>
