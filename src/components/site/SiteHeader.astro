@@ -2,16 +2,19 @@
 import Icon from './Icon.astro';
 import LogoMark from './LogoMark.astro';
 import { PROJECT_NAME } from '../../data/site/project';
+import { CONSTRUIR } from '../../data/site/cadernos';
 
-interface Props { current?: 'home' | 'transparencia' | 'not-found' }
+interface Props { current?: 'home' | 'transparencia' | 'construir' | 'not-found' }
 const { current = 'home' } = Astro.props;
 const onHome = current === 'home';
+// Inside a caderno the door stays marked: the page itself on /construir, its section below it.
+const inConstruir = current === 'construir' ? (Astro.url.pathname.replace(/\/$/, '') === CONSTRUIR.href ? 'page' as const : 'true' as const) : undefined;
 // Four doors in plain words (F29). The builder words sit behind "Construir junto".
 const links = [
   { href: onHome ? '#como-funciona' : '/#como-funciona', label: 'Como funciona' },
-  { href: '/transparencia', label: 'Transparência', current: current === 'transparencia' },
+  { href: '/transparencia', label: 'Transparência', current: current === 'transparencia' ? 'page' as const : undefined },
   { href: onHome ? '#ajudar' : '/#ajudar', label: 'Como ajudar' },
-  { href: onHome ? '#construir' : '/#construir', label: 'Construir junto' },
+  { href: CONSTRUIR.href, label: CONSTRUIR.name, current: inConstruir },
 ];
 ---
 <header class="site-header">
@@ -19,7 +22,7 @@ const links = [
     <a class="logo" href="/" aria-label={`${PROJECT_NAME}, início`}><LogoMark /><span>{PROJECT_NAME}</span></a>
     <nav class="site-nav" id="site-nav" aria-label="Principal">
       <ul>
-        {links.map(l => <li><a href={l.href} aria-current={l.current ? 'page' : undefined}>{l.label}</a></li>)}
+        {links.map(l => <li><a href={l.href} aria-current={l.current}>{l.label}</a></li>)}
       </ul>
     </nav>
     <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><Icon name="menu" /><span>Menu</span></button>

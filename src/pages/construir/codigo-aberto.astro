@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Expediente from '../../components/cronica/Expediente.astro';
+import { PROJECT_NAME } from '../../data/site/project';
+import { caderno } from '../../data/site/cadernos';
+---
+<BaseLayout title={`${caderno('codigo-aberto').name} · ${PROJECT_NAME}`} description={`O código, os documentos e cada decisão do ${PROJECT_NAME} ficam abertos, pra ver e propor melhoria.`} current="construir">
+  <Expediente />
+</BaseLayout>

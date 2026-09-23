@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Construir from '../../components/cronica/Construir.astro';
+import { PROJECT_NAME } from '../../data/site/project';
+import { CONSTRUIR } from '../../data/site/cadernos';
+---
+<BaseLayout title={`${CONSTRUIR.name} · ${PROJECT_NAME}`} description={`Pra quem quer construir o ${PROJECT_NAME} junto: as partes do projeto, o que ainda está em aberto, as tarefas e o código.`} current="construir">
+  <Construir />
+</BaseLayout>

@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Gargalos from '../../components/cronica/Gargalos.astro';
+import { PROJECT_NAME } from '../../data/site/project';
+import { caderno } from '../../data/site/cadernos';
+---
+<BaseLayout title={`${caderno('gargalos').name} · ${PROJECT_NAME}`} description={`As perguntas que o ${PROJECT_NAME} ainda não sabe responder, e quem pode ajudar.`} current="construir">
+  <Gargalos />
+</BaseLayout>

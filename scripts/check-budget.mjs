@@ -8,7 +8,12 @@ import { gzipSync } from 'node:zlib';
 const DIST = 'dist';
 const PAGE_LIMIT = 60 * 1024;
 const FONT_LIMIT = 120 * 1024;
-const PAGES = ['index.html', 'transparencia/index.html'];
+const PAGES = [
+  'index.html', 'transparencia/index.html',
+  // The builder cadernos (F31), each a page of its own.
+  'construir/index.html', 'construir/pecas/index.html', 'construir/gargalos/index.html',
+  'construir/tarefas/index.html', 'construir/codigo-aberto/index.html',
+];
 
 const gz = buffer => gzipSync(buffer, { level: 9 }).length;
 const kb = bytes => `${(bytes / 1024).toFixed(1)} KB`;

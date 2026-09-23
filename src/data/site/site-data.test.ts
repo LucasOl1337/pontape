@@ -1,9 +1,11 @@
+import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { MODULES } from './modules';
 import { NOW_LEAD, STEPS } from './journey';
 import { BOTTLENECKS } from './bottlenecks';
 import { CONTRIBUTIONS } from './contributions';
 import { DECISION_TITLES, parseDecisionTitles } from './decisions';
+import { CADERNOS, CONSTRUIR, MOVED } from './cadernos';
 import { ICON_NAMES } from '../../components/site/icon-names';
 
 describe('dados do site', () => {
@@ -37,12 +39,26 @@ describe('dados do site', () => {
   });
 
   it('texto público não tem travessão', () => {
-    const text = JSON.stringify([MODULES, STEPS, BOTTLENECKS]);
+    const text = JSON.stringify([MODULES, STEPS, BOTTLENECKS, CADERNOS]);
     expect(text).not.toContain('—');
   });
 
   it('todo ícone usado nos dados existe no desenho', () => {
-    for (const icon of STEPS.map(s => s.icon)) expect(ICON_NAMES).toContain(icon);
+    for (const icon of [...STEPS, ...CADERNOS].map(s => s.icon)) expect(ICON_NAMES).toContain(icon);
+  });
+});
+
+describe('cadernos com endereço próprio (F31)', () => {
+  it('todo link antigo da home leva a uma página que existe', () => {
+    expect(Object.keys(MOVED).sort()).toEqual(['codigo-aberto', 'construir', 'contribuicoes', 'gargalos', 'modulos']);
+    for (const href of Object.values(MOVED)) {
+      const page = href === CONSTRUIR.href ? `src/pages${href}/index.astro` : `src/pages${href}.astro`;
+      expect(existsSync(page), `${href}: falta ${page}`).toBe(true);
+    }
+  });
+
+  it('todo caderno mora dentro de "Construir junto"', () => {
+    for (const c of CADERNOS) expect(c.href).toBe(`${CONSTRUIR.href}/${c.id}`);
   });
 });
 

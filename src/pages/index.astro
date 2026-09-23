@@ -1,28 +1,36 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Escada from '../components/cronica/Escada.astro';
-import Pecas from '../components/cronica/Pecas.astro';
-import Gargalos from '../components/cronica/Gargalos.astro';
-import Classificados from '../components/cronica/Classificados.astro';
-import Expediente from '../components/cronica/Expediente.astro';
-import Construir from '../components/cronica/Construir.astro';
+import FichaPeca from '../components/cronica/FichaPeca.astro';
 import { getPublicLedger } from '../lib/ledger-view/source';
 import { SHARE } from '../data/site/share';
+import { MOVED, bottleneckHref } from '../data/site/cadernos';
 
 const ledger = await getPublicLedger();
+// The cadernos used to open over the home at #modulos, #contribuicoes...; now they are pages of
+// their own (F31). An old link goes straight to the new address, before the home paints.
+const gargalo = bottleneckHref('');
 ---
 <BaseLayout
   title={SHARE.home.title}
   description={SHARE.home.description}
   share="home"
   strip={false}>
+  <script is:inline slot="head" define:vars={{ moved: MOVED, gargalo }}>
+    const go = () => {
+      let id;
+      try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+      const to = Object.hasOwn(moved, id) ? moved[id] : id.startsWith('gargalo-') ? gargalo + id.slice(8) : null;
+      if (!to) return;
+      const [path, hash] = to.split('#');
+      location.replace(path + location.search + (hash ? '#' + hash : ''));
+    };
+    go();
+    addEventListener('hashchange', go);
+  </script>
   <div class="front">
     <Escada ledger={ledger} />
   </div>
-  <Construir />
-  <Pecas />
-  <Gargalos />
-  <Classificados />
-  <Expediente />
+  <FichaPeca />
 </BaseLayout>
 <script>import '../scripts/home';</script>

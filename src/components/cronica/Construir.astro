@@ -1,32 +1,14 @@
 ---
-import Icon from '../site/Icon.astro';
-import Sheet from './Sheet.astro';
-import { MODULES } from '../../data/site/modules';
-import { BOTTLENECKS } from '../../data/site/bottlenecks';
-import { CONTRIBUTIONS } from '../../data/site/contributions';
+import Caderno from './Caderno.astro';
+import Doors from './Doors.astro';
+import { CADERNOS } from '../../data/site/cadernos';
 import { STATUS_DATE, formatDay } from '../../data/site/project';
-import type { IconName } from '../site/icon-names';
 
 // The door for whoever wants to build along (F29): the home speaks plain words, and the parts,
 // the open questions, the tasks and the code stay one click away, each in its own caderno.
-const goodFirst = CONTRIBUTIONS.filter(c => c.goodFirst).length;
-const doors: { href: string; icon: IconName; title: string; text: string }[] = [
-  { href: '#modulos', icon: 'package', title: `As ${MODULES.length} partes do projeto`, text: 'O que cada uma faz, se já funciona e o que falta.' },
-  { href: '#gargalos', icon: 'bulb', title: 'O que a gente ainda não sabe resolver', text: `${BOTTLENECKS.length} perguntas em aberto. Se você entende do assunto, sua ajuda vale muito.` },
-  { href: '#contribuicoes', icon: 'wrench', title: 'Tarefas abertas', text: `${CONTRIBUTIONS.length} tarefas, ${goodFirst} boas pra quem está começando.` },
-  { href: '#codigo-aberto', icon: 'code', title: 'Código aberto', text: 'O código, os documentos e cada decisão, pra ver e propor melhoria.' },
-];
 ---
-<Sheet id="construir" kicker="Pra quem quer construir junto" title="Por dentro" turn="do projeto.">
-  <p class="standfirst">Aqui ficam as partes do projeto, o que ainda está em aberto e as tarefas. Quem entende de código, design, lei ou trabalho na rua ajuda a construir.</p>
-  <ul class="doors">
-    {doors.map(d => (
-      <li><a class="door" href={d.href}>
-        <Icon name={d.icon} class="door-icon" />
-        <span class="door-body"><span class="door-title">{d.title}</span><span class="door-text">{d.text}</span></span>
-        <Icon name="arrow-right" class="door-arrow" />
-      </a></li>
-    ))}
-  </ul>
+<Caderno title="Por dentro" turn="do projeto."
+  lead="Aqui ficam as partes do projeto, o que ainda está em aberto e as tarefas. Quem entende de código, design, lei ou trabalho na rua ajuda a construir.">
+  <Doors items={CADERNOS} />
   <p class="soon-note"><span>Estado das partes em <time datetime={STATUS_DATE}>{formatDay(STATUS_DATE)}</time>. Código aberto, licença Apache 2.0. Texto em Newsreader e Atkinson Hyperlegible, fontes livres.</span></p>
-</Sheet>
+</Caderno>
