@@ -3,8 +3,8 @@
 :root{
   --paper:#F4F1EA; --paper-2:#EAE6DC; --paper-3:#DDD8CB;
   --ink:#18191D; --ink-2:#565860; --rule:rgba(24,25,29,.22);
-  --red:#294EB2;
-  --night:#18191D; --night-2:#232429; --night-ink:#F4F1EA; --night-ink-2:#B5B3AC; --night-red:#9CBEFC; --night-rule:rgba(244,241,234,.2);
+  --accent:#294EB2;
+  --night:#18191D; --night-2:#232429; --night-ink:#F4F1EA; --night-ink-2:#B5B3AC; --night-accent:#9CBEFC; --night-rule:rgba(244,241,234,.2);
   --status-live:#1D6A3A; --status-building:#825C00; --status-bottleneck:#AD2A1C; --status-planned:#565860;
   --status-building-bg:#F7EBC6; --status-ok-icon:#1D6A3A; --status-broken-icon:#AD2A1C;
   --night-ok-icon:#5FC98A; --night-broken-icon:#FF7A6B;
