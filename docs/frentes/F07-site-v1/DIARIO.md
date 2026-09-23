@@ -70,7 +70,7 @@ Onde parei: PR da etapa 1 aberta. Próximo: quando o núcleo da F08 entrar, troc
 
 ## Livro real · 22/09/2026 · troca pelo núcleo da F08
 
-Branch `design/f07-livro-real`, a partir da `main` com a #30. A PR da F16 (#33) ficou aberta e sai antes desta no pedido do Regente só por ordem de revisão.
+Branch `design/f07-livro-real`, a partir da `main` com a #30. A PR da F16 (#33) já estava aberta quando chegou o pedido de fazer a troca primeiro. As duas mexem em `index.astro`, `transparencia.astro` e `site.css`: a que entrar por último precisa de merge da `main`.
 
 - `source.ts`: o livro real vem de `publishedLedger()` (conferido no build pela F08) e o exemplo é a fixture nova de 20 ações, encadeada com o `appendEvent` da F08. O `verifier.ts` provisório saiu.
 - No navegador, o Conferir usa `verifyLedger` de `src/lib/ledger/index.ts` com a marca de controle publicada junto. As falhas da F08 (`hash`, `previous_hash`, `sequence`, `time`, `correction`, `duplicate_source`, `invalid_schema`, `checkpoint`) viraram uma frase cada.
