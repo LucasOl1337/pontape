@@ -1,15 +1,5 @@
 [
   {
-    "id": "ouvir-android-entrada",
-    "title": "Testar o botão Ouvir em Android de entrada",
-    "summary": "Registrar se o convite por voz toca, pausa e pode ser repetido em aparelho de entrada.",
-    "type": "design",
-    "module": "M1",
-    "goodFirst": true,
-    "bottleneck": "conversar-com-quem-nao-le",
-    "issueNumber": 6
-  },
-  {
     "id": "texto-home-em-voz-alta",
     "title": "Revisar o texto da home lendo em voz alta",
     "summary": "Propor frases curtas e claras para os blocos da home e o convite por voz.",

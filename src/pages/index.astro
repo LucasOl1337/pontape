@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Escada from '../components/cronica/Escada.astro';
-import Edicao from '../components/cronica/Edicao.astro';
 import Pecas from '../components/cronica/Pecas.astro';
 import Gargalos from '../components/cronica/Gargalos.astro';
 import Classificados from '../components/cronica/Classificados.astro';
 import Expediente from '../components/cronica/Expediente.astro';
+import Construir from '../components/cronica/Construir.astro';
 import { getPublicLedger } from '../lib/ledger-view/source';
 import { SHARE } from '../data/site/share';
 
@@ -14,11 +14,12 @@ const ledger = await getPublicLedger();
 <BaseLayout
   title={SHARE.home.title}
   description={SHARE.home.description}
-  share="home">
+  share="home"
+  strip={false}>
   <div class="front">
     <Escada ledger={ledger} />
-    <Edicao />
   </div>
+  <Construir />
   <Pecas />
   <Gargalos />
   <Classificados />

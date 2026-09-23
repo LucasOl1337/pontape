@@ -6,12 +6,12 @@ import { PROJECT_NAME } from '../../data/site/project';
 interface Props { current?: 'home' | 'transparencia' | 'not-found' }
 const { current = 'home' } = Astro.props;
 const onHome = current === 'home';
+// Four doors in plain words (F29). The builder words sit behind "Construir junto".
 const links = [
   { href: onHome ? '#como-funciona' : '/#como-funciona', label: 'Como funciona' },
-  { href: onHome ? '#modulos' : '/#modulos', label: 'Módulos' },
-  { href: '/transparencia', label: 'Livro público', current: current === 'transparencia' },
-  { href: onHome ? '#gargalos' : '/#gargalos', label: 'Gargalos' },
-  { href: onHome ? '#contribuicoes' : '/#contribuicoes', label: 'Contribuir' },
+  { href: '/transparencia', label: 'Transparência', current: current === 'transparencia' },
+  { href: onHome ? '#ajudar' : '/#ajudar', label: 'Como ajudar' },
+  { href: onHome ? '#construir' : '/#construir', label: 'Construir junto' },
 ];
 ---
 <header class="site-header">

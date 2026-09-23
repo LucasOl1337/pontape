@@ -14,9 +14,11 @@ interface Props {
   current?: 'home' | 'transparencia' | 'not-found';
   share?: keyof typeof SHARE;
   noindex?: boolean;
+  /** The "em construção" strip. The home says it in its own first screen (F29). */
+  strip?: boolean;
 }
 
-const { title, description, current, share = 'home', noindex = false } = Astro.props;
+const { title, description, current, share = 'home', noindex = false, strip = true } = Astro.props;
 const card = SHARE[share];
 // Share previews need absolute URLs. `site` comes from SITE_URL at build (astro.config.mjs);
 // until the domain exists the paths stay relative.
@@ -81,10 +83,10 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
       })();
     </script>
   </head>
-  <body>
+  <body data-strip={strip ? undefined : 'off'}>
     <IconSprite />
     <a class="skip-link" href="#conteudo">Pular pro conteúdo</a>
-    <StatusStrip />
+    {strip && <StatusStrip />}
     <SiteHeader current={current} />
     <main id="conteudo" tabindex="-1"><slot /></main>
     <SiteFooter />

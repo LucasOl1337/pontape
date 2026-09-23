@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { MODULES } from './modules';
-import { STEPS } from './journey';
+import { NOW_LEAD, STEPS } from './journey';
 import { BOTTLENECKS } from './bottlenecks';
 import { CONTRIBUTIONS } from './contributions';
 import { DECISION_TITLES, parseDecisionTitles } from './decisions';
@@ -14,6 +14,19 @@ describe('dados do site', () => {
   it('todo passo da jornada aponta pra um módulo que existe', () => {
     expect(STEPS).toHaveLength(7);
     for (const step of STEPS) expect(MODULES.some(m => m.id === step.module)).toBe(true);
+  });
+
+  it('o "já funciona?" de cada passo bate com o estado da peça', () => {
+    for (const step of STEPS) {
+      const status = MODULES.find(m => m.id === step.module)!.status;
+      expect(step.now.startsWith(`${NOW_LEAD[status]} `), `${step.title}: comece com "${NOW_LEAD[status]}"`).toBe(true);
+      for (const lead of Object.values(NOW_LEAD).filter(l => l !== NOW_LEAD[status])) expect(step.now).not.toContain(lead);
+    }
+  });
+
+  it('a jornada fala palavra de gente, sem o jargão de quem constrói (F29)', () => {
+    const text = STEPS.map(s => [s.shortName, s.title, s.text, s.now].join(' ')).join(' ');
+    expect(text).not.toMatch(/\b(m[oó]dulos?|pe[çc]as?|gargalos?|edi[çc][ãa]o|classificados|expediente|issues?|reposit[oó]rio|hash|cnpj|M[1-9])\b/i);
   });
 
   it('toda contribuição que aponta um gargalo aponta um que existe', () => {
