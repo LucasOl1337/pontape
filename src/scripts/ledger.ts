@@ -1,7 +1,7 @@
 // /transparencia islands: real or example ledger, type filters, pages of the list, the
 // "edit a line in secret" demo, Conferir, and the tabs under the first screen.
 import type { LedgerView } from '../lib/ledger-view/source';
-import { stopSpeech, toast } from './site';
+import { toast } from './site';
 import { mountVerify, readLedger } from './verify';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
@@ -123,7 +123,6 @@ const tablist = $('[data-tabs]');
 const tabs = tablist ? $$<HTMLButtonElement>('[role="tab"]', tablist) : [];
 function selectTab(i: number, focus = false) {
   const next = (i + tabs.length) % tabs.length;
-  stopSpeech();
   tabs.forEach((tab, k) => {
     tab.setAttribute('aria-selected', String(k === next));
     tab.tabIndex = k === next ? 0 : -1;

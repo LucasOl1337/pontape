@@ -1,7 +1,6 @@
 ---
 import Icon from '../site/Icon.astro';
 import Badge from '../site/Badge.astro';
-import ListenButton from '../site/ListenButton.astro';
 import NotOpenBadge from '../site/NotOpenBadge.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
@@ -27,7 +26,6 @@ const treads: { name: string; label: string; icon?: IconName }[] = [
   ...STEPS.map(s => ({ name: s.shortName, label: s.title, icon: s.icon })),
   { name: 'Sua vez', label: 'Sua vez', icon: 'people' },
 ];
-const forYou = `Oi. Que bom que você está aqui. O ${PROJECT_NAME} ajuda quem quer mudar de vida. A gente dá comida, roupa e higiene nos primeiros dias. E ajuda você a arrumar um trabalho. É de graça. Pra participar, você só precisa conversar com a gente. Não precisa ler nem escrever. A conversa ainda não abriu. Quando abrir, vai ser aqui no site, com um voluntário na rua, ou num ponto perto de você.`;
 const ways = [
   { icon: 'coin', title: 'Doar', status: 'planned', when: 'Abre quando a conta oficial existir.', href: '#gargalo-receber-doacao-do-jeito-certo', link: 'Por quê' },
   { icon: 'people', title: 'Ser voluntário', status: 'planned', when: 'Abre com o piloto na primeira cidade.' },
@@ -54,16 +52,11 @@ const ways = [
   </div>
 
   <div class="panels">
-    <!-- Ground: what the project is, and the voice invitation for whoever wants to change their life. -->
-    <div class="panel is-active" id="degrau-0" role="tabpanel" aria-labelledby="degrau-tab-0" tabindex="0" data-panel="0"
-      data-speech={`Aqui é o ${PROJECT_NAME}. A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial. Tudo que a gente faz fica num livro público, e qualquer pessoa confere. É um projeto sem fins lucrativos, com código aberto. Suba a escada pra ver cada passo.`}>
+    <!-- Ground: what the project is. -->
+    <div class="panel is-active" id="degrau-0" role="tabpanel" aria-labelledby="degrau-tab-0" tabindex="0" data-panel="0">
       <p class="panel-kicker"><span>O pontapé</span><span class="panel-tags">Sem fins lucrativos · Código aberto · Tudo à vista</span></p>
       <h2 class="panel-title">A gente dá o primeiro passo <em>junto.</em></h2>
       <p class="panel-text">A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial.</p>
-      <div class="panel-voice">
-        <button class="voice-btn voice-btn--small" type="button" data-speech={forYou} aria-pressed="false"><Icon name="speaker" /><span class="label">Ouvir</span></button>
-        <p><strong>Você quer mudar de vida?</strong> Aperte e escute. Não precisa ler. A conversa ainda não abriu <NotOpenBadge /></p>
-      </div>
       <div class="panel-nav">
         <button class="btn btn--ink" type="button" data-go="1">Subir o primeiro degrau<Icon name="arrow-right" /></button>
         <span class="panel-hint">Ou toque num degrau. No teclado, use as setas.</span>
@@ -76,8 +69,7 @@ const ways = [
       const tasks = tasksOf(m.id);
       const prev = treads[k - 1]!, next = treads[k + 1]!;
       return (
-        <div class="panel" id={`degrau-${k}`} role="tabpanel" aria-labelledby={`degrau-tab-${k}`} tabindex="0" data-panel={k}
-          data-speech={`Passo ${k} de ${STEPS.length}: ${s.title}. ${s.text} Quem faz: ${s.who.join(', ')}. Peça ${m.id}, ${m.name}: ${m.status === 'bottleneck' ? 'precisa de ajuda' : m.status === 'building' ? 'em construção' : m.status === 'live' ? 'funcionando' : 'planejada'}. O que falta: ${withName(m.missing)}`}>
+        <div class="panel" id={`degrau-${k}`} role="tabpanel" aria-labelledby={`degrau-tab-${k}`} tabindex="0" data-panel={k}>
           <p class="panel-kicker"><span>Passo {k} de {STEPS.length}</span>
             <button class="module-chip" type="button" data-module={m.id} aria-haspopup="dialog"><span class="module-id">{m.id}</span>{m.name}<Badge status={m.status} /></button>
           </p>
@@ -96,15 +88,13 @@ const ways = [
           <div class="panel-nav">
             <button class="btn" type="button" data-go={k - 1}><Icon name="arrow-left" /><span>{prev.name}</span></button>
             <button class="btn btn--ink" type="button" data-go={k + 1}><span>{next.name}</span><Icon name="arrow-right" /></button>
-            <ListenButton target={`degrau-${k}`} />
           </div>
         </div>
       );
     })}
 
     <!-- The landing: how to help. -->
-    <div class="panel" id={`degrau-${LAST}`} role="tabpanel" aria-labelledby={`degrau-tab-${LAST}`} tabindex="0" data-panel={LAST}
-      data-speech="Sua vez. Tem quatro jeitos de ajudar: doar, ser voluntário, oferecer uma vaga ou contribuir com o projeto. A doação, o voluntariado e as vagas ainda não abriram. As contribuições já estão listadas, e pegar uma abre junto com o repositório. A gente não guarda contato de ninguém por enquanto.">
+    <div class="panel" id={`degrau-${LAST}`} role="tabpanel" aria-labelledby={`degrau-tab-${LAST}`} tabindex="0" data-panel={LAST}>
       <p class="panel-kicker"><span>O topo da escada</span></p>
       <h2 class="panel-title">Sua vez. <em>Tem lugar aqui.</em></h2>
       <ul class="panel-ways">
@@ -118,7 +108,6 @@ const ways = [
       <div class="panel-nav">
         <button class="btn" type="button" data-go={LAST - 1}><Icon name="arrow-left" /><span>{treads[LAST - 1]!.name}</span></button>
         <button class="btn" type="button" data-go="0"><Icon name="undo" /><span>Voltar ao chão</span></button>
-        <ListenButton target={`degrau-${LAST}`} />
       </div>
     </div>
   </div>

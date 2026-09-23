@@ -1,6 +1,5 @@
 ---
 import Icon from '../site/Icon.astro';
-import ListenButton from '../site/ListenButton.astro';
 import ChainEntry from '../ledger/ChainEntry.astro';
 import LedgerData from '../ledger/LedgerData.astro';
 import VerifyPanel from '../ledger/VerifyPanel.astro';
@@ -30,13 +29,12 @@ const EMPTY: Record<LedgerType, [string, string]> = {
   candidate: ['Nenhum passo de candidato ainda.', 'A entrevista por voz ainda não abriu. Quando abrir, aparece aqui só a contagem: quantos contatos, entrevistas e encaminhamentos. Sem nome, rosto, apelido nem lugar.'],
   project: ['Nenhuma ação do projeto publicada ainda.', 'O livro oficial entra junto com o verificador aberto, com cada decisão e cada mudança desde o começo.'],
 };
-const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.length ? `Hoje o livro tem ${events.length} ações.` : 'O livro oficial ainda não foi publicado.'} Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não. O botão Conferir refaz a conta de cada ação no seu aparelho.`;
 ---
-<section class="book" id="livro" aria-labelledby="page-title" data-speech={speech}>
+<section class="book" id="livro" aria-labelledby="page-title">
   <div class="book-side">
     <p class="kicker">Caderno especial · Livro público</p>
     <h1 id="page-title" class="book-title">Tudo que o projeto faz, <em>à vista.</em></h1>
-    <p class="book-rule"><Icon name="shield" /><span>Toda ação aparece. Quem é a pessoa, não.</span><ListenButton target="livro" /></p>
+    <p class="book-rule"><Icon name="shield" /><span>Toda ação aparece. Quem é a pessoa, não.</span></p>
     <dl class="book-numbers">
       <div><dt>Ações no livro</dt><dd>{events.length}</dd></div>
       <div><dt>Entrou</dt><dd>{brl.format(snapshot.receivedCents / 100)}</dd></div>
