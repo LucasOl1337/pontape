@@ -302,3 +302,23 @@ Medido: nenhum degrau rola por dentro em 960×600, 1024×768, 1100×700, 768×10
 **Rótulos:** o bloco do degrau pode ficar menor que o ícone sem empurrar o rótulo; todo nome reserva duas linhas; "Início" e "Sua vez" põem o nome na mesma linha dos outros. Medido em 1920, 1440, 1180, 1024, 960 e 360: todos os números na mesma altura e todos os nomes começando na mesma linha (1 px de diferença no Início, pela borda do degrau).
 
 `npm run check` passa. Prints `prints/tablet-antes-*` (main em `286fe8d`) e `prints/tablet-depois-*`.
+
+PR #75 integrada. O "Cores" cobrindo a ponta da escada em laptop baixo foi aceito pelo Regente.
+
+## 23/09/2026 · PR 7: a ficha da peça cabe na tela
+
+Branch `prumo/f31-ficha`. Item 3 da varredura (média).
+
+A ficha era uma caixa de 42rem com os seis campos empilhados; rolava por dentro até em 1920. De 760 px pra cima ela passa a 54rem e os campos vão em duas colunas, linha por linha (O que é | Como funciona, Como opera | Ponto forte, O que falta resolver | Quem pode ajudar). No celular continua uma coluna, com menos respiro em volta e o texto um pouco menor.
+
+Quanto a ficha rola por dentro, medido na bancada (M2, a mais longa, e M4):
+
+| Tamanho | Antes | Depois |
+|---|---|---|
+| 1920×1080 | 86 e 25 px | 0 |
+| 1440×900 | 108 e 47 | 0 |
+| 1280×720 | 270 e 209 | 0 |
+| 960×600 | 374 e 313 | 84 e 33 |
+| 360×780 | 670 e 488 | 371 e 240 |
+
+No celular a ficha continua rolando por dentro: é a ficha inteira de uma peça num diálogo de 90% da tela, com o cabeçalho e o fechar sempre à vista. `npm run check` passa. Prints `prints/ficha-antes-*` e `prints/ficha-depois-*`.
