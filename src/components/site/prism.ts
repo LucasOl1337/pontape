@@ -24,7 +24,15 @@ export function prismDrawing(s: PrismShape) {
     const endY = s.height * (0.1 + 0.2 * k);
     return `M${pt([e[0], e[1] - 1.2])} L${pt([s.width, endY - s.rayEndHalf])} L${pt([s.width, endY + s.rayEndHalf])} L${pt([e[0], e[1] + 1.2])} Z`;
   });
+  // A thin reflection just inside the right face, so the prism reads as glass.
+  const centre: Point = [(s.apex[0] + s.left[0] + s.right[0]) / 3, (s.apex[1] + s.left[1] + s.right[1]) / 3];
+  const inset = (p: Point, by: number): Point => {
+    const dx = centre[0] - p[0], dy = centre[1] - p[1], len = Math.hypot(dx, dy);
+    return [p[0] + (dx / len) * by, p[1] + (dy / len) * by];
+  };
+  const shine = `M${pt(inset(lerp(s.apex, s.right, 0.1), 9))} L${pt(inset(lerp(s.apex, s.right, 0.38), 9))}`;
   return {
+    shine,
     viewBox: `0 0 ${s.width} ${s.height}`,
     beam: `M0 ${s.beamStartY} L${pt(hit)}`,
     body: `M${pt(s.apex)} L${pt(s.right)} L${pt(s.left)} Z`,

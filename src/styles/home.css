@@ -1,7 +1,7 @@
 /* Home: hero com o prisma e os blocos. */
 
 /* ---------- Hero ---------- */
-.hero{position:relative;isolation:isolate;padding:clamp(3.25rem,1.8rem + 6vw,7.5rem) 0 clamp(3.5rem,2rem + 5vw,7rem);overflow:hidden}
+.hero{position:relative;isolation:isolate;padding:clamp(3rem,1.6rem + 4.4vw,5.75rem) 0 clamp(3.5rem,2rem + 5vw,7rem);overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:64px 64px;background-position:50% -1px;
   -webkit-mask-image:radial-gradient(ellipse 75% 55% at 50% 0%,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse 75% 55% at 50% 0%,#000 25%,transparent 78%)}
@@ -12,15 +12,15 @@
     radial-gradient(34% 42% at 72% 44%,color-mix(in srgb,var(--s5) 18%,transparent),transparent 72%),
     radial-gradient(50% 50% at 50% 20%,color-mix(in srgb,var(--s4) 16%,transparent),transparent 75%)}
 :root[data-theme="light"] .hero-glow{opacity:.7}
-.hero-copy{display:grid;justify-items:center;text-align:center;gap:26px}
+.hero-copy{display:grid;justify-items:center;text-align:center;gap:24px}
 .hero-kicker{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px}
 .chip-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 18%,transparent)}
 .hero h1{max-width:12.5em}
-.hero .lead{max-width:36rem}
+.hero .lead{max-width:38rem}
 .hero-actions{justify-content:center}
 
 /* The prism: stage with the drawing, five labels where the rays end, caption below */
-.prism{display:grid;grid-template-columns:minmax(0,1fr) auto;margin:clamp(2.75rem,1.5rem + 4.5vw,5.5rem) auto 0;max-width:68rem}
+.prism{display:grid;grid-template-columns:minmax(0,1fr) auto;margin:clamp(2.25rem,1.25rem + 3.2vw,4rem) auto 0;max-width:68rem}
 .prism-stage{position:relative;min-width:0}
 .prism-svg{width:100%;height:auto;overflow:visible}
 .prism-svg--tall{display:none}
@@ -57,6 +57,7 @@
 .prism-body{stroke:var(--line-3);stroke-width:1.2;stroke-linejoin:round}
 .prism-fan{fill:var(--text);opacity:.13}
 .prism-edge{fill:none;stroke:var(--text);stroke-opacity:.7;stroke-width:1.6;stroke-linecap:round}
+.prism-shine{fill:none;stroke:var(--text);stroke-opacity:.35;stroke-width:2.5;stroke-linecap:round}
 .ray-1{--k:0} .ray-2{--k:1} .ray-3{--k:2} .ray-4{--k:3} .ray-5{--k:4}
 :root[data-theme="light"] .ray-glow{opacity:.35}
 :root[data-theme="light"] .prism-fan{opacity:.07}

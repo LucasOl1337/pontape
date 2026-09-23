@@ -68,8 +68,8 @@
 .page-hero-grid{display:grid;gap:44px;align-items:center}
 @media (min-width:1024px){ .page-hero-grid{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:64px} }
 .page-hero-copy{display:grid;justify-items:start;gap:24px}
-.page-hero-copy .hero-kicker{justify-content:flex-start}
-.page-hero h1{font-size:clamp(2.5rem,1.25rem + 5vw,5.25rem)}
+.page-hero-copy .hero-kicker,.page-hero-copy .hero-actions{justify-content:flex-start}
+.page-hero h1{font-size:clamp(2.5rem,1.3rem + 4.2vw,4.5rem);max-width:11em}
 .rule-strip{display:inline-flex;align-items:center;gap:10px;padding:10px 18px 10px 14px;border-radius:var(--r-pill);border:1px solid color-mix(in srgb,var(--ok) 30%,transparent);background:var(--ok-bg);color:var(--text);font-size:var(--text-small)}
 .rule-strip .icon{color:var(--ok)}
 .chain-art{position:relative;display:grid;gap:20px}
@@ -86,24 +86,28 @@
 .chain-art-hash{grid-area:hash;font-size:1.0625rem;color:var(--text);letter-spacing:.02em}
 @media (max-width:599px){ .chain-art li{margin-left:calc(var(--i) * 10px)} .chain-art li:nth-child(n+4){display:none} }
 
-/* ---------- Conferir ---------- */
-.verify-section{padding-top:clamp(1.5rem,1rem + 2vw,3rem)}
-.verify-stage{display:grid;gap:28px;padding:clamp(22px,1rem + 2.4vw,52px);
+/* ---------- Todas as ações, with Conferir beside the list ---------- */
+.ledger-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;margin-bottom:22px}
+.ledger-layout{display:grid;gap:var(--gap);align-items:start}
+@media (min-width:1100px){
+  .ledger-layout{grid-template-columns:minmax(0,1fr) minmax(0,25rem);gap:32px}
+  .ledger-layout .verify-stage{position:sticky;top:92px;order:2}
+  .ledger-main{order:1}
+}
+.verify-stage{gap:14px;scroll-margin-top:96px;
   background:
-    radial-gradient(70% 90% at 100% 0%,color-mix(in srgb,var(--ok) 11%,transparent),transparent 60%),
-    radial-gradient(60% 80% at 0% 100%,color-mix(in srgb,var(--s4) 12%,transparent),transparent 60%),
+    radial-gradient(90% 60% at 100% 0%,color-mix(in srgb,var(--ok) 12%,transparent),transparent 65%),
+    radial-gradient(80% 60% at 0% 100%,color-mix(in srgb,var(--s4) 12%,transparent),transparent 65%),
     linear-gradient(180deg,var(--tile-top),var(--tile-bottom)),var(--surface)}
-@media (min-width:960px){ .verify-stage{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:center;gap:56px} }
-.verify-copy{display:grid;gap:16px}
-
-/* ---------- Todas as ações ---------- */
-.ledger-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;margin-bottom:18px}
-.decision-note{display:flex;align-items:flex-start;gap:10px;margin-bottom:18px;font-size:var(--text-small);color:var(--text-2)}
+.verify-stage h2{font-size:clamp(1.75rem,1.4rem + 1.4vw,2.375rem);margin-top:6px}
+.verify-stage .eyebrow-num .icon{width:13px;height:13px;color:var(--ok)}
+.decision-note{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;font-size:var(--text-small);color:var(--text-2)}
 .decision-note .icon{margin-top:2px}
 .sample-banner{display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 12px;margin-bottom:16px;padding:12px 16px;border-radius:14px;border:1px dashed color-mix(in srgb,var(--building) 55%,transparent);background:var(--building-bg);color:var(--text);font-size:var(--text-small)}
 .sample-banner .mono{color:var(--building);font-weight:600;letter-spacing:.08em}
-.sample-tools{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
-.ledger-list{max-width:58rem}
+.sample-tools{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.tile .sample-tools p{font-size:var(--text-small)}
+.sample-tools .btn{justify-self:start}
 .ledger-list .chain-empty{margin-top:10px}
 
 /* ---------- Dinheiro ---------- */

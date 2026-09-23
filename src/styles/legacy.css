@@ -9,8 +9,8 @@
 .lost-grid > div{display:grid;gap:22px;justify-items:start}
 .stairs-box{padding:clamp(20px,1rem + 1vw,32px);border-radius:var(--r-tile);border:1px solid var(--line);background:linear-gradient(180deg,var(--tile-top),var(--tile-bottom)),var(--surface);box-shadow:inset 0 1px 0 var(--highlight),var(--shadow-tile)}
 .stairs{display:flex;align-items:flex-end;gap:8px;min-height:13rem}
-.stairs li{flex:1;display:flex}
-.stairs .step{flex:1;display:grid;align-content:start;gap:8px;min-height:calc(var(--n) * 2.4rem + 2rem);padding:12px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface-2);font-size:var(--text-small);font-weight:500}
+.stairs li{flex:1;display:flex;min-width:0}
+.stairs .step{flex:1;min-width:0;overflow-wrap:anywhere;display:grid;align-content:start;gap:8px;min-height:calc(var(--n) * 2.4rem + 2rem);padding:12px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface-2);font-size:var(--text-small);font-weight:500}
 .stairs .step--missing{border-style:dashed;background:transparent;color:var(--text-3)}
 .step-missing-mark{font-family:var(--font-mono);font-size:1.25rem;color:var(--building)}
 .stairs-box figcaption{margin-top:14px;font-size:var(--text-small);color:var(--text-2)}

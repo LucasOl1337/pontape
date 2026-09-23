@@ -31,7 +31,7 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <meta name="color-scheme" content="dark light" />
     {noindex && <meta name="robots" content="noindex" />}
     <!-- Theme before first paint: the saved choice, or the device's. Without JS the site stays dark. -->
-    <script is:inline>(function(){var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t;})();</script>
+    <script is:inline>(function(){let t;try{t=localStorage.getItem('theme')}catch{/* no storage */}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t;})();</script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

@@ -30,7 +30,8 @@ function describe(r: LedgerVerification, count: number): Shown {
     };
   }
   const at = r.sequence ?? '';
-  const before = at && Number(at) > 1 ? `As ${Number(at) - 1} ações antes dela estão certas.` : undefined;
+  const earlier = Number(at) - 1;
+  const before = !at || earlier < 1 ? undefined : earlier === 1 ? 'A ação antes dela está certa.' : `As ${earlier} ações antes dela estão certas.`;
   return { state: 'broken', icon: 'x-circle', ...BROKEN[r.code](at), detail: before };
 }
 

@@ -38,6 +38,10 @@ const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.lengt
         <h1 id="page-title">{SHARE.transparencia.lead} <span class="grad">{SHARE.transparencia.highlight}</span></h1>
         <p class="lead">Cada ação entra aqui: dinheiro, entrega na rua, passo de candidato e decisão do projeto. Cada linha fica presa na anterior. Qualquer pessoa confere, sem pedir licença.</p>
         <p class="rule-strip"><Icon name="shield" /><strong>Toda ação aparece. Quem é a pessoa, não.</strong></p>
+        <div class="actions hero-actions">
+          <a class="btn btn--primary" href="#conferir"><Icon name="shield" />Conferir agora</a>
+          <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro</a>
+        </div>
       </div>
       <ol class:list={['chain-art', { 'chain-art--waiting': !art.length }]} aria-hidden="true">
         {art.length
