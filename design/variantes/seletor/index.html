@@ -36,10 +36,11 @@
 <header>
   <h1>PontaPé <span>· variantes</span></h1>
   <div class="group" role="group" aria-label="Variante" id="variants"></div>
+  <div class="group" role="group" aria-label="Rodada" id="rounds"></div>
   <div class="group" role="group" aria-label="Página" id="pages"></div>
   <div class="tools">
     <a id="newtab" href="#" target="_blank" rel="noopener">abrir em aba própria</a>
-    <span class="hint">teclas <kbd>1</kbd>–<kbd>6</kbd> ou <kbd>←</kbd> <kbd>→</kbd> · <kbd>L</kbd> alterna home e livro</span>
+    <span class="hint">teclas <kbd>1</kbd>–<kbd>6</kbd> ou <kbd>←</kbd> <kbd>→</kbd> · <kbd>L</kbd> home/livro · <kbd>R</kbd> rodada</span>
   </div>
 </header>
 <main>
@@ -48,48 +49,53 @@
 </main>
 <script>
   const VARIANTS = [
-    { id: 'atual', name: 'Atual', model: 'v1 · Design/UI', port: 4340 },
-    { id: 'prisma', name: 'Prisma', model: 'Opus 5.5 · premium', port: 4341 },
-    { id: 'cronica', name: 'Crônica', model: 'Opus 5.5 · editorial', port: 4342 },
-    { id: 'abaco', name: 'Ábaco', model: 'Opus 5.5 · dados', port: 4343 },
-    { id: 'maracatu', name: 'Maracatu', model: 'GPT-6-Astra · pop', port: 4344 },
-    { id: 'pluma', name: 'Pluma', model: 'GPT-6-Sol · mínimo', port: 4345 },
+    { id: 'atual', name: 'Atual', model: 'v1 · Design/UI', ports: [4340, 4340] },
+    { id: 'prisma', name: 'Prisma', model: 'Opus 5.5 · premium', ports: [4351, 4341] },
+    { id: 'cronica', name: 'Crônica', model: 'Opus 5.5 · editorial', ports: [4352, 4342] },
+    { id: 'abaco', name: 'Ábaco', model: 'Opus 5.5 · dados', ports: [4353, 4343] },
+    { id: 'maracatu', name: 'Maracatu', model: 'GPT-6-Astra · pop', ports: [4354, 4344] },
+    { id: 'pluma', name: 'Pluma', model: 'GPT-6-Sol · mínimo', ports: [4355, 4345] },
   ];
+  const ROUNDS = [{ id: 'r1', name: 'Rodada 1' }, { id: 'r2', name: 'Rodada 2 · escada' }];
   const PAGES = [{ id: 'home', name: 'Home', path: '/' }, { id: 'livro', name: 'Livro', path: '/transparencia' }];
   const params = new URLSearchParams(location.search);
   let current = Math.max(0, VARIANTS.findIndex(v => v.id === params.get('v')));
   let page = Math.max(0, PAGES.findIndex(p => p.id === params.get('p')));
+  let round = params.get('r') === 'r1' ? 0 : 1;
   const status = {};
   const $ = id => document.getElementById(id);
 
-  const urlOf = (v, p) => `http://${location.hostname}:${v.port}${p.path}`;
+  const portOf = (v, r = round) => v.ports[r];
+  const urlOf = (v, p) => `http://${location.hostname}:${portOf(v)}${p.path}`;
+  const key = (v, r = round) => `${v.id}:${r}`;
 
   function render() {
     $('variants').innerHTML = VARIANTS.map((v, i) => `
       <button type="button" data-v="${i}" aria-pressed="${i === current}">
-        <span class="dot ${status[v.id] || ''}" aria-hidden="true"></span>
+        <span class="dot ${status[key(v)] || ''}" aria-hidden="true"></span>
         <span><span class="name">${v.name}</span><span class="model">${v.model}</span></span>
         <kbd>${i + 1}</kbd>
       </button>`).join('');
     $('pages').innerHTML = PAGES.map((p, i) => `<button type="button" data-p="${i}" aria-pressed="${i === page}">${p.name}</button>`).join('');
+    $('rounds').innerHTML = ROUNDS.map((r, i) => `<button type="button" data-r="${i}" aria-pressed="${i === round}">${r.name}</button>`).join('');
   }
 
   function show() {
     const v = VARIANTS[current], p = PAGES[page];
     const url = urlOf(v, p);
     $('newtab').href = url;
-    $('down').classList.toggle('show', status[v.id] === 'off');
+    $('down').classList.toggle('show', status[key(v)] === 'off');
     if ($('view').dataset.src !== url) { $('view').dataset.src = url; $('view').src = url; }
-    history.replaceState(null, '', `?v=${v.id}&p=${p.id}`);
-    document.title = `${v.name} · ${p.name} · PontaPé`;
+    history.replaceState(null, '', `?v=${v.id}&p=${p.id}&r=${ROUNDS[round].id}`);
+    document.title = `${v.name} · ${ROUNDS[round].id.toUpperCase()} · ${p.name} · PontaPé`;
     render();
   }
 
   async function probe() {
-    await Promise.all(VARIANTS.map(async v => {
-      try { await fetch(`http://${location.hostname}:${v.port}/`, { mode: 'no-cors', cache: 'no-store' }); status[v.id] = 'ok'; }
-      catch { status[v.id] = 'off'; }
-    }));
+    await Promise.all(VARIANTS.flatMap(v => [0, 1].map(async r => {
+      try { await fetch(`http://${location.hostname}:${portOf(v, r)}/`, { mode: 'no-cors', cache: 'no-store' }); status[key(v, r)] = 'ok'; }
+      catch { status[key(v, r)] = 'off'; }
+    })));
     show();
   }
 
@@ -97,6 +103,7 @@
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.v) current = +b.dataset.v;
     if (b.dataset.p) page = +b.dataset.p;
+    if (b.dataset.r) round = +b.dataset.r;
     show();
   });
   document.addEventListener('keydown', e => {
@@ -105,6 +112,7 @@
     else if (e.key === 'ArrowRight') current = (current + 1) % VARIANTS.length;
     else if (e.key === 'ArrowLeft') current = (current - 1 + VARIANTS.length) % VARIANTS.length;
     else if (e.key.toLowerCase() === 'l') page = (page + 1) % PAGES.length;
+    else if (e.key.toLowerCase() === 'r') round = (round + 1) % ROUNDS.length;
     else return;
     e.preventDefault(); show();
   });
