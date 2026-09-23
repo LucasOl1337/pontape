@@ -60,4 +60,10 @@ Dúvidas pro Regente (dependem do Lucas ou de serviço externo):
 2. "Dar uma ideia" nos gargalos: proposta é discussão no GitHub quando o repositório abrir. Até lá, pra onde aponta?
 3. P1 (estado "planejado") e P5 (rótulo "precisa de ajuda") mexem no vocabulário do PRD.
 
-Onde parei: pronto pra commit, push e PR. Próximo passo: abrir a PR com os prints e reportar ao Regente.
+## Marco 3 · 22/09/2026 · entregue
+
+- PR: https://github.com/LucasOl1337/VidaNova/pull/5 (branch `design/f01-direcao`, 3 commits: direção e mapa, protótipo com prints, diário).
+- Report enviado ao Regente pelo Maestri, com as 3 dúvidas acima.
+- Bancada `vidanova-design` encerrada; servidor local do protótipo parado.
+
+Onde parei: esperando revisão do Regente e resposta das dúvidas. Próximo passo, se voltar: aplicar o que o Regente decidir sobre P1 a P8 e as dúvidas, e testar o Ouvir num celular de verdade.
