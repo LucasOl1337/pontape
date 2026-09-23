@@ -256,3 +256,19 @@ Também invertidos, pela mesma lógica: a escada do 404 (IA antes de Trabalho) e
 ### Onde parei
 
 PR aberta e report mandado. Próximo: o botão "Cores" pro canto direito (PR pequena), depois a varredura pelo 960×600.
+
+PR #71 integrada. A PR #70 do Anil trocou as paletas: a Noite saiu e a escura agora é a Carvão (`?cor=carvao`). Daqui em diante confiro nela.
+
+## 23/09/2026 · PR 5: botão "Cores" no canto direito
+
+Branch `prumo/f31-cores-direita`. Aprovado pelo Regente enquanto durar o teste de paletas. Mexi só nas linhas de posição do `<style>` do `PaletteSwitcher.astro`: a lista de paletas é do Anil.
+
+- Desktop: botão e painel em `right` no lugar de `left`.
+- Celular (<600 px): a barra continua de ponta a ponta; o botão dentro dela vai pra direita e o painel abre alinhado à direita.
+- O aviso que aparece embaixo (toast) encostava no botão em 360 e, com texto longo, entre 600 e 850 px. Agora, quando o botão existe, ele sobe e aparece logo acima (`bottom: var(--dock-h) + .5rem`, em `site.css`).
+
+Conferido na bancada, medindo retângulos: o botão não cobre o aviso nem o "Mostrar as outras 10" em 1920, 1440, 960, 700 e 360, nem o trilho da IA ou o "Sua vez" da home; o painel de cores abre inteiro dentro da tela em 1920, 1440 e 360. Carvão conferida. `npm run check` passa.
+
+A bancada `prumo-f31` foi encerrada às 10:40 por um `stop` normal (Super+W na viewer, pelo jeito); subi de novo com `agent-bench ensure` e o perfil estava preservado.
+
+Prints `prints/cores-antes-*` e `prints/cores-depois-*`.

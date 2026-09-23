@@ -509,6 +509,8 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
   border-left:4px solid var(--night-red); transform:translate(-50%, 160%); visibility:hidden;
 }
 .toast.shown{ transform:translate(-50%, 0); visibility:visible; transition:transform .25s var(--ease) }
+/* The palette button (D025, temporary) sits at the bottom: the toast shows just above it. */
+body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
 
 /* ---------- Ledger page: the book on one screen, the rest in tabs ---------- */
 .book{ display:grid; gap:2rem; max-width:var(--page); margin-inline:auto; padding:1.6rem var(--gutter) 2.4rem }

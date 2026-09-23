@@ -25,7 +25,7 @@ Endereço e âncora ficam em português, porque aparecem no link que as pessoas 
 - **Cabeçalho:** marca e quatro itens: Como funciona, Transparência, Como ajudar, Construir junto. No celular, Menu. O item da página fica marcado; dentro de `/construir/*`, "Construir junto" fica marcado.
 - **Faixa preta** "Em construção. O projeto ainda não recebe doação nem atende ninguém. Ver o que já existe" em todas menos a home, que diz isso na primeira tela.
 - **Rodapé:** marca, livro público, organização (sem registro formal nem canal de contato), privacidade, data do estado das peças e o link "Pra quem quer construir junto".
-- **Botão "Cores · em teste"**, fixo embaixo à esquerda até o Lucas escolher a paleta (D025, D026). `?cor=<nome>` troca e guarda a escolha no aparelho.
+- **Botão "Cores · em teste"**, fixo embaixo à direita até o Lucas escolher a paleta (D025, D026); no celular, numa barra de ponta a ponta. `?cor=<nome>` troca e guarda a escolha no aparelho. O aviso que aparece embaixo (toast) sobe pra ficar acima dele.
 
 ## A escada `/`
 
