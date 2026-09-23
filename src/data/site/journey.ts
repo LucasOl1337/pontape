@@ -9,6 +9,8 @@ export interface JourneyStep {
   text: string;
   /** "Já funciona?" in plain words. Opens with NOW_LEAD for the module's state (site-data.test.ts). */
   now: string;
+  /** The step where the AI starts going along (F36): the staircase draws its line from here. */
+  aiFrom?: true;
 }
 
 // How a step answers "já funciona?": the words for its module's state, then why.
@@ -19,21 +21,25 @@ export const NOW_LEAD: Record<ModuleStatus, string> = {
   planned: 'Ainda não começou.',
 };
 
-// Candidate journey, PRD §4, in the words of whoever reads the home (F29). The AI support comes
-// before the job (D028): first the person finds out what she knows how to do and what she wants,
-// then she is introduced to a job. From the conversation on, the AI goes along and never stops.
+// What the ground of the staircase says to whoever just arrived (D032): the system comes first,
+// the basics and the job after it.
+export const OPENING = 'A nossa IA vai ajudar a escolher com cuidado quem mais quer mudar de vida, e tudo fica à vista. Quem entra ganha comida, roupa e ajuda pra achar trabalho.';
+
+// Candidate journey, PRD §4, in the words of whoever reads the home (F29). It starts with the system
+// (D032): the AI helps to choose with care, and how it chooses stays in the open. Then the person is
+// found and talks to the AI. The AI support comes before the job (D028), and the AI never stops.
 export const STEPS: JourneyStep[] = [
-  { shortName: 'Encontro', title: 'Encontro', icon: 'pin', module: 'M3',
+  { shortName: 'Sistema', title: 'Escolher com cuidado', icon: 'scale', module: 'M3', aiFrom: true,
+    text: 'Pra cada real render, a IA vai ajudar a escolher quem mais quer mudar de vida. E o jeito de escolher vai ficar à vista de qualquer pessoa.',
+    now: 'Precisa de ajuda. A gente está pesquisando o jeito de escolher, pra ser justo com todo mundo.' },
+  { shortName: 'Busca', title: 'Ir até a pessoa', icon: 'pin', module: 'M3',
     text: 'Um voluntário na rua, um panfleto, um ponto público ou este site. Vários jeitos de chegar até quem quer recomeçar.',
     now: 'Precisa de ajuda. Ainda não tem voluntário na rua. Quem já faz esse trabalho pode ensinar muito.' },
   { shortName: 'Conversa', title: 'Conversa por voz', icon: 'mic', module: 'M4',
-    text: 'Uma conversa curta com a nossa IA, falando e ouvindo. Não precisa ler nem escrever. Daqui em diante, a IA vai junto.',
+    text: 'Uma conversa curta com a nossa IA, falando e ouvindo. Não precisa ler nem escrever. É assim que a gente conhece quem quer entrar.',
     now: 'Precisa de ajuda. A IA ainda aprende a entender sotaque, gíria e barulho de rua.' },
-  { shortName: 'Escolha', title: 'Escolha', icon: 'check-circle', module: 'M3',
-    text: 'A pessoa escolhe se quer participar. Depois da conversa, alguém da equipe confirma a entrada, com ajuda da IA.',
-    now: 'Precisa de ajuda. Como fazer essa escolha de um jeito justo ainda está em decisão.' },
   { shortName: 'Comida e roupa', title: 'Comida, roupa e higiene', icon: 'plate', module: 'M5',
-    text: 'Comida por alguns dias, roupa nova e limpa, higiene básica. Tudo pago com doação, e cada compra fica à vista.',
+    text: 'Quem entra ganha comida por alguns dias, roupa nova e limpa e higiene básica. Tudo pago com doação, e cada compra fica à vista.',
     now: 'Ainda não começou. Depende de receber doação, e isso ainda não abriu.' },
   { shortName: 'Apoio da IA', title: 'Apoio da IA', icon: 'voice-ai', module: 'M7',
     text: 'A IA conversa com a pessoa pra entender o que ela sabe fazer e o que ela quer. Depois ajuda a se preparar pra buscar trabalho.',

@@ -10,7 +10,7 @@ Mudou na 0.2: selo "Precisa de ajuda" (D011), nenhuma coleta de dado (D012), liv
 
 Duas ideias carregam o site inteiro.
 
-**Degrau.** Quem quer mudar de vida não precisa de um salto. Precisa do primeiro degrau, depois do próximo. Comida, roupa, higiene, trabalho, IA: cada um é um bloco, e os blocos empilhados viram escada. Isso casa com o pedido do Lucas ("por blocos, modular, cada parte bem separada"): a página é uma pilha de blocos, cada módulo do projeto é um bloco com número e estado, e a marca provisória são três blocos em escada.
+**Degrau.** Quem quer mudar de vida não precisa de um salto. Precisa do primeiro degrau, depois do próximo. Escolher com cuidado, ir até a pessoa, comida e roupa, IA, trabalho: cada um é um bloco, e os blocos empilhados viram escada. Isso casa com o pedido do Lucas ("por blocos, modular, cada parte bem separada"): a página é uma pilha de blocos, cada módulo do projeto é um bloco com número e estado, e a marca provisória são três blocos em escada.
 
 **À vista.** Transparência é o motivo de alguém confiar. Toda ação do projeto entra num livro público: dinheiro, entrega na rua, passo de candidato e decisão. Cada linha fica presa na anterior por uma marca, e o botão **Conferir** refaz as contas no aparelho de quem olha. A regra que aparece escrita na tela: **toda ação aparece; quem é a pessoa, não.** Tudo que é dinheiro ou dado ganha cara de caderno: número em fonte mono, marca em mono, data em tudo. Tudo que é estado ganha selo com data. O site diz "ainda não" e "não sabemos" sem vergonha.
 
