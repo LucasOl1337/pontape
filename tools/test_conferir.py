@@ -147,6 +147,14 @@ class ConferirTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("documento de produção não está em bytes JCS exatos", result.stdout)
 
+    def test_malformed_unicode_in_notice_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "unicode.json"
+            path.write_text('{"notice":"\\ud800","events":[]}', encoding="utf-8")
+            result = run_book(path)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("substituto Unicode isolado", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

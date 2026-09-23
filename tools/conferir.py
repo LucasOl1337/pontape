@@ -45,7 +45,10 @@ ACTIONS = {
     "candidate": {"contact_completed", "interview_completed", "referral_completed", "support_completed"},
 }
 MAX_SAFE_INTEGER = 2**53 - 1
-SAO_PAULO = ZoneInfo("America/Sao_Paulo")
+try:
+    SAO_PAULO = ZoneInfo("America/Sao_Paulo")
+except ZoneInfoNotFoundError:
+    SAO_PAULO = None
 
 
 class LedgerError(Exception):
@@ -74,11 +77,12 @@ def read_json(path):
             parse_float=no_fraction,
             parse_constant=no_fraction,
         )
+        canonical = jcs(document)
         if isinstance(document, dict) and set(document) == {"events", "checkpoint"}:
-            if raw != jcs(document):
+            if raw != canonical:
                 raise LedgerError("documento de produção não está em bytes JCS exatos")
         return document
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeError, ValueError) as exc:
         raise LedgerError(f"não foi possível ler o JSON: {exc}") from exc
 
 
@@ -215,6 +219,8 @@ def check_payload(payload, recorded_at, earlier, corrected_targets, project_sour
 
 
 def verify(document):
+    if SAO_PAULO is None:
+        raise LedgerError("base de fusos do sistema não contém America/Sao_Paulo")
     if isinstance(document, list):
         events = document
     elif isinstance(document, dict) and isinstance(document.get("events"), list):
