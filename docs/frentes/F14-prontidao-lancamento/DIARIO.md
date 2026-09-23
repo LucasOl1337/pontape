@@ -32,3 +32,8 @@ Validar build, CSP e diretórios gerados; abrir PR e reportar ao Regente.
 - Conferi estaticamente a CSP: o HTML atual tem CSS embutido e nenhum script embutido; a regra permite esse CSS. O único script do protótipo produz exatamente o hash permitido. A regra não contém `unsafe-inline` em `script-src` e nega microfone. O teste de navegador precisa ser repetido com a versão final portada pela F07, pois seu JS pode mudar.
 - Links locais do roteiro, checklist e diário resolvem; `git diff --cached --check` passou. O diff contém só os seis arquivos autorizados, sem alterações nas áreas do Design/UI ou EngenheiroFino.
 - Próximo passo: commitar, enviar a branch, abrir PR e reportar ao Regente. Pendências do dia do lançamento: nome/domínio, escolha apex ou `www`, autorização de publicação e validação final da F07.
+
+## 22/09/2026 · PR aberta
+
+- Commitei e enviei `bruto/f14-lancamento`; abri a [PR #27](https://github.com/LucasOl1337/VidaNova/pull/27) para `main`.
+- Próximo passo: avisar o Regente. A preparação está concluída; não houve conta, deploy nem alteração de DNS. A publicação ainda depende das decisões e verificações acima.
