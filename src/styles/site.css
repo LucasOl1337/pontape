@@ -119,6 +119,8 @@ main:focus{ outline:none }
 
 /* ---------- The front: one screen, the staircase is the page ---------- */
 .front{ display:grid; grid-template-rows:1fr auto; grid-template-columns:minmax(0, 1fr) }
+/* The staircase follows the page grid (F31): on a wide screen the title starts where the logo starts. */
+.stage{ width:100%; max-width:var(--page); margin-inline:auto }
 .stage, .panels, .panel{ min-width:0 }
 /* One screen on a 1440 x 900 desk; never so short that a step has to scroll inside itself. */
 /* The palette button (D025, temporary) is fixed at the bottom: the first screen ends clear of it. */
@@ -211,6 +213,12 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
 }
 @media (min-width:900px) and (min-height:560px) and (prefers-reduced-motion:no-preference){
   .stage-title{ transition:font-size .35s var(--ease) }
+}
+/* Wider than the page: the staircase stands inside the grid too, its floor starting under the logo
+   and ending under the last menu item. Below that it runs to the edges of the screen. */
+@media (min-width:100rem) and (min-height:560px){
+  .stair{ inset:0 var(--gutter) }
+  .stage-title, .panels{ width:calc((100cqw - 2 * var(--gutter)) * 4 / var(--n) - 1.2rem) }
 }
 /* A short stage (laptops): the step keeps what matters and drops the extras. */
 @container (max-height:700px){
@@ -491,7 +499,7 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
 .toast.shown{ transform:translate(-50%, 0); visibility:visible; transition:transform .25s var(--ease) }
 
 /* ---------- Ledger page: the book on one screen, the rest in tabs ---------- */
-.book{ display:grid; gap:2rem; padding:1.6rem var(--gutter) 2.4rem }
+.book{ display:grid; gap:2rem; max-width:var(--page); margin-inline:auto; padding:1.6rem var(--gutter) 2.4rem }
 .book-title{ margin-top:.5rem; font:500 clamp(2.4rem, 1.5rem + 2.6vw, 3.9rem)/.98 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
 .book-title em{ font-style:italic; color:var(--red) }
 .book-rule{ display:flex; flex-wrap:wrap; align-items:center; gap:.5rem .8rem; margin-top:1rem; font:italic 400 1.25rem/1.3 var(--font-serif) }
@@ -542,7 +550,7 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
   .book-numbers dd{ font-size:1.7rem }
 }
 
-.book-more{ padding:0 var(--gutter) 4rem }
+.book-more{ max-width:var(--page); margin-inline:auto; padding:0 var(--gutter) 4rem }
 .tabs{ display:flex; flex-wrap:wrap; gap:0 2rem; border-bottom:3px double var(--ink) }
 .tabs button{ min-height:48px; padding:.6rem 0; border:0; border-bottom:4px solid transparent; margin-bottom:-3px; background:none; cursor:pointer; font:500 clamp(1.25rem, 1rem + .8vw, 1.75rem)/1.1 var(--font-display) }
 .tabs button[aria-selected="true"]{ border-bottom-color:var(--red); color:var(--red) }
