@@ -13,7 +13,7 @@ import OpenSourceBlock from '../components/blocks/OpenSourceBlock.astro';
 import { getPublicLedger } from '../lib/ledger-view/source';
 import { SHARE } from '../data/site/share';
 
-const ledger = getPublicLedger();
+const ledger = await getPublicLedger();
 ---
 <BaseLayout
   title={SHARE.home.title}

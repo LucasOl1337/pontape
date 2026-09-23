@@ -9,7 +9,7 @@ import LedgerTypesBlock from '../components/blocks/LedgerTypesBlock.astro';
 import { getExampleLedger, getPublicLedger } from '../lib/ledger-view/source';
 import { SHARE } from '../data/site/share';
 
-const ledger = getPublicLedger();
+const ledger = await getPublicLedger();
 const example = await getExampleLedger();
 ---
 <BaseLayout
@@ -20,7 +20,7 @@ const example = await getExampleLedger();
   <LedgerHeroBlock ledger={ledger} />
   <LedgerVerifyBlock />
   <LedgerActionsBlock ledger={ledger} example={example} />
-  <LedgerMoneyBlock real={ledger.events} example={example} />
+  <LedgerMoneyBlock real={ledger.events} example={example.events} />
   <LedgerHowToBlock />
   <LedgerTypesBlock />
 </BaseLayout>

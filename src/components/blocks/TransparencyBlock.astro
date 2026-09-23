@@ -4,11 +4,11 @@ import BlockHead from '../site/BlockHead.astro';
 import ChainEntry from '../ledger/ChainEntry.astro';
 import VerifyPanel from '../ledger/VerifyPanel.astro';
 import LedgerData from '../ledger/LedgerData.astro';
-import type { PublicLedger } from '../../lib/ledger-view/source';
+import type { LedgerView } from '../../lib/ledger-view/source';
 import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
 import { correctionsOf, formatCents, sumField, sumMoney } from '../../lib/ledger-view/money';
 
-interface Props { ledger: PublicLedger }
+interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
 const events = ledger.events;
 const money = sumMoney(events);
@@ -56,5 +56,5 @@ const speech = (events.length
     <a class="btn btn--primary" href="/transparencia">Abrir o livro público<Icon name="arrow-right" /></a>
     <a class="btn" href="/transparencia?exemplo">Ver um exemplo</a>
   </div>
-  {latest.length > 0 && <LedgerData id="ledger-home" events={events} />}
+  {latest.length > 0 && <LedgerData id="ledger-home" ledger={ledger} />}
 </section>
