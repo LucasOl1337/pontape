@@ -2,17 +2,17 @@
   {
     "id": "texto-home-em-voz-alta",
     "title": "Revisar o texto da home lendo em voz alta",
-    "summary": "Propor frases curtas e claras para os blocos da home e o convite por voz.",
+    "summary": "Ler a home e os degraus em voz alta e propor frases mais curtas onde a leitura trava.",
     "type": "conteudo",
     "module": "M1",
     "goodFirst": true,
-    "bottleneck": "conversar-com-quem-nao-le",
+    "bottleneck": null,
     "issueNumber": 7
   },
   {
     "id": "teclado-e-texto-ampliado",
-    "title": "Verificar teclado e texto ampliado na home",
-    "summary": "Testar foco, ordem de navegação e leitura com A+ e zoom no celular.",
+    "title": "Verificar o site só com teclado e com zoom",
+    "summary": "Usar a home, o livro e as páginas de Construir junto só pelo teclado e com zoom de 200%.",
     "type": "design",
     "module": "M1",
     "goodFirst": true,

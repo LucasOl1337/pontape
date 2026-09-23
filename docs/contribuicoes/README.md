@@ -1,6 +1,6 @@
 # Contribuições abertas
 
-`contribuicoes.json` é o catálogo local que o site pode ler durante o build. Cada entrada representa **uma issue aberta** em [LucasOl1337/VidaNova](https://github.com/LucasOl1337/VidaNova/issues). A ordem atual põe tarefas da plataforma e da transparência primeiro; não é uma promessa de calendário ou de que os demais módulos já estejam operando.
+`contribuicoes.json` é o catálogo local que o site pode ler durante o build. Cada entrada representa **uma issue aberta** em [LucasOl1337/pontape](https://github.com/LucasOl1337/pontape/issues). O site mostra a lista em `/construir/tarefas`. A ordem atual põe tarefas da plataforma e da transparência primeiro; não é uma promessa de calendário ou de que os demais módulos já estejam operando.
 
 ## Formato
 
@@ -14,10 +14,10 @@ O arquivo contém um array de objetos:
 | `type` | string | Uma das labels de tipo: `codigo`, `design`, `pesquisa`, `campo`, `juridico`, `conteudo`. |
 | `module` | string | Módulo do [PRD](../PRD.md#5-módulos), de `M1` a `M9`; também é label da issue. |
 | `goodFirst` | boolean | `true` quando a issue tem a label `bom-primeiro-passo`. |
-| `bottleneck` | string ou null | Gargalo do [mapa do site](../design/MAPA-DO-SITE.md#06--gargalos) ao qual a tarefa responde. `null` para tarefas sem ligação direta. |
-| `issueNumber` | integer | Número da issue; URL: `https://github.com/LucasOl1337/VidaNova/issues/{issueNumber}`. |
+| `bottleneck` | string ou null | Pergunta em aberto de `/construir/gargalos` (`src/data/site/bottlenecks.ts`) à qual a tarefa responde; a tarefa aparece embaixo dela. `null` para tarefas sem ligação direta. |
+| `issueNumber` | integer | Número da issue; URL: `https://github.com/LucasOl1337/pontape/issues/{issueNumber}`. |
 
-Valores de `bottleneck`: `achar-a-pessoa-certa`, `conversar-com-quem-nao-le`, `receber-doacao-do-jeito-certo`, `escolha-justa`, `seguranca-no-encontro`. Eles cobrem os cinco itens do bloco 06 do mapa. O texto mostrado ao público deve usar os nomes escritos no mapa, não esses identificadores.
+Valores de `bottleneck`: `achar-a-pessoa-certa`, `conversar-com-quem-nao-le`, `receber-doacao-do-jeito-certo`, `escolha-justa`, `seguranca-no-encontro`. Eles cobrem as cinco perguntas de `/construir/gargalos`. O texto mostrado ao público usa o título de cada pergunta, não esses identificadores.
 
 ## Como manter
 

@@ -104,4 +104,75 @@ Prints em `prints/`: `antes-*` é a main em `13bba7d`, `depois-*` é esta branch
 
 ### Onde parei
 
-PR aberta pra `main` e report mandado pro Regente. Próximo passo: reescrever as tarefas #7 e #8 em `docs/contribuicoes/contribuicoes.json` (passo 3 do brief, PR própria) e começar a varredura pelos defeitos de gravidade média da tabela acima.
+PR #67 integrada pelo Regente. Ele consertou o modelo de issue "Ideia para um gargalo" e me passou o `MAPA-DO-SITE.md`. A home fora da grade em 1920 sobe pra gravidade **alta**: é a tela do Lucas.
+
+## 23/09/2026 · PR 2: tarefas #7 e #8 e o mapa do site
+
+Branch `prumo/f31-tarefas-mapa`, a partir da `main` em `511da33`.
+
+### Tarefas #7 e #8 (passo 3 do brief)
+
+As duas falavam de coisas que saíram na D024: a #7 do "convite por voz" e a #8 do "A+". Em `docs/contribuicoes/contribuicoes.json`:
+
+- **#7** mantém o título. Resumo novo: "Ler a home e os degraus em voz alta e propor frases mais curtas onde a leitura trava." O gargalo vira `null`: desde a D024, a voz pra quem não lê está na entrevista (M4), não no site, e em `/construir/gargalos` a tarefa aparecia embaixo de "Conversar com quem não lê", o que confundia.
+- **#8** muda o título pra "Verificar o site só com teclado e com zoom" (o catálogo exige título idêntico ao da issue). Resumo: "Usar a home, o livro e as páginas de Construir junto só pelo teclado e com zoom de 200%."
+
+Texto pro Regente atualizar as issues no GitHub. Labels continuam as mesmas.
+
+**#7 · Revisar o texto da home lendo em voz alta**
+
+```markdown
+## Contexto
+
+- A home é uma escada: o Início, sete passos e "Sua vez". Cada passo tem um título, uma ou duas frases e uma linha que diz se já funciona.
+- O texto precisa servir pra quem lê pouco. Se trava lido em voz alta, está difícil.
+- Nenhuma frase pode prometer o que ainda não abriu.
+
+## Como ajudar
+
+Leia em voz alta o Início, os sete passos e "Sua vez". Onde a leitura travar, anote o degrau, o texto de hoje e uma versão mais curta. Use só exemplos inventados.
+
+## Pronto quando
+
+A revisão cobre os nove degraus, com o motivo de cada troca, sem mudar o estado real das peças.
+
+## Documentos
+
+- https://github.com/LucasOl1337/pontape/blob/main/docs/design/MAPA-DO-SITE.md
+- https://github.com/LucasOl1337/pontape/blob/main/src/data/site/journey.ts
+
+> Use somente exemplos fictícios e não publique dados pessoais, contatos, voz, fotos ou comprovantes originais.
+```
+
+**#8 · Verificar o site só com teclado e com zoom**
+
+```markdown
+## Contexto
+
+- O site tem a escada da home (anda com as setas, Home e End), a ficha de cada peça, o livro público com filtros e o botão Conferir, e as páginas de Construir junto, com filtros e perguntas que abrem e fecham.
+- Tudo isso precisa funcionar sem mouse e com o texto grande.
+
+## Como ajudar
+
+Percorra a home, `/transparencia` e as páginas de `/construir` só com o teclado. Depois repita com zoom de 200% no navegador e no celular. Pra cada problema, anote a página, o componente, os passos, o que você esperava e o que aconteceu. Um print sem dado pessoal ajuda.
+
+## Pronto quando
+
+Existe uma lista do que foi verificado e uma issue que dá pra reproduzir pra cada problema. Em tela estreita, nada some e todo controle mostra onde está o foco.
+
+## Documentos
+
+- https://github.com/LucasOl1337/pontape/blob/main/docs/design/MAPA-DO-SITE.md
+
+> Use somente exemplos fictícios e não publique dados pessoais, contatos, voz, fotos ou comprovantes originais.
+```
+
+### Mapa do site
+
+`docs/design/MAPA-DO-SITE.md` reescrito do zero, versão 0.3, curto: as páginas com endereço e pra quem são, o que vale em todas, a escada degrau por degrau, o livro, os cinco de Construir junto num molde só, as âncoras de cada página, a tabela dos endereços antigos que redirecionam, os selos e as regras. A versão 0.2 (blocos empilhados, Ouvir, A+, "Ainda não abriu" no repositório) ficou no histórico do git. Tirei a coluna "Hoje" dos selos: o estado de cada peça mora em `modules.ts` e a tabela ficava velha.
+
+`docs/contribuicoes/README.md` apontava o campo `bottleneck` pra seção 06 do mapa antigo e as issues pro endereço do repositório antigo. Agora aponta pra `/construir/gargalos` e `bottlenecks.ts`, e pro `LucasOl1337/pontape`.
+
+### Onde parei
+
+PR aberta e report mandado. Próximo: a varredura, começando pela home em 1920 (alta).
