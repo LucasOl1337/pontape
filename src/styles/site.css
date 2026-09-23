@@ -129,16 +129,19 @@ main:focus{ outline:none }
 /* The staircase follows the page grid (F31): on a wide screen the title starts where the logo starts. */
 .stage{ width:100%; max-width:var(--page); margin-inline:auto }
 .stage, .panels, .panel{ min-width:0 }
-/* One screen on a 1440 x 900 desk; never so short that a step has to scroll inside itself. */
-@media (min-width:1180px) and (min-height:560px){ .front{ min-height:max(calc(100svh - var(--header-h) - var(--strip-h)), 46rem) } }
-.stage{ position:relative; --num-size:clamp(1.2rem, 3.2cqh, 1.9rem); --name-size:clamp(.72rem, 1.7cqh, .95rem); --label-pad:.5rem;
-  --label-h:calc(var(--label-pad) + var(--num-size) + .1rem + 2.2 * var(--name-size) + .35rem); --rail-d:clamp(6px, 1cqh, 10px); --head:max(31cqh, 12.5rem); --u:calc((100cqh - var(--label-h) - var(--head)) / (var(--n) - 1)) }
+/* One screen on a 1440 x 900 desk, with air under the staircase (4.5rem, down to 2.5rem on a short
+   screen), and never so short that a step has to scroll inside itself (F36). */
+@media (min-width:1180px) and (min-height:560px){
+  .front{ --air:clamp(2.5rem, 100svh - var(--header-h) - var(--strip-h) - 41.5rem, 4.5rem); padding-bottom:var(--air);
+    min-height:max(calc(100svh - var(--header-h) - var(--strip-h)), calc(41.5rem + var(--air))) }
+}
+.stage{ position:relative; --label-h:clamp(3rem, 7.5cqh, 4.5rem); --rail-h:clamp(1.8rem, 4cqh, 2.6rem); --head:max(31cqh, 12.5rem); --u:calc((100cqh - var(--label-h) - var(--rail-h) - var(--head)) / (var(--n) - 1)) }
 .stage-title{ font:500 clamp(2.2rem, 7cqh, 4.6rem)/1.02 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
 .stage-title em{ font-style:italic; color:var(--accent) }
 
 /* Treads: one column each, the tread line on top, the riser on the left. The ones still ahead
    are dotted, like the path in the first round. */
-.stair{ display:grid; grid-template-columns:repeat(var(--n), minmax(0, 1fr)); align-items:end; --at:0 }
+.stair{ display:grid; grid-template-columns:repeat(var(--n), minmax(0, 1fr)); align-items:end; padding-bottom:var(--rail-h); --at:0 }
 .tread{
   position:relative; display:flex; flex-direction:column; min-width:0; height:calc(var(--label-h) + var(--k) * var(--u));
   padding:0; border:0; background:none; color:inherit; cursor:pointer; text-align:center;
@@ -155,46 +158,38 @@ main:focus{ outline:none }
 .tread[aria-selected="true"] .tread-block{ background:repeating-linear-gradient(-45deg, color-mix(in srgb, var(--ink) 13%, transparent) 0 1px, transparent 1px 8px) }
 /* The ring goes around the whole tread, name included: the ground tread has no block to draw it on. */
 .tread:focus-visible{ outline:3px solid var(--accent); outline-offset:-3px }
-/* The icon never outgrows the lowest tread, so it never runs into the number under it (F34). */
-.stage{ --icon-m:clamp(.4rem, 1.2cqh, .8rem); --icon:min(clamp(22px, 5.4cqh, 50px), calc(var(--u) - 2 * var(--icon-m))) }
-.tread-icon{ width:var(--icon); height:var(--icon); margin:var(--icon-m) auto 0; stroke-width:1.7; color:var(--ink) }
+.tread-icon{ width:clamp(22px, 5.4cqh, 50px); height:clamp(22px, 5.4cqh, 50px); margin:clamp(.6rem, 2.2cqh, 1.2rem) auto 0; stroke-width:1.7; color:var(--ink) }
 .tread.is-ahead .tread-icon{ color:var(--ink-2) }
 .tread-ball{ position:absolute; left:50%; bottom:calc(100% + 3px); width:clamp(30px, 7cqh, 56px); height:auto; transform:translateX(-50%); fill:none; stroke:var(--ink); stroke-width:2.2; stroke-linejoin:round }
-.tread-label{ display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:.1rem; height:var(--label-h); padding:var(--label-pad) .2rem 0; border-top:1px solid var(--ink) }
-.tread-num{ font:italic 500 var(--num-size)/1 var(--font-display); color:var(--accent) }
-/* The number sits at a fixed distance under the floor and a name that wraps grows downward, so the
-   numbers stay on one line and never touch the floor (F34). Início and Sua vez, which have no
-   number, put their name on the same line as the others. */
-.tread-name{ font:700 var(--name-size)/1.1 var(--font-sans); letter-spacing:.04em; text-transform:uppercase; overflow-wrap:anywhere }
+.tread-label{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.1rem; height:var(--label-h); border-top:1px solid var(--ink); padding-inline:.2rem }
+.tread-num{ font:italic 500 clamp(1.2rem, 3.2cqh, 1.9rem)/1 var(--font-display); color:var(--accent) }
+/* Every name keeps room for two lines, so a name that wraps does not lift its number; Início and
+   Sua vez, which have no number, put their name on the same line as the others. */
+.tread-name{ min-height:2.2em; font:700 clamp(.72rem, 1.7cqh, .95rem)/1.1 var(--font-sans); letter-spacing:.04em; text-transform:uppercase; overflow-wrap:anywhere }
 .tread[aria-selected="true"] .tread-name{ color:var(--accent) }
-.tread:first-child .tread-label, .tread:last-of-type .tread-label{ padding-top:calc(var(--label-pad) + var(--num-size) + .1rem) }
+.tread:first-child .tread-label, .tread:last-of-type .tread-label{ padding-top:calc(clamp(1.2rem, 3.2cqh, 1.9rem) + .1rem) }
 
 /* Someone: the dot in the accent colour, hopping from tread to tread. */
 .walker{
   position:absolute; z-index:3; width:22px; height:22px; margin:0 0 -12.5px -11px; border-radius:50%; background:var(--accent);
   box-shadow:0 0 0 4px var(--paper); pointer-events:none;
-  left:calc((var(--at) + .5) / var(--n) * 100%); bottom:calc(var(--label-h) + var(--at) * var(--u));
+  left:calc((var(--at) + .5) / var(--n) * 100%); bottom:calc(var(--rail-h) + var(--label-h) + var(--at) * var(--u));
   transition:left .55s var(--ease), bottom .55s cubic-bezier(.3, 1.5, .5, 1);
 }
 .walker-label{ position:absolute; right:calc(100% + .5rem); bottom:100%; font:italic 400 clamp(1rem, 2.6cqh, 1.4rem)/1 var(--font-serif); color:var(--accent); white-space:nowrap; transition:opacity .3s }
 .stage:not([data-at="1"]) .walker-label{ opacity:0 }
 .stage[data-at="0"] .walker{ margin-left:clamp(20px, 3vw, 44px) }
 
-/* The AI goes along (D028): a handrail that climbs with the staircase, just above the treads, from
-   the conversation to the top and on (F34). The line is drawn tread by tread; the phrase and the
-   arrow sit at the top end, over the last tread, where nothing else is. */
-.tread.on-rail .tread-block::after{
-  content:""; position:absolute; z-index:1; left:calc(-3px - var(--rail-d)); right:var(--rail-d); top:calc(-3px - var(--rail-d)); height:var(--u);
-  border-top:2px solid var(--accent); border-left:2px solid var(--accent); pointer-events:none;
-}
-.tread.rail-start .tread-block::after{ left:calc(-1 * var(--rail-d)); border-left:0 }
+/* The AI goes along (D028): a rail under the treads, from the conversation past the top of the
+   staircase, where it keeps going. Solid all the way, in the same colour as "alguém". */
 .rail{
-  position:absolute; right:var(--rail-d); bottom:calc(var(--label-h) + (var(--n) - 1) * var(--u) + var(--rail-d) + 3px);
-  display:flex; align-items:center; gap:.35rem; padding-bottom:var(--rail-lift, 1rem); color:var(--accent); pointer-events:none;
+  position:absolute; left:calc((var(--rail-from) + .5) / var(--n) * 100%); right:0; bottom:0; height:var(--rail-h);
+  display:flex; align-items:center; color:var(--accent); pointer-events:none;
 }
-.rail::after{ content:""; position:absolute; right:-1px; bottom:-5px; width:9px; height:9px; border-top:2px solid currentColor; border-right:2px solid currentColor; transform:rotate(45deg) }
-.rail .icon{ width:1.4em; height:1.4em; stroke-width:1.9 }
-.rail-label{ font:italic 400 clamp(1rem, 2.4cqh, 1.3rem)/1 var(--font-serif); white-space:nowrap }
+.rail::before{ content:""; position:absolute; left:0; right:4px; top:50%; border-top:2px solid currentColor }
+.rail::after{ content:""; position:absolute; right:4px; top:50%; width:9px; height:9px; border-top:2px solid currentColor; border-right:2px solid currentColor; transform:translateY(-50%) rotate(45deg) }
+.rail .icon{ position:relative; width:1.5em; height:1.5em; margin-left:-.75em; padding:.1em; background:var(--paper); stroke-width:1.9 }
+.rail-label{ position:relative; padding-inline:.3rem .45rem; background:var(--paper); font:italic 400 clamp(1rem, 2.4cqh, 1.3rem)/1 var(--font-serif); white-space:nowrap }
 
 /* Panels: one per tread, shown in the same place. */
 .panel{ outline:none }
@@ -241,7 +236,7 @@ main:focus{ outline:none }
   .panels{ padding:var(--ring-room); margin-left:calc(var(--gutter) - var(--ring-room)); width:calc(var(--corner-w) + 2 * var(--ring-room)) }
   .stage-title{ margin-top:3cqh }
   .stage:not([data-at="0"]) .stage-title{ font-size:clamp(1.3rem, 3.4cqh, 2.3rem); line-height:1.12; letter-spacing:-.015em }
-  .panels{ flex:1 1 0; min-height:0; margin-top:calc(clamp(.8rem, 2.6cqh, 1.8rem) - var(--ring-room)); margin-bottom:calc(var(--label-h) + 3 * var(--u) + var(--rail-d) + 2px + 1.2cqh - var(--ring-room)); overflow:auto; scrollbar-width:thin }
+  .panels{ flex:1 1 0; min-height:0; margin-top:calc(clamp(.8rem, 2.6cqh, 1.8rem) - var(--ring-room)); margin-bottom:calc(var(--rail-h) + var(--label-h) + 3 * var(--u) + 1.2cqh - var(--ring-room)); overflow:auto; scrollbar-width:thin }
 }
 @media (min-width:1180px) and (min-height:560px) and (prefers-reduced-motion:no-preference){
   .stage-title{ transition:font-size .35s var(--ease) }
@@ -252,9 +247,8 @@ main:focus{ outline:none }
   .stair{ inset:0 var(--gutter) }
   .stage{ --corner-w:calc((100cqw - 2 * var(--gutter)) * 4 / var(--n) - 1.2rem) }
 }
-/* A short stage (laptops): the step keeps what matters and drops the extras. The stage is never
-   under 46rem (736 px), so the threshold sits above that (F34). */
-@container (max-height:800px){
+/* A short stage (laptops): the step keeps what matters and drops the extras. */
+@container (max-height:700px){
   .panel-note{ display:none }
   .panel-text{ font-size:1.0625rem }
   .panel-nav .btn{ min-height:44px; padding:.5rem .9rem; font-size:.9375rem }
@@ -262,15 +256,12 @@ main:focus{ outline:none }
 /* Narrow or short: title, staircase, step, all in the flow. The title keeps its size here, so the
    staircase under it never jumps. */
 @media not ((min-width:1180px) and (min-height:560px)){
-  .stage{ display:flex; flex-direction:column; gap:.8rem; padding:1.2rem var(--gutter) 1.6rem; --num-size:1.2rem; --label-pad:.3rem; --icon:16px; --label-h:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .3rem); --rail-d:5px; --rail-lift:.85rem; --head:2.6rem; --u:calc((min(24svh, 15rem) + 1.1rem - var(--label-h) - var(--head)) / (var(--n) - 1)) }
+  .stage{ display:flex; flex-direction:column; gap:.8rem; padding:1.2rem var(--gutter) 1.6rem; --label-h:3rem; --rail-h:1.6rem; --head:1.5rem; --u:calc((min(24svh, 15rem) - var(--label-h) - var(--head)) / (var(--n) - 1)) }
   .stage-title{ font-size:clamp(1.75rem, 8.2vw, 2.6rem) }
-  .stair{ position:relative; height:calc(min(24svh, 15rem) + 1.1rem); margin-inline:calc(-1 * var(--gutter)); padding-inline:.4rem }
-  .rail-label{ font-size:.875rem }
+  .stair{ position:relative; height:calc(min(24svh, 15rem) + var(--rail-h)); margin-inline:calc(-1 * var(--gutter)); padding-inline:.4rem }
+  .rail-label{ font-size:.9375rem }
   .tread-name{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap }
-  /* The low treads are a few pixels tall here: the icon goes under the floor, over its number. */
-  .tread-icon{ position:absolute; top:calc(100% + 1px + var(--label-pad)); left:50%; margin:0; transform:translateX(-50%) }
-  .tread-label{ padding-top:calc(var(--label-pad) + var(--icon) + .3rem) }
-  .tread:first-child .tread-label, .tread:last-of-type .tread-label{ padding-top:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .1rem) }
+  .tread-icon{ width:clamp(18px, 5.2vw, 30px); height:clamp(18px, 5.2vw, 30px); margin-top:.35rem }
   .walker{ width:16px; height:16px; margin:0 0 -9.5px -8px; box-shadow:0 0 0 3px var(--paper) }
   .walker-label{ display:none }
   .tread-ball{ width:clamp(24px, 7vw, 40px) }
@@ -282,9 +273,10 @@ main:focus{ outline:none }
    the longer steps scrolled inside it (F31). Same flow as the phone, with the tread names back, a
    taller staircase and the text at a reading width. */
 @media (min-width:600px) and (not ((min-width:1180px) and (min-height:560px))){
-  .stage{ --icon:18px; --name-size:.75rem; --label-h:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .1rem + 2.2 * var(--name-size) + .3rem); --u:calc((min(34svh, 18rem) + 2.1rem - var(--label-h) - var(--head)) / (var(--n) - 1)) }
-  .stair{ height:calc(min(34svh, 18rem) + 2.1rem) }
-  .tread-name{ position:static; width:auto; height:auto; overflow:visible; clip:auto; white-space:normal }
+  .stage{ --label-h:3.8rem; --u:calc((min(34svh, 18rem) - var(--label-h) - var(--head)) / (var(--n) - 1)) }
+  .stair{ height:calc(min(34svh, 18rem) + var(--rail-h)) }
+  .tread-icon{ width:22px; height:22px }
+  .tread-name{ position:static; width:auto; height:auto; overflow:visible; clip:auto; white-space:normal; font-size:.75rem }
   .panels{ max-width:46rem }
   .panel-ways{ grid-template-columns:1fr 1fr }
 }

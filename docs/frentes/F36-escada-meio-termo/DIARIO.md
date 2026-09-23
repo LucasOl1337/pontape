@@ -68,3 +68,38 @@ Uma janela de laptop 1366×768 de verdade tem uns 1366×657 de página (com as b
 ### Onde parei
 
 Proposta escrita, report pro Regente e combinação do campo com o Design/UI. Próximo passo: PR 1.
+
+## 23/09/2026 · Proposta aprovada, e o campo combinado com o Design/UI
+
+- **Regente:** proposta aprovada. No celular de 360 ficam só os números por enquanto, com o nome do degrau aberto no título; o print de 360 vai na PR 2 pra ele mostrar ao Lucas. Na PR 1, o print de antes do Lucas lado a lado com o meu na janela dele.
+- **Design/UI (F37):** o campo é `aiFrom?: true` no `JourneyStep`; o `Escada.astro` acha o passo com `STEPS.findIndex(s => s.aiFrom)` e um teste exige exatamente um passo marcado. Na F37 a marca vai no passo 1, o sistema; ela põe o mesmo campo na PR dela, e quem rebasear depois resolve uma linha no `journey.ts`. O `sr-only` fica "Desde o passo N, <nome>, a IA vai junto da pessoa em todos os passos e continua depois do trabalho, sem prazo e de graça." O "Daqui em diante, a IA vai junto" da Conversa sai na F37. Ela só mexe na frase do degrau 0 no `Escada.astro` (vira `OPENING` no `journey.ts`) e não toca no `site.css`. Os nomes novos têm até 12 letras (o maior hoje, "Comida e roupa", tem 14); a frase de abertura nova terá uns 150 caracteres contra 136: se somar uma linha em 1920×914, eu aviso.
+
+## 23/09/2026 · PR 1: a escada do antes, com ar embaixo
+
+Branch `prumo/f36-volta`.
+
+- O bloco da escada no `site.css` e o `Escada.astro` voltaram ao que eram em `00624f1` (a `main` das 11:47): linha da IA na faixa embaixo dos nomes, a partir da Conversa, rótulo e ícone de antes, limite de tela baixa em 700. Só com `--accent` no lugar de `--red`. Isso desfaz a #83, a parte da escada da #82 e a #81.
+- No lugar da reserva do Cores, o ar embaixo (só no computador, onde a escada ocupa a tela): `--air` = de 2,5rem a 4,5rem, conforme a altura da janela, e o mínimo da primeira tela passa a ser 41,5rem de palco mais o ar. O palco fica igual ao de antes em toda janela.
+
+Medido na bancada, com os degraus 0, 1, 7 e 8 abertos (px de CSS):
+
+| Janela | Palco | Nomes terminam | Linha da IA | Ar embaixo |
+|---|---|---|---|---|
+| Lucas de antes (1600×805) | 669 | 707 | 705 a 734 | 71 |
+| **Lucas hoje (1602×769)** | 664 | 703 | 700 a 729 | **40** |
+| 1920×914 | 778 | 813 | 812 a 843 | 71 |
+| 1920×1080 | 944 | 970 | 971 a 1009 | 71 |
+| 1440×900 | 764 | 800 | 798 a 829 | 71 |
+| 1366×768 | 664 | 703 | 700 a 729 | 39 |
+
+Idêntico ao antes em palco e posição de tudo; a página agora cabe na tela sem rolar de 768 de altura pra cima. Nenhum degrau rola por dentro. Em 1280×720 a linha da IA passa 9 px da borda (antes também) e em 1366×657 a escada passa 72 px (antes também): fica pra depois, como anotado.
+
+Conferência de que a medida vale: o print da `main` na bancada, na janela do Lucas, reproduz o print das 13:02 dele (chão, números e nomes cortados no mesmo lugar): `prints/lado-a-lado-agora-lucas-e-main.png`. E o desta PR bate com o print das 11:47: `prints/lado-a-lado-antes-lucas-e-pr1.png`.
+
+Celular e tablet voltam ao antes também. E volta o problema do meio-dia, em todo tamanho: no computador o número encosta no chão ou passa até 2 px dele, e o ícone do Encontro entra de 1 a 8 px no "1" (8 no tablet de 960×600). É o que a PR 2 conserta. Sem rolagem lateral em 360 e 390.
+
+`npm run check` passa (home com 21,8 KB de 60). Prints `prints/volta-antes-*` (`main` em `9de590d`) e `prints/volta-depois-*`, degrau 0 e Encontro aberto, na janela do Lucas, 1920×914, 1920×1080, 1440×900, 1366×768, 390 e 360.
+
+### Onde parei
+
+PR 1 aberta. Próximo passo: PR 2 (`prumo/f36-numeros`), com os números, os ícones, a linha a partir do passo com `aiFrom` e o nome de todo passo no tablet.
