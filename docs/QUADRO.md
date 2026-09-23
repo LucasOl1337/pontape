@@ -2,15 +2,16 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026, 13:08 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 23/09/2026, 13:22 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
-**Hoje:** home pro leigo (F29), cadernos em páginas (F31), transparência em duas camadas (F32) e paleta Anil (F33, D030) no ar. A escada da F34 foi **reprovada** (D031): a F36 acha o meio termo entre o antes e o agora. Às 13:04 todos os agentes reiniciaram com conversa nova, a pedido do Lucas; cada um retoma pelo BRIEF e pelo DIARIO. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
+**Hoje:** home pro leigo (F29), cadernos em páginas (F31), transparência em duas camadas (F32) e paleta Anil (F33, D030) no ar. A escada da F34 foi **reprovada** (D031): a F36 acha o meio termo entre o antes e o agora. A ordem da escada muda de novo (D032): a F37 põe o sistema de escolha, com IA e transparência, no primeiro degrau. Às 13:04 todos os agentes reiniciaram com conversa nova, a pedido do Lucas; cada um retoma pelo BRIEF e pelo DIARIO. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
 | F36 | [Escada: meio termo entre o antes e o agora](frentes/F36-escada-meio-termo/BRIEF.md) | prumo | `prumo/f36-*` | Despachada 13:08 (D031) | Proposta no DIARIO com a causa do enquadramento |
+| F37 | [A escada começa pelo sistema](frentes/F37-sistema-primeiro/BRIEF.md) | design | `design/f37-sistema-primeiro` | Despachada 13:22 (D032) | Proposta de ordem, nome no lugar do Encontro e frase de abertura; a PR só entra com o OK do Lucas |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
@@ -41,6 +42,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 8. ~~Abrir o repositório~~ **Resolvido:** público desde 23/09/2026 (D020)
 9. Responsável legal pelos dados dos candidatos (LGPD)
 10. Apelido por pessoa ("pessoa #014") no livro público, só com consentimento?
+11. Trecho perdido do áudio das 13:15 sobre a ordem: o que vem depois do sistema e os "pontos" onde a gente acha a pessoa ([feedback](fontes/2026-09-23-feedback-sistema-primeiro.md))
 
 ## Feito
 
