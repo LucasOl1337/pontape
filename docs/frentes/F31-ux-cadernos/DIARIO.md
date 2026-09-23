@@ -356,3 +356,42 @@ Com a PR 8, a varredura não tem mais defeito de gravidade alta ou média aberto
 Fora da F31: o livro (`/transparencia` e `/transparencia/tecnico`) é da F32 agora.
 
 Em espera, a pedido do Regente. Próximo, quando ele liberar: a passada de teclado e foco.
+
+PR #77 integrada (rebaseada). Nova rodada pedida pelo Regente: a passada só de teclado e foco em todas as páginas, incluindo o livro (o Design/UI está parado), e o alvo de 44 px do logo no celular. Os itens 2 e 3 da lista de baixa ficam como estão.
+
+## 23/09/2026 · PR 9: teclado e foco
+
+Branch `prumo/f31-foco`, a partir da `main` em `da50a7b`.
+
+### Como medi
+
+Um testador na bancada aperta Tab do começo ao fim de cada página até o foco voltar ao começo, e a cada passo registra: onde o foco está, se o elemento tem anel, se o anel cabe na tela, se alguma caixa com rolagem corta o anel, se o cabeçalho grudado ou o botão "Cores" ficam por cima, e o contraste do anel contra o fundo. Nove páginas (home, os cinco de Construir junto, `/transparencia`, `/transparencia/tecnico`, 404) em 1920×1080, 960×600 e 360×780. Depois, um roteiro de teclas pro que abre e fecha: menu do celular, ficha da peça (pela escada e pela lista), painel de cores, abas do livro, perguntas dos gargalos.
+
+Uma pegadinha do teste que custou uma rodada: o navegador da bancada guardava o HTML em cache, apontando pro CSS da build anterior. Desliguei o cache nas capturas (`Network.setCacheDisabled`) e refiz tudo.
+
+### O que estava certo
+
+- Nenhuma página prende o foco: em todas o Tab percorre tudo e volta ao começo.
+- A ordem faz sentido: pular pro conteúdo, logo, menu, conteúdo, rodapé e por último o "Cores".
+- Contraste do anel acima de 3:1 em todo lugar, inclusive no rodapé escuro e na caixa do Conferir.
+- A ficha da peça abre com o foco no Fechar, prende o Tab dentro enquanto está aberta, fecha no Esc e devolve o foco pra quem abriu. O painel de cores fecha no Esc e volta pro botão. O menu do celular fecha no Esc e volta pro botão Menu.
+
+### O que estava errado e mudou
+
+| # | Onde | O que acontecia | Correção |
+|---|---|---|---|
+| 1 | Home (todos os tamanhos), abas do livro técnico | O painel do degrau e o painel das abas recebem foco (`tabindex="0"`, pelo padrão de abas) sem anel nenhum | Anel no `:focus-visible` dos dois |
+| 2 | Home, 1180 px pra cima | O anel do "Ver como funciona" ficava sem o lado esquerdo: a caixa do degrau rola por dentro e corta o que passa da borda | A caixa ganha 8 px de folga em volta, com margem negativa do mesmo tamanho: nada muda de lugar (medido: as posições são as mesmas da `main`) |
+| 3 | Degrau "Início", todos os tamanhos | O anel ia no bloco do degrau, e o Início não tem bloco: o foco virava só um risco vermelho no chão | O anel vai em volta do degrau inteiro, com o nome |
+| 4 | 960 e 360 | O Tab rolava o elemento focado pra baixo do botão ou da barra do "Cores" (WCAG 2.4.11) | `scroll-padding-bottom` de 5,5rem quando o botão existe: o foco para acima dele |
+| 5 | Menu do celular | O botão Menu vinha depois dos links no HTML: depois de abrir, o Tab pulava os links e ia pro conteúdo atrás do menu | O botão vem antes dos links. Nada muda na tela |
+| 6 | Todas | Chegando do fim da página, o "Pular pro conteúdo" aparecia cortado lá no topo | Fixo na tela quando focado |
+
+Depois: 25 das 27 combinações de página e tamanho sem nenhum alerta. As duas que sobram são o painel das abas do livro técnico em 960 e 360, mais alto que a tela: ele encosta no botão "Cores" mas nunca some.
+
+### Anotado, sem mexer
+
+- O painel de cores continua aberto quando o Tab sai dele (vai pro começo da página). Ele é temporário e o comportamento é da parte do Anil; baixa.
+- No `/transparencia` há dois links "Como funciona" com destinos diferentes (o do menu e o do Conferir) e "Parte técnica" duas vezes. É do texto da F32; baixa.
+
+`npm run check` passa. Prints `prints/foco-antes-*` e `prints/foco-depois-*`, com o foco posto de verdade pelo Tab na bancada.
