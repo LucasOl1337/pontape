@@ -1,40 +1,37 @@
 ---
 import Icon from '../site/Icon.astro';
-import Badge from '../site/Badge.astro';
-import NotOpenBadge from '../site/NotOpenBadge.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
 import type { LedgerView } from '../../lib/ledger-view/source';
-import { STEPS } from '../../data/site/journey';
+import { NOW_LEAD, STEPS } from '../../data/site/journey';
 import { MODULES } from '../../data/site/modules';
-import { CONTRIBUTIONS, issueUrl } from '../../data/site/contributions';
-import { PROJECT_NAME, withName } from '../../data/site/project';
+import { STATUSES, type ModuleStatus } from '../../data/site/statuses';
 import type { IconName } from '../site/icon-names';
 
 interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
 const snapshot = transparencySnapshotSchema.parse(snapshotData);
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: snapshot.currency });
-const moduleOf = (id: string) => MODULES.find(m => m.id === id)!;
-const tasksOf = (id: string) => CONTRIBUTIONS.filter(c => c.module === id);
+const statusOf = (id: string) => MODULES.find(m => m.id === id)!.status;
 
-// The staircase is the page: the ground (what the project is), the 7 steps of the journey
-// (PRD §4) and the landing at the top (how to help). Each tread is a tab; its panel shows in place.
+// The staircase is the page: the ground (what this is, for whoever just arrived), the 7 steps of the
+// journey (PRD §4), each saying if it works yet, and the landing at the top (how to help). Each tread
+// is a tab; its panel shows in place. The builder words live in the Construir caderno (F29).
 const LAST = STEPS.length + 1;
-const treads: { name: string; label: string; icon?: IconName }[] = [
-  { name: 'Pontapé', label: 'O pontapé' },
-  ...STEPS.map(s => ({ name: s.shortName, label: s.title, icon: s.icon })),
-  { name: 'Sua vez', label: 'Sua vez', icon: 'people' },
+const treads: { name: string; icon?: IconName }[] = [
+  { name: 'Início' },
+  ...STEPS.map(s => ({ name: s.shortName, icon: s.icon })),
+  { name: 'Sua vez', icon: 'people' },
 ];
-const ways = [
-  { icon: 'coin', title: 'Doar', status: 'planned', when: 'Abre quando a conta oficial existir.', href: '#gargalo-receber-doacao-do-jeito-certo', link: 'Por quê' },
-  { icon: 'people', title: 'Ser voluntário', status: 'planned', when: 'Abre com o piloto na primeira cidade.' },
-  { icon: 'briefcase', title: 'Oferecer vaga', status: 'planned', when: 'Abre quando as primeiras pessoas forem escolhidas.' },
-  { icon: 'code', title: 'Contribuir', status: 'building', when: `${CONTRIBUTIONS.length} tarefas já listadas.`, href: '#contribuicoes', link: 'Ver os classificados' },
-] as const;
+const ways: { icon: IconName; title: string; status: ModuleStatus; lead: string; when: string; href?: string; link?: string }[] = [
+  { icon: 'coin', title: 'Doar', status: 'planned', lead: 'Ainda não abriu.', when: 'Abre quando tiver conta oficial.' },
+  { icon: 'people', title: 'Ser voluntário', status: 'planned', lead: 'Ainda não abriu.', when: 'Abre quando começar na primeira cidade.' },
+  { icon: 'briefcase', title: 'Oferecer vaga', status: 'planned', lead: 'Ainda não abriu.', when: 'Abre quando as primeiras pessoas entrarem.' },
+  { icon: 'code', title: 'Construir junto', status: 'live', lead: 'Já dá pra ajudar.', when: 'Tem tarefa de código, design, pesquisa e mais.', href: '#construir', link: 'Ver como' },
+];
 ---
 <section class="stage" id="inicio" aria-labelledby="stage-title" data-escada data-at="0" style={`--n:${treads.length}`}>
-  <h1 id="stage-title" class="stage-title">{PROJECT_NAME}: o pontapé inicial pra quem quer <em>mudar de vida.</em></h1>
+  <h1 id="stage-title" class="stage-title">O primeiro passo pra quem quer <em>mudar de vida.</em></h1>
 
   <div class="stair" id="como-funciona" role="tablist" aria-label="Os degraus do projeto. Use as setas pra subir e descer." data-stair>
     {treads.map((t, k) => (
@@ -52,42 +49,34 @@ const ways = [
   </div>
 
   <div class="panels">
-    <!-- Ground: what the project is. -->
+    <!-- Ground: what it is, why trust it, what to do now and whether it works yet. -->
     <div class="panel is-active" id="degrau-0" role="tabpanel" aria-labelledby="degrau-tab-0" tabindex="0" data-panel="0">
-      <p class="panel-kicker"><span>O pontapé</span><span class="panel-tags">Sem fins lucrativos · Código aberto · Tudo à vista</span></p>
-      <h2 class="panel-title">A gente dá o primeiro passo <em>junto.</em></h2>
-      <p class="panel-text">A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial.</p>
+      <p class="panel-text">A gente dá comida, roupa e higiene nos primeiros dias. E ajuda a achar trabalho. Tudo o que a gente faz fica à vista de qualquer pessoa.</p>
+      <p class="now now--building"><Icon name={STATUSES.building.icon} /><span><strong>Ainda em construção.</strong> Por enquanto, ninguém é atendido e nenhuma doação é recebida.</span></p>
       <div class="panel-nav">
-        <button class="btn btn--ink" type="button" data-go="1">Subir o primeiro degrau<Icon name="arrow-right" /></button>
-        <span class="panel-hint">Ou toque num degrau. No teclado, use as setas.</span>
+        <button class="btn btn--ink" type="button" data-go="1">Ver como funciona<Icon name="arrow-right" /></button>
+        <button class="btn" type="button" data-go={LAST}>Quero ajudar</button>
       </div>
     </div>
 
     {STEPS.map((s, i) => {
       const k = i + 1;
-      const m = moduleOf(s.module);
-      const tasks = tasksOf(m.id);
+      const status = statusOf(s.module);
+      const lead = NOW_LEAD[status];
       const prev = treads[k - 1]!, next = treads[k + 1]!;
       return (
         <div class="panel" id={`degrau-${k}`} role="tabpanel" aria-labelledby={`degrau-tab-${k}`} tabindex="0" data-panel={k}>
-          <p class="panel-kicker"><span>Passo {k} de {STEPS.length}</span>
-            <button class="module-chip" type="button" data-module={m.id} aria-haspopup="dialog"><span class="module-id">{m.id}</span>{m.name}<Badge status={m.status} /></button>
-          </p>
+          <p class="panel-kicker">Passo {k} de {STEPS.length}</p>
           <h2 class="panel-title">{s.title}</h2>
           <p class="panel-text">{s.text}</p>
+          <p class:list={['now', `now--${status}`]}><Icon name={STATUSES[status].icon} /><span><strong>{lead}</strong>{s.now.slice(lead.length)}</span></p>
           {k === STEPS.length && (
-            <p class="panel-ledger"><span><strong>{ledger.events.length}</strong> ações no livro</span><span><strong>{brl.format(snapshot.receivedCents / 100)}</strong> entrou</span><span><strong>{brl.format(snapshot.spentCents / 100)}</strong> saiu</span><a href="/transparencia">Abrir o livro público<Icon name="arrow-right" /></a></p>
+            <p class="panel-ledger">Até hoje: <strong>{ledger.events.length}</strong> ações anotadas e <strong>{brl.format(snapshot.receivedCents / 100)}</strong> recebido. <a href="/transparencia">Abrir o livro<Icon name="arrow-right" /></a></p>
           )}
-          <dl class="panel-facts">
-            <div><dt>Quem faz</dt><dd>{s.who.join(', ')}.</dd></div>
-            <div class="is-missing"><dt>O que falta</dt><dd>{withName(m.missing)}</dd></div>
-            <div><dt>Ajude aqui</dt><dd>{tasks.length
-              ? <><a href={issueUrl(tasks[0]!.issueNumber)} rel="noopener">{tasks[0]!.title}</a>{tasks.length > 1 && <> e <a href="#contribuicoes">mais {tasks.length - 1}</a></>}.</>
-              : <>Nenhuma tarefa aberta nesta peça. <a href="#contribuicoes">Ver os classificados</a>.</>}</dd></div>
-          </dl>
           <div class="panel-nav">
             <button class="btn" type="button" data-go={k - 1}><Icon name="arrow-left" /><span>{prev.name}</span></button>
             <button class="btn btn--ink" type="button" data-go={k + 1}><span>{next.name}</span><Icon name="arrow-right" /></button>
+            <button class="link-btn panel-more" type="button" data-module={s.module} aria-haspopup="dialog">Mais detalhes</button>
           </div>
         </div>
       );
@@ -95,31 +84,20 @@ const ways = [
 
     <!-- The landing: how to help. -->
     <div class="panel" id={`degrau-${LAST}`} role="tabpanel" aria-labelledby={`degrau-tab-${LAST}`} tabindex="0" data-panel={LAST}>
-      <p class="panel-kicker"><span>O topo da escada</span></p>
+      <p class="panel-kicker">O topo da escada</p>
       <h2 class="panel-title">Sua vez. <em>Tem lugar aqui.</em></h2>
       <ul class="panel-ways">
         {ways.map(w => (
           <li><Icon name={w.icon} class="way-icon" />
-            <span class="way-head"><span class="way-title">{w.title}</span>{w.status === 'planned' ? <NotOpenBadge /> : <Badge status={w.status} />}</span>
-            <span class="way-when">{w.when}{'href' in w && <> <a href={w.href}>{w.link}</a></>}</span></li>
+            <span class="way-title">{w.title}</span>
+            <span class="way-when"><strong class={`now--${w.status}`}>{w.lead}</strong> {w.when}{w.href && <> <a href={w.href}>{w.link}</a></>}</span></li>
         ))}
       </ul>
       <p class="panel-note"><Icon name="lock" />A gente não guarda contato de ninguém por enquanto.</p>
       <div class="panel-nav">
         <button class="btn" type="button" data-go={LAST - 1}><Icon name="arrow-left" /><span>{treads[LAST - 1]!.name}</span></button>
-        <button class="btn" type="button" data-go="0"><Icon name="undo" /><span>Voltar ao chão</span></button>
+        <button class="btn" type="button" data-go="0"><Icon name="undo" /><span>Voltar ao início</span></button>
       </div>
     </div>
   </div>
-
-  <aside class="today" aria-labelledby="today-title">
-    <h2 class="today-title" id="today-title">Hoje, em números</h2>
-    <dl>
-      <div><dt>Entrou</dt><dd>{brl.format(snapshot.receivedCents / 100)}</dd></div>
-      <div><dt>Saiu</dt><dd>{brl.format(snapshot.spentCents / 100)}</dd></div>
-      <div><dt>Pessoas atendidas</dt><dd>0</dd></div>
-      <div><dt>Ações no livro</dt><dd>{ledger.events.length}</dd></div>
-    </dl>
-    <p><span>{snapshot.status}. Aqui nunca vai ter número inventado.</span> <a href="/transparencia">Abrir o livro</a></p>
-  </aside>
 </section>
