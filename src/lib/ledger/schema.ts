@@ -1,15 +1,15 @@
-import { z } from 'zod';
+import * as z from 'zod/mini';
 
 export const GENESIS_HASH = '0'.repeat(64);
 export const REPOSITORY_URL = 'https://github.com/LucasOl1337/VidaNova';
 
-export const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
-export const sequenceSchema = z.string().regex(/^[1-9][0-9]{0,19}$/);
-const countSchema = z.string().regex(/^(0|[1-9][0-9]{0,19})$/);
-const commitSchema = z.string().regex(/^[a-f0-9]{40}$/);
+export const hashSchema = z.string().check(z.regex(/^[a-f0-9]{64}$/));
+export const sequenceSchema = z.string().check(z.regex(/^[1-9][0-9]{0,19}$/));
+const countSchema = z.string().check(z.regex(/^(0|[1-9][0-9]{0,19})$/));
+const commitSchema = z.string().check(z.regex(/^[a-f0-9]{40}$/));
 const common = {
   occurredOn: z.iso.date(),
-  correctionOf: sequenceSchema.nullable(),
+  correctionOf: z.nullable(sequenceSchema),
 };
 
 const projectPayloadSchema = z.discriminatedUnion('action', [
@@ -23,7 +23,7 @@ const projectPayloadSchema = z.discriminatedUnion('action', [
     ...common,
     type: z.literal('project'),
     action: z.literal('decision_recorded'),
-    decisionId: z.string().regex(/^D[0-9]{3}$/),
+    decisionId: z.string().check(z.regex(/^D[0-9]{3}$/)),
     sourceCommit: commitSchema,
   }),
   z.strictObject({
@@ -41,13 +41,13 @@ const financePayloadSchema = z.strictObject({
   action: z.enum(['movement_recorded', 'reversal']),
   currency: z.literal('BRL'),
   // Signed delta, in cents. BigInt arithmetic; never floating point.
-  amountCents: z.string().regex(/^-?[1-9][0-9]{0,19}$/),
+  amountCents: z.string().check(z.regex(/^-?[1-9][0-9]{0,19}$/)),
   category: z.enum(['donation', 'food', 'clothing', 'hygiene', 'operations', 'fee', 'refund']),
   evidence: z.enum(['pending', 'not_published']),
-}).refine((event) => event.action === 'reversal'
+}).check(z.refine((event) => event.action === 'reversal'
   ? event.correctionOf !== null : event.correctionOf === null, {
   message: 'Estorno exige referência; movimento novo não corrige outro evento.',
-});
+}));
 
 const fieldPayloadSchema = z.strictObject({
   ...common,
@@ -77,7 +77,7 @@ export const ledgerEventSchema = z.strictObject({
   hash: hashSchema,
 });
 
-export const ledgerSchema = z.array(ledgerEventSchema).max(100_000);
+export const ledgerSchema = z.array(ledgerEventSchema).check(z.maxLength(100_000));
 
 export const ledgerCheckpointSchema = z.strictObject({
   schemaVersion: z.literal(1),
