@@ -29,7 +29,7 @@ const steps = [
         <ol class="stairs" aria-hidden="true">
           {steps.map((s, i) => (
             <li style={`--n:${i + 1}`}>
-              <span class:list={['step', { 'step--missing': !s.icon }]}>{s.icon ? <Icon name={s.icon} /> : <span class="step-missing-mark">?</span>}{s.label}</span>
+              <span class:list={['step', { 'step--missing': !s.icon }]}>{s.icon ? <Icon name={s.icon} /> : <span class="step-missing-mark">?</span>}<span class="step-label">{s.label}</span></span>
             </li>
           ))}
         </ol>
