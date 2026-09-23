@@ -105,3 +105,39 @@ Celular e tablet voltam ao antes também. E volta o problema do meio-dia, em tod
 ### Onde parei
 
 PR 1 aberta. Próximo passo: PR 2 (`prumo/f36-numeros`), com os números, os ícones, a linha a partir do passo com `aiFrom` e o nome de todo passo no tablet.
+
+PR 1 integrada pelo Regente (#86, `6ca9089`).
+
+## 23/09/2026 · PR 2: números longe do chão e dos ícones
+
+Branch `prumo/f36-numeros`, rebaseada na `main` depois da #86. A linha da IA já começa no passo com `aiFrom` desde a F37 e a PR 1; aqui só o comentário do `.rail` no `site.css`, que ainda dizia "from the conversation".
+
+**No computador:**
+
+- O rótulo alinha pelo alto: o número a 8 px do chão (`--label-pad`), o nome logo embaixo. A altura do rótulo sai do conteúdo, com **uma** linha de nome (nenhum nome quebra de 1180 a 2560; os nomes da F37 são mais curtos), em vez das duas da #82. Fica com 51 px no palco de 664 (o antes tinha 50) e 64 no de 944 (o antes tinha 71): a escada não perde altura.
+- O ícone começa 14 px abaixo do degrau, pra ficar fora da bolinha de "alguém" (22 px mais o anel), e o tamanho é o que sobra até o chão, com folga: nunca chega no número. No primeiro jeito, com a margem de cima da #82 (8 px), a bolinha cobria o topo do ícone do degrau aberto. O ícone fica menor que no antes nas telas baixas (25 px na janela do Lucas, 33 em 1920×914, 44 em 1920×1080, 50 de 2560 pra cima), porque no antes ele só cabia porque invadia o número.
+
+**No tablet e no celular** (vem da #82, com a faixa da IA embaixo em vez do corrimão): o degrau 1 tem de 15 a 22 px de altura e nenhum ícone cabe nele. O ícone desce pra baixo do chão, em cima do número. No tablet vem ícone, número e nome, e a escada ganha 1rem. No celular ficam os números, sem o nome, como o Regente decidiu: o nome do degrau aberto está no título logo embaixo.
+
+Medido com o passo 1 aberto (px de CSS; "antes" é a `main` com a PR 1):
+
+| Tamanho | Chão ↔ número, antes → depois | Ícone ↔ número, antes → depois |
+|---|---|---|
+| Janela do Lucas (1602×769) | 0,3 → 8 | entrava 4,7 → 14,3 |
+| 1920×914 | 0,9 → 8 | entrava 4,3 → 15,3 |
+| 1920×1080 | 2,3 → 8 | entrava 1,1 → 16,6 |
+| 1440×900 | 0,8 → 8 | entrava 4,3 → 15,1 |
+| 1366×768 | 0,3 → 8 | entrava 4,7 → 14,3 |
+| 2560×1300 | 2,8 → 8 | 17,8 → 29,1 |
+| 1024×768 e 960×600 | 3,6 e 6,3 → ícone entre os dois | entrava 4 e 8,4 → 4,8 |
+| 390 e 360 | 10 e 11 → ícone entre os dois | entrava 1,6 e 0,9 → 4,8 |
+
+O enquadramento da PR 1 não muda: ar embaixo de 40 px na janela do Lucas, 39 em 1366×768 e 71 nos outros. Nenhum degrau rola por dentro (todos os degraus em 1180×700, 1180×800, 1280×720, janela do Lucas e 1920×914). Sem rolagem lateral em 320, 360 e 390. Entre o nome do Sistema e o ícone da linha da IA ficam 7 px na janela do Lucas, 8 em 1920×914 e 12 em 1920×1080.
+
+Fica como estava, do antes: o chão grosso do Início desce 3 px abaixo da linha dos outros degraus, e o nome "Início" fica 3 px mais baixo que os outros. Não mexi.
+
+`npm run check` passa. Prints `prints/numeros-antes-*` e `prints/numeros-depois-*`, com o passo 1 aberto e a home no Início, na janela do Lucas, 1920×914, 1920×1080, 1440×900, 1366×768, 1024×768, 768×1024, 390 e 360; `prints/numeros-perto-lucas-d1.png` é o pé da escada, antes e depois, de perto.
+
+### Onde parei
+
+PR 2 aberta. Os quatro pontos do brief estão atendidos: enquadramento (PR 1), nome de cada passo à vista no computador e no tablet (no celular, só os números, como decidido), a linha da IA embaixo dos nomes a partir do Sistema, e nenhum número encostando no chão ou num ícone.
