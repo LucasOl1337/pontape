@@ -222,6 +222,13 @@ No livro público, **candidato é só contagem** ("2 entrevistas concluídas"): 
 - O nome aparece num ponto só do código (`const PROJECT_NAME` no protótipo). Trocar ali troca a página inteira, o título da aba e o texto falado.
 - Quando o nome definitivo vier (PRD §10.1), a marca refaz só o desenho da palavra. A escada fica.
 
+## 10b. Ícone e prévia de compartilhamento
+
+- **Ícone:** os três blocos sobre um quadrado de papel com canto arredondado, pra não sumir em aba escura. Sai em SVG, ICO (16, 32, 48) e `apple-touch-icon` (180), tudo gerado no build a partir de `src/lib/share/logo.ts`, que também desenha a marca do topo.
+- **Prévia (Open Graph), 1200×630:** fundo de papel pontilhado, a listra de obra no alto, a marca e o nome, o título do hero com o grifo sol na última linha, e à direita a escada (home) ou a corrente (livro). Rodapé com uma frase curta. Sem foto, sem pessoa.
+- O nome sai de `PROJECT_NAME` e encolhe se for comprido. O título escolhe o maior tamanho que cabe em até quatro linhas acima do rodapé. Trocou o nome, a imagem muda no próximo build.
+- As URLs da prévia viram absolutas quando o build recebe `SITE_URL`. Sem domínio, ficam relativas.
+
 ## 11. Desempenho
 
 O público usa celular barato e internet ruim.
