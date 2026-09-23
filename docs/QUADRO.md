@@ -1,4 +1,4 @@
-# Quadro
+# Quadro · PontaPé
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
@@ -26,7 +26,7 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 
 Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
-1. **Nome e domínio.** Lucas sugeriu **PontaPé**: `pontape.com` ocupado, `pontape.org` livre, `.com.br` vencido em liberação. Domínio grátis da Hostinger cobre `.com`. No dia: raiz via troca de nameserver ou só `www` via CNAME ([LANCAMENTO](operacao/LANCAMENTO.md))
+1. **Domínio.** Nome decidido: **PontaPé** (D016). `pontape.com` ocupado; `pontape.org` livre; `pontape.com.br` vencido, em liberação; `.org.br` depois do CNPJ. Falta escolher qual comprar Domínio grátis da Hostinger cobre `.com`. No dia: raiz via troca de nameserver ou só `www` via CNAME ([LANCAMENTO](operacao/LANCAMENTO.md))
 2. Trecho perdido do áudio sobre dinheiro e "igreja"
 3. Trecho perdido antes da parte do design
 4. Doação antes de existir CNPJ. F03 recomenda **só captar depois de associação, CNPJ e conta própria**; Asaas como primeiro teste ([ESTRUTURA-JURIDICA.md](pesquisa/ESTRUTURA-JURIDICA.md), [DOACOES-E-TRANSPARENCIA.md](pesquisa/DOACOES-E-TRANSPARENCIA.md))

@@ -1,4 +1,6 @@
-# VidaNova · guia dos agentes
+# PontaPé · guia dos agentes
+
+O projeto se chama **PontaPé** (D016). Repositório, pasta e alguns documentos antigos ainda dizem VidaNova: é o mesmo projeto. No site, o nome vem só de `src/data/site/project.ts`.
 
 Organização sem fins lucrativos e open source que acha pessoas em vulnerabilidade que querem mudar de vida, dá o básico, conecta com trabalho e IA, e mostra ao vivo cada real doado. O produto está em [`docs/PRD.md`](docs/PRD.md): leia antes de começar qualquer frente.
 
@@ -11,6 +13,7 @@ Organização sem fins lucrativos e open source que acha pessoas em vulnerabilid
 | `fino` | EngenheiroFino · Codex GPT-6-Astra | Arquitetura e partes delicadas: dinheiro, dados, IA de voz |
 | `bruto` | ExecutorBruto · Codex GPT-6-Sol | Volume: pesquisa extensa, implementação de módulo |
 | `devin` | SubAgente (ligado ao EngenheiroFino) | Trabalho braçal, briefado e revisado pelo EngenheiroFino |
+| `var-1` a `var-5` | Prisma, Crônica, Ábaco (Claude Opus 5.5), Maracatu (Codex GPT-6-Astra), Pluma (Codex GPT-6-Sol) | Uma variante visual cada (F19), até o Lucas escolher a direção |
 
 Executor reporta ao Regente com `maestri ask "Regente" "<resumo + link da PR>"`. Só o Regente fala com o Lucas.
 

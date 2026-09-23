@@ -1,5 +1,5 @@
-// The only place with the provisional name and the date of the module statuses.
-export const PROJECT_NAME = 'VidaNova';
+// The only place with the project name (D016) and the date of the module statuses.
+export const PROJECT_NAME = 'PontaPé';
 export const STATUS_DATE = '2026-09-22';
 export const STATUS_DATE_SPOKEN = '22 de setembro de 2026';
 export const REPOSITORY_OPEN = false;

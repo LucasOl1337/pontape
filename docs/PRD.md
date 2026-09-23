@@ -1,4 +1,6 @@
-# PRD · VidaNova (nome provisório)
+# PRD · PontaPé
+
+Nome escolhido pelo Lucas em 22/09/2026 (D016). O repositório ainda se chama VidaNova.
 
 Rascunho v0.2 · 22/09/2026 · dono: Regente · fontes: [spec 01](fontes/2026-09-22-spec-01.md) e [spec 02](fontes/2026-09-22-spec-02.md) do Lucas
 
