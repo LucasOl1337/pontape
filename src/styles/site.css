@@ -122,7 +122,9 @@ main:focus{ outline:none }
 .front{ display:grid; grid-template-rows:1fr auto; grid-template-columns:minmax(0, 1fr) }
 .stage, .panels, .panel{ min-width:0 }
 /* One screen on a 1440 x 900 desk; never so short that a step has to scroll inside itself. */
-@media (min-width:900px) and (min-height:560px){ .front{ min-height:max(calc(100svh - var(--header-h) - var(--strip-h)), 46rem) } }
+/* The palette button (D025, temporary) sits in the bottom-left corner: the ground tread stays clear of it. */
+body:has(.palette-switcher){ --dock-h:4.5rem }
+@media (min-width:900px) and (min-height:560px){ .front{ min-height:max(calc(100svh - var(--header-h) - var(--strip-h)), 46rem); padding-bottom:var(--dock-h, 0px) } }
 .stage{ position:relative; --label-h:clamp(3rem, 7.5cqh, 4.5rem); --head:max(31cqh, 12.5rem); --u:calc((100cqh - var(--label-h) - var(--head)) / (var(--n) - 1)) }
 .stage-title{ font:500 clamp(2.2rem, 7cqh, 4.6rem)/1.02 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
 .stage-title em{ font-style:italic; color:var(--red) }
