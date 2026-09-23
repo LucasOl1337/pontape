@@ -272,3 +272,33 @@ Conferido na bancada, medindo retângulos: o botão não cobre o aviso nem o "Mo
 A bancada `prumo-f31` foi encerrada às 10:40 por um `stop` normal (Super+W na viewer, pelo jeito); subi de novo com `agent-bench ensure` e o perfil estava preservado.
 
 Prints `prints/cores-antes-*` e `prints/cores-depois-*`.
+
+PR #72 integrada.
+
+## 23/09/2026 · Varredura sistemática
+
+Na `main` em `286fe8d`, na bancada: a home com os 9 degraus, os cinco de Construir junto, o livro com as três abas, o 404, a ficha da peça e o menu do celular, em 1920×1080, 1440×900, 960×600 e 360×780 (81 prints). Pra cada um, medida automática de rolagem lateral, elemento saindo da tela, caixa rolando por dentro e alvo de toque abaixo de 40 px no celular, e revisão no olho por folhas de prints.
+
+**Nenhuma rolagem lateral e nenhum elemento fora da tela, em nenhuma página e tamanho.**
+
+| # | Página | Tamanho | O que está errado | Gravidade | Estado |
+|---|---|---|---|---|---|
+| 1 | Home | 960×600, 1024×768, 1100×700 | Abaixo de uns 1180 px a coluna de texto da escada fica estreita (4/9 da largura) e os degraus longos rolam por dentro dela: em 960×600 o 4 (15 px), o 7 (60) e o 8 (109); em 1024×768 o 8 (88). E em 960×600 a base da escada (nomes, trilho) fica abaixo da dobra | média | PR 6 |
+| 2 | Home | todos, mais visível em 360 e no tablet | Nos degraus baixos o bloco é mais curto que o ícone, o ícone empurra o rótulo e o "1" fica mais baixo que os outros; nome em duas linhas ("Comida e roupa") levanta o número dele; "Início" e "Sua vez" fora da linha dos outros nomes | média | PR 6 |
+| 3 | Ficha da peça | 1920 (+25 px), 1440 (+47), 960, 360 | A ficha rola por dentro até em 1920, onde falta pouco pra caber | média | próxima |
+| 4 | Todas menos a home | 360 | Faixa preta "Em construção" em três linhas, uns 100 px da primeira tela | média | próxima |
+| 5 | Home | 1180 a 1366 × até 720 de altura | A escada tem altura mínima de 46rem e passa da tela; o botão "Cores" cobre a ponta dela ("Sua vez", seta do trilho). Baixar o mínimo faz o "Sua vez" rolar por dentro (testado: 40rem dá 35 px em 1180×700), então fica assim enquanto o botão existir | baixa (o botão é temporário) | aceito |
+| 6 | Todas | 360 | O link do logo tem 27 px de altura: passa no mínimo AA (24 px), abaixo dos 44 recomendados | baixa | depois |
+| 7 | Livro | 360 | O texto da prova em "Como conferir" rola por dentro (65 px). É de propósito (`max-height` desde a F22) | — | não é defeito |
+
+## 23/09/2026 · PR 6: escada em tablet e rótulos alinhados
+
+Branch `prumo/f31-varredura`.
+
+**Tablet e laptop pequeno (abaixo de 1180 px):** a home passa a usar o layout em fluxo, que já era o do celular: título, escada, degrau, um embaixo do outro, e a página rola. Com três ajustes pra essa largura: os nomes dos degraus voltam a aparecer, a escada fica mais alta (34% da tela, até 18rem) e o texto do degrau para em 46rem de largura. Testei antes deixar a coluna de texto com 5 degraus em vez de 4: melhorou (o 8 em 960×600 foi de 109 pra 46 px), mas não zerou, e a base da escada continuava abaixo da dobra.
+
+Medido: nenhum degrau rola por dentro em 960×600, 1024×768, 1100×700, 768×1024 e 600×900; em 960×600 o Início inteiro cabe na primeira tela (botões terminam em 561 de 600). De 1180 pra cima nada muda.
+
+**Rótulos:** o bloco do degrau pode ficar menor que o ícone sem empurrar o rótulo; todo nome reserva duas linhas; "Início" e "Sua vez" põem o nome na mesma linha dos outros. Medido em 1920, 1440, 1180, 1024, 960 e 360: todos os números na mesma altura e todos os nomes começando na mesma linha (1 px de diferença no Início, pela borda do degrau).
+
+`npm run check` passa. Prints `prints/tablet-antes-*` (main em `286fe8d`) e `prints/tablet-depois-*`.
