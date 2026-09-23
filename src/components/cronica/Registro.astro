@@ -1,0 +1,89 @@
+---
+import Icon from '../site/Icon.astro';
+import ListenButton from '../site/ListenButton.astro';
+import ChainEntry from '../ledger/ChainEntry.astro';
+import LedgerData from '../ledger/LedgerData.astro';
+import VerifyPanel from '../ledger/VerifyPanel.astro';
+import ChapterHead from './ChapterHead.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { TYPES, TYPE_ORDER, type LedgerType } from '../../lib/ledger-view/phrases';
+import { correctionsOf } from '../../lib/ledger-view/money';
+
+interface Props { ledger: LedgerView; example: LedgerView }
+const { ledger, example } = Astro.props;
+const lists = [
+  { mode: 'real', view: ledger },
+  { mode: 'example', view: example },
+] as const;
+const count = (events: LedgerEvent[], type: LedgerType) => events.filter(e => e.payload.type === type).length;
+const EMPTY: Record<LedgerType, [string, string]> = {
+  finance: ['Nenhum real entrou nem saiu ainda.', 'A doação abre quando existir a conta oficial do projeto. Quando abrir, cada real aparece aqui. Aqui nunca vai ter número inventado.'],
+  field: ['Nenhuma entrega na rua ainda.', 'Isso começa com o piloto. Cada comida, kit ou roupa entregue vira uma linha, sem dizer quem recebeu nem onde.'],
+  candidate: ['Nenhum passo de candidato ainda.', 'A entrevista por voz ainda não abriu. Quando abrir, aparece aqui só a contagem: quantos contatos, entrevistas e encaminhamentos. Sem nome, rosto, apelido nem lugar.'],
+  project: ['Nenhuma ação do projeto publicada ainda.', 'O livro oficial entra junto com o verificador aberto, com cada decisão e cada mudança desde o começo.'],
+};
+---
+<section class="chapter registro" id="acoes" aria-labelledby="t-actions" data-ledger-actions>
+  <div class="wrap registro-grid">
+    <div class="registro-side">
+      <div class="conferir" id="conferir" aria-labelledby="t-verify"
+        data-speech="Confira você mesmo. O botão refaz a conta de cada ação no seu aparelho. Se alguém tiver mudado ou apagado qualquer linha, aparece aqui. Nada é enviado pra gente.">
+        <div class="conferir-head"><p class="kicker">Conferir</p><ListenButton target="conferir" /></div>
+        <h2 id="t-verify">Confira você mesmo.</h2>
+        <p>O botão refaz a conta de cada ação no seu aparelho. Se alguém tiver mudado ou apagado qualquer linha, aparece aqui.</p>
+        <VerifyPanel data="ledger-real" list="ledger-chain-real" where="Roda no seu aparelho. Nada é enviado pra gente.">
+          <a href="#como-conferir">Como funciona</a>
+        </VerifyPanel>
+      </div>
+      <div class="ledger-toolbar">
+        <div class="segmented" role="group" aria-label="Qual livro mostrar">
+          <button type="button" data-mode="real" aria-pressed="true">Livro de verdade</button>
+          <button type="button" data-mode="example" aria-pressed="false">Ver um exemplo</button>
+        </div>
+        {lists.map(({ mode, view: { events } }) => (
+          <div class="filters filters--stack" role="group" aria-label="Filtrar por tipo de ação" data-type-filters={mode} hidden={mode !== 'real'}>
+            <button class="filter" type="button" data-type-filter="all" aria-pressed="true">Todas<span class="count">{events.length}</span></button>
+            {TYPE_ORDER.map(t => <button class="filter" type="button" data-type-filter={t} aria-pressed="false"><Icon name={TYPES[t].icon} />{TYPES[t].label}<span class="count">{count(events, t)}</span></button>)}
+          </div>
+        ))}
+      </div>
+      <div class="sample-tools" data-example-only hidden>
+        <button class="btn" type="button" data-tamper><Icon name="pen" />Mudar uma linha escondido</button>
+        <button class="btn" type="button" data-untamper hidden><Icon name="undo" />Desfazer a mudança</button>
+      </div>
+    </div>
+
+    <div class="registro-main">
+      <ChapterHead id="t-actions" kicker="Registro" title="Todas as ações," turn="da mais nova pra mais antiga."
+        speech="Todas as ações do livro, da mais nova pra mais antiga. Cada linha mostra o dia, o tipo de ação, o valor quando tem, a situação do comprovante e a marca que prende ela na anterior." />
+      <p class="standfirst">Cada linha mostra o dia, o tipo de ação, o valor quando tem, a situação do comprovante e a marca que prende ela na anterior.</p>
+      <p class="decision-note"><Icon name="doc" /><span>O título de cada decisão vem do <code>DECISOES.md</code> e fica fora da marca. O Conferir prova a linha, não o título.</span></p>
+      <p class="sample-banner" data-example-only hidden>Exemplo · dados fictícios do contrato do livro, pra mostrar como ele fica com dinheiro, entregas e candidatos. Nada disso aconteceu.</p>
+      {lists.map(({ mode, view }) => {
+        const events = view.events;
+        const corrected = correctionsOf(events);
+        return (
+          <div class:list={['ledger-list', { 'is-sample': mode === 'example' }]} data-ledger-list={mode} hidden={mode !== 'real'}>
+            <ol class="chain chain--full" id={`ledger-chain-${mode}`}>
+              {events.toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}
+            </ol>
+            {!events.length && (
+              <div class="chain-empty" data-empty-for="all">
+                <p class="chain-empty-title">O livro oficial ainda não foi publicado.</p>
+                <p>Ele entra junto com o verificador aberto, com cada decisão e cada mudança do projeto desde o começo. Até lá, veja como ele funciona no exemplo.</p>
+                <p><button class="btn" type="button" data-mode="example">Ver um exemplo</button></p>
+              </div>
+            )}
+            {TYPE_ORDER.filter(t => events.length && !count(events, t)).map(t => (
+              <div class="chain-empty" data-empty-for={t} hidden>
+                <Icon name={TYPES[t].icon} /><p class="chain-empty-title">{EMPTY[t][0]}</p><p>{EMPTY[t][1]}</p>
+              </div>
+            ))}
+            <LedgerData id={`ledger-${mode}`} ledger={view} />
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,79 @@
+---
+import Icon from '../site/Icon.astro';
+import ChainEntry from '../ledger/ChainEntry.astro';
+import VerifyPanel from '../ledger/VerifyPanel.astro';
+import LedgerData from '../ledger/LedgerData.astro';
+import ChapterHead from './ChapterHead.astro';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
+import { correctionsOf, formatCents, sumField, sumMoney } from '../../lib/ledger-view/money';
+
+interface Props { ledger: LedgerView }
+const { ledger } = Astro.props;
+const events = ledger.events;
+const money = sumMoney(events);
+const corrected = correctionsOf(events);
+const lines = (type: string) => events.filter(e => e.payload.type === type).length;
+const EMPTY_NOTES = { finance: 'A doação ainda não abriu', field: 'Começa com o piloto', candidate: 'A entrevista ainda não abriu', project: 'O livro oficial ainda não foi publicado' };
+const counters = TYPE_ORDER.map(type => ({
+  type,
+  value: type === 'finance' ? formatCents(money.inCents)
+    : type === 'field' ? String(sumField(events, 'field'))
+    : type === 'candidate' ? String(sumField(events, 'candidate'))
+    : String(lines('project')),
+  note: lines(type) ? `${lines(type)} ${lines(type) === 1 ? 'ação' : 'ações'} no livro` : EMPTY_NOTES[type],
+}));
+const latest = events.slice(-3).reverse();
+// The chain drawn across the chapter: one link per action in the book, drawn as you scroll.
+const LINK = 30;
+const links = events.length ? events : [];
+const chainWidth = Math.max(links.length * LINK + 40, 320);
+const speech = (events.length
+  ? `O livro público tem ${events.length} ações. `
+  : 'O livro público ainda não foi publicado. Ele entra junto com o verificador aberto. ')
+  + 'Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Cada ação fica presa na anterior, e o botão Conferir mostra se alguém mudou alguma coisa. Toda ação aparece. Quem é a pessoa, não.';
+---
+<section class="chapter chapter--night" id="transparencia" aria-labelledby="t-transparency" data-speech={speech}>
+  <div class="wrap">
+    <ChapterHead id="t-transparency" number={4} kicker="O livro público" title="Tudo que a gente faz," turn="à vista." listen="transparencia" />
+    <p class="standfirst">Dinheiro, entrega na rua, passo de candidato e decisão do projeto. Cada ação vira uma linha presa na anterior, e qualquer pessoa confere.</p>
+
+    {links.length > 0 && (
+      <figure class="chain-art" data-scene="enter">
+        <svg class="line-art" viewBox={`0 0 ${chainWidth} 64`} preserveAspectRatio="xMinYMid meet" aria-hidden="true" focusable="false">
+          {links.map((_, i) => i % 2
+            ? <path class="draw" d={`M${20 + i * LINK - 4} 30h${LINK + 8}`} pathLength="1" style={`--a:${(i / links.length * .8).toFixed(3)};--b:${((i + 1.5) / links.length * .8).toFixed(3)}`} />
+            : <rect class="draw" x={20 + i * LINK - 8} y="18" width={LINK + 16} height="24" rx="12" pathLength="1" style={`--a:${(i / links.length * .8).toFixed(3)};--b:${((i + 1.5) / links.length * .8).toFixed(3)}`} />)}
+        </svg>
+        <figcaption><span>nº 1</span><span>Cada elo é uma ação do livro. Hoje são {links.length}.</span><span>nº {links.length}</span></figcaption>
+      </figure>
+    )}
+
+    <p class="rule-line"><Icon name="shield" /><strong>Toda ação aparece. Quem é a pessoa, não.</strong></p>
+
+    <ul class="ledger-counts" aria-label="Ações no livro por tipo">
+      {counters.map(c => (
+        <li><a href={`/transparencia?tipo=${c.type}`} data-type={c.type}>
+          <span class="ledger-count-label"><Icon name={TYPES[c.type].icon} />{TYPES[c.type].label}</span>
+          <span class="ledger-count-value">{c.value}</span>
+          <span class="ledger-count-note">{c.type === 'finance' ? `Entrou. ${c.note}.` : c.note}</span>
+        </a></li>
+      ))}
+    </ul>
+
+    <div class="ledger-teaser">
+      <div>
+        <h3 class="teaser-title">Últimas ações</h3>
+        {latest.length
+          ? <ol class="chain" id="teaser-chain">{latest.map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}</ol>
+          : <div class="chain-empty"><p class="chain-empty-title">O livro oficial ainda não foi publicado.</p><p>Ele entra junto com o verificador aberto, com cada decisão e cada mudança do projeto desde o começo.</p></div>}
+      </div>
+      {latest.length > 0 && <VerifyPanel data="ledger-home" list="teaser-chain" />}
+    </div>
+    <div class="actions">
+      <a class="btn btn--light" href="/transparencia">Abrir o livro público<Icon name="arrow-right" /></a>
+      <a class="btn btn--ghost" href="/transparencia?exemplo">Ver um exemplo</a>
+    </div>
+    {latest.length > 0 && <LedgerData id="ledger-home" ledger={ledger} />}
+  </div>
+</section>

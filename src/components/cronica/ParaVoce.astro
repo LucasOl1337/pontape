@@ -1,0 +1,27 @@
+---
+import Icon from '../site/Icon.astro';
+import ListenButton from '../site/ListenButton.astro';
+import NotOpenBadge from '../site/NotOpenBadge.astro';
+import { PROJECT_NAME } from '../../data/site/project';
+
+const ways = [
+  { icon: 'phone', label: 'Aqui no site' },
+  { icon: 'people', label: 'Com um voluntário na rua' },
+  { icon: 'pin', label: 'Num ponto perto de você' },
+] as const;
+---
+<aside class="para-voce" id="pra-voce" aria-labelledby="t-for-you"
+  data-speech={`Oi. Que bom que você está aqui. O ${PROJECT_NAME} ajuda quem quer mudar de vida. A gente dá comida, roupa e higiene nos primeiros dias. E ajuda você a arrumar um trabalho. É de graça. Pra participar, você só precisa conversar com a gente. Não precisa ler nem escrever. A conversa ainda não abriu. Quando abrir, vai ser aqui no site, com um voluntário na rua, ou num ponto perto de você.`}>
+  <div class="wrap para-voce-inner">
+    <div class="para-voce-text">
+      <p class="kicker">Pra você</p>
+      <h2 id="t-for-you">Você quer mudar de vida?</h2>
+      <p class="para-voce-lead">Aperte o botão e escute. Não precisa ler.</p>
+    </div>
+    <ListenButton target="pra-voce" big />
+    <ul class="para-voce-ways">
+      {ways.map(w => <li><Icon name={w.icon} /><span>{w.label}</span><NotOpenBadge /></li>)}
+    </ul>
+    <p class="para-voce-note">É de graça. A conversa é por voz. A gente ainda está preparando tudo.</p>
+  </div>
+</aside>

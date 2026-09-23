@@ -1,4 +1,5 @@
 // /transparencia islands: real or example ledger, type filters, the "edit a line in secret" demo, Conferir.
+import './story';
 import type { LedgerView } from '../lib/ledger-view/source';
 import { toast } from './site';
 import { mountVerify, readLedger } from './verify';

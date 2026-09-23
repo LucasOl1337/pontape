@@ -1,53 +1,11 @@
-// Home page islands: journey tabs, module filters and dialog, compare, contributions, ledger teaser.
+// Home page islands: the drawings that follow the scroll, module filters and dialog,
+// the classified ads, and the Conferir of the ledger chapter.
+import './story';
 import { stopSpeech } from './site';
 import { mountVerify, readLedger } from './verify';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll<T>(s)];
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-
-/* ---------- Journey tabs ---------- */
-
-const track = $('[data-journey]');
-if (track) {
-  const tabs = $$<HTMLButtonElement>('[role="tab"]', track);
-  const panels = tabs.map(t => document.getElementById(t.getAttribute('aria-controls') ?? '')!);
-  let current = 0;
-  const select = (i: number, { focus = false } = {}) => {
-    current = Math.max(0, Math.min(tabs.length - 1, i));
-    tabs.forEach((tab, k) => {
-      tab.setAttribute('aria-selected', String(k === current));
-      tab.tabIndex = k === current ? 0 : -1;
-      tab.classList.toggle('done', k < current);
-      panels[k]!.hidden = k !== current;
-    });
-    const tab = tabs[current]!;
-    if (focus) tab.focus({ preventScroll: true });
-    if (track.scrollWidth > track.clientWidth) {
-      track.scrollTo({ left: tab.offsetLeft - (track.clientWidth - tab.offsetWidth) / 2, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
-    }
-    const panel = panels[current]!;
-    if (!reducedMotion.matches) { panel.classList.remove('swap'); void panel.offsetWidth; panel.classList.add('swap'); }
-  };
-  track.addEventListener('click', e => {
-    const tab = (e.target as Element).closest<HTMLButtonElement>('[role="tab"]');
-    if (tab) select(tabs.indexOf(tab));
-  });
-  track.addEventListener('keydown', e => {
-    const keys: Record<string, number> = { ArrowRight: current + 1, ArrowLeft: current - 1, Home: 0, End: tabs.length - 1 };
-    if (!(e.key in keys)) return;
-    e.preventDefault();
-    select(keys[e.key]!, { focus: true });
-  });
-  panels.forEach(panel => panel.addEventListener('click', e => {
-    const btn = (e.target as Element).closest<HTMLButtonElement>('[data-step]');
-    if (!btn || btn.disabled) return;
-    const step = btn.dataset.step!;
-    select(current + Number(step));
-    const same = $<HTMLButtonElement>(`[data-step="${step}"]`, panels[current]!);
-    (same && !same.disabled ? same : tabs[current]!).focus({ preventScroll: true });
-  }));
-}
 
 /* ---------- Modules: filters and dialog ---------- */
 
@@ -57,8 +15,7 @@ filters?.addEventListener('click', e => {
   if (!btn) return;
   const filter = btn.dataset.filter!;
   $$('[data-filter]', filters).forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-  const items = $$('[data-status-item]');
-  items.forEach(li => { li.hidden = filter !== 'all' && li.dataset.statusItem !== filter; });
+  $$('[data-status-item]').forEach(li => { li.hidden = filter !== 'all' && li.dataset.statusItem !== filter; });
   $$('[data-filter-note]').forEach(p => { p.hidden = p.dataset.filterNote !== filter; });
   $$('[data-empty-for]', $('#modulos')!).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
 });
@@ -95,19 +52,7 @@ const openFromHash = () => {
 addEventListener('hashchange', openFromHash);
 openFromHash();
 
-/* ---------- Compare: loose help vs full path ---------- */
-
-const CAPTIONS: Record<string, string> = {
-  loose: 'Só o prato de comida. Ajuda hoje, mas amanhã tudo volta.',
-  full: 'Comida, roupa, higiene, trabalho e IA. Um degrau depois do outro.',
-};
-$$<HTMLButtonElement>('[data-compare]').forEach(btn => btn.addEventListener('click', () => {
-  $$('[data-compare]').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-  $('#compare-stairs')!.dataset.mode = btn.dataset.compare!;
-  $('#compare-caption')!.textContent = CAPTIONS[btn.dataset.compare!] ?? '';
-}));
-
-/* ---------- Open contributions ---------- */
+/* ---------- Classified ads (open contributions) ---------- */
 
 const contribFilters = $('[data-contrib-filters]');
 const moreBtn = $<HTMLButtonElement>('[data-contrib-more]');
@@ -134,7 +79,7 @@ moreBtn?.addEventListener('click', () => {
   firstHidden?.querySelector('a')?.focus();
 });
 
-/* ---------- Ledger teaser (block 05) ---------- */
+/* ---------- Ledger chapter: Conferir ---------- */
 
 const teaserPanel = $('#transparencia [data-verify-panel]');
 if (teaserPanel) {

@@ -1,0 +1,67 @@
+---
+import Badge from '../site/Badge.astro';
+import ChapterHead from './ChapterHead.astro';
+import Vig from './Vig.astro';
+import { STEPS } from '../../data/site/journey';
+import { MODULES } from '../../data/site/modules';
+
+// The staircase of the journey, one step per STEPS item, in a 640 x 640 drawing (plus room on the
+// left for the "alguém" label at the start).
+// Stops are where the dot rests on each tread, as a fraction of the route length.
+const GROUND = 604, RISE = 72, TREAD = 78, X0 = 70, START = 24;
+const treadY = (k: number) => GROUND - RISE * (k + 1);
+const treadX = (k: number) => X0 + TREAD * k;
+const route = `M${START} ${GROUND}H${X0}` + STEPS.map((_, k) => `V${treadY(k)}H${treadX(k + 1)}`).join('');
+const total = (X0 - START) + STEPS.length * (RISE + TREAD);
+const stops = STEPS.map((_, k) => +(((X0 - START) + k * (RISE + TREAD) + RISE + TREAD / 2) / total).toFixed(4));
+const moduleOf = (id: string) => MODULES.find(m => m.id === id)!;
+const speech = `Esta história ainda não aconteceu. É o caminho que a gente está construindo. São ${STEPS.length} passos. ` + STEPS.map((s, i) => `${i + 1}: ${s.title}. ${s.text}`).join(' ');
+---
+<section class="chapter chapter--story" id="como-funciona" aria-labelledby="t-how" data-speech={speech}>
+  <div class="wrap">
+    <ChapterHead id="t-how" number={2} kicker="O caminho" title="Sete passos." turn="Do primeiro encontro ao trabalho." listen="como-funciona" />
+    <p class="standfirst">Esta história ainda não aconteceu. É o caminho que a gente está construindo pra alguém que quer recomeçar. No desenho, essa pessoa é só um ponto: a gente não diz o nome e não mostra o rosto.</p>
+  </div>
+
+  <div class="story" data-scene="pin" data-story="journey" data-stops={JSON.stringify(stops)}>
+    <div class="story-graphic">
+      <svg class="line-art journey-art" viewBox="-80 0 720 640" aria-hidden="true" focusable="false">
+        <path class="guide" d={route} />
+        <path class="route route--walked" d={route} data-route />
+        {STEPS.map((s, k) => (
+          <g class="tread" data-tread={k}>
+            <Vig name={s.icon} x={treadX(k) + TREAD / 2 - 25} y={treadY(k) - 66} size={50} k={k} />
+            <text class="tread-num" x={treadX(k) + TREAD / 2} y={treadY(k) + 32}>{k + 1}</text>
+          </g>
+        ))}
+        <g class="walker" data-walker transform={`translate(${START + 16} ${GROUND})`}>
+          <circle r="11" />
+          <text x="-26" y="-14">alguém</text>
+        </g>
+      </svg>
+    </div>
+
+    <ol class="story-steps">
+      {STEPS.map((s, k) => {
+        const m = moduleOf(s.module);
+        return (
+          <li class="story-step" data-step={k}>
+            <div class="story-card">
+              <p class="story-count"><span>Passo {k + 1}</span> de {STEPS.length}</p>
+              <h3>{s.title}</h3>
+              <p class="story-text">{s.text}</p>
+              <p class="story-who"><span>Quem faz:</span> {s.who.join(', ')}.</p>
+              <button class="module-ref" type="button" data-module={m.id} aria-haspopup="dialog">
+                <span class="module-id">{m.id}</span><span class="module-ref-name">{m.name}</span><Badge status={m.status} />
+              </button>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  </div>
+
+  <div class="wrap">
+    <p class="story-coda"><strong>Toda ação aparece. Quem é a pessoa, não.</strong> Cada passo entra no livro público só como contagem. <a href="#transparencia">Ver o livro</a></p>
+  </div>
+</section>

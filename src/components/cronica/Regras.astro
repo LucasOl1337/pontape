@@ -1,0 +1,28 @@
+---
+import Icon from '../site/Icon.astro';
+import ChapterHead from './ChapterHead.astro';
+import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
+
+const RULES = {
+  finance: ['Toda doação, todo gasto, tarifa e estorno, com valor e categoria. O comprovante aparece como pendente até dar pra publicar sem dado pessoal.', 'Quem doou, CPF, chave Pix, conta.'],
+  field: ['Quantas entregas de comida, roupa e kit de higiene.', 'Quem recebeu, lugar.'],
+  candidate: ['Só contagens: quantos contatos, entrevistas, encaminhamentos pra vaga e apoios dos primeiros dias.', 'Nome, rosto, apelido, lugar, história, o caminho de uma pessoa.'],
+  project: ['Criação do repositório, decisões registradas, mudanças integradas no código. Com link pra fonte.', 'Texto solto, link qualquer, dado pessoal.'],
+} as const;
+const speech = 'O que entra no livro, e o que nunca entra. ' + TYPE_ORDER.map(t => `${TYPES[t].label}: entra ${RULES[t][0]} Nunca entra: ${RULES[t][1]}`).join(' ');
+---
+<section class="chapter" id="o-que-entra" aria-labelledby="t-types" data-speech={speech}>
+  <div class="wrap">
+    <ChapterHead id="t-types" kicker="Manual de redação" title="O que entra no livro." turn="E o que nunca entra." listen="o-que-entra" />
+    <div class="rules" role="table" aria-label="O que entra e o que nunca entra, por tipo de ação">
+      <div class="rules-row rules-row--head" role="row"><span role="columnheader">Tipo</span><span role="columnheader">Entra</span><span role="columnheader">Nunca entra</span></div>
+      {TYPE_ORDER.map(t => (
+        <div class="rules-row" role="row" data-type={t}>
+          <span role="rowheader" class="rules-type"><Icon name={TYPES[t].icon} />{TYPES[t].label}</span>
+          <span role="cell"><span class="rules-label">Entra</span>{RULES[t][0]}</span>
+          <span role="cell" class="rules-never"><span class="rules-label">Nunca entra</span>{RULES[t][1]}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

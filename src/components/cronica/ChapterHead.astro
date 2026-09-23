@@ -1,0 +1,14 @@
+---
+import ListenButton from '../site/ListenButton.astro';
+
+// A chapter opener: kicker (with the chapter number when there is one), the title with its
+// italic turn, and the Listen button for the section it opens.
+interface Props { id: string; kicker: string; number?: number; title: string; turn?: string; listen?: string; speech?: string; level?: 1 | 2 }
+const { id, kicker, number, title, turn, listen, speech, level = 2 } = Astro.props;
+const Heading = level === 1 ? 'h1' : 'h2';
+---
+<header class="chapter-head">
+  <p class="kicker">{number !== undefined && <span class="kicker-num">Capítulo {number}</span>}<span>{kicker}</span></p>
+  <Heading id={id} class="chapter-title">{title}{turn && <> <em>{turn}</em></>}</Heading>
+  {(listen || speech) && <ListenButton target={listen} speech={speech} />}
+</header>

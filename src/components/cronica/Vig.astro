@@ -1,0 +1,12 @@
+---
+import type { IconName } from '../site/icon-names';
+
+// One of the project's icons, redrawn big inside a line illustration. The stroke is scaled back
+// so it matches the 2.5 line of the drawing around it. With `a`/`b` it draws with the scene's
+// scroll progress, between those two points.
+interface Props { name: IconName; x: number; y: number; size?: number; k?: number; a?: number; b?: number }
+const { name, x, y, size = 48, k, a, b } = Astro.props;
+const scale = size / 24;
+const style = `stroke-width:${(2.5 / scale).toFixed(2)}` + (a !== undefined ? `;--a:${a};--b:${b ?? 1}` : '');
+---
+<use href={`#i-${name}`} width="24" height="24" class:list={['vig', { 'vig-draw': a !== undefined }]} data-vig={k} transform={`translate(${x} ${y}) scale(${+scale.toFixed(3)})`} style={style} />

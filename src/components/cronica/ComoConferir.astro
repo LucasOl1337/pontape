@@ -1,0 +1,103 @@
+---
+import Icon from '../site/Icon.astro';
+import ChapterHead from './ChapterHead.astro';
+import { canonicalize } from '../../lib/ledger/canonical';
+import { ledgerTrust } from '../../lib/ledger/published';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { phrase } from '../../lib/ledger-view/phrases';
+import { REPOSITORY_OPEN } from '../../data/site/project';
+
+interface Props { ledger: LedgerView }
+const { ledger } = Astro.props;
+const events = ledger.events;
+const last = events.at(-1);
+const shortHash = (h: string) => `${h.slice(0, 4)} ${h.slice(4, 8)}`;
+const groups = (h: string) => h.match(/.{1,8}/g)!.join(' ');
+
+// The real text of the newest action, exactly as it goes into SHA-256 (F08 canonical form),
+// with the previous action's mark picked out: that is the link of the chain.
+let text = { before: '', mark: '', after: '' };
+if (last) {
+  const unsigned: Partial<typeof last> = { ...last };
+  delete unsigned.hash;
+  const full = canonicalize(unsigned);
+  const at = full.indexOf(last.previousHash);
+  text = { before: full.slice(0, at), mark: last.previousHash, after: full.slice(at + last.previousHash.length) };
+}
+const links = events.slice(-3);
+
+// F08 trust state (src/data/ledger/trust.json): say plainly what is not active yet.
+const TRUST = [
+  { label: 'Assinatura das marcas', value: ledgerTrust.signature === 'not_configured' ? 'ainda não configurada' : 'ativa' },
+  { label: 'Carimbo de tempo público', value: ledgerTrust.timestamp === 'not_anchored' ? 'ainda não feito' : 'feito' },
+  { label: 'Cópia fora do projeto', value: ledgerTrust.mirror === 'not_configured' ? 'ainda não ativa' : 'ativa' },
+];
+const STEPS = [
+  { title: 'Cada ação vira um texto padrão.', text: `Sempre os mesmos campos, na mesma ordem. Sem nome de ninguém.${last ? ` No desenho, o texto da ação nº ${last.sequence}, do jeito exato que entra na conta.` : ''}` },
+  { title: 'O texto vira uma marca.', text: 'Uma conta pública, a SHA-256, transforma o texto numa marca. Mudou uma vírgula, a marca muda inteira.' },
+  { title: 'Cada marca segura a anterior.', text: `A ação nova leva junto a marca da anterior.${last ? ' Ela está em vermelho no texto.' : ''} Mexer numa linha antiga quebra todas as marcas depois dela.` },
+];
+---
+<section class="chapter chapter--story" id="como-conferir" aria-labelledby="t-how-verify"
+  data-speech="Como qualquer pessoa confere. Um: cada ação vira um texto, sempre no mesmo formato. Dois: esse texto passa por uma conta pública chamada SHA-256, que devolve uma marca. Mudou uma vírgula, a marca muda inteira. Três: cada ação guarda a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela. O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e a auditoria de fora.">
+  <div class="wrap">
+    <ChapterHead id="t-how-verify" kicker="Como conferir" title="Como qualquer pessoa" turn="confere." listen="como-conferir" />
+    <p class="standfirst">Não precisa confiar na gente, nem no nosso botão. A conta é pública e dá pra refazer em qualquer computador.</p>
+  </div>
+
+  {last ? (
+    <div class="story story--proof" data-scene="pin">
+      <div class="story-graphic">
+        <div class="proof" aria-hidden="true">
+          <div class="proof-doc" data-layer="0">
+            <p class="proof-label">Texto da ação nº {last.sequence} · {phrase(last.payload)}</p>
+            <p class="proof-text">{text.before}<mark>{text.mark}</mark>{text.after}</p>
+          </div>
+          <svg class="line-art proof-arrow" viewBox="0 0 40 48"><path class="draw" d="M20 4v36M11 31l9 9 9-9" pathLength="1" style="--a:.2;--b:.4" /></svg>
+          <div class="proof-hash" data-layer="1">
+            <p class="proof-label">Marca da ação nº {last.sequence} · SHA-256</p>
+            <p class="proof-mark">{groups(last.hash)}</p>
+          </div>
+          <svg class="line-art proof-arrow" viewBox="0 0 40 48"><path class="draw" d="M20 4v36M11 31l9 9 9-9" pathLength="1" style="--a:.55;--b:.75" /></svg>
+          <ol class="proof-chain" data-layer="2">
+            {links.map(e => (
+              <li>
+                <span class="proof-seq">nº {e.sequence}</span>
+                <span class="proof-own">{shortHash(e.hash)}</span>
+                <span class="proof-prev">guarda {e.sequence === '1' ? 'o começo' : shortHash(e.previousHash)}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+      <ol class="story-steps">
+        {STEPS.map((s, k) => (
+          <li class="story-step" data-step={k}>
+            <div class="story-card"><p class="story-count"><span>{k + 1}</span> de {STEPS.length}</p><h3>{s.title}</h3><p class="story-text">{s.text}</p></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  ) : (
+    <div class="wrap">
+      <ol class="notes">
+        {STEPS.map((s, k) => <li><span class="note-num" aria-hidden="true">{k + 1}</span><h3>{s.title}</h3><p>{s.text}</p></li>)}
+      </ol>
+    </div>
+  )}
+
+  <div class="wrap">
+    <aside class="not-proven">
+      <p class="kicker">O que o livro não prova</p>
+      <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Assinar as marcas e carimbar a data num serviço público estão em estudo.</p>
+    </aside>
+    <div class="actions">
+      <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro inteiro</a>
+      <a class="btn" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="shield" />Baixar a marca de controle</a>
+    </div>
+    <p class="verify-cli">Guarde a marca de controle num lugar seu. Numa próxima visita, ela mostra se alguém refez o livro. No computador, o verificador aberto confere tudo sem internet: <code>npm run ledger:verify</code>, com o passo a passo em <code>docs/transparencia/COMO-CONFERIR.md</code>.{!REPOSITORY_OPEN && ' O repositório ainda está fechado.'}</p>
+    <dl class="trust-list">
+      {TRUST.map(t => <div><dt>{t.label}</dt><dd><Icon name="clock" />{t.value}</dd></div>)}
+    </dl>
+  </div>
+</section>

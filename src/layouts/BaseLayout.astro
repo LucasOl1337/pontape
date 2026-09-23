@@ -27,7 +27,7 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#F4F1EA" />
+    <meta name="theme-color" content="#F3EEE4" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
@@ -49,8 +49,8 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absolute(card.image)} />
     <meta name="twitter:image:alt" content={card.alt} />
-    <link rel="preload" href="/fonts/atkinson-next-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/newsreader-display-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/newsreader-text-400.woff2" as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
   </head>
   <body>

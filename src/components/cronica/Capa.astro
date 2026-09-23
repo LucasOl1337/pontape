@@ -1,0 +1,87 @@
+---
+import ListenButton from '../site/ListenButton.astro';
+import Vig from './Vig.astro';
+import snapshotData from '../../data/transparency.json';
+import { transparencySnapshotSchema } from '../../lib/transparency';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { PROJECT_NAME, STATUS_DATE_SPOKEN, formatDay } from '../../data/site/project';
+
+interface Props { ledger: LedgerView }
+const { ledger } = Astro.props;
+// F02 snapshot: validated at build, so the money shown here can only be the honest zero.
+const snapshot = transparencySnapshotSchema.parse(snapshotData);
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: snapshot.currency });
+const steps = [
+  { module: 'M5', icon: 'plate', label: 'comida' },
+  { module: 'M5', icon: 'shirt', label: 'roupa' },
+  { module: 'M5', icon: 'soap', label: 'higiene' },
+  { module: 'M6', icon: 'briefcase', label: 'trabalho' },
+  { module: 'M7', icon: 'voice-ai', label: 'IA' },
+] as const;
+
+// The drawing: a ball on the ground (the kick-off), then five steps. Units of the 960 x 380 viewBox.
+const GROUND = 340, RISE = 56, TREAD = 104, STAIR_X = 380;
+const route = `M30 ${GROUND}H${STAIR_X}` + steps.map((_, i) => `V${GROUND - RISE * (i + 1)}H${STAIR_X + TREAD * (i + 1)}`).join('');
+const ball = { x: 84, y: GROUND - 23, r: 22 };
+const pentagon = [0, 1, 2, 3, 4].map(k => {
+  const a = (-90 + 72 * k) * Math.PI / 180;
+  return { x: ball.x + 7.5 * Math.cos(a), y: ball.y + 7.5 * Math.sin(a), ox: ball.x + ball.r * Math.cos(a), oy: ball.y + ball.r * Math.sin(a) };
+});
+const seams = `M${pentagon.map(p => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join('L')}Z` + pentagon.map(p => `M${p.x.toFixed(1)} ${p.y.toFixed(1)}L${p.ox.toFixed(1)} ${p.oy.toFixed(1)}`).join('');
+
+const speech = `Aqui é o ${PROJECT_NAME}. O pontapé inicial pra quem quer mudar de vida. A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial. Tudo que a gente faz fica num livro público, e qualquer pessoa confere. É um projeto sem fins lucrativos, com código aberto.`;
+---
+<section class="capa" id="inicio" aria-labelledby="capa-title" data-speech={speech}>
+  <div class="wrap">
+    <div class="nameplate">
+      <p class="nameplate-row"><span>Especial</span><span>Estado em {STATUS_DATE_SPOKEN}</span></p>
+      <p class="nameplate-name">{PROJECT_NAME}</p>
+      <p class="nameplate-row"><span>Sem fins lucrativos</span><span>Código aberto</span><span>Tudo à vista</span></p>
+    </div>
+
+    <p class="kicker capa-kicker">Um projeto em construção, contado desde o começo</p>
+    <h1 id="capa-title" class="capa-title">O pontapé inicial pra quem quer <em>mudar de vida.</em></h1>
+    <p class="deck capa-deck">A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial. Tudo que a gente faz fica num livro público.</p>
+    <div class="byline">
+      <span>Pela equipe do {PROJECT_NAME}</span>
+      <ListenButton target="inicio" />
+    </div>
+
+    <figure class="capa-art">
+      <svg class="line-art" viewBox="0 0 960 380" aria-hidden="true" focusable="false">
+        <g class="ball">
+          <path class="kick" d="M18 302h26M8 317h30M20 332h24" />
+          <circle cx={ball.x} cy={ball.y} r={ball.r} />
+          <path d={seams} />
+        </g>
+        <path class="route draw-in" d={route} pathLength="1" />
+        <path class="route route--later" d={`M${STAIR_X + TREAD * steps.length} ${GROUND - RISE * steps.length}h52`} />
+        {steps.map((s, i) => (
+          <g class="pop-in" style={`--i:${i}`}><Vig name={s.icon} x={STAIR_X + TREAD * (i + 0.5) - 23} y={GROUND - RISE * (i + 1) - 58} size={46} /></g>
+        ))}
+      </svg>
+      <figcaption>
+        <span>Um degrau de cada vez. Toque num degrau pra ver como ele funciona:</span>
+        <span class="step-links">
+          {steps.map((s, i) => <>{i > 0 && (i === steps.length - 1 ? ' e ' : ', ')}<button type="button" class="link-btn" data-module={s.module} aria-haspopup="dialog">{s.label}</button></>)}.
+        </span>
+      </figcaption>
+    </figure>
+
+    <div class="capa-actions">
+      <a class="btn btn--ink" href="#problema">Começar a leitura</a>
+      <a class="btn" href="/transparencia">Abrir o livro público</a>
+    </div>
+
+    <section class="numbers" aria-labelledby="numbers-title">
+      <h2 class="numbers-title" id="numbers-title">Hoje, em números</h2>
+      <dl class="numbers-grid">
+        <div><dt>Entrou</dt><dd>{brl.format(snapshot.receivedCents / 100)}</dd></div>
+        <div><dt>Saiu</dt><dd>{brl.format(snapshot.spentCents / 100)}</dd></div>
+        <div><dt>Pessoas atendidas</dt><dd>0</dd></div>
+        <div><dt>Ações no livro</dt><dd>{ledger.events.length}</dd></div>
+      </dl>
+      <p class="numbers-note">{snapshot.status}. Dados de <time datetime={snapshot.asOf}>{formatDay(snapshot.asOf)}</time>. Aqui nunca vai ter número inventado. <a href="/transparencia">Abrir o livro</a></p>
+    </section>
+  </div>
+</section>

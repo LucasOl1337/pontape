@@ -1,15 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroBlock from '../components/blocks/HeroBlock.astro';
-import ForYouBlock from '../components/blocks/ForYouBlock.astro';
-import ProblemBlock from '../components/blocks/ProblemBlock.astro';
-import JourneyBlock from '../components/blocks/JourneyBlock.astro';
-import ModulesBlock from '../components/blocks/ModulesBlock.astro';
-import TransparencyBlock from '../components/blocks/TransparencyBlock.astro';
-import BottlenecksBlock from '../components/blocks/BottlenecksBlock.astro';
-import ContributionsBlock from '../components/blocks/ContributionsBlock.astro';
-import HelpBlock from '../components/blocks/HelpBlock.astro';
-import OpenSourceBlock from '../components/blocks/OpenSourceBlock.astro';
+import Capa from '../components/cronica/Capa.astro';
+import ParaVoce from '../components/cronica/ParaVoce.astro';
+import Problema from '../components/cronica/Problema.astro';
+import Caminho from '../components/cronica/Caminho.astro';
+import Pecas from '../components/cronica/Pecas.astro';
+import Livro from '../components/cronica/Livro.astro';
+import Gargalos from '../components/cronica/Gargalos.astro';
+import Classificados from '../components/cronica/Classificados.astro';
+import Ajudar from '../components/cronica/Ajudar.astro';
+import Expediente from '../components/cronica/Expediente.astro';
+import Fim from '../components/cronica/Fim.astro';
 import { getPublicLedger } from '../lib/ledger-view/source';
 import { SHARE } from '../data/site/share';
 
@@ -19,15 +20,16 @@ const ledger = await getPublicLedger();
   title={SHARE.home.title}
   description={SHARE.home.description}
   share="home">
-  <HeroBlock ledger={ledger} />
-  <ForYouBlock />
-  <ProblemBlock />
-  <JourneyBlock />
-  <ModulesBlock />
-  <TransparencyBlock ledger={ledger} />
-  <BottlenecksBlock />
-  <ContributionsBlock />
-  <HelpBlock />
-  <OpenSourceBlock />
+  <Capa ledger={ledger} />
+  <ParaVoce />
+  <Problema />
+  <Caminho />
+  <Pecas />
+  <Livro ledger={ledger} />
+  <Gargalos />
+  <Classificados />
+  <Ajudar />
+  <Expediente />
+  <Fim />
 </BaseLayout>
 <script>import '../scripts/home';</script>
