@@ -102,7 +102,8 @@ main:focus{ outline:none }
 
 .site-header{ position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1px solid var(--rule) }
 .site-header-inner{ max-width:var(--page); margin:auto; padding:0 var(--gutter); height:var(--header-h); display:flex; align-items:center; gap:var(--space-3) }
-.logo{ display:inline-flex; align-items:center; gap:.55rem; margin-right:auto; text-decoration:none; font:500 1.5rem/1 var(--font-display); letter-spacing:-.01em }
+/* 44 px of height to tap, the size of the other targets; the mark and the name stay where they are. */
+.logo{ display:inline-flex; align-items:center; gap:.55rem; min-height:44px; margin-right:auto; text-decoration:none; font:500 1.5rem/1 var(--font-display); letter-spacing:-.01em }
 .logo-mark{ width:32px; height:27px; color:var(--ink) }
 .site-nav ul{ display:flex; gap:var(--space-6) }
 .site-nav a{ font:700 .875rem/1 var(--font-sans); letter-spacing:.04em; text-decoration:none; padding:.5rem 0; border-bottom:2px solid transparent }
