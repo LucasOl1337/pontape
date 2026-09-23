@@ -1,6 +1,8 @@
 # VidaNova (nome provisório)
 
-Uma iniciativa para ajudar quem quer recomeçar, com o básico, trabalho e transparência.
+Um projeto sem fins lucrativos e open source pra quem quer mudar de vida e não tem nem o primeiro passo.
+
+A gente encontra a pessoa certa, conversa com ela por voz usando IA (ela não precisa saber ler), garante comida, roupa e higiene pros primeiros dias, e conecta com trabalho. Toda ação do projeto, cada real e cada passo, fica à vista num livro público que qualquer um pode conferir.
 
 Estado: fundação. Esta base entrega uma página provisória e um painel estático com zero e data de referência. Atendimento e doações ainda não estão habilitados. A interface completa vem da F07; o livro público de ações vem da F08.
 
