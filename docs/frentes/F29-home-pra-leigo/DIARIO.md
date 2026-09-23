@@ -98,6 +98,76 @@ Mais a nota técnica que hoje está no rodapé (licença, fontes, data do estado
 - Arquivos: `Escada.astro`, `SiteHeader.astro`, `home.ts` (hash `construir`), `journey.ts` (rótulos e `now`), `Edicao.astro` vira `Construir.astro`, `SiteFooter.astro`, `BaseLayout.astro` (prop pra esconder a faixa na home), `site.css`.
 - Peso da home tem que cair: sai o painel de números, a faixa e o bloco de voz.
 
-### Onde parei
+### Onde parei (manhã)
 
 Proposta mandada pro Regente. Próximo passo: esperar o OK e o aviso da F27, fazer `git fetch && git rebase origin/main` e começar pelo `journey.ts` e pelo caderno "Construir junto", que a F27 não toca.
+
+## 23/09/2026 · OK do Regente
+
+Aprovada. "Transparência" no menu e a faixa preta saindo só da home, os dois confirmados. Três cuidados pedidos: o `h1` que encolhe não pode empurrar a escada; "Escolha" sem cara de peneira; a frase de "já funciona?" tem que bater com o estado da peça em `modules.ts`, amarrada por teste. Depois vieram mais dois avisos: a F28 (paletas) entrou e o botão "Cores" fica fixo embaixo à esquerda; e a issue #6 (testar o botão Ouvir) fechou com a D024.
+
+## 23/09/2026 · Feito
+
+Rebaseado em cima da F27 (#63) e da F28 (#64). Um conflito só, no `site.css`, entre a faixa "Nesta edição" (que a F28 tinha passado pros tokens novos) e o caderno novo; ficou o caderno.
+
+**O que mudou em relação à proposta**
+
+- **Degrau 7 diz "Precisa de ajuda", não "Já funciona".** A frase de cada degrau agora começa com as palavras do estado da peça (`NOW_LEAD` em `journey.ts`), e o teste em `site-data.test.ts` falha se não bater ou se aparecer a palavra de outro estado. A M2 está "precisa de ajuda" por causa da doação, então o 7 ficou: "Precisa de ajuda. O livro já está no ar. Falta poder receber doação, e isso pede uma conta oficial." Outro teste barra o jargão de quem constrói no texto da jornada.
+- **Escolha:** "A pessoa escolhe se quer participar. Depois da conversa, alguém da equipe confirma a entrada, com ajuda da IA." e "Precisa de ajuda. Como fazer essa escolha de um jeito justo ainda está em decisão." Sem "filtra", sem "quem está pronto".
+- **Título sem empurrar a escada:** no largo a escada fica fora do fluxo (posição absoluta) e o título e o degrau correm por cima dela; o título encolhe ao subir e só o degrau sobe junto. No estreito o título não muda de tamanho, então a escada embaixo dele nunca pula.
+- **Botão "Cores" (F28):** a primeira tela termina 4,5rem acima do fim da janela quando o botão existe (`--dock-h`). Em 1440 o "Início" fica acima do botão; em 360 os dois botões ficam acima da barra, com uns 30 px de folga. Na main de hoje o botão cobre o começo da faixa "Nesta edição" (print `antes-1440-inicio.png`).
+- **Issue #6** saiu de `docs/contribuicoes/contribuicoes.json`. Agora são 16 tarefas, 5 boas pra começar. O caderno lê o número dos dados.
+- **"Sua vez":** "Contribuir" virou "Construir junto", com "Já dá pra ajudar." e o link "Ver como" pro caderno. Os três que não abriram dizem "Ainda não abriu." e quando abre.
+- Some o `STATUS_DATE_SPOKEN` de `project.ts`, que era do Ouvir (pedido do Regente). O campo `who` saiu de `journey.ts`.
+
+**Cortado de vez (repetido)**
+
+| O que | Por quê |
+|---|---|
+| `h2` "A gente dá o primeiro passo *junto.*" | Repetia o `h1` |
+| Etiquetas "O pontapé · Sem fins lucrativos · Código aberto · Tudo à vista" | "Tudo à vista" está no apoio e no degrau 7; "sem fins lucrativos" está no rodapé; "código aberto" no caderno |
+| Dica "Ou toque num degrau. No teclado, use as setas." | O rótulo da escada já diz isso pra leitor de tela |
+| "Quem faz" de cada degrau | Repetia o texto do degrau |
+| "Aqui nunca vai ter número inventado." | O livro já diz "Zero real porque a doação ainda não abriu" |
+| Link "Por quê" do Doar (ia pro gargalo da doação) | O motivo agora está na própria frase ("Abre quando tiver conta oficial") |
+| Faixa preta na home | A linha de obra do chão diz o mesmo |
+
+**Continua alcançável (nada sumiu sem registro)**
+
+| O que | Como chegar |
+|---|---|
+| Entrou, ações no livro | Degrau 7, numa frase (os dois únicos números da home) |
+| Saiu, marca mais recente | `/transparencia` (menu "Transparência"), 1 clique |
+| Pessoas atendidas: 0 | A linha de obra: "ninguém é atendido" |
+| Peça do degrau, estado, o que falta, quem pode ajudar | "Mais detalhes" no degrau, 2 cliques |
+| As 9 peças, gargalos, tarefas, código aberto | Menu "Construir junto" e o caderno, 2 cliques; também pelo link do rodapé |
+| Link da issue de cada degrau | Construir junto → Tarefas abertas, 2 cliques |
+| Licença, fontes, data do estado das peças | Rodapé do caderno "Construir junto" |
+
+**Teste do leigo, na primeira tela (1440 e 360)**
+
+1. **O que é isso?** Título "O primeiro passo pra quem quer *mudar de vida.*" e a primeira frase: "A gente dá comida, roupa e higiene nos primeiros dias. E ajuda a achar trabalho."
+2. **Por que confiar?** "Tudo o que a gente faz fica à vista de qualquer pessoa." e o item "Transparência" do menu.
+3. **O que eu faço agora?** "Ver como funciona" e "Quero ajudar".
+4. **Já funciona?** "Ainda em construção. Por enquanto, ninguém é atendido e nenhuma doação é recebida.", colado nos botões.
+
+Blocos: 1440 tem quatro (cabeçalho, título, apoio com obra e botões, escada). 360 tem cinco (cabeçalho, título, escada, apoio com obra, botões).
+
+**Verificação**
+
+- `npm run check` passa: lint, `astro check` sem erro, 135 testes, livro íntegro, build, orçamento.
+- Peso da home (gzip, HTML + CSS + JS): **27,1 KB na main → 26,7 KB**. HTML cru: 81.476 → 78.825 bytes.
+- Na bancada `pontape-f29-design` (workspace 7), 1440×900 e 360×780: `document.body.innerText` da home inteira, rodapé incluso, sem nenhuma palavra da lista do brief e sem travessão. Em 360, `scrollWidth` = 360 (sem rolagem lateral). Setas, Home e End andam na escada (0→1→2→3, End→8, ←7, Home→0) com o foco no degrau certo. Menu do celular abre com os quatro itens. "Mais detalhes" abre a ficha da peça. `#construir` abre o caderno.
+- Paleta Noite (`?cor=noite`) conferida em 1440 e 360: tudo por token, nada fixo. As cores da linha "já funciona?" são as `--status-*`, que o teste da F28 já cobre com 4,5:1 em todas as paletas.
+- `/transparencia` com o menu novo, "Transparência" marcado e a faixa preta mantida.
+
+Prints em `prints/`: `antes-*` é a main com F27 e F28, `depois-*` é esta branch; 1440 e 360, primeira tela (`inicio`) e degrau 2 aberto (`degrau2`).
+
+### Decisões propostas
+
+- Quando entrar o primeiro real, voltar uma frase de número pro chão ("R$ X recebido, R$ Y gasto até hoje"). Hoje, com tudo zero, ela só pesava.
+- A faixa preta das outras páginas ainda aponta "Ver o que já existe" pra `/#modulos`, que abre um caderno de quem constrói. Na frente do livro vale trocar pra `/#como-funciona`.
+
+### Onde parei
+
+PR aberta pra `main` e report mandado pro Regente. Próximo passo, se ele pedir: ajustes da revisão. Depois disso, o topo do livro passa pelo mesmo teste (fila do BRIEF).
