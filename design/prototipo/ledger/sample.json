@@ -1,0 +1,288 @@
+{
+ "notice": "DADOS FICTÍCIOS PARA O MODO EXEMPLO DO PROTÓTIPO. Não são ações realizadas.",
+ "events": [
+  {
+   "schemaVersion": 1,
+   "sequence": "1",
+   "previousHash": "0000000000000000000000000000000000000000000000000000000000000000",
+   "recordedAt": "2026-10-01T12:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-01",
+    "correctionOf": null,
+    "type": "project",
+    "action": "decision_recorded",
+    "decisionId": "D999",
+    "sourceCommit": "0000000000000000000000000000000000000000"
+   },
+   "hash": "d5ebb237fb503f0b95dc2179d30501a5224b4cec17045397c44b0aa748469af2"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "2",
+   "previousHash": "d5ebb237fb503f0b95dc2179d30501a5224b4cec17045397c44b0aa748469af2",
+   "recordedAt": "2026-10-02T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-02",
+    "correctionOf": null,
+    "type": "finance",
+    "action": "movement_recorded",
+    "currency": "BRL",
+    "amountCents": "50000",
+    "category": "donation",
+    "evidence": "pending"
+   },
+   "hash": "90e4ee85f5d36e520c9c7fd0d5d49398a69b8255e71fd460c3177526f78c0626"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "3",
+   "previousHash": "90e4ee85f5d36e520c9c7fd0d5d49398a69b8255e71fd460c3177526f78c0626",
+   "recordedAt": "2026-10-02T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-02",
+    "correctionOf": null,
+    "type": "finance",
+    "action": "movement_recorded",
+    "currency": "BRL",
+    "amountCents": "120000",
+    "category": "donation",
+    "evidence": "pending"
+   },
+   "hash": "283793c5064b885089a19c39200a496e13a5a8be79947f5786fc9fa0ff045666"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "4",
+   "previousHash": "283793c5064b885089a19c39200a496e13a5a8be79947f5786fc9fa0ff045666",
+   "recordedAt": "2026-10-03T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-03",
+    "correctionOf": null,
+    "type": "finance",
+    "action": "movement_recorded",
+    "currency": "BRL",
+    "amountCents": "8000",
+    "category": "donation",
+    "evidence": "pending"
+   },
+   "hash": "38f44d8248b5d63c8a680eae31343759c6d9a28695f199742e31234e25202880"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "5",
+   "previousHash": "38f44d8248b5d63c8a680eae31343759c6d9a28695f199742e31234e25202880",
+   "recordedAt": "2026-10-04T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-04",
+    "correctionOf": null,
+    "type": "finance",
+    "action": "movement_recorded",
+    "currency": "BRL",
+    "amountCents": "-4590",
+    "category": "operations",
+    "evidence": "not_published"
+   },
+   "hash": "544b43653ef67a224370a22ab037e9243b8b21295b22921f0f1487330e8ff56b"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "6",
+   "previousHash": "544b43653ef67a224370a22ab037e9243b8b21295b22921f0f1487330e8ff56b",
+   "recordedAt": "2026-10-05T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-05",
+    "correctionOf": null,
+    "type": "finance",
+    "action": "movement_recorded",
+    "currency": "BRL",
+    "amountCents": "300000",
+    "category": "donation",
+    "evidence": "pending"
+   },
+   "hash": "a67ee0952bc7910e570eb068d0b361ca34553a428a83490ab787c5137320bbce"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "7",
+   "previousHash": "a67ee0952bc7910e570eb068d0b361ca34553a428a83490ab787c5137320bbce",
+   "recordedAt": "2026-10-06T17:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-06",
+    "correctionOf": null,
+    "type": "candidate",
+    "action": "contact_completed",
+    "count": "3"
+   },
+   "hash": "a5d39e9091d73d1d9cbae6822362578fbd4e0affe512ca4b58790eba08084402"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "8",
+   "previousHash": "a5d39e9091d73d1d9cbae6822362578fbd4e0affe512ca4b58790eba08084402",
+   "recordedAt": "2026-10-06T17:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-06",
+    "correctionOf": null,
+    "type": "candidate",
+    "action": "interview_completed",
+    "count": "2"
+   },
+   "hash": "ee40c2f67fb64de0dafd8fc67cec7c08b3fe5d348b47d7c15f892dfa000dc8cf"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "9",
+   "previousHash": "ee40c2f67fb64de0dafd8fc67cec7c08b3fe5d348b47d7c15f892dfa000dc8cf",
+   "recordedAt": "2026-10-07T17:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-07",
+    "correctionOf": null,
+    "type": "candidate",
+    "action": "referral_completed",
+    "count": "1"
+   },
+   "hash": "41b042bc29246fd6f43cb59ec8706124ade532fa71a926833c4a59ec5b94d698"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "10",
+   "previousHash": "41b042bc29246fd6f43cb59ec8706124ade532fa71a926833c4a59ec5b94d698",
+   "recordedAt": "2026-10-07T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-07",
+    "correctionOf": null,
+    "type": "finance",
+    "action": "movement_recorded",
+    "currency": "BRL",
+    "amountCents": "-18640",
+    "category": "food",
+    "evidence": "pending"
+   },
+   "hash": "1d74fc5ed1358ab598ebe46cb426c4fc9b98d11dab3f5310ab843945505ddd26"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "11",
+   "previousHash": "1d74fc5ed1358ab598ebe46cb426c4fc9b98d11dab3f5310ab843945505ddd26",
+   "recordedAt": "2026-10-07T16:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-07",
+    "correctionOf": null,
+    "type": "field",
+    "action": "food_delivered",
+    "quantity": "5"
+   },
+   "hash": "30ba0e4a934c553409a3377b8d8421d4c8f880de4acd828daf3d705a1eb160c8"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "12",
+   "previousHash": "30ba0e4a934c553409a3377b8d8421d4c8f880de4acd828daf3d705a1eb160c8",
+   "recordedAt": "2026-10-07T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-07",
+    "correctionOf": null,
+    "type": "finance",
+    "action": "movement_recorded",
+    "currency": "BRL",
+    "amountCents": "-6480",
+    "category": "hygiene",
+    "evidence": "pending"
+   },
+   "hash": "9051eec8a6bfb38171b9089a311e76398f7abcfe0ce348f4f11cc179b415aebf"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "13",
+   "previousHash": "9051eec8a6bfb38171b9089a311e76398f7abcfe0ce348f4f11cc179b415aebf",
+   "recordedAt": "2026-10-07T16:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-07",
+    "correctionOf": null,
+    "type": "field",
+    "action": "hygiene_delivered",
+    "quantity": "1"
+   },
+   "hash": "0610d13bd3da097f329c6137fb7020fe5bb6ffa251431cb89c69dd509a80d135"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "14",
+   "previousHash": "0610d13bd3da097f329c6137fb7020fe5bb6ffa251431cb89c69dd509a80d135",
+   "recordedAt": "2026-10-08T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-08",
+    "correctionOf": null,
+    "type": "finance",
+    "action": "movement_recorded",
+    "currency": "BRL",
+    "amountCents": "-28900",
+    "category": "clothing",
+    "evidence": "pending"
+   },
+   "hash": "999701107e3aae90bf5da177f6fb5abdc9b3eb7db2424b92ae1fcf8f317f3df6"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "15",
+   "previousHash": "999701107e3aae90bf5da177f6fb5abdc9b3eb7db2424b92ae1fcf8f317f3df6",
+   "recordedAt": "2026-10-08T16:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-08",
+    "correctionOf": null,
+    "type": "field",
+    "action": "clothing_delivered",
+    "quantity": "1"
+   },
+   "hash": "d9417ce754043751b626a501c49414c42a4658740e4eaeba4ba8f987d3707a4c"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "16",
+   "previousHash": "d9417ce754043751b626a501c49414c42a4658740e4eaeba4ba8f987d3707a4c",
+   "recordedAt": "2026-10-09T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-09",
+    "correctionOf": "4",
+    "type": "finance",
+    "action": "reversal",
+    "currency": "BRL",
+    "amountCents": "-8000",
+    "category": "donation",
+    "evidence": "pending"
+   },
+   "hash": "49b63a9dbd6965378ec22cbc8877afcf7d6102727b3c962ceae243f6ca543582"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "17",
+   "previousHash": "49b63a9dbd6965378ec22cbc8877afcf7d6102727b3c962ceae243f6ca543582",
+   "recordedAt": "2026-10-11T15:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-11",
+    "correctionOf": null,
+    "type": "finance",
+    "action": "movement_recorded",
+    "currency": "BRL",
+    "amountCents": "-1250",
+    "category": "fee",
+    "evidence": "not_published"
+   },
+   "hash": "ff9e11f94f88e4f3122997d4661178bbd672996803a825d49ce631259f1df0e2"
+  },
+  {
+   "schemaVersion": 1,
+   "sequence": "18",
+   "previousHash": "ff9e11f94f88e4f3122997d4661178bbd672996803a825d49ce631259f1df0e2",
+   "recordedAt": "2026-10-20T17:00:00.000Z",
+   "payload": {
+    "occurredOn": "2026-10-20",
+    "correctionOf": null,
+    "type": "candidate",
+    "action": "support_completed",
+    "count": "1"
+   },
+   "hash": "e70bbbd4d119ada118ca1434e91c0ec03dd3e91874b15825962856f7a597987d"
+  }
+ ]
+}

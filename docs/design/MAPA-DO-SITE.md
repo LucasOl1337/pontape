@@ -1,10 +1,12 @@
-# Mapa do site · home
+# Mapa do site
 
-F01 · dono: `design` · versão 0.1 · 22/09/2026
+F01 e F07 · dono: `design` · versão 0.2 · 22/09/2026
 
-Os blocos da home em ordem. Cada um diz pra que serve, o que mostra, como se mexe nele e pra onde ele manda a pessoa. A cara de tudo está em [`DIRECAO.md`](DIRECAO.md) e funcionando em [`design/prototipo/index.html`](../../design/prototipo/index.html). O texto dos nove módulos (o que é, como funciona, como opera, ponto forte, o que falta, quem ajuda) vive no próprio protótipo, na lista `MODULES`, até a F07 levar pro código de verdade.
+Duas páginas: a **home** e o **livro público** (`/transparencia`). Cada bloco diz pra que serve, o que mostra, como se mexe nele e pra onde manda a pessoa. A cara de tudo está em [`DIRECAO.md`](DIRECAO.md); funcionando em [`design/prototipo/`](../../design/prototipo/). O texto dos módulos e dos passos vive em `design/prototipo/home.js` até a F07 levar pra arquivos de dados.
 
-## Visão geral
+Mudou na 0.2: D011 (selo "Precisa de ajuda", seção "Gargalos"), D012 (nada de formulário nem lista de aviso), D010 (livro de todas as ações, no contrato da F08), bloco novo de contribuições abertas com as 17 issues reais.
+
+## Home
 
 | # | Bloco | Âncora | Fundo | Pra quem, principalmente |
 |---|---|---|---|---|
@@ -15,149 +17,151 @@ Os blocos da home em ordem. Cada um diz pra que serve, o que mostra, como se mex
 | 02 | O problema | `#problema` | branco | Doador |
 | 03 | Como funciona | `#como-funciona` | tinta | Todo mundo |
 | 04 | Módulos | `#modulos` | papel 2 | Doador, contribuidor |
-| 05 | Transparência | `#transparencia` | branco | Doador |
-| 06 | Gargalos | `#gargalos` | papel 2 | Contribuidor, especialista |
-| 07 | Como ajudar | `#ajudar` | anil | Doador, voluntário, empregador, contribuidor |
-| 08 | Código aberto | `#codigo-aberto` | tinta | Contribuidor |
+| 05 | Transparência | `#transparencia` | branco | Doador, imprensa, desconfiado |
+| 06 | Gargalos | `#gargalos` | papel 2 | Especialista |
+| 07 | Contribuições abertas | `#contribuicoes` | branco | Contribuidor |
+| 08 | Como ajudar | `#ajudar` | anil | Doador, voluntário, empregador |
+| 09 | Código aberto | `#codigo-aberto` | tinta | Contribuidor |
 | · | Rodapé | nenhuma | papel | Todo mundo |
 
 Âncora fica em português porque aparece no endereço que as pessoas compartilham.
 
-Mudanças em relação à ordem do PRD §7: entrou o bloco **01 Pra você** (proposta P2 no DIARIO) e o topo ganhou a **faixa de estado**. O resto segue a ordem do PRD.
-
-## Selo de estado
-
-Todo módulo, caminho e forma de ajudar leva um selo. O selo sempre tem cor, ícone e palavra, e perto dele aparece a data do estado.
-
-| Selo | Quer dizer | Hoje (22/09/2026) |
-|---|---|---|
-| **Funcionando** | Já está no ar e dá pra usar | Nenhum |
-| **Em construção** | A equipe está fazendo agora | M1 Site, M8 Código aberto, M9 Marca |
-| **Gargalo aberto** | Ainda não sabemos resolver. Aqui a ajuda de fora vale mais | M2 Doação, M3 Captação, M4 Entrevista por voz |
-| **Planejado** | Está no plano, ainda não começou | M5 Ponte inicial, M6 Rede de oportunidades, M7 IA contínua |
-
-Quem muda o estado: o Regente, quando a frente correspondente muda de fase no `QUADRO.md`. No código de verdade o estado e a data vêm de um arquivo só, pra site e quadro nunca discordarem.
-
-## Blocos
-
 ### Faixa de estado
 
-- **Objetivo:** ninguém sai do site achando que o projeto já atende gente.
-- **Conteúdo:** "Em construção. O projeto ainda não recebe doação nem atende ninguém." + link "Ver o que já existe".
-- **Interação:** link pra `#modulos`.
-- **Some quando:** doação e atendimento estiverem funcionando. Enquanto qualquer um dos dois não estiver, a faixa fica.
+- **Objetivo:** ninguém sai achando que o projeto já atende gente.
+- **Conteúdo:** "Em construção. O projeto ainda não recebe doação nem atende ninguém." + "Ver o que já existe".
+- **Some quando:** doação e atendimento estiverem funcionando.
 
 ### Topo
 
-- **Conteúdo:** marca (escada + nome), navegação (Como funciona, Módulos, Transparência, Gargalos, Ajudar), botão **A+** e, no celular, botão **Menu**.
-- **Interação:** fica grudado no alto ao rolar e ganha borda. A+ aumenta o texto da página toda e fica lembrado no aparelho. Menu abre a lista em tela cheia de largura, com alvos de 56px; Esc fecha.
+- **Conteúdo:** marca, navegação (Como funciona, Módulos, Transparência, Gargalos, Contribuir), **A+** e, no celular, **Menu**.
+- **Interação:** gruda no alto e ganha borda ao rolar. A+ aumenta o texto e fica lembrado no aparelho. "Transparência" leva pra página do livro.
 
 ### Hero
 
 - **Objetivo:** quem nunca ouviu falar entende o que é e pra que serve sem rolar.
-- **Conteúdo:**
-  - Selos "Sem fins lucrativos" e "Código aberto".
-  - Título: "O primeiro passo pra quem quer mudar de vida."
-  - Abertura: "A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial."
-  - Promessa: "Quem doa vê cada real entrando e saindo, ao vivo."
-  - Escada de cinco degraus: Comida, Roupa, Higiene, Trabalho, IA.
-  - Placar: Entrou R$ 0,00 · Saiu R$ 0,00 · Pessoas atendidas 0, com a nota "Zerado porque a gente ainda não começou. Estado em 22/09/2026."
-- **Interação:** Ouvir. Cada degrau é botão e abre o módulo dele (Comida, Roupa e Higiene abrem M5; Trabalho, M6; IA, M7). No celular a escada deita e vira barras que crescem.
-- **Chamadas:** "Como funciona" (principal) e "Ver pra onde vai o dinheiro".
+- **Conteúdo:** "O primeiro passo pra quem quer mudar de vida." + abertura (comida, roupa, higiene, trabalho, IA) + promessa "Tudo que a gente faz fica num livro público. Qualquer pessoa confere." + escada de cinco degraus + placar: Entrou R$ 0,00, Saiu R$ 0,00, Pessoas atendidas 0, **Ações no livro** (hoje 21, das ações reais do projeto).
+- **Chamadas:** "Como funciona" e "Abrir o livro público".
 
 ### 01 · Pra você
 
-- **Objetivo:** porta de entrada do candidato que chegou pelo panfleto ou por alguém. Funciona sem ler.
-- **Conteúdo:** "Você quer mudar de vida?" / "Aperte o botão e escute. Não precisa ler." / botão redondo grande **Ouvir** / os três jeitos de falar com a gente (aqui no site, com um voluntário na rua, num ponto perto de você), cada um com selo "Ainda não abriu" / "É de graça. A conversa é por voz."
-- **Interação:** o botão lê um texto escrito pra ouvido, que diz o que é o projeto, que é de graça, que não precisa ler e que a conversa ainda não abriu.
-- **Chamada futura:** quando a entrevista por voz abrir (F09), o botão "Aqui no site" vira "Conversar agora" e abre a conversa.
-- **Por que é o primeiro bloco:** é o único que fala direto com quem mais precisa. Se ficar lá embaixo, quem lê pouco nunca chega nele.
+Porta do candidato que chegou pelo panfleto. Botão Ouvir grande, os três jeitos de falar com a gente, cada um com "Ainda não abriu". Sem mudança na 0.2.
 
 ### 02 · O problema
 
-- **Objetivo:** explicar por que doar dinheiro solto não basta.
-- **Conteúdo:** "Dinheiro sozinho não resolve." e três cartões: falta o mínimo pro primeiro passo; ajuda solta não vira caminho; quem doa não vê o dinheiro. Depois, a raiz: "Acertar a pessoa e dar um caminho inteiro."
-- **Interação:** comparação com dois botões, **Ajuda solta** e **Caminho inteiro**. Na primeira, só o degrau da comida fica cheio e os outros ficam tracejados. Na segunda, os cinco enchem um depois do outro.
+"Dinheiro sozinho não resolve." Três cartões, a raiz, e a comparação **Ajuda solta** x **Caminho inteiro**. Sem mudança.
 
 ### 03 · Como funciona
 
-- **Objetivo:** a jornada do candidato (PRD §4) em sete passos.
-- **Conteúdo:** Encontro, Conversa por voz, Escolha, Primeiros dias, Trabalho, IA que acompanha, Prova. Cada passo tem ícone, texto curto, "Quem faz" e o módulo ligado a ele com o selo.
-- **Interação:** trilha numerada em abas (setas do teclado andam entre os passos), painel do passo com Anterior e Próximo, botão do módulo que abre o detalhe. No celular a trilha rola de lado e centraliza o passo escolhido.
-- **Honestidade:** o passo Escolha diz que quem confirma ainda está em decisão (PRD §10.6).
+Os sete passos da jornada em abas. O passo 7, Prova, agora diz que cada passo entra no livro **só como contagem**.
 
 ### 04 · Módulos
 
-- **Objetivo:** mostrar o projeto quebrado em partes, cada uma com estado. É o pedido central do Lucas.
-- **Conteúdo:** nove cartões, M1 a M9, com número, selo, nome, resumo e "Ver o bloco". A faixa no alto do cartão repete o estado em padrão (listra de obra, vermelho, tracejado).
-- **Interação:**
-  - Filtros por estado com contagem (Todos 9, Funcionando 0, Em construção 3, Gargalo aberto 3, Planejado 3). Escolher um filtro mostra o que aquele selo quer dizer.
-  - Filtro **Funcionando** mostra o estado vazio: "Nenhum bloco funcionando ainda. É cedo: o projeto começou em setembro de 2026."
-  - Cartão abre um diálogo (folha de baixo no celular) com: O que é, Como funciona, Como opera, Ponto forte, **O que falta resolver** (em vermelho) e **Quem pode ajudar** (em anil). Tem Ouvir e setas pro módulo anterior e o próximo.
-  - O diálogo aberto vira endereço (`#m1` a `#m9`) pra mandar por mensagem.
+Nove cartões com selo e filtro. Selo público do gargalo agora é **"Precisa de ajuda"**. Contagem de hoje: Funcionando 0, Em construção 3 (M1, M8, M9), Precisa de ajuda 3 (M2, M3, M4), Planejado 3 (M5, M6, M7). M2 passou a se chamar "Doação e transparência total".
 
-### 05 · Transparência
+### 05 · Transparência (redesenhado)
 
-- **Objetivo:** o motivo de alguém confiar. Mostra o dinheiro inteiro, inclusive quando não tem.
+- **Objetivo:** mostrar em segundos que tudo está à vista, e mandar pro livro.
 - **Conteúdo:**
-  - "Cada real à vista. Ao vivo."
-  - Totais: Entrou, Saiu, Em caixa.
-  - Pra onde foi: barras por categoria (Comida, Roupa, Higiene, Transporte, Operação), com valor e porcentagem escritos. Operação aparece de propósito: o custo de manter o projeto também é público.
-  - Últimas movimentações: data, descrição, categoria, valor, comprovante.
-  - "Como garantir que ninguém mexe escondido?": a corrente de marcas explicada em duas frases.
-- **Dois modos, escolhidos por botão:**
-  - **Agora (padrão).** O zero honesto: totais em R$ 0,00, todas as categorias listadas com R$ 0,00 e 0%, livro vazio com "Nenhuma movimentação ainda. [...] Aqui nunca vai ter número inventado." e a caixa "Por que está zerado?" com link pro gargalo da doação.
-  - **Ver um exemplo.** Mostra como o painel vai ficar. Faixa listrada "EXEMPLO · números, pessoas e lojas inventados. Nada disso aconteceu." no alto, fundo hachurado, e a cada 4 segundos chega um movimento novo, com os totais e as barras se ajustando. Tem Pausar (WCAG 2.2.2). A demonstração só roda com o painel na tela.
-- **Comprovante:** abre um recibo com a faixa "COMPROVANTE FICTÍCIO", os dados, o documento da pessoa coberto por tarja e as duas marcas (esta e a anterior), com a explicação da corrente.
-- **Pessoa no livro-caixa:** aparece como "pessoa #014", nunca pelo nome.
-- **No código de verdade (F08):** o modo Agora lê o livro-caixa público; o modo Exemplo continua existindo enquanto o livro estiver vazio, pra quem quiser entender o painel antes da primeira doação.
+  - "Tudo que a gente faz, à vista." + faixa da regra "Toda ação aparece. Quem é a pessoa, não."
+  - Quatro contadores por tipo, cada um leva pro livro já filtrado: Dinheiro (R$ entrou), Vida real (entregas), Candidato (contagem), Projeto (ações). O zero de cada um vem com o motivo.
+  - As três ações mais recentes, no desenho da corrente.
+  - **Conferir**, que confere o livro inteiro no aparelho.
+- **Chamadas:** "Abrir o livro público" e "Ver um exemplo com dinheiro" (abre o livro no modo exemplo).
 
 ### 06 · Gargalos
 
-- **Objetivo:** dizer em público o que ainda não sabemos resolver e chamar quem sabe.
-- **Conteúdo:** cinco itens que abrem e fecham, cada um com número, título, módulo, "Por que é difícil", "O que já está andando", "Quem pode ajudar" e o botão "Dar uma ideia".
-  1. Achar a pessoa certa (M3)
-  2. Conversar com quem não lê (M4)
-  3. Receber doação do jeito certo (M2)
-  4. Escolha justa (M3 · M4)
-  5. Segurança no encontro (M3)
-- **Chamada:** "Dar uma ideia". Destino ainda não existe; proposta: discussão no GitHub quando o repositório abrir.
+Cinco itens que abrem e fecham. O botão "Dar uma ideia" virou selo **"Ainda não abriu"** com "Dar uma ideia abre junto com o repositório" (D012).
 
-### 07 · Como ajudar
+### 07 · Contribuições abertas (novo)
 
-- **Objetivo:** um caminho pra cada tipo de pessoa, sem prometer o que ainda não existe.
-- **Conteúdo:** quatro cartões com o que a pessoa faz, o selo e quando abre.
+- **Objetivo:** transformar vontade de ajudar em tarefa concreta.
+- **Dados:** `docs/contribuicoes/contribuicoes.json` (F13), 17 issues, da #6 à #22. O protótipo lê uma cópia gerada por `sync-contributions.mjs`.
+- **Cartão:** tipo (Código, Design, Pesquisa, Campo, Jurídico, Conteúdo), selo "Bom primeiro passo" quando é, título, resumo, módulo, "Destrava: [gargalo]" com o nome público do gargalo, e o número da issue (com cadeado: o repositório ainda é fechado).
+- **Interação:** filtros com contagem (Todas, Bom primeiro passo, e um por tipo). "Todas" mostra 6 e um botão "Mostrar as 17 contribuições".
+- **Honestidade:** "Cada tarefa já é uma issue no GitHub. Pegar uma abre junto com o repositório."
 
-| Cartão | Selo hoje | Quando abre | Botão hoje |
-|---|---|---|---|
-| Doar | Ainda não abriu | Quando a conta oficial existir | Entender por quê → gargalos |
-| Ser voluntário | Ainda não abriu | Com o piloto na primeira cidade | Quero ser avisado |
-| Oferecer vaga | Ainda não abriu | Quando as primeiras pessoas forem escolhidas | Quero ser avisado |
-| Contribuir | Em construção | Quando nome e licença forem decididos | Ver como contribuir → código aberto |
+### 08 · Como ajudar
 
-- **Fecho:** "Quer ajudar hoje? É nos gargalos que falta gente que entende do assunto." + botão pros gargalos.
-- **Pendência:** "Quero ser avisado" precisa de uma lista de aviso, e isso é serviço externo. Pergunta pro Regente.
+Quatro cartões. Doar, Ser voluntário e Oferecer vaga mostram **"Ainda não abriu"** com o motivo e **nenhum botão de aviso** (D012). Contribuir leva pras contribuições abertas. No fim: "A gente não guarda contato de ninguém por enquanto. Lista de aviso e formulário só quando existir um responsável legal pelos dados."
 
-### 08 · Código aberto
+### 09 · Código aberto
 
-- **Objetivo:** mostrar que dá pra ver e ajudar, e que tem curadoria.
-- **Conteúdo:** "Aberto pra ver. Aberto pra ajudar." / três passos (olhe, proponha, um admin revisa) / cartão do repositório com os documentos principais e três fatos: Licença a definir, Quem aprova: admins, Abre quando nome e licença forem decididos.
+Três passos (olhe, escolha uma contribuição ou proponha, um admin revisa), o cartão do repositório (agora com o livro público na lista) e uma faixa com o número de contribuições abertas.
 
 ### Rodapé
 
-- **Conteúdo:** marca grande + "Um degrau de cada vez. Tudo à vista." / Contato (ainda não tem canal oficial) / Organização (sem registro formal; o CNPJ aparece aqui quando existir) / Privacidade (nada de foto, nome ou história sem autorização por escrito; dado pessoal nunca vai pro código aberto).
+Marca, link pro livro público, organização (sem registro formal, sem canal oficial de contato), privacidade ("Nenhum dado pessoal é coletado por enquanto").
 
-## Regras que valem pra todos os blocos
+## Página `/transparencia` · livro público
 
-- Etiqueta com número e nome no topo, e botão **Ouvir** com texto escrito pra ouvido.
-- Um título curto, uma abertura de até duas frases.
-- Todo número que ainda não existe aparece como zero ou como "ainda não", nunca inventado. Exemplo só com a faixa de exemplo.
-- Todo botão de algo que não abriu diz que não abriu e por quê.
+Base: [contrato da F08](../transparencia/CONTRATO.md) e `src/lib/ledger/schema.ts`. Quatro famílias com campos fechados, sem descrição nem URL livre. O protótipo gera o seu livro com esse formato e valida com o schema de verdade (`design/prototipo/ledger/build-ledger.mjs`).
+
+| # | Bloco | Âncora | Fundo |
+|---|---|---|---|
+| · | Topo do livro | `#livro` | papel pontilhado |
+| 01 | Conferir | `#conferir` | tinta |
+| 02 | Todas as ações | `#acoes` | branco |
+| 03 | Dinheiro | `#dinheiro` | papel 2 |
+| 04 | Como conferir | `#como-conferir` | branco |
+| 05 | O que entra | `#o-que-entra` | papel 2 |
+
+### Topo do livro
+
+- "Tudo que o projeto faz, à vista." + a faixa da regra.
+- Placar: Ações no livro, Entrou, Saiu, Marca mais recente.
+- **"Ao vivo" honesto:** "Livro estático. Última ação registrada em 22/09/2026, às 21:36. A página é refeita sempre que entra uma ação nova." Nada pisca.
+- No desktop, à direita, as quatro últimas ações empilhadas como blocos ligados (ilustração, escondida do leitor de tela).
+
+### 01 · Conferir
+
+- Botão grande **Conferir**. Refaz, no aparelho, a conta SHA-256 de cada ação e a ligação com a anterior. Barra de progresso; cada linha da lista fica verde quando passa.
+- Resultado em uma frase: "Tudo certo. Nada foi apagado nem mudado desde o começo." Ou, se quebrar: "A corrente quebrou na ação nº 14. Alguém mudou essa linha depois que ela foi registrada." (também "não se prende à anterior" e "falta a ação nº N").
+- "Roda no seu aparelho. Nada é enviado pra gente."
+- **Troca fácil:** o protótipo usa um verificador próprio, com o mesmo resultado que a interface espera. Na etapa 1 ele é trocado pelo verificador da F08.
+
+### 02 · Todas as ações
+
+- Escolha do livro: **Livro de verdade** (padrão) ou **Ver um exemplo**.
+- Filtros por tipo com contagem.
+- Lista da mais nova pra mais antiga, no desenho da corrente. Cada linha: número, tipo, dia (`occurredOn`), frase, valor e situação do comprovante quando é dinheiro, link "Ver a fonte" quando é projeto, marca curta e "presa na nº N". A marca inteira e a hora de registro abrem num detalhe. Correção e estorno aparecem nas duas pontas ("Estorno da ação nº 4" e "Estornada pela nº 16").
+- **Frases** (mapa fixo, nenhum texto vem do dado): "Decisão D006 registrada", "PR #26 integrada", "Repositório do projeto criado", "Doação recebida", "Gasto com comida", "Tarifa", "Estorno da ação nº N", "5 entregas de comida", "1 kit de higiene entregue", "2 entrevistas concluídas", "1 encaminhamento pra vaga", "1 apoio dos primeiros dias concluído".
+- **Estados vazios** no livro de verdade: Dinheiro ("Nenhum real entrou nem saiu ainda."), Vida real ("Nenhuma entrega na rua ainda."), Candidato ("Nenhum passo de candidato ainda. [...] aparece aqui só a contagem").
+- **Livro de verdade, hoje:** 21 ações do projeto (D001 a D012, criação do repositório, PRs #2, #3, #4, #5, #23, #24, #25, #26). Dinheiro zerado. O livro oficial semeado vem da F08; o do protótipo é uma prévia com os mesmos fatos.
+- **Modo exemplo:** faixa "EXEMPLO · ações, valores e datas inventados", cartões hachurados, e dois botões: **Simular uma ação chegando** (a ação nova entra no topo, presa na anterior) e **Mudar uma linha escondido** (muda o valor de um gasto sem refazer a marca; o Conferir pega na hora). "Desfazer a mudança" volta ao normal. Na etapa 1 o exemplo usa a fixture da F08.
+
+### 03 · Dinheiro
+
+Entrou, Saiu, Em caixa; "Pra onde foi" por categoria do contrato (comida, roupa, higiene, operação, tarifas, devoluções), com valor e porcentagem escritos. No livro de verdade: zero honesto e "Por que está zerado?". Somas com BigInt, como pede o contrato.
+
+### 04 · Como conferir
+
+Três passos em linguagem simples (texto padrão, marca SHA-256, cada marca segura a anterior), o quadro **"O que o livro não prova"** (não prova que tudo foi registrado; extrato do banco e auditoria de fora; assinatura e carimbo de tempo em estudo), e os botões "Baixar o livro inteiro" (JSON), "Verificador aberto" e "Passo a passo" (os dois últimos esperam a F08).
+
+### 05 · O que entra
+
+Quatro cartões, um por tipo, com "Entra" e "Nunca entra". Candidato: "Só contagens [...] Nunca entra nome, rosto, apelido, lugar, história, o caminho de uma pessoa."
+
+## Selo de estado
+
+| Selo | Quer dizer | Hoje |
+|---|---|---|
+| **Funcionando** | Já está no ar e dá pra usar | Nenhum |
+| **Em construção** | A equipe está fazendo agora | M1, M8, M9 |
+| **Precisa de ajuda** | Ainda não sabemos resolver | M2, M3, M4 |
+| **Planejado** | Está no plano, ainda não começou | M5, M6, M7 |
+| **Ainda não abriu** | Existe no plano, mas ninguém de fora consegue usar ainda | Doar, voluntário, vaga, dar ideia, pegar tarefa |
+
+## Regras que valem pra todas as páginas
+
+- Etiqueta com número e nome no topo de cada bloco, e botão **Ouvir** com texto escrito pra ouvido.
+- Número que ainda não existe aparece como zero com o motivo. Exemplo só com faixa de exemplo.
+- Nada de formulário, lista de aviso ou campo que colete dado (D012).
 - Nenhuma foto. Só pictograma, bloco e número.
 
-## O que fica pra F07
+## O que fica pra etapa 1 (código)
 
-- Levar o texto dos módulos e dos passos pra dados (JSON ou conteúdo do CMS escolhido na F02), com o estado e a data num lugar só.
-- HTML pronto do servidor, JS só pra interação.
-- Fontes hospedadas no próprio site, com subset.
-- Canal de "Dar uma ideia" e lista de aviso, quando o Regente liberar os serviços.
+- Home e `/transparencia` em Astro, um componente por bloco em `src/components/blocks/`, tokens em `src/styles/tokens.css`.
+- Módulos, passos, gargalos e mapa de frases em arquivos de dados; contribuições lidas de `docs/contribuicoes/contribuicoes.json` no build.
+- Livro com os tipos de `src/lib/ledger/schema.ts`; fixture da F08 só no modo exemplo; Conferir ligado a uma interface que troca pro verificador da F08 quando ele entrar.
+- HTML pronto no build, JS só nas ilhas (Ouvir, filtros, diálogo, Conferir). Fontes no próprio site.

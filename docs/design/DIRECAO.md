@@ -1,8 +1,10 @@
 # Direção visual
 
-F01 · dono: `design` · versão 0.1 · 22/09/2026
+F01 e F07 · dono: `design` · versão 0.2 · 22/09/2026
 
-Protótipo que aplica tudo isto: [`design/prototipo/index.html`](../../design/prototipo/index.html). Mapa dos blocos: [`MAPA-DO-SITE.md`](MAPA-DO-SITE.md).
+Protótipo que aplica tudo isto: [`design/prototipo/`](../../design/prototipo/) (home em `index.html`, livro público em `transparencia.html`). Mapa das páginas: [`MAPA-DO-SITE.md`](MAPA-DO-SITE.md).
+
+Mudou na 0.2: selo "Precisa de ajuda" (D011), nenhuma coleta de dado (D012), livro público de todas as ações seguindo o contrato da F08 (D010), contribuições abertas.
 
 ## 1. Conceito: degrau por degrau, tudo à vista
 
@@ -10,14 +12,14 @@ Duas ideias carregam o site inteiro.
 
 **Degrau.** Quem quer mudar de vida não precisa de um salto. Precisa do primeiro degrau, depois do próximo. Comida, roupa, higiene, trabalho, IA: cada um é um bloco, e os blocos empilhados viram escada. Isso casa com o pedido do Lucas ("por blocos, modular, cada parte bem separada"): a página é uma pilha de blocos, cada módulo do projeto é um bloco com número e estado, e a marca provisória são três blocos em escada.
 
-**À vista.** Transparência é o motivo de alguém confiar. Tudo que é dinheiro ou dado ganha cara de livro-caixa: número em fonte mono, linha pautada, comprovante com borda serrilhada, data em tudo. Tudo que é estado ganha selo com data. O site diz "ainda não" e "não sabemos" sem vergonha.
+**À vista.** Transparência é o motivo de alguém confiar. Toda ação do projeto entra num livro público: dinheiro, entrega na rua, passo de candidato e decisão. Cada linha fica presa na anterior por uma marca, e o botão **Conferir** refaz as contas no aparelho de quem olha. A regra que aparece escrita na tela: **toda ação aparece; quem é a pessoa, não.** Tudo que é dinheiro ou dado ganha cara de caderno: número em fonte mono, marca em mono, data em tudo. Tudo que é estado ganha selo com data. O site diz "ainda não" e "não sabemos" sem vergonha.
 
 Dois registros visuais, cada um com sua função:
 
 | Registro | Onde | Como |
 |---|---|---|
 | **Cartaz** | Títulos, chamadas, bloco do candidato | Letra grande e condensada, cor chapada, frase curta. Vem do cartaz de rua e do lambe-lambe. O mesmo desenho serve pro site, pro panfleto e pra placa do ponto público |
-| **Caderno** | Painel do dinheiro, estados, datas, comprovantes | Fonte mono, números alinhados, linhas finas, tarja preta em dado pessoal |
+| **Caderno** | Livro público, dinheiro, estados, datas, marcas | Fonte mono, números alinhados, corrente tracejada ligando as linhas, tarja preta em dado pessoal |
 
 O que o site **não** é: foto de mão estendida, criança triste, coração com moeda, degradê roxo de startup, ilustração 3D genérica.
 
@@ -48,10 +50,21 @@ Cor nunca aparece sozinha: todo estado tem cor, ícone, palavra e padrão.
 |---|---|---|---|---|---|---|
 | Funcionando | `live` | `--color-live` | `#12663C` | `#DDF3E6` | visto | borda cheia |
 | Em construção | `building` | `--color-building` | `#F4C20D` | `#FFF3C4` | cone | listra amarela e preta |
-| Gargalo aberto | `bottleneck` | `--color-bottleneck` | `#C62A1F` (texto `#A31F16`) | `#FDE2DF` | exclamação | borda cheia |
+| Precisa de ajuda | `bottleneck` | `--color-bottleneck` | `#C62A1F` (texto `#A31F16`) | `#FDE2DF` | exclamação | borda cheia |
 | Planejado | `planned` | `--color-planned` | `#5B606B` | branco | relógio | borda tracejada |
 
-"Planejado" é proposta desta frente (P1 no DIARIO): M5, M6 e M7 ainda não começaram, e chamar de "em construção" seria meia verdade.
+"Planejado" e "Precisa de ajuda" foram aprovados em D011. A seção da home continua chamada **Gargalos**, que é a palavra do Lucas; o selo público é "Precisa de ajuda" porque diz o que é e já convida.
+
+### Tipo de ação no livro público
+
+Quatro famílias, as mesmas do contrato da F08. A cor só ajuda a achar; o tipo sempre vem escrito com ícone.
+
+| Tipo | Chave | Texto | Fundo | Ícone | Contraste |
+|---|---|---|---|---|---|
+| Dinheiro | `finance` | `--color-type-finance` `#9A3412` | `#FFE4D6` | moeda | 6,0 |
+| Vida real | `field` | `--color-type-field` `#1730A8` | `#DCE2FF` | caixa | 8,1 |
+| Candidato | `candidate` | `--color-type-candidate` `#5B21B6` | `#EDE4FB` | pessoa | 7,3 |
+| Projeto | `project` | `--color-type-project` `#16181D` | `#E9E4D8` | bandeira | 14,0 |
 
 ### Contraste medido (WCAG 2.2)
 
@@ -118,6 +131,9 @@ Regras:
 - Botão principal: anil, texto branco. Secundário: branco, texto tinta. Em bloco escuro, o principal vira sol com texto tinta.
 - Link no meio do texto: sublinhado, sempre.
 - Selo de estado: pílula com ícone e palavra, mais a data do estado quando ficar sozinho.
+- **Corrente** (linha do livro): número da ação num quadrado à esquerda, ligado ao de baixo por uma linha tracejada. Cartão com tipo, dia, frase, valor e situação do comprovante quando é dinheiro, e a marca curta (`7ca9 c1d8`) com "presa na nº N". A marca inteira abre num detalhe. Conferida, o quadrado fica verde; quebrada, vermelho cheio, e as de depois ficam tracejadas.
+- **Conferir**: cartão branco com botão grande, barra de progresso e uma frase de resultado ("Tudo certo. Nada foi apagado nem mudado desde o começo." ou "A corrente quebrou na ação nº 14.").
+- **Faixa da regra**: tarja escura com escudo e "Toda ação aparece. Quem é a pessoa, não." Aparece na home e no topo do livro.
 
 ## 6. Movimento e interação
 
@@ -134,7 +150,8 @@ Regras:
 
 - Movimento explica alguma coisa: um degrau se somando, um passo escolhido, um real chegando no painel. Nada de enfeite girando.
 - Com `prefers-reduced-motion`, nada se move: o conteúdo só aparece.
-- Tudo que atualiza sozinho (a demonstração ao vivo do painel) tem botão de pausar (WCAG 2.2.2).
+- **"Ao vivo" honesto.** Enquanto o livro for estático, nada pisca e nada se chama "ao vivo": a página mostra quando foi registrada a última ação e diz que é refeita quando entra uma nova. Se um dia algo atualizar sozinho, ganha botão de pausar (WCAG 2.2.2).
+- A demonstração do modo exemplo só anda quando a pessoa aperta ("Simular uma ação chegando", "Mudar uma linha escondido").
 - Tudo funciona no teclado. Abas andam com as setas, diálogo fecha com Esc e devolve o foco.
 - Módulo aberto vira endereço (`#m4`), dá pra mandar o link.
 - No site de verdade, o HTML chega pronto do servidor e o JS só enriquece. Sem JS, dá pra ler tudo.
@@ -174,7 +191,11 @@ Usar:
 - **Número e comprovante**: o resultado se prova com dado, não com rosto.
 - Se um dia precisar de gente: figura geométrica simples, sem rosto e sem traço que identifique cor, idade ou classe.
 
-Relato de resultado só com consentimento escrito, sem rosto por padrão e com o nome trocado. Comprovante publicado tem tarja em nome, CPF, endereço e qualquer coisa que leve à pessoa.
+Relato de resultado só com consentimento escrito, sem rosto por padrão e com o nome trocado. Comprovante publicado tem tarja em nome, CPF, endereço e qualquer coisa que leve à pessoa. Pelo contrato da F08, comprovante público ainda não existe: a linha diz "Comprovante pendente" ou "não publicado".
+
+No livro público, **candidato é só contagem** ("2 entrevistas concluídas"): sem apelido, sem trajetória de uma pessoa, sem lugar. Nenhum texto livre entra no livro: a frase de cada linha sai de um mapa fixo de ação pra frase, e o único link é o da fonte do projeto.
+
+**Nenhuma coleta de dado pessoal** (D012): sem formulário, lista de aviso ou e-mail até existir responsável legal pelos dados. O que ainda não abriu mostra o selo "Ainda não abriu" e o motivo.
 
 ## 9. Texto de interface
 
