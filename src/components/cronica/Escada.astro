@@ -18,7 +18,8 @@ const statusOf = (id: string) => MODULES.find(m => m.id === id)!.status;
 // journey (PRD §4), each saying if it works yet, and the landing at the top (how to help). Each tread
 // is a tab; its panel shows in place. The builder words live in the Construir caderno (F29).
 const LAST = STEPS.length + 1;
-// The AI goes along and never stops (D028), from the step marked aiFrom, the system (D032), past the top.
+// The AI goes along and never stops (D028): a rail under the staircase, from the step marked aiFrom,
+// the system (D032), past the top.
 const RAIL_FROM = STEPS.findIndex(s => s.aiFrom) + 1;
 const treads: { name: string; icon?: IconName }[] = [
   { name: 'Início' },
@@ -37,7 +38,7 @@ const ways: { icon: IconName; title: string; status: ModuleStatus; lead: string;
 
   <div class="stair" id="como-funciona" role="tablist" aria-label="Os degraus do projeto. Use as setas pra subir e descer." data-stair>
     {treads.map((t, k) => (
-      <button class:list={['tread', { 'is-ahead': k > 0, 'on-rail': k >= RAIL_FROM, 'rail-start': k === RAIL_FROM }]} type="button" role="tab" id={`degrau-tab-${k}`} aria-controls={`degrau-${k}`}
+      <button class:list={['tread', { 'is-ahead': k > 0 }]} type="button" role="tab" id={`degrau-tab-${k}`} aria-controls={`degrau-${k}`}
         aria-selected={k === 0 ? 'true' : 'false'} tabindex={k === 0 ? 0 : -1} style={`--k:${k}`}>
         <span class="tread-block">
           {k === 0
@@ -48,7 +49,7 @@ const ways: { icon: IconName; title: string; status: ModuleStatus; lead: string;
       </button>
     ))}
     <span class="walker" aria-hidden="true"><span class="walker-label">alguém</span></span>
-    <span class="rail" aria-hidden="true"><Icon name="voice-ai" /><span class="rail-label">a IA vai junto, sempre e de graça</span></span>
+    <span class="rail" aria-hidden="true" style={`--rail-from:${RAIL_FROM}`}><Icon name="voice-ai" /><span class="rail-label">a IA vai junto, sempre e de graça</span></span>
   </div>
   <p class="sr-only">Desde o passo {RAIL_FROM}, {treads[RAIL_FROM]!.name}, a IA vai junto da pessoa em todos os passos e continua depois do trabalho, sem prazo e de graça.</p>
 
