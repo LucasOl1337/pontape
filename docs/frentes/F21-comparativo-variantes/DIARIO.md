@@ -41,3 +41,8 @@
 - O CI verde da #45 testou o merge temporário `df1395f` (head `2d1870a` + main `fef6b67`) e obteve livro 45,0/53,5 KB. A main tem o commit `a881453` que migra o verificador para Zod Mini; o head isolado não tem, por isso 43,9/68,2 KB e falha. A tabela seguirá o brief e mostrará o head, com a diferença do CI explicada.
 - Downloads `/livro/ledger.json` e `/livro/checkpoint.json` e `/robots.txt` deram HTTP 200 nas cinco. Sem `SITE_URL`, OG/Twitter usam imagem relativa em todas, mesma condição de build local registrada na F18. Consolidei medidas e limites em `docs/operacao/COMPARATIVO-VARIANTES.md`. Próximo passo: revisar o relatório, remover print redundante, validar diff e abrir PR.
 - Revi a primeira dobra da home e do livro em forced-colors nas cinco; aguardei o fim da animação de entrada da Prisma antes de julgar seu texto. A medição de contraste em forced-colors não encontrou texto abaixo de AA sobre fundo sólido. No teclado real da bancada, Enter abriu e Escape fechou diálogos de módulo em v1/v2/v4; Enter expandiu os `details` de módulo em v3/v5. Removi um print redundante; ficaram as duas capturas que mostram a falha de 320 px do Maracatu.
+
+## 22/09/2026 · Entrega
+
+- Revisão final do diff e `git diff --check` passaram. Commit `50603c0` publicou relatório, diário e duas capturas na branch `bruto/f21-comparativo`.
+- Abri a [PR #51](https://github.com/LucasOl1337/VidaNova/pull/51) para `main`. Restam apenas o CI da PR e o reporte ao Regente. Nenhuma alteração foi feita nos worktrees das variantes.
