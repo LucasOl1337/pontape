@@ -3,7 +3,7 @@ import Icon from './Icon.astro';
 import LogoMark from './LogoMark.astro';
 import { PROJECT_NAME } from '../../data/site/project';
 
-interface Props { current?: 'home' | 'transparencia' }
+interface Props { current?: 'home' | 'transparencia' | 'not-found' }
 const { current = 'home' } = Astro.props;
 const onHome = current === 'home';
 const links = [
