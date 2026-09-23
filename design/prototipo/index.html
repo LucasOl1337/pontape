@@ -1,0 +1,1736 @@
+<!doctype html>
+<html lang="pt-BR" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protótipo da home</title>
+<meta name="description" content="Projeto sem fins lucrativos e aberto: o primeiro passo pra quem quer mudar de vida, com cada real à vista.">
+<meta name="theme-color" content="#F4F1EA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,800&family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<style>
+/* ============ Tokens (docs/design/DIRECAO.md) ============ */
+:root{
+  --color-paper:#F4F1EA; --color-paper-2:#E9E4D8; --color-white:#FFFFFF;
+  --color-ink:#16181D; --color-ink-2:#4A4F5A;
+  --color-indigo:#1F3FD1; --color-indigo-dark:#1730A8; --color-indigo-light:#DCE2FF;
+  --color-sun:#FF6B3D; --color-sun-light:#FFD8CB;
+  --color-live:#12663C; --color-live-bg:#DDF3E6;
+  --color-building:#F4C20D; --color-building-bg:#FFF3C4;
+  --color-bottleneck:#C62A1F; --color-bottleneck-text:#A31F16; --color-bottleneck-bg:#FDE2DF;
+  --color-planned:#5B606B;
+
+  --font-poster:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --font-text:"Atkinson Hyperlegible Next",system-ui,sans-serif;
+  --font-mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;
+
+  --text-display:clamp(2.5rem, 1.326rem + 5.217vw, 5.5rem);
+  --text-h2:clamp(2rem, 1.413rem + 2.609vw, 3.5rem);
+  --text-h3:clamp(1.3125rem, 1.19rem + .5435vw, 1.625rem);
+  --text-lead:clamp(1.25rem, 1.152rem + .4348vw, 1.5rem);
+  --text-body:1.125rem;
+  --text-small:.9375rem;
+
+  --gutter:16px;
+  --border:2px solid var(--color-ink);
+  --shadow:4px 4px 0 var(--shadow-color, var(--color-ink));
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+@media (min-width:600px){ :root{ --gutter:24px } }
+@media (min-width:960px){ :root{ --gutter:32px } }
+
+/* ============ Base ============ */
+*,*::before,*::after{ box-sizing:border-box }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:88px }
+html.large-text{ font-size:112.5% }
+body{
+  margin:0; background:var(--color-paper); color:var(--color-ink);
+  font-family:var(--font-text); font-size:var(--text-body); line-height:1.55;
+  overflow-x:clip; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{ font-family:var(--font-poster); font-weight:800; font-stretch:80%; margin:0; letter-spacing:-.01em; text-wrap:balance }
+p,ul,ol,dl,figure{ margin:0 }
+a{ color:inherit; text-decoration-thickness:2px; text-underline-offset:3px }
+button{ font:inherit; color:inherit }
+:focus-visible{ outline:3px solid var(--focus, var(--color-indigo)); outline-offset:3px; border-radius:6px }
+[hidden]{ display:none !important }
+.icon{ width:24px; height:24px; flex:none; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:middle }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0 }
+.skip-link{ position:absolute; left:8px; top:-100px; z-index:100; background:var(--color-ink); color:var(--color-paper); padding:12px 16px; border-radius:10px; font-weight:700 }
+.skip-link:focus{ top:8px }
+.no-js-notice{ background:var(--color-building-bg); border-bottom:var(--border); padding:12px var(--gutter); font-size:var(--text-small) }
+
+/* ============ Botões e peças comuns ============ */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:52px; padding:12px 20px; border:2px solid var(--line, var(--color-ink)); border-radius:12px;
+  background:var(--color-white); color:var(--color-ink); font:700 1.0625rem/1.2 var(--font-text);
+  text-decoration:none; text-align:center; box-shadow:var(--shadow); cursor:pointer;
+  transition:transform .12s var(--ease), box-shadow .12s var(--ease), background-color .12s;
+}
+.btn:hover{ transform:translate(-1px,-1px); box-shadow:5px 5px 0 var(--shadow-color, var(--color-ink)) }
+.btn:active{ transform:translate(2px,2px); box-shadow:2px 2px 0 var(--shadow-color, var(--color-ink)) }
+.btn--primary{ background:var(--color-indigo); color:#fff }
+.btn--primary:active{ background:var(--color-indigo-dark) }
+.btn[disabled]{ opacity:.4; box-shadow:none; transform:none; cursor:default }
+
+.badge{
+  display:inline-flex; align-items:center; gap:6px; padding:3px 10px 3px 8px;
+  border:2px solid; border-radius:999px; font:700 var(--text-small)/1.3 var(--font-text); white-space:nowrap;
+}
+.badge .icon{ width:18px; height:18px; stroke-width:2.5 }
+.badge--live{ color:var(--color-live); border-color:var(--color-live); background:var(--color-live-bg) }
+.badge--building{
+  color:var(--color-ink); border-color:var(--color-ink); padding-left:18px;
+  background:repeating-linear-gradient(-45deg, var(--color-building) 0 4px, var(--color-ink) 4px 8px) left/10px 100% no-repeat, var(--color-building-bg);
+}
+.badge--bottleneck{ color:var(--color-bottleneck-text); border-color:var(--color-bottleneck); background:var(--color-bottleneck-bg) }
+.badge--planned{ color:var(--color-planned); border-color:var(--color-planned); border-style:dashed; background:var(--color-white) }
+
+.module-id{
+  display:inline-block; font-family:var(--font-mono); font-weight:600; font-size:var(--text-small); line-height:1.3;
+  border:2px solid currentColor; border-radius:8px; padding:1px 7px;
+}
+.chip{ display:inline-flex; align-items:center; border:2px solid currentColor; border-radius:999px; padding:4px 12px; font-size:var(--text-small); font-weight:700 }
+.status-date{ font-family:var(--font-mono); font-size:var(--text-small); color:var(--fg-2, var(--color-ink-2)) }
+
+/* Botão Ouvir */
+.listen-btn{
+  display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 16px 0 12px;
+  border:2px solid currentColor; border-radius:999px; background:transparent; color:inherit;
+  font:700 1rem var(--font-text); cursor:pointer; flex:none;
+}
+.listen-btn:hover{ background:color-mix(in srgb, currentColor 10%, transparent) }
+.listen-btn.speaking{ background:var(--fg, var(--color-ink)); color:var(--bg, var(--color-paper)); border-color:var(--fg, var(--color-ink)) }
+.listen-btn.speaking .icon{ animation:pulse 1s ease-in-out infinite }
+@keyframes pulse{ 50%{ transform:scale(.8) } }
+
+/* ============ Faixa de estado e topo ============ */
+.status-strip{ background:var(--color-ink); color:var(--color-paper); font-size:var(--text-small) }
+.status-strip::before{ content:""; display:block; height:6px; background:repeating-linear-gradient(-45deg, var(--color-building) 0 10px, var(--color-ink) 10px 20px) }
+.status-strip-inner{ max-width:1200px; margin:0 auto; padding:8px var(--gutter); display:flex; flex-wrap:wrap; align-items:center; gap:2px 12px }
+.status-strip strong{ color:var(--color-building) }
+.status-strip a{ color:var(--color-building); font-weight:700; padding:4px 0 }
+
+.site-header{ position:sticky; top:0; z-index:30; background:var(--color-paper); border-bottom:2px solid transparent; transition:border-color .2s }
+.site-header.scrolled{ border-bottom-color:var(--color-ink) }
+.site-header-inner{ max-width:1200px; margin:0 auto; padding:8px var(--gutter); display:flex; align-items:center; gap:8px; min-height:68px }
+.logo{
+  display:inline-flex; align-items:center; gap:10px; min-height:48px; margin-right:auto; text-decoration:none;
+  font-family:var(--font-poster); font-weight:800; font-stretch:78%; font-size:1.75rem; line-height:1; letter-spacing:-.01em;
+}
+.logo-mark{ width:36px; height:30px; flex:none }
+.icon-btn{
+  min-width:48px; min-height:48px; padding:0 12px; border:var(--border); border-radius:12px;
+  background:var(--color-white); display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  font:700 1rem var(--font-text); cursor:pointer;
+}
+.icon-btn[aria-pressed="true"],.icon-btn[aria-expanded="true"]{ background:var(--color-ink); color:var(--color-paper) }
+.site-nav{ display:none }
+.site-header.menu-open .site-nav{
+  display:block; position:absolute; left:0; right:0; top:100%;
+  background:var(--color-paper); border-bottom:var(--border); padding:4px var(--gutter) 16px;
+}
+.site-nav ul{ list-style:none; margin:0; padding:0 }
+.site-nav a{ display:flex; align-items:center; min-height:56px; font-weight:700; font-size:1.25rem; text-decoration:none; border-bottom:1px solid var(--color-paper-2) }
+@media (min-width:960px){
+  .menu-btn{ display:none }
+  .site-nav,.site-header.menu-open .site-nav{ display:block; position:static; border:0; padding:0; background:none; margin-right:8px }
+  .site-nav ul{ display:flex; gap:2px }
+  .site-nav a{ min-height:48px; padding:0 12px; font-size:1.0625rem; border:0; border-radius:10px }
+  .site-nav a:hover{ background:var(--color-paper-2) }
+}
+
+/* ============ Hero ============ */
+.hero{
+  background-image:radial-gradient(rgba(22,24,29,.14) 1px, transparent 1.5px);
+  background-size:22px 22px; background-position:11px 0;
+}
+.hero-inner{ max-width:1200px; margin:0 auto; padding:24px var(--gutter) 20px }
+.hero-grid{ display:grid; gap:36px }
+.kicker{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:20px }
+.kicker .chip{ background:var(--color-white); font-family:var(--font-mono); font-weight:600; border-color:var(--color-ink) }
+.kicker .listen-btn{ margin-left:auto; background:var(--color-white) }
+.hero h1{ font-size:var(--text-display); line-height:.95; max-width:11.5ch }
+.highlight{ background:linear-gradient(transparent 60%, var(--color-sun) 60%, var(--color-sun) 92%, transparent 92%); padding:0 .06em; -webkit-box-decoration-break:clone; box-decoration-break:clone }
+.hero .lead{ margin-top:20px; font-size:var(--text-lead); line-height:1.45; max-width:36ch }
+.promise{ display:flex; gap:10px; align-items:flex-start; margin-top:16px; font-weight:700; max-width:44ch }
+.promise .icon{ color:var(--color-indigo); width:28px; height:28px; margin-top:-1px }
+.actions{ display:flex; flex-wrap:wrap; gap:12px; margin-top:28px }
+.actions .btn{ flex:1 1 auto }
+
+/* Escada (hero e comparação) */
+.stairs-box{ container-type:inline-size; position:relative; isolation:isolate }
+.stairs{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column-reverse; gap:8px }
+.stairs li{ width:calc(40% + (var(--n) - 1) * 15%) }
+.step{
+  --fill:var(--color-white); --fill-text:var(--color-ink); --fill-icon:currentColor;
+  width:100%; min-height:56px; display:flex; align-items:center; gap:10px; padding:8px 14px;
+  border:var(--border); border-radius:12px; background:var(--fill); color:var(--fill-text);
+  font:700 1.0625rem/1.2 var(--font-text); text-align:left;
+}
+.step .icon{ width:28px; height:28px; color:var(--fill-icon) }
+button.step{ cursor:pointer; box-shadow:var(--shadow); transition:transform .12s var(--ease), box-shadow .12s var(--ease) }
+button.step:hover{ transform:translate(-1px,-1px); box-shadow:5px 5px 0 var(--color-ink) }
+button.step:active{ transform:translate(2px,2px); box-shadow:2px 2px 0 var(--color-ink) }
+.stairs li:nth-child(2) .step{ --fill:var(--color-indigo-light) }
+.stairs li:nth-child(3) .step{ --fill:var(--color-sun) }
+.stairs li:nth-child(4) .step{ --fill:var(--color-indigo); --fill-text:#fff }
+.stairs li:nth-child(5) .step{ --fill:var(--color-ink); --fill-text:var(--color-paper); --fill-icon:var(--color-sun) }
+@container (min-width:440px){
+  .stairs{ flex-direction:row; align-items:flex-end; height:var(--height, 300px); gap:10px }
+  .stairs li{ width:auto; flex:1 1 0; min-width:0; height:calc(30% + (var(--n) - 1) * 17.5%) }
+  .step{ height:100%; flex-direction:column; align-items:flex-start; justify-content:flex-start; padding:12px; border-radius:14px 14px 6px 6px }
+  .step .icon{ width:32px; height:32px }
+  .stairs--mini li{ height:calc(36% + (var(--n) - 1) * 16%) }
+  .stairs--mini .step{ padding:10px; gap:6px }
+  .stairs--mini .step .icon{ width:28px; height:28px }
+}
+.sun{
+  position:absolute; z-index:-1; right:-8px; top:8px; width:40%; aspect-ratio:1;
+  border-radius:50%; background:var(--color-sun-light); border:var(--border);
+}
+.hero-stairs figcaption{ margin-top:14px; font-size:var(--text-small); color:var(--color-ink-2) }
+.js .hero-stairs .stairs li{ animation:rise .6s var(--ease) both; animation-delay:calc(var(--n) * 110ms + 120ms) }
+@keyframes rise{ from{ opacity:0; transform:translateY(24px) } }
+
+/* Placar */
+.scoreboard{ margin-top:32px; background:var(--color-white); border:var(--border); border-radius:16px; display:grid; grid-template-columns:repeat(3,1fr); overflow:hidden }
+.scoreboard-item{ padding:12px; display:flex; flex-direction:column; gap:2px; min-width:0 }
+.scoreboard-item + .scoreboard-item{ border-left:var(--border) }
+.scoreboard-label{ font-size:var(--text-small); color:var(--color-ink-2); line-height:1.25 }
+.scoreboard-value{ font-family:var(--font-mono); font-weight:600; font-size:clamp(1.0625rem, .8rem + 1.2vw, 1.75rem); white-space:nowrap; font-variant-numeric:tabular-nums; margin-top:auto }
+.scoreboard-note{
+  grid-column:1 / -1; border-top:var(--border); padding:10px 12px; font-size:var(--text-small);
+  display:flex; flex-wrap:wrap; gap:4px 12px; align-items:center; background:var(--color-building-bg);
+}
+.scoreboard-note a{ font-weight:700; padding:4px 0 }
+@media (min-width:600px){ .scoreboard-item{ padding:16px 20px } .scoreboard-note{ padding:12px 20px } }
+@media (min-width:960px){
+  .hero-inner{ padding-top:56px }
+  .hero-grid{ grid-template-columns:1.05fr .95fr; align-items:center; gap:56px }
+  .hero-stairs{ --height:380px }
+}
+
+/* ============ Blocos ============ */
+.block{
+  --bg:var(--color-white); --fg:var(--color-ink); --fg-2:var(--color-ink-2);
+  background:var(--bg); color:var(--fg); border:var(--border); border-radius:16px;
+  margin:12px 8px; padding:20px 20px 32px; max-width:1200px; position:relative;
+}
+@media (min-width:600px){ .block{ margin:16px; padding:28px 32px 40px; border-radius:24px } }
+@media (min-width:960px){ .block{ padding:40px 56px 56px } }
+@media (min-width:1232px){ .block{ margin-inline:auto } }
+.block--paper{ --bg:var(--color-paper-2) }
+.block--ink{ --bg:var(--color-ink); --fg:var(--color-paper); --fg-2:#B9BCC4; --line:var(--color-paper); --shadow-color:var(--color-sun); --focus:var(--color-sun) }
+.block--indigo{ --bg:var(--color-indigo); --fg:#fff; --fg-2:var(--color-indigo-light); --focus:#fff }
+.block--sun{ --bg:var(--color-sun); --fg:var(--color-ink); --fg-2:var(--color-ink); --focus:var(--color-ink) }
+.block-head{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; margin-bottom:20px }
+.block-head .listen-btn{ padding:0 12px 0 10px; gap:6px }
+.tag{
+  display:inline-flex; align-items:center; gap:6px; padding:3px 10px 3px 3px; white-space:nowrap;
+  border:2px solid currentColor; border-radius:999px; font:600 var(--text-small)/1.3 var(--font-mono);
+}
+.tag b{ background:var(--fg); color:var(--bg); border-radius:999px; padding:2px 8px; font-weight:600 }
+.block h2{ font-size:var(--text-h2); line-height:1; max-width:18ch }
+.block .lead{ margin-top:16px; font-size:var(--text-lead); line-height:1.45; color:var(--fg-2); max-width:44ch }
+.block--ink .btn--primary{ background:var(--color-sun); color:var(--color-ink) }
+
+.js .reveal{ opacity:0; transform:translateY(16px); transition:opacity .4s var(--ease), transform .4s var(--ease) }
+.js .reveal.visible{ opacity:1; transform:none }
+
+/* 01 · Pra você */
+.block--sun h2{ font-size:clamp(2.5rem, 1.5rem + 4.4vw, 4.75rem); line-height:.95; max-width:12ch }
+.voice-grid{ display:grid; gap:24px; align-items:center }
+.block--sun .lead{ font-size:clamp(1.375rem, 1.2rem + .8vw, 1.75rem); font-weight:700 }
+.voice-btn{
+  position:relative; width:136px; height:136px; border-radius:50%; justify-self:start;
+  background:var(--color-ink); color:var(--color-paper); border:3px solid var(--color-ink); box-shadow:6px 6px 0 var(--color-white);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  font:700 1.25rem var(--font-text); cursor:pointer; transition:transform .12s var(--ease), box-shadow .12s var(--ease);
+}
+.voice-btn .icon{ width:48px; height:48px; color:var(--color-sun) }
+.voice-btn:active{ transform:translate(3px,3px); box-shadow:3px 3px 0 var(--color-white) }
+.voice-btn::after{ content:""; position:absolute; inset:-12px; border-radius:50%; border:3px solid var(--color-ink); opacity:0; pointer-events:none }
+.voice-btn.speaking::after{ animation:ripple 1.4s ease-out infinite }
+@keyframes ripple{ from{ transform:scale(.85); opacity:.9 } to{ transform:scale(1.2); opacity:0 } }
+.entry-points{ list-style:none; padding:0; margin-top:28px; display:grid; gap:12px }
+.entry-points li{
+  display:grid; grid-template-columns:auto 1fr; gap:4px 14px; align-items:center;
+  background:var(--color-sun-light); border:var(--border); border-radius:16px; padding:14px 16px;
+}
+.entry-points .icon{ width:40px; height:40px; grid-row:span 2 }
+.entry-points strong{ font-size:1.1875rem; line-height:1.2 }
+.entry-points .badge{ justify-self:start }
+.block--sun .note{ margin-top:20px; font-weight:700; max-width:46ch }
+@media (min-width:600px){
+  .voice-grid{ grid-template-columns:1fr auto }
+  .voice-btn{ width:168px; height:168px; justify-self:end }
+  .entry-points{ grid-template-columns:repeat(3,1fr) }
+  .entry-points li{ grid-template-columns:1fr; align-content:start }
+  .entry-points .icon{ grid-row:auto }
+}
+
+/* 02 · O problema */
+.problems{ list-style:none; padding:0; margin-top:28px; display:grid; gap:12px }
+.problems li{ border:var(--border); border-radius:16px; padding:20px; background:var(--color-paper) }
+.problems .num{ display:block; font-family:var(--font-poster); font-weight:800; font-stretch:80%; font-size:3.25rem; line-height:.9; color:var(--color-indigo) }
+.problems h3{ font-size:var(--text-h3); line-height:1.15; margin-top:10px }
+.problems p{ margin-top:8px; color:var(--color-ink-2) }
+@media (min-width:760px){ .problems{ grid-template-columns:repeat(3,1fr) } }
+.root-cause{ margin-top:16px; border:var(--border); border-radius:16px; background:var(--color-indigo-light); padding:24px 16px; display:grid; gap:28px }
+.root-cause-label{ font:600 var(--text-small) var(--font-mono) }
+.root-cause-line{ font-family:var(--font-poster); font-weight:800; font-stretch:80%; font-size:clamp(1.75rem, 1.3rem + 2vw, 2.75rem); line-height:1; margin-top:8px; text-wrap:balance }
+.root-cause-text p:last-child{ margin-top:12px; max-width:40ch }
+.segmented{ display:inline-flex; flex-wrap:wrap; border:var(--border); border-radius:14px; padding:4px; gap:4px; background:var(--color-white) }
+.segmented button{
+  min-height:48px; padding:0 16px; border:0; border-radius:10px; background:transparent;
+  font:700 1rem var(--font-text); color:var(--color-ink); cursor:pointer;
+}
+.segmented button[aria-pressed="true"]{ background:var(--color-ink); color:var(--color-paper) }
+.compare .segmented{ display:flex; width:100% }
+.compare .segmented button{ flex:1 1 0; padding:6px 10px; line-height:1.15 }
+.compare .stairs-box{ margin-top:18px }
+.stairs--mini{ --height:230px }
+.stairs--mini li{ width:calc(52% + (var(--n) - 1) * 12%) }
+.stairs--mini .step{ min-height:44px; padding:8px 10px; gap:8px; font-size:1rem; box-shadow:none; transition:background-color .35s var(--ease), color .35s var(--ease), border-color .35s; transition-delay:calc((var(--n) - 1) * 110ms) }
+.stairs[data-mode="loose"] li:not(:first-child) .step{ --fill:transparent; --fill-text:var(--color-ink-2); --fill-icon:var(--color-ink-2); border-style:dashed; transition-delay:0s }
+.compare-caption{ margin-top:14px; font-weight:700; min-height:3.2em }
+@media (min-width:960px){ .root-cause{ grid-template-columns:1fr 1.1fr; align-items:center; padding:36px 40px } }
+
+/* 03 · Como funciona */
+.journey-track{
+  display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none;
+  margin:28px -20px 0; padding:6px 20px 10px;
+}
+.journey-track::-webkit-scrollbar{ display:none }
+.journey-track [role="tab"]{
+  position:relative; flex:0 0 92px; scroll-snap-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:8px; padding:4px 2px 6px;
+  background:none; border:0; border-radius:12px; color:var(--fg-2); font:700 var(--text-small)/1.2 var(--font-text); cursor:pointer;
+}
+.journey-track [role="tab"]::before{
+  content:""; position:absolute; top:26px; left:-50%; width:100%; height:3px; z-index:0;
+  background:repeating-linear-gradient(90deg, #6B7080 0 6px, transparent 6px 12px);
+}
+.journey-track [role="tab"]:first-child::before{ display:none }
+.journey-track .done::before,.journey-track [aria-selected="true"]::before{ background:var(--color-sun) }
+.track-num{
+  position:relative; z-index:1; width:48px; height:48px; border-radius:50%; display:grid; place-items:center;
+  border:2px solid var(--color-paper); background:var(--color-ink); color:var(--color-paper);
+  font:600 1.125rem var(--font-mono); transition:transform .2s var(--ease), background-color .2s;
+}
+.journey-track .done .track-num{ background:var(--color-paper); color:var(--color-ink) }
+.journey-track [aria-selected="true"]{ color:var(--color-paper) }
+.journey-track [aria-selected="true"] .track-num{ background:var(--color-sun); border-color:var(--color-sun); color:var(--color-ink); transform:scale(1.12) }
+.track-name{ text-align:center }
+.step-panel{
+  margin-top:16px; border:2px solid var(--color-paper); border-radius:16px; padding:20px;
+  display:grid; grid-template-columns:minmax(0,1fr); gap:16px 28px; background:#1F2228;
+}
+.step-panel.swap > *{ animation:slide-in .3s var(--ease) both }
+.step-panel.swap > * + *{ animation-delay:.05s }
+@keyframes slide-in{ from{ opacity:0; transform:translateX(12px) } }
+.step-icon{ width:88px; height:88px; border-radius:18px; background:var(--color-sun); color:var(--color-ink); border:2px solid var(--color-paper); display:grid; place-items:center }
+.step-icon .icon{ width:48px; height:48px }
+.step-count{ font:600 var(--text-small) var(--font-mono); color:var(--fg-2) }
+.step-title{ font-size:clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem); line-height:1; margin-top:6px }
+.step-text{ font-size:var(--text-lead); line-height:1.45; margin-top:12px; max-width:40ch }
+.step-meta{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:16px; color:var(--fg-2) }
+.step-meta .chip{ color:var(--color-paper) }
+.step-module{
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; width:100%; margin-top:16px; min-height:56px;
+  padding:10px 14px; text-align:left; border:2px dashed var(--fg-2); border-radius:12px; background:transparent; color:var(--color-paper); cursor:pointer; font-weight:700;
+}
+.step-module:hover{ border-style:solid; border-color:var(--color-paper) }
+.step-module .arrow{ margin-left:auto }
+.step-nav{ display:flex; gap:12px; margin-top:20px }
+.step-nav .btn{ flex:1 }
+.step-nav .btn--back{ flex:0 0 auto; padding-inline:14px }
+.step-nav .btn--back span{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap }
+@media (min-width:760px){
+  .step-panel{ grid-template-columns:auto minmax(0,1fr); padding:32px }
+  .step-icon{ width:112px; height:112px }
+  .step-icon .icon{ width:60px; height:60px }
+  .step-nav .btn{ flex:0 1 auto }
+  .step-nav .btn--back{ padding-inline:20px }
+  .step-nav .btn--back span{ position:static; width:auto; height:auto; overflow:visible; clip:auto }
+}
+@media (min-width:960px){
+  .journey-track{ overflow:visible; margin-inline:0; padding-inline:0 }
+  .journey-track [role="tab"]{ flex:1 1 0 }
+}
+
+/* 04 · Módulos */
+.filters{ display:flex; gap:8px; margin:28px -20px 0; padding:2px 20px 6px; overflow-x:auto; scrollbar-width:none }
+.filters::-webkit-scrollbar{ display:none }
+.filter{
+  flex:none; display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 8px 0 14px;
+  border:var(--border); border-radius:999px; background:var(--color-white); font:700 1rem var(--font-text); cursor:pointer;
+}
+.filter .icon{ width:20px; height:20px }
+.filter .count{ font:600 .9375rem var(--font-mono); background:var(--color-paper-2); border-radius:999px; min-width:30px; padding:2px 8px; text-align:center }
+.filter[aria-pressed="true"]{ background:var(--color-ink); color:var(--color-paper) }
+.filter[aria-pressed="true"] .count{ background:var(--color-paper); color:var(--color-ink) }
+@media (min-width:600px){ .filters{ flex-wrap:wrap; margin-inline:0; padding-inline:0; overflow:visible } }
+.filter-note{ margin-top:14px; display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline; min-height:1.55em }
+.module-grid{ list-style:none; padding:0; margin-top:20px; display:grid; gap:14px }
+.module-card{
+  width:100%; height:100%; display:flex; flex-direction:column; gap:10px; padding:0 18px 18px; text-align:left;
+  border:var(--border); border-radius:16px; background:var(--color-white); box-shadow:var(--shadow); cursor:pointer; overflow:hidden;
+  transition:transform .12s var(--ease), box-shadow .12s var(--ease);
+}
+.module-card:hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--color-ink) }
+.module-card:active{ transform:translate(2px,2px); box-shadow:2px 2px 0 var(--color-ink) }
+.module-card::before{ content:""; display:block; height:12px; margin:0 -18px 6px; border-bottom:var(--border); background:var(--stripe) }
+[data-status="live"]{ --stripe:var(--color-live) }
+[data-status="building"]{ --stripe:repeating-linear-gradient(-45deg, var(--color-building) 0 8px, var(--color-ink) 8px 16px) }
+[data-status="bottleneck"]{ --stripe:var(--color-bottleneck) }
+[data-status="planned"]{ --stripe:repeating-linear-gradient(90deg, var(--color-planned) 0 8px, transparent 8px 14px) }
+.module-card-head{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px }
+.module-name{ font-family:var(--font-poster); font-weight:800; font-stretch:80%; font-size:var(--text-h3); line-height:1.1 }
+.module-summary{ color:var(--color-ink-2) }
+.module-more{ margin-top:auto; padding-top:4px; display:inline-flex; align-items:center; gap:6px; font-weight:700; color:var(--color-indigo) }
+.module-more .icon{ transition:transform .2s var(--ease) }
+.module-card:hover .module-more .icon{ transform:translateX(4px) }
+.module-empty{ margin-top:20px; border:2px dashed var(--color-planned); border-radius:16px; padding:24px 20px; background:var(--color-white); display:grid; gap:8px }
+.module-empty strong{ font-family:var(--font-poster); font-stretch:80%; font-size:var(--text-h3); line-height:1.1 }
+@media (min-width:600px){ .module-grid{ grid-template-columns:repeat(2,1fr) } }
+@media (min-width:960px){ .module-grid{ grid-template-columns:repeat(3,1fr); gap:18px } }
+
+/* Diálogo de módulo */
+.dialog{
+  border:var(--border); border-bottom:0; border-radius:20px 20px 0 0; padding:0;
+  margin:auto 0 0; width:100%; max-width:100%; max-height:92dvh; overflow:auto; overscroll-behavior:contain;
+  background:var(--color-white); color:var(--color-ink);
+}
+.dialog::backdrop{ background:rgba(22,24,29,.62) }
+.dialog[open]{ animation:sheet-up .28s var(--ease) }
+@keyframes sheet-up{ from{ transform:translateY(48px); opacity:0 } }
+.dialog-head{
+  position:sticky; top:0; z-index:1; display:flex; align-items:flex-start; gap:12px;
+  padding:16px 16px 14px 20px; background:var(--color-white); border-bottom:var(--border);
+}
+.dialog-head > div{ flex:1; min-width:0 }
+.dialog-head h2{ font-size:clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem); line-height:1; margin-top:8px }
+.close-btn{ flex:none; width:48px; height:48px; border:var(--border); border-radius:12px; background:var(--color-paper); display:grid; place-items:center; cursor:pointer }
+.dialog-body{ padding:16px 20px 24px }
+.dialog-status{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px }
+.dialog-body .listen-btn{ margin-top:14px }
+.module-details{ margin-top:12px }
+.module-details > div{ padding:14px 0; border-top:1px solid var(--color-paper-2); display:grid; gap:4px }
+.module-details dt{ font:600 var(--text-small) var(--font-mono); color:var(--color-ink-2) }
+.module-details dd{ margin:0 }
+.module-details .is-missing{ background:var(--color-bottleneck-bg); border:2px solid var(--color-bottleneck); border-radius:12px; padding:14px; margin:6px 0 }
+.module-details .is-missing dt{ color:var(--color-bottleneck-text) }
+.module-details .is-helpers{ background:var(--color-indigo-light); border:2px solid var(--color-indigo); border-radius:12px; padding:14px }
+.module-details .is-helpers dt{ color:var(--color-indigo-dark) }
+.dialog-nav{ display:flex; justify-content:space-between; gap:12px; margin-top:20px }
+@media (min-width:600px){
+  .dialog{ margin:auto; width:min(700px, calc(100% - 48px)); max-height:calc(100dvh - 48px); border-bottom:var(--border); border-radius:20px; box-shadow:8px 8px 0 var(--color-ink) }
+  .dialog-head{ padding:20px 20px 16px 28px }
+  .dialog-body{ padding:20px 28px 28px }
+  .module-details > div{ grid-template-columns:170px 1fr; gap:16px }
+}
+
+/* 05 · Transparência */
+.transparency-head{ display:grid; gap:20px }
+@media (min-width:960px){ .transparency-head{ grid-template-columns:1fr auto; align-items:end } }
+.ledger-panel{ margin-top:24px; border:var(--border); border-radius:16px; overflow:hidden; background:var(--color-white) }
+.ledger-panel--sample{ background:repeating-linear-gradient(-45deg, #FFFFFF 0 14px, #FAF6EC 14px 28px) }
+.sample-banner{ display:none; padding:6px; background:repeating-linear-gradient(-45deg, var(--color-building) 0 12px, var(--color-ink) 12px 24px); border-bottom:var(--border) }
+.sample-banner span{ display:block; background:var(--color-ink); color:var(--color-building); font:600 var(--text-small)/1.35 var(--font-mono); text-align:center; padding:6px 10px; border-radius:6px }
+.ledger-panel--sample .sample-banner{ display:block }
+.ledger-status{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; padding:8px 16px; border-bottom:var(--border); font:400 var(--text-small) var(--font-mono); min-height:56px }
+.live{ display:inline-flex; align-items:center; gap:8px; font-weight:600 }
+.live-dot{ width:12px; height:12px; border-radius:50%; background:var(--color-planned); flex:none }
+.ledger-panel--sample .live-dot{ background:var(--color-bottleneck); animation:blink 1.6s ease-in-out infinite }
+@keyframes blink{ 50%{ opacity:.25 } }
+.ledger-status .icon-btn{ margin-left:auto; min-height:44px; font-size:.9375rem; font-family:var(--font-text) }
+.totals{ display:grid; border-bottom:var(--border) }
+.total{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:14px 16px }
+.total + .total{ border-top:var(--border) }
+.total-label{ display:inline-flex; align-items:center; gap:8px; color:var(--color-ink-2) }
+.total-value{ font:600 clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem)/1.1 var(--font-mono); font-variant-numeric:tabular-nums; white-space:nowrap }
+.total--in .total-value{ color:var(--color-live) }
+.total--balance{ background:var(--color-paper) }
+.ledger-panel--sample .total--balance{ background:transparent }
+@media (min-width:760px){
+  .totals{ grid-template-columns:repeat(3,1fr) }
+  .total{ flex-direction:column; justify-content:flex-start; padding:18px 20px }
+  .total + .total{ border-top:0; border-left:var(--border) }
+}
+.ledger-grid{ display:grid }
+.ledger-part{ padding:20px 16px }
+.ledger-part + .ledger-part{ border-top:var(--border) }
+.ledger-panel h3{ font-size:1.5rem; line-height:1.1; margin-bottom:14px }
+.bars{ list-style:none; padding:0; display:grid; gap:14px }
+.bar-head{ display:flex; justify-content:space-between; align-items:center; gap:8px }
+.bar-name{ display:inline-flex; align-items:center; gap:8px; font-weight:700 }
+.bar-value{ font-family:var(--font-mono); white-space:nowrap }
+.bar-value small{ color:var(--color-ink-2); font-size:var(--text-small); margin-left:4px }
+.bar-track{ height:16px; margin-top:6px; border:var(--border); border-radius:999px; background:var(--color-paper); overflow:hidden }
+.bar-fill{ height:100%; width:var(--p, 0%); background:var(--fill); transition:width .7s var(--ease) }
+.bar-fill.has-value{ border-right:var(--border) }
+.ledger{ list-style:none; padding:0 }
+.entry{
+  display:grid; grid-template-columns:auto 1fr auto; grid-template-areas:"date desc amount" ". receipt receipt";
+  gap:2px 12px; padding:10px 0; border-top:1px solid var(--color-paper-2); align-items:baseline;
+}
+.entry:first-child{ border-top:0 }
+.entry-date{ grid-area:date; font:400 var(--text-small) var(--font-mono); color:var(--color-ink-2); min-width:3.2em }
+.entry-desc{ grid-area:desc; line-height:1.35 }
+.entry-desc small{ display:block; font-size:var(--text-small); color:var(--color-ink-2); margin-top:2px }
+.entry-amount{ grid-area:amount; font:600 1rem var(--font-mono); white-space:nowrap; text-align:right }
+.entry--in .entry-amount{ color:var(--color-live) }
+.entry-receipt{
+  grid-area:receipt; justify-self:start; display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 10px 0 6px; margin-left:-6px;
+  border:0; border-radius:8px; background:none; color:var(--color-indigo); font-weight:700; font-size:var(--text-small); text-decoration:underline; text-underline-offset:3px; cursor:pointer;
+}
+.entry-receipt .icon{ width:20px; height:20px }
+.entry-receipt:hover{ background:var(--color-indigo-light) }
+.entry.is-new{ animation:arrive 2s var(--ease) }
+@keyframes arrive{ 0%{ opacity:0; transform:translateY(-10px); background:var(--color-indigo-light) } 15%{ opacity:1; transform:none; background:var(--color-indigo-light) } 100%{ background:transparent } }
+@media (min-width:600px){
+  .entry{ grid-template-columns:4.2em 1fr auto auto; grid-template-areas:"date desc amount receipt"; align-items:center }
+  .entry-receipt{ margin-left:4px }
+}
+.ledger-empty{
+  border:2px dashed var(--color-planned); border-radius:12px; padding:20px; display:grid; gap:8px;
+  background-image:linear-gradient(transparent 35px, rgba(31,63,209,.09) 36px); background-size:100% 36px;
+}
+.ledger-empty .icon{ width:36px; height:36px; color:var(--color-ink-2) }
+.ledger-empty-title{ font-family:var(--font-poster); font-weight:800; font-stretch:80%; font-size:1.625rem; line-height:1.1 }
+.why-zero{ border-top:var(--border); background:var(--color-building-bg); padding:18px 16px; display:grid; gap:8px }
+.why-zero h3{ margin:0; font-size:1.375rem }
+.why-zero a{ font-weight:700 }
+.tamper-proof{ border-top:var(--border); background:var(--color-white) }
+.tamper-proof summary{ display:flex; align-items:center; gap:10px; min-height:56px; padding:8px 16px; font-weight:700; cursor:pointer; list-style:none }
+.tamper-proof summary::-webkit-details-marker{ display:none }
+.tamper-proof summary .icon:last-child{ margin-left:auto; transition:transform .2s }
+.tamper-proof[open] summary .icon:last-child{ transform:rotate(180deg) }
+.tamper-proof p{ padding:0 16px 18px; max-width:62ch }
+@media (min-width:960px){
+  .ledger-grid{ grid-template-columns:5fr 7fr }
+  .ledger-part{ padding:24px }
+  .ledger-part + .ledger-part{ border-top:0; border-left:var(--border) }
+  .why-zero,.tamper-proof summary,.tamper-proof p{ padding-inline:24px }
+}
+
+/* Comprovante */
+.dialog--receipt{
+  margin:auto; width:min(420px, calc(100% - 24px)); max-height:calc(100dvh - 24px); border:0; border-radius:0; padding:0;
+  background:transparent; overflow:auto; box-shadow:none;
+}
+.receipt{
+  --tooth:radial-gradient(circle at 8px 0, #0000 6px, #000 6.5px);
+  background:#fff; padding:28px 22px 30px; font:400 .9375rem/1.5 var(--font-mono);
+  -webkit-mask:var(--tooth) top/16px 51% repeat-x, radial-gradient(circle at 8px 100%, #0000 6px, #000 6.5px) bottom/16px 51% repeat-x;
+  mask:var(--tooth) top/16px 51% repeat-x, radial-gradient(circle at 8px 100%, #0000 6px, #000 6.5px) bottom/16px 51% repeat-x;
+}
+.receipt-banner{ text-align:center; font-weight:600; background:var(--color-building); border:var(--border); padding:4px 8px; border-radius:6px }
+.receipt-title{ text-align:center; margin-top:14px; font-weight:600; font-size:1.0625rem }
+.receipt dl{ margin-top:14px; border-top:2px dashed var(--color-ink); padding-top:10px }
+.receipt dl div{ display:flex; justify-content:space-between; gap:12px; padding:4px 0 }
+.receipt dt{ color:var(--color-ink-2); flex:none }
+.receipt dd{ margin:0; text-align:right }
+.receipt .receipt-total{ border-top:2px dashed var(--color-ink); margin-top:6px; padding-top:10px; font-weight:600; font-size:1.125rem }
+.redacted{ background:var(--color-ink); color:var(--color-ink); border-radius:2px; user-select:none }
+.receipt-chain{ margin-top:12px; border:var(--border); border-radius:10px; padding:10px 12px; display:grid; gap:4px; background:var(--color-paper) }
+.receipt-chain div{ display:flex; justify-content:space-between; align-items:baseline; gap:8px }
+.receipt-chain code{ font:600 1rem var(--font-mono); letter-spacing:.04em; white-space:nowrap }
+.receipt-note{ margin-top:12px; font-family:var(--font-text); font-size:var(--text-small); line-height:1.45 }
+.receipt .btn{ width:100%; margin-top:16px; font-family:var(--font-text) }
+
+/* 06 · Gargalos */
+.bottlenecks{ display:grid; gap:12px; margin-top:28px }
+.bottleneck{ border:var(--border); border-radius:16px; background:var(--color-white); overflow:hidden }
+.bottleneck summary{ display:flex; align-items:center; gap:12px; min-height:68px; padding:12px 16px; cursor:pointer; list-style:none }
+.bottleneck summary::-webkit-details-marker{ display:none }
+.bottleneck summary:hover{ background:#FBF9F4 }
+.bottleneck-num{ flex:none; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; background:var(--color-bottleneck-bg); border:2px solid var(--color-bottleneck); color:var(--color-bottleneck-text); font:600 1rem var(--font-mono) }
+.bottleneck-head{ flex:1; display:flex; flex-direction:column; align-items:flex-start; gap:6px; min-width:0 }
+.bottleneck-title{ font-family:var(--font-poster); font-weight:800; font-stretch:80%; font-size:var(--text-h3); line-height:1.1 }
+.bottleneck .module-id{ color:var(--color-ink-2) }
+.bottleneck .chevron{ transition:transform .2s var(--ease) }
+.bottleneck[open] .chevron{ transform:rotate(180deg) }
+.bottleneck-body{ border-top:var(--border); padding:16px 16px 20px; display:grid; gap:16px }
+.bottleneck-body dl{ display:grid; gap:14px }
+.bottleneck-body dt{ font:600 var(--text-small) var(--font-mono); color:var(--color-ink-2); margin-bottom:2px }
+.bottleneck-body dd{ margin:0 }
+.bottleneck-body .btn{ justify-self:start }
+@media (min-width:600px){ .bottleneck-head{ flex-direction:row; align-items:center; justify-content:space-between; gap:12px } }
+@media (min-width:760px){
+  .bottleneck summary{ padding:14px 20px }
+  .bottleneck-body{ padding:20px 20px 24px }
+  .bottleneck-body dl{ grid-template-columns:repeat(3,1fr); gap:24px }
+}
+
+/* 07 · Como ajudar */
+.help-cards{ list-style:none; padding:0; margin-top:28px; display:grid; gap:14px }
+.help-card{ background:var(--color-white); color:var(--color-ink); border:var(--border); border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:10px }
+.help-card-icon{ width:56px; height:56px; border-radius:14px; border:var(--border); display:grid; place-items:center; background:var(--color-sun) }
+.help-card-icon .icon{ width:30px; height:30px }
+.help-card h3{ font-size:1.875rem; line-height:1 }
+.help-card-status{ display:grid; gap:6px; margin-top:auto; padding-top:10px; font-size:var(--text-small); color:var(--color-ink-2) }
+.help-card-status .badge{ justify-self:start }
+.help-card .btn{ margin-top:6px; width:100% }
+.help-now{ margin-top:24px; display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px; font-size:1.1875rem; font-weight:700 }
+@media (min-width:760px){ .help-cards{ grid-template-columns:repeat(2,1fr) } }
+@media (min-width:1100px){ .help-cards{ grid-template-columns:repeat(4,1fr) } }
+
+/* 08 · Código aberto */
+.open-grid{ display:grid; gap:24px; margin-top:28px }
+.contribute-steps{ list-style:none; padding:0; display:grid; gap:12px }
+.contribute-steps li{ display:flex; align-items:center; gap:14px; font-size:1.1875rem; border:2px solid var(--color-paper); border-radius:14px; padding:14px 16px }
+.contribute-steps span{ flex:none; width:44px; height:44px; border-radius:50%; background:var(--color-sun); color:var(--color-ink); display:grid; place-items:center; font:600 1.125rem var(--font-mono) }
+.repo{ border:2px solid var(--color-paper); border-radius:14px; background:#0D0F12; overflow:hidden }
+.repo-head{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; padding:12px 16px; border-bottom:2px solid var(--color-paper); font:600 1rem var(--font-mono) }
+.repo-files{ list-style:none; padding:6px 0 }
+.repo-files li{ display:grid; grid-template-columns:auto 1fr; gap:2px 10px; padding:8px 16px }
+.repo-files .icon{ color:var(--color-sun); margin-top:1px }
+.repo-files code{ font:600 1rem var(--font-mono); color:var(--color-paper); overflow-wrap:anywhere }
+.repo-files span{ grid-column:2; color:var(--fg-2); font-size:var(--text-small) }
+.repo-facts{ display:grid; grid-template-columns:auto 1fr; gap:8px 16px; padding:14px 16px; border-top:2px solid var(--color-paper); font-size:var(--text-small) }
+.repo-facts dt{ font-family:var(--font-mono); color:var(--fg-2) }
+.repo-facts dd{ margin:0; font-weight:700 }
+@media (min-width:960px){ .open-grid{ grid-template-columns:1fr 1fr; align-items:start } }
+
+/* Rodapé */
+.site-footer{ max-width:1200px; margin:0 auto; padding:40px var(--gutter) 48px }
+.footer-brand{ display:flex; align-items:center; gap:14px; font-family:var(--font-poster); font-weight:800; font-stretch:78%; font-size:clamp(2.75rem, 1.6rem + 5vw, 5rem); line-height:1 }
+.footer-brand .logo-mark{ width:clamp(48px, 30px + 5vw, 84px); height:auto }
+.footer-brand + p{ margin-top:12px; font-size:var(--text-lead); max-width:30ch }
+.footer-columns{ display:grid; gap:24px; margin-top:32px; padding-top:24px; border-top:var(--border) }
+.site-footer h2{ font:600 var(--text-small) var(--font-mono); color:var(--color-ink-2); margin-bottom:6px; letter-spacing:0 }
+.footer-note{ margin-top:32px; padding-top:16px; border-top:1px dashed var(--color-ink-2); font-size:var(--text-small); color:var(--color-ink-2) }
+@media (min-width:760px){ .footer-columns{ grid-template-columns:repeat(3,1fr) } }
+
+/* Aviso rápido */
+.toast{
+  position:fixed; left:50%; bottom:16px; z-index:60; transform:translate(-50%, 180%);
+  width:max-content; max-width:calc(100% - 32px); padding:12px 16px; border-radius:12px;
+  background:var(--color-ink); color:var(--color-paper); box-shadow:4px 4px 0 var(--color-sun); font-weight:700;
+  visibility:hidden; transition:transform .25s var(--ease), visibility 0s .25s;
+}
+.toast.shown{ transform:translate(-50%, 0); visibility:visible; transition:transform .25s var(--ease) }
+
+/* Movimento reduzido e alto contraste */
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto }
+  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; transition-delay:0s !important }
+  .js .reveal{ opacity:1; transform:none }
+}
+@media (forced-colors:active){
+  .btn,.module-card,button.step,.voice-btn{ box-shadow:none }
+  .redacted{ forced-color-adjust:none }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-plate" viewBox="0 0 24 24"><circle cx="15" cy="12" r="6.5"/><circle cx="15" cy="12" r="3"/><path d="M3 3.5v5a1.5 1.5 0 0 0 3 0v-5M4.5 10v10.5"/></symbol>
+  <symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8.5 3 3.5 5.5 2 10.5l3 1.2V21h14v-9.3l3-1.2-1.5-5L15.5 3a3.5 3.5 0 0 1-7 0Z"/></symbol>
+  <symbol id="i-soap" viewBox="0 0 24 24"><rect x="2.5" y="11" width="14" height="9.5" rx="3"/><path d="M6 15.5h7"/><circle cx="17.5" cy="6" r="2.5"/><circle cx="10.5" cy="6.5" r="1.5"/><circle cx="20.5" cy="11.5" r="1"/></symbol>
+  <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8.5 7V5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2M3 12.5h18M12 11v3"/></symbol>
+  <symbol id="i-voice-ai" viewBox="0 0 24 24"><path d="M4 4.5h16v11.5H10l-6 4.5Z"/><path d="M9 8.5v4M12 7.5v6M15 9v3"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.5s-7-6.3-7-12a7 7 0 0 1 14 0c0 5.7-7 12-7 12Z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3.5M8.5 21h7"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.8 2.8 5.2-5.8"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3.5 20.5h17M7 20.5v-6M12 20.5v-11M17 20.5v-8.5"/><path d="m5 9 5-4.5 3.5 2.5L19 3"/></symbol>
+  <symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4Z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2.5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20.5a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14a5 5 0 0 1 5 5.5"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-cone" viewBox="0 0 24 24"><path d="M10 3.5h4L18.5 19h-13ZM3 20.5h18M8.2 11h7.6M6.9 15.2h10.2"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 21.5 20h-19Z"/><path d="M12 10v4.5M12 17.2v.3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4.5l-3 15"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.9-1.6-1.4-2.8-1.4-1.6 0-2.8.9-2.8 2.1 0 2.8 5.6 1.4 5.6 4.2 0 1.2-1.2 2.1-2.8 2.1-1.2 0-2.3-.5-2.8-1.4M12 6.2v1.6M12 16.2v1.6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 2.5h12v19l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5-2 1.5Z"/><path d="M9 7.5h6M9 11h6M9 14.5h3.5"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 2.5h8l4 4v15H6Z"/><path d="M14 2.5v4h4M9 12h6M9 15.5h6"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6.5a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 5.5v13M15 5.5v13"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5Z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5v-3a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="3"/><path d="M4 10.5h16M8 17v3M16 17v3M8 13.8h.01M16 13.8h.01"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.3 5.3l-6 6a1.8 1.8 0 0 0 2.6 2.6l6-6a4 4 0 0 0 5.3-5.3l-2.5 2.5-2.4-.6-.6-2.4Z"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z"/></symbol>
+</svg>
+
+<a class="skip-link" href="#content">Pular pro conteúdo</a>
+<noscript><p class="no-js-notice">Este protótipo usa JavaScript nas partes interativas. O texto está todo aqui, mas os blocos clicáveis não abrem.</p></noscript>
+
+<div class="status-strip">
+  <div class="status-strip-inner">
+    <span><strong>Em construção.</strong> O projeto ainda não recebe doação nem atende ninguém.</span>
+    <a href="#modulos">Ver o que já existe</a>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="logo" href="#content" aria-label="Início">
+      <svg class="logo-mark" viewBox="0 0 36 30" aria-hidden="true" focusable="false">
+        <rect x="1" y="19" width="10" height="10" rx="2" fill="#FF6B3D" stroke="#16181D" stroke-width="2"/>
+        <rect x="13" y="10" width="10" height="19" rx="2" fill="#1F3FD1" stroke="#16181D" stroke-width="2"/>
+        <rect x="25" y="1" width="10" height="28" rx="2" fill="#16181D" stroke="#16181D" stroke-width="2"/>
+      </svg>
+      <span data-name></span>
+    </a>
+    <nav class="site-nav" id="site-nav" aria-label="Principal">
+      <ul>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#modulos">Módulos</a></li>
+        <li><a href="#transparencia">Transparência</a></li>
+        <li><a href="#gargalos">Gargalos</a></li>
+        <li><a href="#ajudar">Ajudar</a></li>
+      </ul>
+    </nav>
+    <button class="icon-btn" id="text-size-btn" type="button" aria-pressed="false" title="Aumentar o texto"><span aria-hidden="true">A+</span><span class="sr-only">Texto maior</span></button>
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg><span>Menu</span></button>
+  </div>
+</header>
+
+<main id="content" tabindex="-1">
+
+  <!-- Hero -->
+  <section class="hero" id="inicio" aria-labelledby="hero-title"
+    data-speech="Aqui é o {name}. O primeiro passo pra quem quer mudar de vida. A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial. Quem doa vê cada real entrando e saindo, ao vivo. É um projeto sem fins lucrativos, com código aberto.">
+    <div class="hero-inner">
+      <div class="hero-grid">
+        <div>
+          <div class="kicker">
+            <span class="chip">Sem fins lucrativos</span>
+            <span class="chip">Código aberto</span>
+            <button class="listen-btn" type="button" data-listen="inicio" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+          </div>
+          <h1 id="hero-title">O primeiro passo pra quem quer <span class="highlight">mudar de vida.</span></h1>
+          <p class="lead">A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial.</p>
+          <p class="promise"><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span>Quem doa vê cada real entrando e saindo, ao vivo.</span></p>
+          <div class="actions">
+            <a class="btn btn--primary" href="#como-funciona">Como funciona <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            <a class="btn" href="#transparencia">Ver pra onde vai o dinheiro</a>
+          </div>
+        </div>
+        <figure class="hero-stairs stairs-box">
+          <span class="sun" aria-hidden="true"></span>
+          <ol class="stairs" aria-label="Os cinco degraus que a gente oferece">
+            <li style="--n:1"><button class="step" type="button" data-module="M5" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#i-plate"/></svg>Comida</button></li>
+            <li style="--n:2"><button class="step" type="button" data-module="M5" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#i-shirt"/></svg>Roupa</button></li>
+            <li style="--n:3"><button class="step" type="button" data-module="M5" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#i-soap"/></svg>Higiene</button></li>
+            <li style="--n:4"><button class="step" type="button" data-module="M6" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#i-briefcase"/></svg>Trabalho</button></li>
+            <li style="--n:5"><button class="step" type="button" data-module="M7" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#i-voice-ai"/></svg>IA</button></li>
+          </ol>
+          <figcaption>Um degrau de cada vez. Toque num degrau pra ver como ele funciona.</figcaption>
+        </figure>
+      </div>
+
+      <div class="scoreboard" role="group" aria-label="Números de hoje">
+        <div class="scoreboard-item"><span class="scoreboard-label">Entrou</span><span class="scoreboard-value">R$ 0,00</span></div>
+        <div class="scoreboard-item"><span class="scoreboard-label">Saiu</span><span class="scoreboard-value">R$ 0,00</span></div>
+        <div class="scoreboard-item"><span class="scoreboard-label">Pessoas atendidas</span><span class="scoreboard-value">0</span></div>
+        <p class="scoreboard-note"><span>Zerado porque a gente ainda não começou. Estado em <span data-status-date></span>.</span><a href="#transparencia">Ver o painel</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 · Pra você -->
+  <section class="block block--sun reveal" id="pra-voce" aria-labelledby="t-for-you"
+    data-speech="Oi. Que bom que você está aqui. O {name} ajuda quem quer mudar de vida. A gente dá comida, roupa e higiene nos primeiros dias. E ajuda você a arrumar um trabalho. É de graça. Pra participar, você só precisa conversar com a gente. Não precisa ler nem escrever. A conversa ainda não abriu. Quando abrir, vai ser aqui no site, com um voluntário na rua, ou num ponto perto de você.">
+    <div class="block-head"><p class="tag"><b>01</b>Pra você</p></div>
+    <div class="voice-grid">
+      <div>
+        <h2 id="t-for-you">Você quer mudar de vida?</h2>
+        <p class="lead">Aperte o botão e escute. Não precisa ler.</p>
+      </div>
+      <button class="voice-btn" type="button" data-listen="pra-voce" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+    </div>
+    <ul class="entry-points">
+      <li><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><strong>Aqui no site</strong><span class="badge badge--planned"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Ainda não abriu</span></li>
+      <li><svg class="icon" aria-hidden="true"><use href="#i-people"/></svg><strong>Com um voluntário na rua</strong><span class="badge badge--planned"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Ainda não abriu</span></li>
+      <li><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><strong>Num ponto perto de você</strong><span class="badge badge--planned"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Ainda não abriu</span></li>
+    </ul>
+    <p class="note">É de graça. A conversa é por voz. A gente ainda está preparando tudo.</p>
+  </section>
+
+  <!-- 02 · O problema -->
+  <section class="block reveal" id="problema" aria-labelledby="t-problem"
+    data-speech="Dinheiro sozinho não resolve. Primeiro: falta o mínimo pro primeiro passo. Comer, roupa limpa, um banho e um trabalho. Segundo: ajuda solta não vira caminho. Um prato de comida ajuda hoje. Sem o resto, amanhã tudo volta. Terceiro: quem doa não vê pra onde vai o dinheiro. E desconfia, com razão. A raiz é acertar a pessoa e dar um caminho inteiro. Do prato de comida até o primeiro salário.">
+    <div class="block-head">
+      <p class="tag"><b>02</b>O problema</p>
+      <button class="listen-btn" type="button" data-listen="problema" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+    </div>
+    <h2 id="t-problem">Dinheiro sozinho não resolve.</h2>
+    <ol class="problems">
+      <li><span class="num" aria-hidden="true">1</span><h3>Falta o mínimo pro primeiro passo.</h3><p>Comer por alguns dias, roupa limpa, um banho, um trabalho. Sem isso, não dá nem pra começar.</p></li>
+      <li><span class="num" aria-hidden="true">2</span><h3>Ajuda solta não vira caminho.</h3><p>Um prato de comida ajuda hoje. Sem o resto, amanhã tudo volta.</p></li>
+      <li><span class="num" aria-hidden="true">3</span><h3>Quem doa não vê o dinheiro.</h3><p>E sem ver pra onde ele vai, desconfia. Com razão.</p></li>
+    </ol>
+    <div class="root-cause">
+      <div class="root-cause-text">
+        <p class="root-cause-label">A raiz</p>
+        <p class="root-cause-line">Acertar a pessoa e dar um caminho inteiro.</p>
+        <p>Achar quem quer mudar de vida de verdade. E andar junto, do prato de comida até o primeiro salário.</p>
+      </div>
+      <div class="compare">
+        <div class="segmented" role="group" aria-label="Comparar">
+          <button type="button" data-compare="loose" aria-pressed="true">Ajuda solta</button>
+          <button type="button" data-compare="full" aria-pressed="false">Caminho inteiro</button>
+        </div>
+        <div class="stairs-box">
+          <ol class="stairs stairs--mini" id="compare-stairs" data-mode="loose" aria-describedby="compare-caption">
+            <li style="--n:1"><span class="step"><svg class="icon" aria-hidden="true"><use href="#i-plate"/></svg>Comida</span></li>
+            <li style="--n:2"><span class="step"><svg class="icon" aria-hidden="true"><use href="#i-shirt"/></svg>Roupa</span></li>
+            <li style="--n:3"><span class="step"><svg class="icon" aria-hidden="true"><use href="#i-soap"/></svg>Higiene</span></li>
+            <li style="--n:4"><span class="step"><svg class="icon" aria-hidden="true"><use href="#i-briefcase"/></svg>Trabalho</span></li>
+            <li style="--n:5"><span class="step"><svg class="icon" aria-hidden="true"><use href="#i-voice-ai"/></svg>IA</span></li>
+          </ol>
+        </div>
+        <p class="compare-caption" id="compare-caption" aria-live="polite">Só o prato de comida. Ajuda hoje, mas amanhã tudo volta.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · Como funciona -->
+  <section class="block block--ink reveal" id="como-funciona" aria-labelledby="t-how">
+    <div class="block-head">
+      <p class="tag"><b>03</b>Como funciona</p>
+      <button class="listen-btn" type="button" data-listen="como-funciona" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+    </div>
+    <h2 id="t-how">Sete passos. Do primeiro encontro ao trabalho.</h2>
+    <p class="lead">Toque em cada passo pra ver quem faz o quê.</p>
+    <div class="journey-track" id="journey-track" role="tablist" aria-label="Passos da jornada"></div>
+    <div class="step-panel" id="step-panel" role="tabpanel" tabindex="0"></div>
+  </section>
+
+  <!-- 04 · Módulos -->
+  <section class="block block--paper reveal" id="modulos" aria-labelledby="t-modules">
+    <div class="block-head">
+      <p class="tag"><b>04</b>Módulos</p>
+      <button class="listen-btn" type="button" data-listen="modulos" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+    </div>
+    <h2 id="t-modules">Nove blocos. Cada um diz se já funciona.</h2>
+    <p class="lead">O projeto é feito de partes separadas. Toque num bloco pra ver o que é, como funciona e o que falta.</p>
+    <div class="filters" id="filters" role="group" aria-label="Filtrar por estado"></div>
+    <p class="filter-note" id="filter-note"></p>
+    <ul class="module-grid" id="module-grid"></ul>
+    <div class="module-empty" id="module-empty" hidden></div>
+  </section>
+
+  <!-- 05 · Transparência -->
+  <section class="block reveal" id="transparencia" aria-labelledby="t-transparency">
+    <div class="block-head">
+      <p class="tag"><b>05</b>Transparência</p>
+      <button class="listen-btn" type="button" data-listen="transparencia" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+    </div>
+    <div class="transparency-head">
+      <div>
+        <h2 id="t-transparency">Cada real à vista. Ao vivo.</h2>
+        <p class="lead">Toda entrada e toda saída aparece aqui, com data, categoria e comprovante. Até o custo pra manter o projeto de pé.</p>
+      </div>
+      <div class="segmented" role="group" aria-label="O que mostrar no painel">
+        <button type="button" data-panel="now" aria-pressed="true">Agora</button>
+        <button type="button" data-panel="sample" aria-pressed="false">Ver um exemplo</button>
+      </div>
+    </div>
+
+    <div class="ledger-panel" id="ledger-panel">
+      <p class="sample-banner"><span>EXEMPLO · números, pessoas e lojas inventados. Nada disso aconteceu.</span></p>
+      <div class="ledger-status">
+        <span class="live"><span class="live-dot" aria-hidden="true"></span>Ao vivo</span>
+        <span id="ledger-status-text">Nenhuma movimentação até agora.</span>
+        <button class="icon-btn" id="demo-toggle" type="button" hidden></button>
+      </div>
+      <div class="totals">
+        <div class="total total--in"><span class="total-label">Entrou</span><span class="total-value" data-total="in">R$ 0,00</span></div>
+        <div class="total"><span class="total-label">Saiu</span><span class="total-value" data-total="out">R$ 0,00</span></div>
+        <div class="total total--balance"><span class="total-label">Em caixa</span><span class="total-value" data-total="balance">R$ 0,00</span></div>
+      </div>
+      <div class="ledger-grid">
+        <div class="ledger-part">
+          <h3>Pra onde foi</h3>
+          <ul class="bars" id="bars"></ul>
+        </div>
+        <div class="ledger-part">
+          <h3>Últimas movimentações</h3>
+          <ol class="ledger" id="ledger" hidden></ol>
+          <div class="ledger-empty" id="ledger-empty">
+            <svg class="icon" aria-hidden="true"><use href="#i-receipt"/></svg>
+            <p class="ledger-empty-title">Nenhuma movimentação ainda.</p>
+            <p>Ainda não entrou nenhum real. Quando entrar, aparece aqui na hora, com data, categoria e comprovante.</p>
+            <p><strong>Aqui nunca vai ter número inventado.</strong></p>
+          </div>
+        </div>
+      </div>
+      <div class="why-zero" id="why-zero">
+        <h3>Por que está zerado?</h3>
+        <p>A doação só abre quando existir uma conta oficial do projeto. Assim todo real tem dono, nota e prestação de contas. <a href="#gargalos">Ver esse gargalo</a></p>
+      </div>
+      <details class="tamper-proof">
+        <summary><svg class="icon" aria-hidden="true"><use href="#i-link"/></svg>Como garantir que ninguém mexe escondido?<svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+        <p>A proposta: cada registro leva uma marca feita a partir do registro anterior, como elos de uma corrente. Se alguém apagar ou mudar uma linha, a corrente quebra, e qualquer pessoa consegue ver. Abra um comprovante no exemplo pra ver as marcas.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- 06 · Gargalos -->
+  <section class="block block--paper reveal" id="gargalos" aria-labelledby="t-bottlenecks"
+    data-speech="Estes são os problemas que a gente ainda não sabe resolver. Um: achar a pessoa certa. Dois: conversar com quem não lê. Três: receber doação do jeito certo. Quatro: fazer uma escolha justa. Cinco: segurança no encontro na rua. Se você entende de algum desses assuntos, sua ajuda vale muito.">
+    <div class="block-head">
+      <p class="tag"><b>06</b>Gargalos</p>
+      <button class="listen-btn" type="button" data-listen="gargalos" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+    </div>
+    <h2 id="t-bottlenecks">O que a gente ainda não sabe resolver.</h2>
+    <p class="lead">Falar disso também é transparência. Se você entende de algum desses assuntos, sua ajuda vale muito.</p>
+    <div class="bottlenecks">
+      <details class="bottleneck" open>
+        <summary><span class="bottleneck-num">1</span><span class="bottleneck-head"><span class="bottleneck-title">Achar a pessoa certa</span><span class="module-id">M3</span></span><svg class="icon chevron" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+        <div class="bottleneck-body">
+          <dl>
+            <div><dt>Por que é difícil</dt><dd>Quem quer mudar de vida de verdade? Um critério errado deixa de fora justamente quem mais precisa.</dd></div>
+            <div><dt>O que já está andando</dt><dd>O roteiro da conversa e os critérios entram logo depois da pesquisa de voz.</dd></div>
+            <div><dt>Quem pode ajudar</dt><dd>Assistente social, gente de abrigo, organização que já trabalha na rua.</dd></div>
+          </dl>
+          <a class="btn" href="#" data-prototype="Aqui entra o canal de ideias, provavelmente uma conversa no GitHub."><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg>Dar uma ideia</a>
+        </div>
+      </details>
+      <details class="bottleneck">
+        <summary><span class="bottleneck-num">2</span><span class="bottleneck-head"><span class="bottleneck-title">Conversar com quem não lê</span><span class="module-id">M4</span></span><svg class="icon chevron" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+        <div class="bottleneck-body">
+          <dl>
+            <div><dt>Por que é difícil</dt><dd>A IA tem que entender sotaque, gíria e barulho de rua. E o aparelho precisa ser barato, aguentar o dia a dia e funcionar com internet ruim.</dd></div>
+            <div><dt>O que já está andando</dt><dd>Pesquisa de voz e de aparelho em andamento.</dd></div>
+            <div><dt>Quem pode ajudar</dt><dd>Engenharia de voz, hardware, quem desenha conversa pra quem não lê.</dd></div>
+          </dl>
+          <a class="btn" href="#" data-prototype="Aqui entra o canal de ideias, provavelmente uma conversa no GitHub."><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg>Dar uma ideia</a>
+        </div>
+      </details>
+      <details class="bottleneck">
+        <summary><span class="bottleneck-num">3</span><span class="bottleneck-head"><span class="bottleneck-title">Receber doação do jeito certo</span><span class="module-id">M2</span></span><svg class="icon chevron" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+        <div class="bottleneck-body">
+          <dl>
+            <div><dt>Por que é difícil</dt><dd>Receber e prestar contas pede uma organização registrada e uma conta oficial. Isso ainda não existe.</dd></div>
+            <div><dt>O que já está andando</dt><dd>Pesquisa jurídica em andamento.</dd></div>
+            <div><dt>Quem pode ajudar</dt><dd>Advogado do terceiro setor, contador, quem já montou prestação de contas pública.</dd></div>
+          </dl>
+          <a class="btn" href="#" data-prototype="Aqui entra o canal de ideias, provavelmente uma conversa no GitHub."><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg>Dar uma ideia</a>
+        </div>
+      </details>
+      <details class="bottleneck">
+        <summary><span class="bottleneck-num">4</span><span class="bottleneck-head"><span class="bottleneck-title">Escolha justa</span><span class="module-id">M3 · M4</span></span><svg class="icon chevron" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+        <div class="bottleneck-body">
+          <dl>
+            <div><dt>Por que é difícil</dt><dd>IA erra e pode ter preconceito escondido. Se errar, deixa de fora gente que merecia a chance.</dd></div>
+            <div><dt>O que já está andando</dt><dd>A proposta é: a IA recomenda, uma pessoa confirma. Ainda em decisão.</dd></div>
+            <div><dt>Quem pode ajudar</dt><dd>Pesquisa em viés de IA, ética, direitos humanos.</dd></div>
+          </dl>
+          <a class="btn" href="#" data-prototype="Aqui entra o canal de ideias, provavelmente uma conversa no GitHub."><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg>Dar uma ideia</a>
+        </div>
+      </details>
+      <details class="bottleneck">
+        <summary><span class="bottleneck-num">5</span><span class="bottleneck-head"><span class="bottleneck-title">Segurança no encontro</span><span class="module-id">M3</span></span><svg class="icon chevron" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+        <div class="bottleneck-body">
+          <dl>
+            <div><dt>Por que é difícil</dt><dd>Voluntário e candidato se encontram na rua. Os dois precisam estar seguros.</dd></div>
+            <div><dt>O que já está andando</dt><dd>Ainda não começou.</dd></div>
+            <div><dt>Quem pode ajudar</dt><dd>Quem já fez abordagem de rua, redução de danos, segurança comunitária.</dd></div>
+          </dl>
+          <a class="btn" href="#" data-prototype="Aqui entra o canal de ideias, provavelmente uma conversa no GitHub."><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg>Dar uma ideia</a>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- 07 · Como ajudar -->
+  <section class="block block--indigo reveal" id="ajudar" aria-labelledby="t-help"
+    data-speech="Tem quatro jeitos de ajudar: doar, ser voluntário, oferecer uma vaga ou contribuir com o projeto. Por enquanto, a doação, o voluntariado e as vagas ainda não abriram. A contribuição está em construção. Se você quer ajudar hoje, olhe os gargalos. É ali que falta gente que entende do assunto.">
+    <div class="block-head">
+      <p class="tag"><b>07</b>Como ajudar</p>
+      <button class="listen-btn" type="button" data-listen="ajudar" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+    </div>
+    <h2 id="t-help">Tem lugar pra você aqui.</h2>
+    <p class="lead">Quatro jeitos de entrar. Cada um diz, sem enrolação, se já dá pra começar.</p>
+    <ul class="help-cards">
+      <li class="help-card">
+        <span class="help-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-coin"/></svg></span>
+        <h3>Doar</h3>
+        <p>Seu dinheiro vira comida, roupa e higiene. E você vê cada real no painel.</p>
+        <p class="help-card-status"><span class="badge badge--planned"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Ainda não abriu</span>Abre quando a conta oficial do projeto existir.</p>
+        <a class="btn" href="#gargalos">Entender por quê</a>
+      </li>
+      <li class="help-card">
+        <span class="help-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-people"/></svg></span>
+        <h3>Ser voluntário</h3>
+        <p>Vá até a pessoa com o aparelho da conversa. A gente treina você antes.</p>
+        <p class="help-card-status"><span class="badge badge--planned"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Ainda não abriu</span>Abre com o piloto na primeira cidade.</p>
+        <a class="btn" href="#" data-prototype="Aqui entra uma lista de aviso. Precisa de decisão sobre qual serviço usar.">Quero ser avisado</a>
+      </li>
+      <li class="help-card">
+        <span class="help-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-briefcase"/></svg></span>
+        <h3>Oferecer vaga</h3>
+        <p>Dê a primeira chance pra alguém que chegou preparado e quer muito trabalhar.</p>
+        <p class="help-card-status"><span class="badge badge--planned"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Ainda não abriu</span>Abre quando as primeiras pessoas forem escolhidas.</p>
+        <a class="btn" href="#" data-prototype="Aqui entra uma lista de aviso. Precisa de decisão sobre qual serviço usar.">Quero ser avisado</a>
+      </li>
+      <li class="help-card">
+        <span class="help-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg></span>
+        <h3>Contribuir</h3>
+        <p>Código, design, pesquisa, direito, contabilidade. Tem espaço pra muita coisa.</p>
+        <p class="help-card-status"><span class="badge badge--building"><svg class="icon" aria-hidden="true"><use href="#i-cone"/></svg>Em construção</span>O repositório abre quando o nome e a licença forem decididos.</p>
+        <a class="btn" href="#codigo-aberto">Ver como contribuir</a>
+      </li>
+    </ul>
+    <p class="help-now"><span>Quer ajudar hoje? É nos gargalos que falta gente que entende do assunto.</span><a class="btn" href="#gargalos">Ver os gargalos</a></p>
+  </section>
+
+  <!-- 08 · Código aberto -->
+  <section class="block block--ink reveal" id="codigo-aberto" aria-labelledby="t-open"
+    data-speech="Tudo no projeto é aberto: o código, os documentos e cada decisão. Qualquer pessoa pode propor uma melhoria. Um admin revisa antes de entrar. O repositório abre ao público quando o nome e a licença forem decididos.">
+    <div class="block-head">
+      <p class="tag"><b>08</b>Código aberto</p>
+      <button class="listen-btn" type="button" data-listen="codigo-aberto" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+    </div>
+    <h2 id="t-open">Aberto pra ver. Aberto pra ajudar.</h2>
+    <p class="lead">O código, os documentos e cada decisão ficam num lugar público. Qualquer pessoa pode propor uma melhoria. Um admin revisa antes de entrar.</p>
+    <div class="open-grid">
+      <ol class="contribute-steps">
+        <li><span>1</span><p><strong>Olhe</strong> o código e os documentos.</p></li>
+        <li><span>2</span><p><strong>Proponha</strong> uma melhoria ou uma ideia.</p></li>
+        <li><span>3</span><p><strong>Um admin revisa</strong> e aprova antes de entrar.</p></li>
+      </ol>
+      <div class="repo">
+        <p class="repo-head"><span>Repositório do projeto</span><span class="badge badge--building"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg>Fechado por enquanto</span></p>
+        <ul class="repo-files">
+          <li><svg class="icon" aria-hidden="true"><use href="#i-doc"/></svg><code>docs/PRD.md</code><span>O que é o projeto e pra onde vai</span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-doc"/></svg><code>docs/DECISOES.md</code><span>Cada decisão, com data e quem decidiu</span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-doc"/></svg><code>docs/QUADRO.md</code><span>O que está sendo feito agora</span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg><code>docs/design/</code><span>Esta cara que você está vendo</span></li>
+        </ul>
+        <dl class="repo-facts">
+          <dt>Licença</dt><dd>A definir</dd>
+          <dt>Quem aprova</dt><dd>Admins do projeto</dd>
+          <dt>Abre quando</dt><dd>Nome e licença decididos</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-brand">
+    <svg class="logo-mark" viewBox="0 0 36 30" aria-hidden="true" focusable="false">
+      <rect x="1" y="19" width="10" height="10" rx="2" fill="#FF6B3D" stroke="#16181D" stroke-width="2"/>
+      <rect x="13" y="10" width="10" height="19" rx="2" fill="#1F3FD1" stroke="#16181D" stroke-width="2"/>
+      <rect x="25" y="1" width="10" height="28" rx="2" fill="#16181D" stroke="#16181D" stroke-width="2"/>
+    </svg>
+    <span data-name></span>
+  </p>
+  <p>Um degrau de cada vez. Tudo à vista.</p>
+  <div class="footer-columns">
+    <div><h2>Contato</h2><p>Ainda não tem canal oficial. Quando tiver, aparece aqui.</p></div>
+    <div><h2>Organização</h2><p>Projeto sem fins lucrativos, ainda sem registro formal. Quando tiver CNPJ, ele aparece aqui.</p></div>
+    <div><h2>Privacidade</h2><p>Nada de foto, nome ou história de ninguém sem autorização por escrito. Dado pessoal nunca vai pro código aberto.</p></div>
+  </div>
+  <p class="footer-note">Protótipo de direção visual, frente F01. O que está marcado como exemplo é inventado. O nome <span data-name></span> é provisório. Estado dos blocos em <span data-status-date></span>.</p>
+</footer>
+
+<dialog class="dialog" id="module-dialog" aria-labelledby="module-dialog-title">
+  <div class="dialog-head">
+    <div>
+      <span class="module-id" id="module-dialog-id"></span>
+      <h2 id="module-dialog-title"></h2>
+    </div>
+    <button class="close-btn" type="button" data-close aria-label="Fechar"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+  </div>
+  <div class="dialog-body">
+    <p class="dialog-status" id="module-dialog-status"></p>
+    <button class="listen-btn" type="button" data-listen="module-dialog" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-speaker"/></svg><span class="label">Ouvir</span></button>
+    <dl class="module-details" id="module-dialog-details"></dl>
+    <div class="dialog-nav" id="module-dialog-nav"></div>
+  </div>
+</dialog>
+
+<dialog class="dialog dialog--receipt" id="receipt-dialog" aria-labelledby="receipt-dialog-title">
+  <div class="receipt" id="receipt"></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  // Provisional name: change it here and the page, tab title and spoken text follow.
+  const PROJECT_NAME = 'VidaNova';
+  const STATUS_DATE = '22/09/2026';
+  const STATUS_DATE_SPOKEN = '22 de setembro de 2026';
+
+  const root = document.documentElement;
+  root.classList.remove('no-js');
+  root.classList.add('js');
+  document.title = `${PROJECT_NAME} · o primeiro passo pra quem quer mudar de vida`;
+  document.querySelectorAll('[data-name]').forEach(el => { el.textContent = PROJECT_NAME; });
+  document.querySelectorAll('[data-status-date]').forEach(el => { el.textContent = STATUS_DATE; });
+
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const icon = (id, cls = '') => `<svg class="icon ${cls}" aria-hidden="true" focusable="false"><use href="#i-${id}"/></svg>`;
+  const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+  const escapeHtml = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const withName = s => s.replaceAll('{name}', PROJECT_NAME);
+  const joinList = items => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items[items.length - 1]}`;
+
+  /* ---------- Data ---------- */
+
+  const STATUSES = {
+    live: { label: 'Funcionando', icon: 'check', meaning: 'Já está no ar e dá pra usar.' },
+    building: { label: 'Em construção', icon: 'cone', meaning: 'A equipe está fazendo agora.' },
+    bottleneck: { label: 'Gargalo aberto', icon: 'alert', meaning: 'Ainda não sabemos resolver. Aqui sua ajuda vale mais.' },
+    planned: { label: 'Planejado', icon: 'clock', meaning: 'Está no plano. Ainda não começou.' },
+  };
+  const badge = (status, text) => `<span class="badge badge--${status}">${icon(STATUSES[status].icon)}${escapeHtml(text || STATUSES[status].label)}</span>`;
+
+  // One block per PRD §5 module. Status as of STATUS_DATE.
+  const MODULES = [
+    { id: 'M1', name: 'Site público', status: 'building',
+      summary: 'Esta página. Explica o projeto e mostra tudo em aberto.',
+      what: 'A porta de entrada do projeto. Mostra o que é, como funciona, o dinheiro e o que ainda falta.',
+      how: 'Cada parte do projeto vira um bloco com estado: funcionando, em construção, gargalo aberto ou planejado.',
+      operation: 'Feito pela equipe e por quem quiser contribuir. Pensado pra abrir rápido em celular barato.',
+      strength: 'Tudo num lugar só, sem esconder o que ainda não funciona.',
+      missing: 'O nome definitivo e o endereço na internet.',
+      helpers: 'Design, texto simples, acessibilidade, código.' },
+    { id: 'M2', name: 'Doação e transparência ao vivo', status: 'bottleneck',
+      summary: 'Receber doação e mostrar cada real que entra e sai, ao vivo.',
+      what: 'Um livro-caixa público. Toda entrada e toda saída aparece com data, categoria e comprovante.',
+      how: 'Cada movimento vira uma linha que ninguém apaga nem muda escondido. O painel atualiza sozinho.',
+      operation: 'A equipe registra o gasto, anexa o comprovante e cobre o dado pessoal antes de publicar.',
+      strength: 'Você vê pra onde vai o seu dinheiro. Até o custo de operação.',
+      missing: 'Receber doação pede estrutura legal e conta oficial. Isso ainda não existe.',
+      helpers: 'Advogado do terceiro setor, contador, quem já montou prestação de contas pública.' },
+    { id: 'M3', name: 'Captação de candidatos', status: 'bottleneck',
+      summary: 'Encontrar quem quer mudar de vida de fato.',
+      what: 'Os jeitos de chegar até a pessoa: voluntário na rua, panfleto, ponto público e este site.',
+      how: 'A pessoa é convidada pra uma conversa curta. De graça e sem compromisso.',
+      operation: 'Voluntários treinados vão até onde a pessoa está. Panfleto e ponto público chamam quem passa.',
+      strength: 'Vários caminhos. Quem não tem celular também chega.',
+      missing: 'Como saber quem quer mudar de vida de fato, sem deixar de fora quem mais precisa.',
+      helpers: 'Assistência social, abrigo, organização que já trabalha na rua.' },
+    { id: 'M4', name: 'Entrevista por voz', status: 'bottleneck',
+      summary: 'Uma conversa por voz com IA. Não precisa ler nem escrever.',
+      what: 'Uma IA que conversa pela voz, e talvez com imagem, pra conhecer a pessoa e o que ela quer.',
+      how: 'A pessoa fala, a IA escuta e responde falando. A conversa é curta e simples.',
+      operation: 'No celular do voluntário, num aparelho num ponto público ou aqui no site.',
+      strength: 'Quem lê pouco ou não lê passa pela conversa do mesmo jeito.',
+      missing: 'Entender sotaque, gíria e barulho de rua. E um aparelho barato que aguente o dia a dia.',
+      helpers: 'Engenharia de voz, hardware, quem desenha conversa pra quem não lê.' },
+    { id: 'M5', name: 'Ponte inicial', status: 'planned',
+      summary: 'Comida, roupa e higiene nos primeiros dias.',
+      what: 'O básico pra pessoa se reerguer: comer por alguns dias, roupa nova e limpa, higiene.',
+      how: 'O dinheiro vem da doação. Cada compra entra no livro-caixa com comprovante.',
+      operation: 'Compra direta ou com parceiros: mercado, loja de roupa, ponto de banho.',
+      strength: 'Ajuda concreta, na hora em que faz mais diferença.',
+      missing: 'Achar parceiros e entregar sem burocracia e sem constrangimento.',
+      helpers: 'Mercado, loja de roupa, ponto de banho, quem entende de logística.' },
+    { id: 'M6', name: 'Rede de oportunidades', status: 'planned',
+      summary: 'Levar quem foi escolhido até uma vaga de trabalho.',
+      what: 'Uma rede que liga as pessoas escolhidas a quem oferece trabalho.',
+      how: 'O perfil vai pra redes de emprego sem expor quem a pessoa é. Empresas e pessoas oferecem vaga.',
+      operation: 'A equipe faz a ponte e acompanha os primeiros meses.',
+      strength: 'Trabalho é o que mantém a mudança de pé.',
+      missing: 'Convencer empregador a dar a primeira chance.',
+      helpers: 'Empresa com vaga, RH, quem conhece rede de emprego.' },
+    { id: 'M7', name: 'IA contínua', status: 'planned',
+      summary: 'Uma IA simples, por voz, que acompanha a pessoa depois.',
+      what: 'Acesso duradouro a uma IA fácil, pra pensar no que dá pra conquistar e se preparar.',
+      how: 'A pessoa conversa por voz quando quiser: treinar entrevista, planejar a semana, aprender algo novo.',
+      operation: 'Pelo celular, ou num ponto público pra quem não tem aparelho.',
+      strength: 'A mesma IA que está mudando o mundo, nas mãos de quem mais precisa.',
+      missing: 'Custo por pessoa e um jeito de usar que não dependa de leitura.',
+      helpers: 'Quem desenvolve IA de voz, educação de adultos.' },
+    { id: 'M8', name: 'Código aberto e governança', status: 'building',
+      summary: 'Código e decisões abertos, com aprovação de admin.',
+      what: 'Todo o código e todo documento do projeto ficam num lugar público.',
+      how: 'Qualquer pessoa propõe melhoria. Um admin revisa e aprova antes de entrar.',
+      operation: 'Admins cuidam da revisão. O caminho é virar uma organização sem fins lucrativos formal.',
+      strength: 'Ninguém precisa confiar de olho fechado: está tudo lá pra ver.',
+      missing: 'Escolher a licença e abrir o repositório ao público.',
+      helpers: 'Código, revisão, documentação.' },
+    { id: 'M9', name: 'Marca, nome e domínio', status: 'building',
+      summary: 'Nome próprio, endereço na internet e identidade visual.',
+      what: 'O nome do projeto, o endereço do site e a cara que você está vendo.',
+      how: 'Nome curto, fácil de falar e de lembrar. Nada genérico.',
+      operation: 'A direção visual está sendo feita agora. O nome está em escolha.',
+      strength: 'Uma cara que se reconhece na rua, no panfleto e no site.',
+      missing: 'O nome definitivo. {name} é provisório.',
+      helpers: 'Ideia de nome, design, quem entende de marca.' },
+  ];
+  const DETAIL_FIELDS = [
+    ['what', 'O que é'], ['how', 'Como funciona'], ['operation', 'Como opera'],
+    ['strength', 'Ponto forte'], ['missing', 'O que falta resolver', 'is-missing'], ['helpers', 'Quem pode ajudar', 'is-helpers'],
+  ];
+
+  // Candidate journey, PRD §4.
+  const STEPS = [
+    { shortName: 'Encontro', title: 'Encontro', icon: 'pin', module: 'M3', who: ['Voluntário', 'Panfleto', 'Site'],
+      text: 'Um voluntário na rua, um panfleto, um ponto público ou este site. Vários jeitos de chegar até quem quer recomeçar.' },
+    { shortName: 'Conversa', title: 'Conversa por voz', icon: 'mic', module: 'M4', who: ['IA', 'Voluntário'],
+      text: 'Uma conversa curta com a nossa IA, falando e ouvindo. Não precisa ler nem escrever.' },
+    { shortName: 'Escolha', title: 'Escolha', icon: 'check-circle', module: 'M3', who: ['IA', 'Pessoa da equipe'],
+      text: 'A IA recomenda quem está pronto pra mudar. A proposta é que uma pessoa sempre confirme. Isso ainda está em decisão.' },
+    { shortName: 'Primeiros dias', title: 'Primeiros dias', icon: 'plate', module: 'M5', who: ['Doação', 'Parceiros'],
+      text: 'Comida por alguns dias, roupa nova e limpa, higiene básica. Tudo pago com doação e publicado no painel.' },
+    { shortName: 'Trabalho', title: 'Trabalho', icon: 'briefcase', module: 'M6', who: ['Empregador', 'Equipe'],
+      text: 'O perfil entra na rede de oportunidades, sem expor a pessoa. Empresas e pessoas oferecem vaga.' },
+    { shortName: 'IA junto', title: 'IA que acompanha', icon: 'voice-ai', module: 'M7', who: ['IA'],
+      text: 'Depois da escolha, a pessoa segue com uma IA simples, por voz, pra planejar o que quer conquistar.' },
+    { shortName: 'Prova', title: 'Prova', icon: 'chart', module: 'M2', who: ['Painel público'],
+      text: 'O resultado aparece aqui, em número: quantas pessoas, quanto custou, quantas foram trabalhar. Ninguém é exposto.' },
+  ];
+
+  const CATEGORIES = [
+    { id: 'food', name: 'Comida', icon: 'plate', color: 'var(--color-sun)' },
+    { id: 'clothes', name: 'Roupa', icon: 'shirt', color: 'var(--color-indigo)' },
+    { id: 'hygiene', name: 'Higiene', icon: 'soap', color: '#5CC8B5' },
+    { id: 'transport', name: 'Transporte', icon: 'bus', color: '#A78BFA' },
+    { id: 'operations', name: 'Operação', icon: 'wrench', color: 'var(--color-ink-2)' },
+  ];
+
+  // FICTIONAL SAMPLE. None of these entries happened.
+  const SAMPLE_LEDGER = [
+    { date: '02/10', type: 'in', desc: 'Doação por Pix', amount: 500, party: 'Pessoa doadora' },
+    { date: '02/10', type: 'in', desc: 'Doação por Pix', amount: 1200, party: 'Pessoa doadora' },
+    { date: '03/10', type: 'in', desc: 'Doação mensal', amount: 80, party: 'Pessoa doadora' },
+    { date: '04/10', type: 'out', cat: 'operations', desc: 'Servidor do site, outubro', amount: 45.9, party: 'Hospedagem Exemplo' },
+    { date: '05/10', type: 'in', desc: 'Doação por Pix', amount: 3000, party: 'Empresa doadora' },
+    { date: '07/10', type: 'out', cat: 'food', desc: 'Comida pra 5 dias · pessoa #014', amount: 186.4, party: 'Mercado Exemplo' },
+    { date: '07/10', type: 'out', cat: 'hygiene', desc: 'Kit de higiene · pessoa #014', amount: 64.8, party: 'Farmácia Exemplo' },
+    { date: '08/10', type: 'out', cat: 'clothes', desc: '2 calças, 3 camisetas, 1 tênis · pessoa #014', amount: 289, party: 'Loja Exemplo' },
+    { date: '09/10', type: 'in', desc: 'Doação por Pix', amount: 250, party: 'Pessoa doadora' },
+    { date: '10/10', type: 'out', cat: 'transport', desc: 'Ônibus pra entrevista de emprego · pessoa #014', amount: 22, party: 'Bilhete Exemplo' },
+    { date: '11/10', type: 'out', cat: 'food', desc: 'Comida pra 5 dias · pessoa #021', amount: 192.1, party: 'Mercado Exemplo' },
+    { date: '11/10', type: 'out', cat: 'operations', desc: 'Tarifa do banco', amount: 12.5, party: 'Banco Exemplo' },
+  ];
+  const SAMPLE_INCOMING = [
+    { type: 'in', desc: 'Doação por Pix', amount: 50, party: 'Pessoa doadora' },
+    { type: 'out', cat: 'hygiene', desc: 'Kit de higiene · pessoa #021', amount: 58.3, party: 'Farmácia Exemplo' },
+    { type: 'in', desc: 'Doação mensal', amount: 120, party: 'Pessoa doadora' },
+    { type: 'out', cat: 'clothes', desc: '1 calça, 2 camisetas · pessoa #021', amount: 174, party: 'Loja Exemplo' },
+    { type: 'in', desc: 'Doação por Pix', amount: 35, party: 'Pessoa doadora' },
+    { type: 'out', cat: 'transport', desc: 'Ônibus pra entrevista de emprego · pessoa #021', amount: 11, party: 'Bilhete Exemplo' },
+  ];
+
+  /* ---------- Toast ---------- */
+
+  let toastTimer;
+  function toast(message) {
+    const el = $('#toast');
+    el.textContent = message;
+    el.classList.add('shown');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('shown'), 4200);
+  }
+
+  /* ---------- Listen (browser speech synthesis) ---------- */
+
+  const speech = { button: null };
+  function setSpeaking(btn, on) {
+    btn.classList.toggle('speaking', on);
+    btn.setAttribute('aria-pressed', String(on));
+    const label = $('.label', btn);
+    if (label) label.textContent = on ? 'Parar' : 'Ouvir';
+    const use = $('use', btn);
+    if (use && !btn.classList.contains('voice-btn')) use.setAttribute('href', on ? '#i-stop' : '#i-speaker');
+  }
+  function stopSpeech() {
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    if (speech.button) setSpeaking(speech.button, false);
+    speech.button = null;
+  }
+  function speak(text, btn) {
+    if (!('speechSynthesis' in window)) { toast('Este navegador não consegue ler em voz alta.'); return; }
+    const sameButton = speech.button === btn;
+    stopSpeech();
+    if (sameButton) return;
+    const voices = speechSynthesis.getVoices();
+    const voice = voices.find(v => /^pt[-_]BR/i.test(v.lang)) || voices.find(v => /^pt/i.test(v.lang));
+    if (voices.length && !voice) { toast('Seu aparelho não tem voz em português instalada.'); return; }
+    const sentences = withName(text).replace(/\s+/g, ' ').match(/[^.!?]+[.!?]*/g) || [text];
+    speech.button = btn;
+    setSpeaking(btn, true);
+    sentences.forEach((sentence, i) => {
+      const u = new SpeechSynthesisUtterance(sentence.trim());
+      u.lang = 'pt-BR';
+      if (voice) u.voice = voice;
+      u.rate = 0.95;
+      if (i === sentences.length - 1) u.onend = () => { if (speech.button === btn) stopSpeech(); };
+      u.onerror = e => {
+        if (speech.button !== btn || e.error === 'interrupted' || e.error === 'canceled') return;
+        stopSpeech();
+        toast('Não deu pra ler em voz alta neste aparelho.');
+      };
+      speechSynthesis.speak(u);
+    });
+    if (!voices.length) {
+      setTimeout(() => {
+        if (speech.button === btn && !speechSynthesis.speaking) {
+          stopSpeech();
+          toast('Seu aparelho não tem voz em português instalada.');
+        }
+      }, 1500);
+    }
+  }
+  if ('speechSynthesis' in window) speechSynthesis.getVoices();
+
+  const spokenBRL = v => {
+    const whole = Math.floor(v + 1e-9);
+    const cents = Math.round((v - whole) * 100);
+    const base = whole === 0 && !cents ? 'zero real' : `${whole.toLocaleString('pt-BR')} ${whole === 1 ? 'real' : 'reais'}`;
+    return cents ? `${base} e ${cents} centavos` : base;
+  };
+  // Text read aloud for blocks whose content is generated or depends on state.
+  const SPEECH = {
+    'como-funciona': () => `São ${STEPS.length} passos. ` + STEPS.map((s, i) => `${i + 1}: ${s.title}. ${s.text}`).join(' '),
+    modulos: () => {
+      const names = status => MODULES.filter(m => m.status === status).map(m => m.name);
+      const part = (status, label) => {
+        const n = names(status);
+        return n.length ? `${label}: ${n.length}. ${joinList(n)}.` : `${label}: nenhum ainda.`;
+      };
+      return `O projeto tem ${MODULES.length} blocos. Estado em ${STATUS_DATE_SPOKEN}. ` +
+        [part('live', 'Funcionando'), part('building', 'Em construção'),
+         part('bottleneck', 'Gargalo aberto, que é o que a gente ainda não sabe resolver'), part('planned', 'Planejados')].join(' ') +
+        ' Toque num bloco pra saber mais.';
+    },
+    transparencia: () => {
+      if (panelMode === 'now') {
+        return 'Aqui você vê cada real que entra e sai, ao vivo. Hoje o painel está zerado. Entrou zero real e saiu zero real. ' +
+          'A doação ainda não abriu. Quando abrir, cada movimento aparece aqui na hora, com data, categoria e comprovante. Aqui nunca vai ter número inventado.';
+      }
+      const t = sumUp(ledger);
+      return `Isto é um exemplo, com números inventados. Entrou ${spokenBRL(t.in)}. Saiu ${spokenBRL(t.out)}. Em caixa, ${spokenBRL(t.in - t.out)}.`;
+    },
+    'module-dialog': () => {
+      const m = MODULES.find(x => x.id === moduleDialog.dataset.module);
+      if (!m) return '';
+      return `Bloco ${m.id.slice(1)}: ${m.name}. Estado: ${STATUSES[m.status].label}. ` +
+        DETAIL_FIELDS.map(([key, label]) => `${label}: ${m[key]}`).join(' ');
+    },
+  };
+
+  /* ---------- Journey ---------- */
+
+  let currentStep = 0;
+  const track = $('#journey-track');
+  const stepPanel = $('#step-panel');
+  track.innerHTML = STEPS.map((s, i) => `
+    <button role="tab" type="button" id="step-tab-${i}" aria-controls="step-panel" aria-selected="false" tabindex="-1">
+      <span class="track-num">${i + 1}</span><span class="track-name">${escapeHtml(s.shortName)}</span>
+    </button>`).join('');
+  function selectStep(i, { focus = false, scroll = false } = {}) {
+    currentStep = Math.max(0, Math.min(STEPS.length - 1, i));
+    $$('[role="tab"]', track).forEach((tab, k) => {
+      tab.setAttribute('aria-selected', String(k === currentStep));
+      tab.tabIndex = k === currentStep ? 0 : -1;
+      tab.classList.toggle('done', k < currentStep);
+    });
+    const tab = $(`#step-tab-${currentStep}`);
+    if (focus) tab.focus({ preventScroll: true });
+    if (scroll && track.scrollWidth > track.clientWidth) {
+      track.scrollTo({ left: tab.offsetLeft - (track.clientWidth - tab.offsetWidth) / 2, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    }
+    const s = STEPS[currentStep];
+    const m = MODULES.find(x => x.id === s.module);
+    stepPanel.setAttribute('aria-labelledby', tab.id);
+    stepPanel.innerHTML = `
+      <div class="step-icon">${icon(s.icon)}</div>
+      <div>
+        <p class="step-count">Passo ${currentStep + 1} de ${STEPS.length}</p>
+        <h3 class="step-title">${escapeHtml(s.title)}</h3>
+        <p class="step-text">${escapeHtml(s.text)}</p>
+        <p class="step-meta"><span>Quem faz:</span> ${s.who.map(w => `<span class="chip">${escapeHtml(w)}</span>`).join(' ')}</p>
+        <button class="step-module" type="button" data-module="${m.id}" aria-haspopup="dialog">
+          <span class="module-id">${m.id}</span><span>${escapeHtml(m.name)}</span>${badge(m.status)}${icon('arrow-right', 'arrow')}
+        </button>
+        <div class="step-nav">
+          <button class="btn btn--back" type="button" data-step="-1" ${currentStep === 0 ? 'disabled' : ''}>${icon('arrow-left')}<span>Anterior</span></button>
+          <button class="btn btn--primary" type="button" data-step="1" ${currentStep === STEPS.length - 1 ? 'disabled' : ''}>Próximo${icon('arrow-right')}</button>
+        </div>
+      </div>`;
+    if (!reducedMotion.matches) {
+      stepPanel.classList.remove('swap');
+      void stepPanel.offsetWidth;
+      stepPanel.classList.add('swap');
+    }
+  }
+  track.addEventListener('click', e => {
+    const tab = e.target.closest('[role="tab"]');
+    if (tab) selectStep($$('[role="tab"]', track).indexOf(tab), { scroll: true });
+  });
+  track.addEventListener('keydown', e => {
+    const keys = { ArrowRight: currentStep + 1, ArrowLeft: currentStep - 1, Home: 0, End: STEPS.length - 1 };
+    if (!(e.key in keys)) return;
+    e.preventDefault();
+    selectStep(keys[e.key], { focus: true, scroll: true });
+  });
+  stepPanel.addEventListener('click', e => {
+    const btn = e.target.closest('[data-step]');
+    if (!btn || btn.disabled) return;
+    selectStep(currentStep + Number(btn.dataset.step), { scroll: true });
+    const same = $(`[data-step="${btn.dataset.step}"]`, stepPanel);
+    (same && !same.disabled ? same : $(`#step-tab-${currentStep}`)).focus({ preventScroll: true });
+  });
+  selectStep(0);
+
+  /* ---------- Modules ---------- */
+
+  let activeFilter = 'all';
+  const countByStatus = () => Object.fromEntries(Object.keys(STATUSES).map(k => [k, MODULES.filter(m => m.status === k).length]));
+  function renderFilters() {
+    const counts = countByStatus();
+    $('#filters').innerHTML = [['all', 'Todos', MODULES.length, ''], ...Object.entries(STATUSES).map(([k, s]) => [k, s.label, counts[k], icon(s.icon)])]
+      .map(([k, label, n, ic]) => `<button class="filter" type="button" data-filter="${k}" aria-pressed="${k === activeFilter}">${ic}${label}<span class="count">${n}</span></button>`)
+      .join('');
+  }
+  function renderModules() {
+    const visible = MODULES.filter(m => activeFilter === 'all' || m.status === activeFilter);
+    $('#module-grid').innerHTML = visible.map(m => `
+      <li><button class="module-card" type="button" data-module="${m.id}" data-status="${m.status}" aria-haspopup="dialog">
+        <span class="module-card-head"><span class="module-id">${m.id}</span>${badge(m.status)}</span>
+        <span class="module-name">${escapeHtml(m.name)}</span>
+        <span class="module-summary">${escapeHtml(withName(m.summary))}</span>
+        <span class="module-more">Ver o bloco${icon('arrow-right')}</span>
+      </button></li>`).join('');
+    const empty = $('#module-empty');
+    empty.hidden = visible.length > 0;
+    if (!visible.length) {
+      empty.innerHTML = activeFilter === 'live'
+        ? '<strong>Nenhum bloco funcionando ainda.</strong><p>É cedo: o projeto começou em setembro de 2026. Quando um bloco entrar no ar, o selo muda aqui, com a data.</p>'
+        : '<strong>Nenhum bloco nesse estado.</strong>';
+    }
+    $('#filter-note').innerHTML = activeFilter === 'all'
+      ? `<span class="status-date">Estado em ${STATUS_DATE}</span><span>Toque num selo aí em cima pra entender o que ele quer dizer.</span>`
+      : `${badge(activeFilter)}<span>${STATUSES[activeFilter].meaning}</span>`;
+  }
+  $('#filters').addEventListener('click', e => {
+    const btn = e.target.closest('[data-filter]');
+    if (!btn) return;
+    activeFilter = btn.dataset.filter;
+    $$('[data-filter]').forEach(x => x.setAttribute('aria-pressed', String(x === btn)));
+    renderModules();
+  });
+  renderFilters();
+  renderModules();
+
+  const moduleDialog = $('#module-dialog');
+  let focusBefore = null;
+  function openModule(id, origin) {
+    const i = MODULES.findIndex(m => m.id === id);
+    if (i < 0) return;
+    const m = MODULES[i];
+    const prev = MODULES[(i + MODULES.length - 1) % MODULES.length];
+    const next = MODULES[(i + 1) % MODULES.length];
+    stopSpeech();
+    moduleDialog.dataset.module = m.id;
+    $('#module-dialog-id').textContent = m.id;
+    $('#module-dialog-title').textContent = m.name;
+    $('#module-dialog-status').innerHTML = `${badge(m.status)}<span class="status-date">Estado em ${STATUS_DATE}</span>`;
+    $('#module-dialog-details').innerHTML = DETAIL_FIELDS
+      .map(([key, label, cls = '']) => `<div class="${cls}"><dt>${label}</dt><dd>${escapeHtml(withName(m[key]))}</dd></div>`).join('');
+    $('#module-dialog-nav').innerHTML = `
+      <button class="btn" type="button" data-module="${prev.id}" aria-label="Bloco anterior: ${escapeHtml(prev.name)}">${icon('arrow-left')}${prev.id}</button>
+      <button class="btn" type="button" data-module="${next.id}" aria-label="Próximo bloco: ${escapeHtml(next.name)}">${next.id}${icon('arrow-right')}</button>`;
+    if (!moduleDialog.open) {
+      focusBefore = origin || document.activeElement;
+      moduleDialog.showModal();
+    }
+    moduleDialog.scrollTop = 0;
+    $('.close-btn', moduleDialog).focus();
+    history.replaceState(null, '', `#${m.id.toLowerCase()}`);
+  }
+  moduleDialog.addEventListener('close', () => {
+    stopSpeech();
+    history.replaceState(null, '', location.pathname + location.search);
+    if (focusBefore && document.contains(focusBefore)) focusBefore.focus({ preventScroll: true });
+  });
+
+  /* ---------- Transparency ---------- */
+
+  let panelMode = 'now';
+  let ledger = [];
+  let queue = [];
+  let demoTimer = null;
+  let demoPaused = false;
+  let panelVisible = false;
+  const panel = $('#ledger-panel');
+
+  // Chained mark: each entry mixes its own content with the previous entry's mark.
+  function chainMark(text) {
+    let h = 0x811c9dc5;
+    for (const ch of text) { h ^= ch.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; }
+    return h.toString(16).padStart(8, '0');
+  }
+  function record(entry) {
+    const prevMark = ledger.length ? ledger[ledger.length - 1].mark : '00000000';
+    const num = ledger.length + 1;
+    ledger.push({ ...entry, num, prevMark, mark: chainMark(prevMark + JSON.stringify(entry) + num) });
+  }
+  function buildSample() {
+    ledger = [];
+    SAMPLE_LEDGER.forEach(record);
+    queue = [...SAMPLE_INCOMING];
+  }
+  function sumUp(entries) {
+    const t = { in: 0, out: 0, cat: {} };
+    for (const e of entries) {
+      if (e.type === 'in') t.in += e.amount;
+      else { t.out += e.amount; t.cat[e.cat] = (t.cat[e.cat] || 0) + e.amount; }
+    }
+    return t;
+  }
+
+  $('#bars').innerHTML = CATEGORIES.map(c => `
+    <li data-cat="${c.id}">
+      <div class="bar-head"><span class="bar-name">${icon(c.icon)}${c.name}</span><span class="bar-value"><span data-value>R$ 0,00</span><small data-share>0%</small></span></div>
+      <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="--fill:${c.color}"></div></div>
+    </li>`).join('');
+
+  const shown = { in: 0, out: 0, balance: 0 };
+  const frames = {};
+  function showTotal(key, value, animate) {
+    const el = $(`[data-total="${key}"]`);
+    const from = shown[key];
+    shown[key] = value;
+    cancelAnimationFrame(frames[key]);
+    if (!animate || reducedMotion.matches || from === value) { el.textContent = brl.format(value); return; }
+    const start = performance.now();
+    const tick = now => {
+      const x = Math.min(1, (now - start) / 700);
+      el.textContent = brl.format(from + (value - from) * (1 - Math.pow(1 - x, 3)));
+      if (x < 1) frames[key] = requestAnimationFrame(tick);
+    };
+    frames[key] = requestAnimationFrame(tick);
+  }
+  function entryHTML(e, isNew = false) {
+    const cat = CATEGORIES.find(c => c.id === e.cat);
+    const isIn = e.type === 'in';
+    return `<li class="entry ${isIn ? 'entry--in' : ''} ${isNew ? 'is-new' : ''}">
+      <span class="entry-date">${escapeHtml(e.date)}</span>
+      <span class="entry-desc">${escapeHtml(e.desc)}<small>${isIn ? 'Doação' : escapeHtml(cat.name)}</small></span>
+      <span class="entry-amount">${isIn ? '+' : '−'} ${brl.format(e.amount)}</span>
+      <button class="entry-receipt" type="button" data-receipt="${e.num}" aria-haspopup="dialog">${icon('receipt')}Comprovante</button>
+    </li>`;
+  }
+  function updateNumbers(animate) {
+    const t = sumUp(panelMode === 'sample' ? ledger : []);
+    showTotal('in', t.in, animate);
+    showTotal('out', t.out, animate);
+    showTotal('balance', t.in - t.out, animate);
+    CATEGORIES.forEach(c => {
+      const v = t.cat[c.id] || 0;
+      const share = t.out ? (v / t.out) * 100 : 0;
+      const li = $(`[data-cat="${c.id}"]`);
+      $('[data-value]', li).textContent = brl.format(v);
+      $('[data-share]', li).textContent = `${Math.round(share)}%`;
+      const fill = $('.bar-fill', li);
+      fill.style.setProperty('--p', `${share}%`);
+      fill.classList.toggle('has-value', v > 0);
+    });
+  }
+  function renderPanel() {
+    const isSample = panelMode === 'sample';
+    panel.classList.toggle('ledger-panel--sample', isSample);
+    $('#why-zero').hidden = isSample;
+    const list = $('#ledger');
+    list.hidden = !isSample;
+    $('#ledger-empty').hidden = isSample;
+    list.innerHTML = isSample ? ledger.slice(-8).reverse().map(e => entryHTML(e)).join('') : '';
+    updateNumbers(true);
+    updateStatus();
+  }
+  function updateStatus(text) {
+    const toggle = $('#demo-toggle');
+    const statusText = $('#ledger-status-text');
+    const isSample = panelMode === 'sample';
+    toggle.hidden = !isSample;
+    if (!isSample) { statusText.textContent = 'Nenhuma movimentação até agora.'; return; }
+    if (!queue.length) {
+      statusText.textContent = text || 'Fim da demonstração.';
+      toggle.innerHTML = `${icon('play')}<span>Recomeçar</span>`;
+      return;
+    }
+    statusText.textContent = text || (demoPaused ? 'Demonstração pausada.' : 'Demonstração: chega um movimento a cada 4 segundos.');
+    toggle.innerHTML = demoPaused ? `${icon('play')}<span>Continuar</span>` : `${icon('pause')}<span>Pausar</span>`;
+  }
+  function arrive() {
+    if (!queue.length) { stopDemo(); updateStatus(); return; }
+    const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    record({ ...queue.shift(), date: time });
+    const list = $('#ledger');
+    list.insertAdjacentHTML('afterbegin', entryHTML(ledger[ledger.length - 1], true));
+    while (list.children.length > 8) list.lastElementChild.remove();
+    updateNumbers(true);
+    updateStatus(queue.length ? `Chegou um movimento às ${time}.` : undefined);
+    if (!queue.length) stopDemo();
+  }
+  function startDemo() {
+    if (demoTimer || demoPaused || panelMode !== 'sample' || !panelVisible || !queue.length) return;
+    demoTimer = setInterval(arrive, 4000);
+  }
+  function stopDemo() { clearInterval(demoTimer); demoTimer = null; }
+
+  $$('[data-panel]').forEach(btn => btn.addEventListener('click', () => {
+    if (panelMode === btn.dataset.panel) return;
+    panelMode = btn.dataset.panel;
+    $$('[data-panel]').forEach(x => x.setAttribute('aria-pressed', String(x === btn)));
+    stopDemo();
+    if (panelMode === 'sample') { buildSample(); demoPaused = false; }
+    renderPanel();
+    startDemo();
+  }));
+  $('#demo-toggle').addEventListener('click', () => {
+    if (!queue.length) { buildSample(); demoPaused = false; renderPanel(); startDemo(); return; }
+    demoPaused = !demoPaused;
+    if (demoPaused) stopDemo(); else startDemo();
+    updateStatus();
+  });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => {
+      panelVisible = e.isIntersecting;
+      if (panelVisible) startDemo(); else stopDemo();
+    }, { threshold: 0.15 }).observe(panel);
+  } else {
+    panelVisible = true;
+  }
+  renderPanel();
+
+  const receiptDialog = $('#receipt-dialog');
+  let focusBeforeReceipt = null;
+  function openReceipt(num) {
+    const e = ledger.find(x => x.num === num);
+    if (!e) return;
+    const cat = CATEGORIES.find(c => c.id === e.cat);
+    const isIn = e.type === 'in';
+    const prettyMark = h => `${h.slice(0, 4)} ${h.slice(4)}`;
+    $('#receipt').innerHTML = `
+      <p class="receipt-banner">COMPROVANTE FICTÍCIO · EXEMPLO</p>
+      <p class="receipt-title" id="receipt-dialog-title">Registro nº ${String(e.num).padStart(4, '0')}</p>
+      <dl>
+        <div><dt>Data</dt><dd>${escapeHtml(e.date)}</dd></div>
+        <div><dt>O quê</dt><dd>${escapeHtml(e.desc)}</dd></div>
+        <div><dt>Categoria</dt><dd>${isIn ? 'Doação' : escapeHtml(cat.name)}</dd></div>
+        <div><dt>${isIn ? 'De' : 'Pago a'}</dt><dd>${escapeHtml(e.party)} (fictício)</dd></div>
+        <div><dt>Documento</dt><dd><span class="redacted" aria-hidden="true">000.000.000-00</span><span class="sr-only">coberto</span></dd></div>
+        <div class="receipt-total"><dt>Valor</dt><dd>${isIn ? '+' : '−'} ${brl.format(e.amount)}</dd></div>
+      </dl>
+      <div class="receipt-chain">
+        <div><span>Esta marca</span><code>${prettyMark(e.mark)}</code></div>
+        <div><span>Marca anterior</span><code>${prettyMark(e.prevMark)}</code></div>
+      </div>
+      <p class="receipt-note">Cada registro carrega a marca do anterior. Se alguém mudar uma linha lá atrás, todas as marcas depois dela mudam, e a corrente quebra na frente de todo mundo. O documento da pessoa sai coberto.</p>
+      <button class="btn btn--primary" type="button" data-close>Fechar</button>`;
+    focusBeforeReceipt = document.activeElement;
+    receiptDialog.showModal();
+    $('[data-close]', receiptDialog).focus();
+  }
+  receiptDialog.addEventListener('close', () => {
+    if (focusBeforeReceipt && document.contains(focusBeforeReceipt)) focusBeforeReceipt.focus({ preventScroll: true });
+  });
+
+  /* ---------- Compare: loose help vs full path ---------- */
+
+  const COMPARE_CAPTIONS = {
+    loose: 'Só o prato de comida. Ajuda hoje, mas amanhã tudo volta.',
+    full: 'Comida, roupa, higiene, trabalho e IA. Um degrau depois do outro.',
+  };
+  $$('[data-compare]').forEach(btn => btn.addEventListener('click', () => {
+    $$('[data-compare]').forEach(x => x.setAttribute('aria-pressed', String(x === btn)));
+    $('#compare-stairs').dataset.mode = btn.dataset.compare;
+    $('#compare-caption').textContent = COMPARE_CAPTIONS[btn.dataset.compare];
+  }));
+
+  /* ---------- Global clicks ---------- */
+
+  document.addEventListener('click', e => {
+    const listen = e.target.closest('[data-listen]');
+    if (listen) {
+      const target = listen.dataset.listen;
+      const text = SPEECH[target] ? SPEECH[target]() : document.getElementById(target)?.dataset.speech;
+      if (text) speak(text, listen);
+      return;
+    }
+    const mod = e.target.closest('[data-module]');
+    if (mod) { openModule(mod.dataset.module, moduleDialog.open ? null : mod); return; }
+    const rec = e.target.closest('[data-receipt]');
+    if (rec) { openReceipt(Number(rec.dataset.receipt)); return; }
+    const close = e.target.closest('[data-close]');
+    if (close) { close.closest('dialog').close(); return; }
+    if (e.target.matches('dialog')) { e.target.close(); return; }
+    const proto = e.target.closest('[data-prototype]');
+    if (proto) { e.preventDefault(); toast(`Protótipo. ${proto.dataset.prototype}`); }
+  });
+
+  /* ---------- Header: menu, A+, border on scroll ---------- */
+
+  const header = $('.site-header');
+  const menuBtn = $('#menu-btn');
+  const closeMenu = () => { header.classList.remove('menu-open'); menuBtn.setAttribute('aria-expanded', 'false'); };
+  menuBtn.addEventListener('click', () => menuBtn.setAttribute('aria-expanded', String(header.classList.toggle('menu-open'))));
+  $$('.site-nav a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && header.classList.contains('menu-open')) { closeMenu(); menuBtn.focus(); }
+  });
+
+  const textSizeBtn = $('#text-size-btn');
+  const setLargeText = on => { root.classList.toggle('large-text', on); textSizeBtn.setAttribute('aria-pressed', String(on)); };
+  try { setLargeText(localStorage.getItem('large-text') === '1'); } catch { /* no storage: keep default size */ }
+  textSizeBtn.addEventListener('click', () => {
+    const on = !root.classList.contains('large-text');
+    setLargeText(on);
+    try { localStorage.setItem('large-text', on ? '1' : '0'); } catch { /* same */ }
+    toast(on ? 'Texto maior ligado.' : 'Texto no tamanho normal.');
+  });
+
+  let scrollTicking = false;
+  addEventListener('scroll', () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => { header.classList.toggle('scrolled', scrollY > 8); scrollTicking = false; });
+  }, { passive: true });
+
+  /* ---------- Blocks entering the viewport ---------- */
+
+  const revealables = $$('.reveal');
+  if ('IntersectionObserver' in window && !reducedMotion.matches) {
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    }), { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
+    revealables.forEach(el => io.observe(el));
+  } else {
+    revealables.forEach(el => el.classList.add('visible'));
+  }
+
+  /* ---------- Deep link to a module (#m4) ---------- */
+
+  const openFromHash = () => {
+    const match = location.hash.match(/^#m([1-9])$/i);
+    if (match) openModule(`M${match[1]}`);
+  };
+  addEventListener('hashchange', openFromHash);
+  openFromHash();
+})();
+</script>
+</body>
+</html>
