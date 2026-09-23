@@ -63,9 +63,11 @@ Uma organização sem fins lucrativos e open source que encontra pessoas em situ
 2. **Entrevista**: conversa curta por voz com a IA, no celular do voluntário, num ponto público ou no site.
 3. **Seleção**: a IA filtra e recomenda quem está pronto pra mudar de vida. Quem decide no fim está em aberto (§10).
 4. **Ponte inicial**: comida por alguns dias, roupas novas e limpas, higiene básica. Pago com doação e publicado no painel.
-5. **Trabalho**: o perfil vai pra rede de oportunidades; empregadores oferecem vaga.
-6. **IA contínua**: o candidato segue com acesso a uma IA simples, por voz, pra pensar o que pode realizar e se preparar.
+5. **Apoio da IA**: a IA ajuda a pessoa a entender o que ela sabe fazer e o que quer (análise de vocação), organiza o que for preciso pra buscar trabalho e prepara a pessoa. Vem **antes** do trabalho (Lucas, 23/09).
+6. **Trabalho**: com a vocação clara, a pessoa é encaminhada pra rede de oportunidades; empregadores oferecem vaga.
 7. **Prova**: o resultado aparece no site, sem expor a pessoa.
+
+**A IA acompanha a pessoa do começo ao fim e nunca para.** Ela está em todos os passos, da conversa em diante, e continua depois do trabalho, sem prazo e de graça (Lucas, 23/09). Guardar o que a pessoa conta depende de ter responsável legal pelos dados (§10, pergunta 9, e D012).
 
 ## 5. Módulos
 
@@ -79,7 +81,7 @@ Cada módulo vira um bloco no site e uma ou mais frentes de trabalho em [QUADRO.
 | M4 | **Entrevista por voz** | IA que conversa por voz (e talvez visual) com quem não lê; dispositivo que leva isso até a pessoa | Gargalo |
 | M5 | **Ponte inicial** | Comida, roupa, higiene: compra, entrega, parceiros, registro no livro-caixa | Operação |
 | M6 | **Rede de oportunidades** | Distribuir candidatos pra redes de emprego; empregadores oferecem vaga | Produto + operação |
-| M7 | **IA contínua** | Acesso simples e duradouro a IA pro candidato depois da seleção | Produto |
+| M7 | **IA contínua** | IA simples, por voz, que acompanha a pessoa do começo ao fim, sem prazo e de graça: análise de vocação antes do trabalho e apoio depois | Produto |
 | M8 | **Open source e governança** | Repositório aberto, guia de contribuição, aprovação por admin, caminho pra ONG formal | Organização |
 | M9 | **Marca, nome e domínio** | Nome não genérico, domínio comprado, identidade visual | Organização |
 

@@ -2,16 +2,17 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026, 10:40 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 23/09/2026, 10:45 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
-**Hoje:** F27 (sem Ouvir e A+), F28 (seletor de paletas) e F29 (home pro leigo) no ar. O Lucas reprovou as cinco paletas da F28 e achou os cadernos cortados e densos ([feedback](fontes/2026-09-23-feedback-paletas-e-cadernos.md)): F30 (Anil, Fable) refaz as paletas e F31 (Prumo, Opus xhigh) assume layout e UX (D026, D027). Design/UI em espera. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
+**Hoje:** F27 (sem Ouvir e A+), F28 (seletor de paletas) e F29 (home pro leigo) no ar. O Lucas reprovou as cinco paletas da F28 e achou os cadernos cortados e densos ([feedback](fontes/2026-09-23-feedback-paletas-e-cadernos.md)): F30 (Anil, Fable) refaz as paletas e F31 (Prumo, Opus xhigh) assume layout e UX (D026, D027). Design/UI volta em xhigh pra F32 (transparência em duas camadas, D029). A IA vem antes do trabalho e acompanha a pessoa sempre (D028). · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
 | F30 | [Paletas, rodada 2](frentes/F30-paletas-fable/BRIEF.md) | anil | `anil/f30-paletas` | despachada 10:00 | Cinco candidatas novas no nível da Jornal, com pesquisa de referência |
-| F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | [PR #67](https://github.com/LucasOl1337/pontape/pull/67) integrada 10:40: cadernos viraram páginas em `/construir/*` | Texto das tarefas #7 e #8, mapa do site, depois a varredura (4 defeitos anotados) |
+| F32 | [Transparência que um leigo entende](frentes/F32-transparencia-pra-leigo/BRIEF.md) | design (xhigh) | `design/f32-transparencia` | despachada 10:45 | Duas camadas (D029): primeira pra leigo, "Parte técnica" num botão |
+| F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | [PR #67](https://github.com/LucasOl1337/pontape/pull/67) integrada 10:40: cadernos viraram páginas em `/construir/*` | #67 e #68 integradas. Agora: ordem nova da escada (D028), depois a varredura |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
 Issues abertas: #55 (beacon do Cloudflare barrado pela CSP), #56 (livro em 320 px, parte do A+ some com a F27), #57 (rollback ainda fala de Pages).
