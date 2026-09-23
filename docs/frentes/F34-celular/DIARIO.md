@@ -66,3 +66,26 @@ Branch `prumo/f34-tela-baixa`. Achado conferindo a PR dos números: na `main`, l
 | 1366×657 | 0, 0, 0, 0 | igual |
 
 `npm run check` passa. Prints `prints/tela-baixa-antes-1180-d8.png` e `prints/tela-baixa-depois-1180-d8.png`.
+
+## 23/09/2026 · PR 2: números longe do chão e dos ícones
+
+Branch `prumo/f34-numeros`, empilhada em cima da `prumo/f34-tela-baixa` (as duas escrevem neste diário).
+
+**No computador:** o rótulo de cada degrau alinha pelo alto, com o número a uma distância fixa do chão (`--label-pad`), e o nome embaixo; um nome que quebra cresce pra baixo e não levanta o número. A altura do rótulo agora sai do próprio conteúdo (tamanho do número, mais duas linhas de nome, mais as folgas), em vez de um intervalo fixo que ficava justo. E o ícone de cada degrau nunca passa do degrau mais baixo: o tamanho fica limitado a `--u` menos as duas margens.
+
+**No celular e no tablet:** o degrau 1 tem uns 14 px de altura e nenhum ícone cabe nele. O ícone sai do bloco e desce pra baixo do chão, em cima do número; o degrau fica só com o desenho. No tablet vem ícone, número e nome, nessa ordem, e a escada ganha 1rem pra compensar o rótulo mais alto.
+
+Medido com o degrau 5 aberto, paleta Anil:
+
+| Tamanho | Número ↔ chão, antes → depois | Ícone ↔ número, antes → depois |
+|---|---|---|
+| 1750×950 | 2 → 9 px | entrava 4 → 17 px de folga |
+| 1920×1080 | 3 → 8 | 4 → 17 |
+| 1440×900 | 1 → 8 | entrava 5 → 15 |
+| 1280×720 | 1 → 8 | entrava 5 → 14 |
+| 960×600 | 6 → ícone entre os dois | entrava 9 → 4 |
+| 390×844 e 360×780 | 11 → ícone entre os dois | entrava 2 → 5 |
+
+Nenhum degrau passa a rolar por dentro (medido em 1280×720, 1366×657, 1440×900, 1750×850 e 1920×1080, todos os degraus); em 1180×700 o "Sua vez" fica com 8 px, que somem com a PR do corrimão, quando sai a faixa de baixo. Primeira tela do celular: os botões do Início terminam em 700 de 780 (360) e 673 de 844 (390). Carvão conferida. `npm run check` passa.
+
+Prints `prints/numeros-antes-*` (`main` depois da F33) e `prints/numeros-depois-*`.
