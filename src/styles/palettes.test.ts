@@ -2,8 +2,11 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-const css = readFileSync(fileURLToPath(new URL('./palettes.css', import.meta.url)), 'utf8');
-const names = ['jornal', 'mata', 'mar', 'ipe', 'sol', 'noite'];
+const read = (path: string) => readFileSync(fileURLToPath(new URL(path, import.meta.url)), 'utf8');
+const css = read('./palettes.css');
+
+// A lista nasce do CSS: toda paleta declarada é testada, e o seletor e o script do <head> têm que conhecer as mesmas.
+const names = Array.from(css.matchAll(/html\[data-palette="([\w-]+)"\]/g), match => match[1]!);
 
 function palette(name: string) {
   const block = css.match(new RegExp(`html\\[data-palette="${name}"\\][^{]*\\{([^}]+)\\}`))?.[1];
@@ -37,13 +40,30 @@ const pairs = [
   ['--night-ok-icon', '--night'], ['--night-broken-icon', '--night'],
 ] as const;
 
-describe('contraste AA das paletas', () => {
+describe('paletas', () => {
+  it('Jornal é o padrão sem atributo e tem as mesmas cores do bloco nomeado', () => {
+    expect(names[0]).toBe('jornal');
+    expect(css).toMatch(/:root,\s*html\[data-palette="jornal"\]/);
+  });
+
+  it('seletor e script do <head> conhecem exatamente as paletas do CSS', () => {
+    const switcher = read('../components/site/PaletteSwitcher.astro');
+    const layout = read('../layouts/BaseLayout.astro');
+    const inSwitcher = Array.from(switcher.matchAll(/\['([\w-]+)', '[^']+'\]/g), match => match[1]);
+    const inLayout = layout.match(/const valid = \/\^\(([\w|-]+)\)\$\//)?.[1]?.split('|');
+    expect(inSwitcher).toEqual(names);
+    expect(inLayout).toEqual(names);
+  });
+
   it.each(names)('%s: texto e estados têm contraste mínimo de 4,5:1', name => {
     const colors = palette(name);
     expect(Object.keys(colors).length).toBeGreaterThanOrEqual(19);
     for (const [foreground, background] of pairs) {
       expect(contrast(colors[foreground]!, colors[background]!), `${name}: ${foreground} em ${background}`).toBeGreaterThanOrEqual(4.5);
     }
-    if (name === 'noite') expect(luminance(colors['--night']!)).toBeGreaterThan(luminance(colors['--paper']!));
+    // Numa paleta escura o caderno precisa se destacar do fundo: mais claro que o papel, não mais um preto.
+    if (luminance(colors['--paper']!) < luminance(colors['--ink']!)) {
+      expect(luminance(colors['--night']!), `${name}: --night mais claro que --paper`).toBeGreaterThan(luminance(colors['--paper']!));
+    }
   });
 });
