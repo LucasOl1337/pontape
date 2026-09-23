@@ -78,7 +78,7 @@ Proposta escrita, report pro Regente e combinação do campo com o Design/UI. Pr
 
 Branch `prumo/f36-volta`.
 
-- O bloco da escada no `site.css` e o `Escada.astro` voltaram ao que eram em `00624f1` (a `main` das 11:47): linha da IA na faixa embaixo dos nomes, a partir da Conversa, rótulo e ícone de antes, limite de tela baixa em 700. Só com `--accent` no lugar de `--red`. Isso desfaz a #83, a parte da escada da #82 e a #81.
+- O bloco da escada no `site.css` e o `Escada.astro` voltaram ao que eram em `00624f1` (a `main` das 11:47): linha da IA na faixa embaixo dos nomes, rótulo e ícone de antes, limite de tela baixa em 700. Só com `--accent` no lugar de `--red`. Isso desfaz a #83, a parte da escada da #82 e a #81.
 - No lugar da reserva do Cores, o ar embaixo (só no computador, onde a escada ocupa a tela): `--air` = de 2,5rem a 4,5rem, conforme a altura da janela, e o mínimo da primeira tela passa a ser 41,5rem de palco mais o ar. O palco fica igual ao de antes em toda janela.
 
 Medido na bancada, com os degraus 0, 1, 7 e 8 abertos (px de CSS):
@@ -98,7 +98,9 @@ Conferência de que a medida vale: o print da `main` na bancada, na janela do Lu
 
 Celular e tablet voltam ao antes também. E volta o problema do meio-dia, em todo tamanho: no computador o número encosta no chão ou passa até 2 px dele, e o ícone do Encontro entra de 1 a 8 px no "1" (8 no tablet de 960×600). É o que a PR 2 conserta. Sem rolagem lateral em 360 e 390.
 
-`npm run check` passa (home com 21,8 KB de 60). Prints `prints/volta-antes-*` (`main` em `9de590d`) e `prints/volta-depois-*`, degrau 0 e Encontro aberto, na janela do Lucas, 1920×914, 1920×1080, 1440×900, 1366×768, 390 e 360.
+`npm run check` passa (home com 21,8 KB de 60). Prints `prints/volta-antes-*` (`main` em `74628ca`, já com a F37) e `prints/volta-depois-*`, degrau 0 e passo 1 aberto, na janela do Lucas, 1920×914, 1920×1080, 1440×900, 1366×768, 390 e 360.
+
+**Rebase na F37 (#88, `ffff034`).** A F37 já tinha trazido o `aiFrom` pro `journey.ts` (marcado no Sistema, o passo 1), o `RAIL_FROM` a partir dele, o `sr-only` com o nome do passo e a frase de abertura como `OPENING`. Tudo isso ficou; do `Escada.astro` saíram só as classes do corrimão, e o `--rail-from` voltou pra linha. Com o Sistema no passo 1, a linha da IA começa embaixo dele, com o ícone e a frase, e segue até a seta depois do Sua vez. Medida e prints refeitos depois do rebase: a mesma de antes, com a linha começando no Sistema.
 
 ### Onde parei
 
