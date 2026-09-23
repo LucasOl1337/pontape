@@ -8,7 +8,7 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F21 | [Comparativo das cinco variantes](frentes/F21-comparativo-variantes/BRIEF.md) | bruto | `bruto/f21-comparativo` | despachada | Mesma régua objetiva nas cinco, sem opinar sobre beleza |
+| F21b | [Comparativo da rodada 2](frentes/F21-comparativo-variantes/BRIEF.md) | bruto | `bruto/f21b-comparativo-r2` | despachada | Mesma régua nas PRs da F22, mais telas de altura e escada |
 | F22 | [Variantes rodada 2: a escada](frentes/F22-variantes-escada/BRIEF.md) | Prisma, Crônica, Ábaco, Maracatu, Pluma | `variante/r2-v1..v5` | despachada | Escada como navegação, home curta (1 a 3 telas), tela cheia. Seletor em localhost:4321 |
 
 ## Fila
@@ -42,6 +42,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 | ID | Frente | Resultado |
 |---|---|---|
 | F14b | CSP gerada no build | [PR #29](https://github.com/LucasOl1337/VidaNova/pull/29) integrada. Build calcula o hash de todo script embutido e falha se faltar algum ou se aparecer `unsafe-inline` |
+| F21 | Comparativo da rodada 1 | [PR #51](https://github.com/LucasOl1337/VidaNova/pull/51) integrada. [COMPARATIVO-VARIANTES](operacao/COMPARATIVO-VARIANTES.md) |
 | F19 | Variantes rodada 1 | PRs #38 (Pluma), #39 (Maracatu) e as outras em rascunho. Lucas: nenhuma escolhida; scroll longo demais; a escada da Crônica acertou o jeito de explicar ([feedback](fontes/2026-09-22-feedback-f19-r1.md)) |
 | F18 | Ensaio do lançamento | [PR #44](https://github.com/LucasOl1337/VidaNova/pull/44) integrada. CSP e console limpos, livro confere, 3G em ~3,7 s. Issues #40 a #43 abertas (ficam pra variante escolhida) |
 | F20 | Verificador mais leve | [PR #37](https://github.com/LucasOl1337/VidaNova/pull/37) integrada. zod/mini: menos 16 KB depois do Conferir |

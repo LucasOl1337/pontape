@@ -29,3 +29,12 @@ Diário em `docs/frentes/F21-comparativo-variantes/DIARIO.md`.
 ## Pronto quando
 
 As cinco colunas preenchidas, a PR aberta e o report ao Regente.
+
+## Etapa b · rodada 2 (aberta pelo Regente depois da PR #51)
+
+Branch `bruto/f21b-comparativo-r2` a partir da `main`. A rodada 1 virou referência: o Lucas pediu a rodada 2 (F22), com a escada e a home curta. Aplique a mesma régua nas PRs da F22 (`gh pr list`, títulos `F22 vN`), no commit da PR e também no merge com a `main`, como você fez com o Ábaco. Acrescente duas linhas novas na tabela:
+
+- **Telas de altura** da home e do livro em 1440×900 e em 360×780, medidas por você (não copie o README da variante).
+- **Escada:** cada degrau abre o conteúdo no mesmo lugar, as setas do teclado andam entre degraus, e o link direto pra um degrau funciona.
+
+Entregue em `docs/operacao/COMPARATIVO-VARIANTES-R2.md`. Pluma (#48), Maracatu (#49) e Ábaco (#50) já estão prontas; Prisma e Crônica chegam depois.
