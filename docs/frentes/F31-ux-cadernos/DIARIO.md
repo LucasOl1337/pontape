@@ -322,3 +322,37 @@ Quanto a ficha rola por dentro, medido na bancada (M2, a mais longa, e M4):
 | 360×780 | 670 e 488 | 371 e 240 |
 
 No celular a ficha continua rolando por dentro: é a ficha inteira de uma peça num diálogo de 90% da tela, com o cabeçalho e o fechar sempre à vista. `npm run check` passa. Prints `prints/ficha-antes-*` e `prints/ficha-depois-*`.
+
+PR #76 integrada.
+
+## 23/09/2026 · PR 8: faixa preta em duas linhas no celular
+
+Branch `prumo/f31-faixa`. Item 4 da varredura (média).
+
+No celular os três pedaços da faixa ("Em construção.", a frase e "Ver o que já existe") ficavam cada um numa linha. Abaixo de 600 px eles correm como uma frase só, com a letra um pouco menor, e o link não quebra no meio. Texto igual.
+
+Altura da faixa, medida em `/construir/tarefas`, `/transparencia/tecnico` e no 404:
+
+| Tamanho | Antes | Depois |
+|---|---|---|
+| 360 | 102 px | 55 |
+| 414 | 81 | 55 |
+| 320 | 102 | 75 |
+| 600 e acima | igual | igual |
+
+Sem rolagem lateral. A F32 (Design) tirou a faixa do `/transparencia` e criou `/transparencia/tecnico`, que tem a faixa; conferi nela também. O livro agora é da F32, então a parte dele na tabela da varredura (item 7) fica pra ela. `npm run check` passa. Prints `prints/faixa-antes-*` e `prints/faixa-depois-*`.
+
+## 23/09/2026 · Onde parei: itens médios fechados
+
+Com a PR 8, a varredura não tem mais defeito de gravidade alta ou média aberto na parte da F31 (home, Construir junto, 404, ficha, faixa). O que sobrou:
+
+| Página | Tamanho | O que está errado | Gravidade |
+|---|---|---|---|
+| Todas | 360 | O link do logo tem 27 px de altura: passa no mínimo AA (24 px), abaixo dos 44 recomendados pra toque | baixa |
+| Home | 1180 a 1366 × até 720 | O botão "Cores" cobre a ponta da escada; aceito pelo Regente enquanto o botão existir | baixa, aceito |
+| Ficha da peça | 960×600 e 360 | Ainda rola por dentro (33 a 84 px em 960×600, 240 a 371 em 360); no celular é o esperado num diálogo com a ficha inteira | baixa |
+| Todas | todos | Falta uma passada só de teclado e foco (Tab em cada página, anel de foco visível e sem corte), pedida no brief e ainda não feita de forma sistemática | a medir |
+
+Fora da F31: o livro (`/transparencia` e `/transparencia/tecnico`) é da F32 agora.
+
+Em espera, a pedido do Regente. Próximo, quando ele liberar: a passada de teclado e foco.

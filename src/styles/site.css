@@ -91,6 +91,12 @@ main:focus{ outline:none }
 .status-strip strong{ font-weight:700; color:var(--inverse-accent); text-transform:uppercase; letter-spacing:.08em; font-size:.8125rem; align-self:center }
 .status-strip a{ font-weight:700 }
 .status-strip a:hover{ color:var(--inverse-accent) }
+/* On a phone the three pieces run as one sentence: two lines instead of three (F31). */
+@media (max-width:599px){
+  .status-strip-inner{ display:block; padding-block:.45rem; font-size:.875rem; line-height:1.45 }
+  .status-strip strong{ margin-right:.35rem; font-size:.75rem }
+  .status-strip a{ margin-left:.2rem; white-space:nowrap }
+}
 
 .site-header{ position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1px solid var(--rule) }
 .site-header-inner{ max-width:var(--page); margin:auto; padding:0 var(--gutter); height:var(--header-h); display:flex; align-items:center; gap:var(--space-3) }
