@@ -63,7 +63,7 @@ escada.addEventListener('click', e => {
 
 /* ---------- Sheets (cadernos) and the module dialog ---------- */
 
-const SHEETS = ['modulos', 'gargalos', 'contribuicoes', 'codigo-aberto'];
+const SHEETS = ['construir', 'modulos', 'gargalos', 'contribuicoes', 'codigo-aberto'];
 const STEP_HASH: Record<string, number> = { inicio: 0, 'como-funciona': 1, transparencia: tabs.length - 2, ajudar: tabs.length - 1 };
 let focusBefore: HTMLElement | null = null;
 
