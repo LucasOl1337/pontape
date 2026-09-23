@@ -15,13 +15,13 @@ export interface ProjectModule {
 
 // One block per PRD §5 module. Status as of STATUS_DATE (project.ts). Text may use {name}.
 export const MODULES: ProjectModule[] = [
-  { id: 'M1', name: 'Site público', status: 'building',
+  { id: 'M1', name: 'Site público', status: 'live',
     summary: 'Esta página. Explica o projeto e mostra tudo em aberto.',
     what: 'A porta de entrada do projeto. Mostra o que é, como funciona, o livro público e o que ainda falta.',
     how: 'Cada parte do projeto vira um bloco com estado: funcionando, em construção, precisa de ajuda ou planejado.',
     operation: 'Feito pela equipe e por quem quiser contribuir. Pensado pra abrir rápido em celular barato.',
     strength: 'Tudo num lugar só, sem esconder o que ainda não funciona.',
-    missing: 'O nome definitivo e o endereço na internet.',
+    missing: 'Ouvir quem lê pouco usando o site de verdade e ajustar o texto.',
     helpers: 'Design, texto simples, acessibilidade, código.' },
   { id: 'M2', name: 'Doação e transparência total', status: 'bottleneck',
     summary: 'Um livro público de todas as ações, que qualquer pessoa confere. E, quando abrir, a doação.',
@@ -77,15 +77,15 @@ export const MODULES: ProjectModule[] = [
     how: 'Qualquer pessoa propõe melhoria. Um admin revisa e aprova antes de entrar.',
     operation: 'Admins cuidam da revisão. O caminho é virar uma organização sem fins lucrativos formal.',
     strength: 'Ninguém precisa confiar de olho fechado: está tudo lá pra ver.',
-    missing: 'Escolher a licença e abrir o repositório ao público.',
+    missing: 'Mais admins revisando e um canal privado pra aviso de segurança.',
     helpers: 'Código, revisão, documentação.' },
   { id: 'M9', name: 'Marca, nome e domínio', status: 'building',
     summary: 'Nome próprio, endereço na internet e identidade visual.',
     what: 'O nome do projeto, o endereço do site e a cara que você está vendo.',
     how: 'Nome curto, fácil de falar e de lembrar. Nada genérico.',
-    operation: 'A direção visual está pronta. O nome está em escolha.',
+    operation: 'Nome e endereço escolhidos: {name}, em pontape.org. A direção visual está no ar.',
     strength: 'Uma cara que se reconhece na rua, no panfleto e no site.',
-    missing: 'O nome definitivo. {name} é provisório.',
+    missing: 'Logo definitivo e o material de rua: panfleto e placa do ponto público.',
     helpers: 'Ideia de nome, design, quem entende de marca.' },
 ];
 
