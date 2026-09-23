@@ -4,8 +4,6 @@
 /* ---------- Base ---------- */
 *,*::before,*::after{ box-sizing:border-box }
 html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; scroll-padding-top:calc(var(--header-h) + 1rem) }
-/* The palette button (D025, temporary) is fixed at the bottom: a focused element stops above it. */
-html:has(.palette-switcher){ scroll-padding-bottom:5.5rem }
 @media (prefers-reduced-motion:no-preference){ html{ scroll-behavior:smooth } }
 body{
   margin:0; background:var(--paper); color:var(--ink);
@@ -132,9 +130,6 @@ main:focus{ outline:none }
 .stage{ width:100%; max-width:var(--page); margin-inline:auto }
 .stage, .panels, .panel{ min-width:0 }
 /* One screen on a 1440 x 900 desk; never so short that a step has to scroll inside itself. */
-/* The palette button (D025, temporary) is fixed at the bottom: the first screen ends clear of it. */
-body:has(.palette-switcher){ --dock-h:4.5rem }
-.front{ padding-bottom:var(--dock-h, 0px) }
 @media (min-width:1180px) and (min-height:560px){ .front{ min-height:max(calc(100svh - var(--header-h) - var(--strip-h)), 46rem) } }
 .stage{ position:relative; --label-h:clamp(3rem, 7.5cqh, 4.5rem); --rail-h:clamp(1.8rem, 4cqh, 2.6rem); --head:max(31cqh, 12.5rem); --u:calc((100cqh - var(--label-h) - var(--rail-h) - var(--head)) / (var(--n) - 1)) }
 .stage-title{ font:500 clamp(2.2rem, 7cqh, 4.6rem)/1.02 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
@@ -551,8 +546,6 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
   border-left:4px solid var(--night-red); transform:translate(-50%, 160%); visibility:hidden;
 }
 .toast.shown{ transform:translate(-50%, 0); visibility:visible; transition:transform .25s var(--ease) }
-/* The palette button (D025, temporary) sits at the bottom: the toast shows just above it. */
-body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
 
 /* ---------- Ledger page: the book on one screen, the rest in tabs ---------- */
 .book{ display:grid; gap:2rem; max-width:var(--page); margin-inline:auto; padding:1.6rem var(--gutter) 2.4rem }

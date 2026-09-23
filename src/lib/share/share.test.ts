@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { faviconSvg, icoFromPngs, measure, renderPng, shareCardSvg } from './render';
 import { SHARE } from '../../data/site/share';
 import { PROJECT_NAME } from '../../data/site/project';
+import { ANIL } from './palette';
 
 const POSTER = "font-family:'Archivo Condensed';font-weight:800";
 const pngSize = (png: Uint8Array) => {
@@ -33,7 +34,7 @@ describe('prévia de compartilhamento', () => {
 describe('ícone do site', () => {
   it('tem fundo de papel e os três blocos', () => {
     const svg = faviconSvg();
-    expect(svg).toContain('#F4F1EA');
+    expect(svg).toContain(ANIL.paper);
     expect(svg.match(/<rect x=/g)).toHaveLength(3);
   });
 
