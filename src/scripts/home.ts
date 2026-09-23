@@ -1,55 +1,152 @@
-// Home page islands: journey tabs, module filters and dialog, compare, contributions, ledger teaser.
+// Home: the staircase (a tab list you climb with the arrows), the "cadernos" that open in place
+// over it, the module dialog and the classified-ad filters. Everything answers to the URL hash,
+// so the header links, /transparencia and shared links land on the right step or sheet.
 import { stopSpeech } from './site';
-import { mountVerify, readLedger } from './verify';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll<T>(s)];
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-/* ---------- Journey tabs ---------- */
+/* ---------- The staircase ---------- */
 
-const track = $('[data-journey]');
-if (track) {
-  const tabs = $$<HTMLButtonElement>('[role="tab"]', track);
-  const panels = tabs.map(t => document.getElementById(t.getAttribute('aria-controls') ?? '')!);
-  let current = 0;
-  const select = (i: number, { focus = false } = {}) => {
-    current = Math.max(0, Math.min(tabs.length - 1, i));
-    tabs.forEach((tab, k) => {
-      tab.setAttribute('aria-selected', String(k === current));
-      tab.tabIndex = k === current ? 0 : -1;
-      tab.classList.toggle('done', k < current);
-      panels[k]!.hidden = k !== current;
-    });
-    const tab = tabs[current]!;
-    if (focus) tab.focus({ preventScroll: true });
-    if (track.scrollWidth > track.clientWidth) {
-      track.scrollTo({ left: tab.offsetLeft - (track.clientWidth - tab.offsetWidth) / 2, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
-    }
-    const panel = panels[current]!;
-    if (!reducedMotion.matches) { panel.classList.remove('swap'); void panel.offsetWidth; panel.classList.add('swap'); }
-  };
-  track.addEventListener('click', e => {
-    const tab = (e.target as Element).closest<HTMLButtonElement>('[role="tab"]');
-    if (tab) select(tabs.indexOf(tab));
+const escada = $('[data-escada]')!;
+const stair = $('[data-stair]', escada)!;
+const tabs = $$<HTMLButtonElement>('[role="tab"]', stair);
+const panels = $$('[data-panel]', escada);
+let at = 0;
+
+function climb(k: number, { focusTab = false } = {}) {
+  const next = Math.max(0, Math.min(tabs.length - 1, k));
+  if (next !== at) stopSpeech();
+  at = next;
+  tabs.forEach((tab, i) => {
+    tab.setAttribute('aria-selected', String(i === at));
+    tab.tabIndex = i === at ? 0 : -1;
+    tab.classList.toggle('is-ahead', i > at);
   });
-  track.addEventListener('keydown', e => {
-    const keys: Record<string, number> = { ArrowRight: current + 1, ArrowLeft: current - 1, Home: 0, End: tabs.length - 1 };
-    if (!(e.key in keys)) return;
-    e.preventDefault();
-    select(keys[e.key]!, { focus: true });
-  });
-  panels.forEach(panel => panel.addEventListener('click', e => {
-    const btn = (e.target as Element).closest<HTMLButtonElement>('[data-step]');
-    if (!btn || btn.disabled) return;
-    const step = btn.dataset.step!;
-    select(current + Number(step));
-    const same = $<HTMLButtonElement>(`[data-step="${step}"]`, panels[current]!);
-    (same && !same.disabled ? same : tabs[current]!).focus({ preventScroll: true });
-  }));
+  panels.forEach((panel, i) => panel.classList.toggle('is-active', i === at));
+  stair.style.setProperty('--at', String(at));
+  escada.dataset.at = String(at);
+  if (focusTab) tabs[at]!.focus();
 }
 
-/* ---------- Modules: filters and dialog ---------- */
+stair.addEventListener('click', e => {
+  const tab = (e.target as Element).closest<HTMLButtonElement>('[role="tab"]');
+  if (tab) climb(tabs.indexOf(tab));
+});
+// Up and right climb, down and left go back: the staircase rises to the right.
+const KEYS: Record<string, (k: number) => number> = {
+  ArrowRight: k => k + 1, ArrowUp: k => k + 1, ArrowLeft: k => k - 1, ArrowDown: k => k - 1,
+  Home: () => 0, End: () => tabs.length - 1,
+};
+stair.addEventListener('keydown', e => {
+  const move = KEYS[e.key];
+  if (!move) return;
+  e.preventDefault();
+  climb(move(at), { focusTab: true });
+});
+// Left and right also work while reading a step, as long as focus is not in a control.
+document.addEventListener('keydown', e => {
+  if ((e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || e.altKey || e.ctrlKey || e.metaKey || e.defaultPrevented) return;
+  const active = document.activeElement;
+  if ($('dialog[open]') || (active && active !== document.body && !active.matches('[data-panel]'))) return;
+  e.preventDefault();
+  climb(KEYS[e.key]!(at));
+});
+escada.addEventListener('click', e => {
+  const btn = (e.target as Element).closest<HTMLButtonElement>('[data-go]');
+  if (!btn) return;
+  const direction = Number(btn.dataset.go) > at ? 'next' : 'back';
+  climb(Number(btn.dataset.go));
+  // Keep the focus on the same kind of button in the new step, or on its tread.
+  const same = $$<HTMLButtonElement>('[data-go]', panels[at]!).find(b => (Number(b.dataset.go) > at ? 'next' : 'back') === direction);
+  (same ?? tabs[at]!).focus({ preventScroll: true });
+});
+
+/* ---------- Sheets (cadernos) and the module dialog ---------- */
+
+const SHEETS = ['modulos', 'gargalos', 'contribuicoes', 'codigo-aberto'];
+const STEP_HASH: Record<string, number> = { inicio: 0, 'como-funciona': 1, transparencia: tabs.length - 2, ajudar: tabs.length - 1 };
+let focusBefore: HTMLElement | null = null;
+
+function closeSheets() {
+  $$<HTMLDialogElement>('dialog.sheet[open]').forEach(d => d.close());
+}
+function openSheet(id: string) {
+  const sheet = document.getElementById(id);
+  if (!(sheet instanceof HTMLDialogElement)) return null;
+  if (!sheet.open) {
+    const opener = document.activeElement as HTMLElement | null;
+    closeSheets();
+    focusBefore = opener && !opener.closest('dialog') ? opener : focusBefore;
+    stopSpeech();
+    sheet.showModal();
+    sheet.scrollTop = 0;
+  }
+  return sheet;
+}
+$$<HTMLDialogElement>('dialog.sheet').forEach(sheet => sheet.addEventListener('close', () => {
+  stopSpeech();
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  if (!$('dialog.sheet[open]') && focusBefore?.isConnected) focusBefore.focus({ preventScroll: true });
+}));
+
+const moduleDialog = $<HTMLDialogElement>('#module-dialog');
+let moduleOrigin: HTMLElement | null = null;
+function openModule(id: string, origin?: HTMLElement | null) {
+  const tpl = document.getElementById(`module-${id}`) as HTMLTemplateElement | null;
+  if (!moduleDialog || !tpl) return;
+  stopSpeech();
+  $('#module-dialog-id')!.textContent = id;
+  $('#module-dialog-title')!.textContent = tpl.dataset.name ?? '';
+  $('#module-dialog-body')!.replaceChildren(tpl.content.cloneNode(true));
+  if (!moduleDialog.open) { moduleOrigin = origin ?? (document.activeElement as HTMLElement | null); moduleDialog.showModal(); }
+  moduleDialog.scrollTop = 0;
+  $('.close-btn', moduleDialog)?.focus();
+}
+moduleDialog?.addEventListener('close', () => {
+  stopSpeech();
+  if (/^#m[1-9]$/i.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
+  if (moduleOrigin?.isConnected) moduleOrigin.focus({ preventScroll: true });
+});
+document.addEventListener('click', e => {
+  const mod = (e.target as Element).closest<HTMLElement>('[data-module]');
+  if (mod) openModule(mod.dataset.module!, moduleDialog?.open ? null : mod);
+});
+
+// One router for every in-page link: steps, sheets, a single bottleneck, a module.
+function route(hash: string) {
+  const id = decodeURIComponent(hash.slice(1));
+  const moduleMatch = id.match(/^m([1-9])$/i);
+  if (moduleMatch) { openModule(`M${moduleMatch[1]}`); return true; }
+  if (id.startsWith('gargalo-')) {
+    const item = document.getElementById(id);
+    if (!(item instanceof HTMLDetailsElement)) return false;
+    openSheet('gargalos');
+    item.open = true;
+    item.scrollIntoView({ block: 'start' });
+    item.querySelector('summary')?.focus({ preventScroll: true });
+    return true;
+  }
+  if (SHEETS.includes(id)) { openSheet(id)?.querySelector<HTMLElement>('.close-btn')?.focus(); return true; }
+  const step = id in STEP_HASH ? STEP_HASH[id]! : Number(id.match(/^degrau-(\d+)$/)?.[1] ?? NaN);
+  if (Number.isInteger(step)) {
+    closeSheets();
+    climb(step);
+    escada.scrollIntoView({ block: 'start' });
+    tabs[at]!.focus({ preventScroll: true });
+    return true;
+  }
+  return false;
+}
+document.addEventListener('click', e => {
+  const link = (e.target as Element).closest<HTMLAnchorElement>('a[href*="#"]');
+  if (!link || link.pathname !== location.pathname || !link.hash) return;
+  if (route(link.hash)) e.preventDefault();
+});
+addEventListener('hashchange', () => route(location.hash));
+if (location.hash) route(location.hash);
+
+/* ---------- Modules sheet: filters ---------- */
 
 const filters = $('[data-module-filters]');
 filters?.addEventListener('click', e => {
@@ -57,57 +154,12 @@ filters?.addEventListener('click', e => {
   if (!btn) return;
   const filter = btn.dataset.filter!;
   $$('[data-filter]', filters).forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-  const items = $$('[data-status-item]');
-  items.forEach(li => { li.hidden = filter !== 'all' && li.dataset.statusItem !== filter; });
+  $$('[data-status-item]').forEach(li => { li.hidden = filter !== 'all' && li.dataset.statusItem !== filter; });
   $$('[data-filter-note]').forEach(p => { p.hidden = p.dataset.filterNote !== filter; });
   $$('[data-empty-for]', $('#modulos')!).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
 });
 
-const dialog = $<HTMLDialogElement>('#module-dialog');
-let focusBefore: HTMLElement | null = null;
-function openModule(id: string, origin?: HTMLElement | null) {
-  const tpl = document.getElementById(`module-${id}`) as HTMLTemplateElement | null;
-  if (!dialog || !tpl) return;
-  stopSpeech();
-  $('#module-dialog-id')!.textContent = id;
-  $('#module-dialog-title')!.textContent = tpl.dataset.name ?? '';
-  $('#module-dialog-body')!.replaceChildren(tpl.content.cloneNode(true));
-  if (!dialog.open) { focusBefore = origin ?? (document.activeElement as HTMLElement | null); dialog.showModal(); }
-  dialog.scrollTop = 0;
-  $('.close-btn', dialog)?.focus();
-  history.replaceState(null, '', `#${id.toLowerCase()}`);
-}
-dialog?.addEventListener('close', () => {
-  stopSpeech();
-  history.replaceState(null, '', location.pathname + location.search);
-  if (focusBefore?.isConnected) focusBefore.focus({ preventScroll: true });
-});
-document.addEventListener('click', e => {
-  const mod = (e.target as Element).closest<HTMLElement>('[data-module]');
-  if (mod) openModule(mod.dataset.module!, dialog?.open ? null : mod);
-});
-const openFromHash = () => {
-  const moduleMatch = location.hash.match(/^#m([1-9])$/i);
-  if (moduleMatch) { openModule(`M${moduleMatch[1]}`); return; }
-  const bottleneck = location.hash.startsWith('#gargalo-') && document.getElementById(location.hash.slice(1));
-  if (bottleneck instanceof HTMLDetailsElement) bottleneck.open = true;
-};
-addEventListener('hashchange', openFromHash);
-openFromHash();
-
-/* ---------- Compare: loose help vs full path ---------- */
-
-const CAPTIONS: Record<string, string> = {
-  loose: 'Só o prato de comida. Ajuda hoje, mas amanhã tudo volta.',
-  full: 'Comida, roupa, higiene, trabalho e IA. Um degrau depois do outro.',
-};
-$$<HTMLButtonElement>('[data-compare]').forEach(btn => btn.addEventListener('click', () => {
-  $$('[data-compare]').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-  $('#compare-stairs')!.dataset.mode = btn.dataset.compare!;
-  $('#compare-caption')!.textContent = CAPTIONS[btn.dataset.compare!] ?? '';
-}));
-
-/* ---------- Open contributions ---------- */
+/* ---------- Classified ads (open contributions) ---------- */
 
 const contribFilters = $('[data-contrib-filters]');
 const moreBtn = $<HTMLButtonElement>('[data-contrib-more]');
@@ -133,11 +185,3 @@ moreBtn?.addEventListener('click', () => {
   renderContributions();
   firstHidden?.querySelector('a')?.focus();
 });
-
-/* ---------- Ledger teaser (block 05) ---------- */
-
-const teaserPanel = $('#transparencia [data-verify-panel]');
-if (teaserPanel) {
-  const ledger = readLedger(teaserPanel.dataset.source!);
-  mountVerify(teaserPanel, () => ledger);
-}

@@ -1,0 +1,32 @@
+---
+import Icon from '../site/Icon.astro';
+import NotOpenBadge from '../site/NotOpenBadge.astro';
+import Sheet from './Sheet.astro';
+import { BOTTLENECKS } from '../../data/site/bottlenecks';
+
+const speech = 'Estes são os problemas que a gente ainda não sabe resolver. '
+  + BOTTLENECKS.map((b, i) => `${i + 1}: ${b.title}.`).join(' ')
+  + ' Se você entende de algum desses assuntos, sua ajuda vale muito.';
+---
+<Sheet id="gargalos" kicker="Os gargalos" title="O que a gente ainda" turn="não sabe resolver." speech={speech}>
+    <p class="standfirst">Falar disso também é transparência. São {BOTTLENECKS.length} perguntas em aberto. Se você entende de algum desses assuntos, sua ajuda vale muito.</p>
+    <div class="questions">
+      {BOTTLENECKS.map((b, i) => (
+        <details class="question" id={`gargalo-${b.id}`} open={i === 0}>
+          <summary>
+            <span class="question-num" aria-hidden="true">{i + 1}</span>
+            <span class="question-head"><span class="question-title">{b.title}</span><span class="module-id">{b.modules}</span></span>
+            <Icon name="chevron-down" class="chevron" />
+          </summary>
+          <div class="question-body">
+            <dl>
+              <div><dt>Por que é difícil</dt><dd>{b.why}</dd></div>
+              <div><dt>O que já está andando</dt><dd>{b.progress}</dd></div>
+              <div><dt>Quem pode ajudar</dt><dd>{b.helpers}</dd></div>
+            </dl>
+            <p class="soon-note"><NotOpenBadge /><span>Dar uma ideia abre junto com o repositório. As tarefas deste gargalo estão nos <a href="#contribuicoes">classificados</a>.</span></p>
+          </div>
+        </details>
+      ))}
+    </div>
+</Sheet>

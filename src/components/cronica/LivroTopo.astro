@@ -1,0 +1,107 @@
+---
+import Icon from '../site/Icon.astro';
+import ListenButton from '../site/ListenButton.astro';
+import ChainEntry from '../ledger/ChainEntry.astro';
+import LedgerData from '../ledger/LedgerData.astro';
+import VerifyPanel from '../ledger/VerifyPanel.astro';
+import snapshotData from '../../data/transparency.json';
+import { transparencySnapshotSchema } from '../../lib/transparency';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { TYPES, TYPE_ORDER, type LedgerType } from '../../lib/ledger-view/phrases';
+import { correctionsOf } from '../../lib/ledger-view/money';
+
+// The first screen of the book: the honest numbers and Conferir on the left, every action on the
+// right, a page at a time, so the book never becomes an endless roll.
+interface Props { ledger: LedgerView; example: LedgerView }
+const { ledger, example } = Astro.props;
+const snapshot = transparencySnapshotSchema.parse(snapshotData);
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: snapshot.currency });
+const events = ledger.events;
+const last = events.at(-1);
+const shortHash = (h: string) => `${h.slice(0, 4)} ${h.slice(4, 8)}`;
+const recorded = last && new Date(last.recordedAt);
+const recordedText = recorded && `${recorded.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}, às ${recorded.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' })}`;
+const lists = [{ mode: 'real', view: ledger }, { mode: 'example', view: example }] as const;
+const count = (list: LedgerEvent[], type: LedgerType) => list.filter(e => e.payload.type === type).length;
+const EMPTY: Record<LedgerType, [string, string]> = {
+  finance: ['Nenhum real entrou nem saiu ainda.', 'A doação abre quando existir a conta oficial do projeto. Quando abrir, cada real aparece aqui. Aqui nunca vai ter número inventado.'],
+  field: ['Nenhuma entrega na rua ainda.', 'Isso começa com o piloto. Cada comida, kit ou roupa entregue vira uma linha, sem dizer quem recebeu nem onde.'],
+  candidate: ['Nenhum passo de candidato ainda.', 'A entrevista por voz ainda não abriu. Quando abrir, aparece aqui só a contagem: quantos contatos, entrevistas e encaminhamentos. Sem nome, rosto, apelido nem lugar.'],
+  project: ['Nenhuma ação do projeto publicada ainda.', 'O livro oficial entra junto com o verificador aberto, com cada decisão e cada mudança desde o começo.'],
+};
+const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.length ? `Hoje o livro tem ${events.length} ações.` : 'O livro oficial ainda não foi publicado.'} Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não. O botão Conferir refaz a conta de cada ação no seu aparelho.`;
+---
+<section class="book" id="livro" aria-labelledby="page-title" data-speech={speech}>
+  <div class="book-side">
+    <p class="kicker">Caderno especial · Livro público</p>
+    <h1 id="page-title" class="book-title">Tudo que o projeto faz, <em>à vista.</em></h1>
+    <p class="book-rule"><Icon name="shield" /><span>Toda ação aparece. Quem é a pessoa, não.</span><ListenButton target="livro" /></p>
+    <dl class="book-numbers">
+      <div><dt>Ações no livro</dt><dd>{events.length}</dd></div>
+      <div><dt>Entrou</dt><dd>{brl.format(snapshot.receivedCents / 100)}</dd></div>
+      <div><dt>Saiu</dt><dd>{brl.format(snapshot.spentCents / 100)}</dd></div>
+      <div><dt>Marca mais recente</dt><dd class="mono">{last ? shortHash(last.hash) : 'nenhuma'}</dd></div>
+    </dl>
+    <p class="book-note">{last
+      ? `Livro estático. Última ação registrada em ${recordedText}. A página é refeita sempre que entra uma ação nova. Zero real porque a doação ainda não abriu.`
+      : 'O livro oficial ainda não foi publicado. Nada nesta página se chama ao vivo enquanto não for.'}</p>
+    <div class="conferir" id="conferir" aria-labelledby="t-verify">
+      <h2 id="t-verify" class="conferir-title">Confira você mesmo.</h2>
+      <VerifyPanel data="ledger-real" list="ledger-chain-real" where="O botão refaz a conta de cada ação no seu aparelho. Nada é enviado pra gente.">
+        <a href="#como-conferir">Como funciona</a>
+      </VerifyPanel>
+    </div>
+  </div>
+
+  <div class="book-main" id="acoes" aria-labelledby="t-actions" data-ledger-actions>
+    <div class="book-main-head">
+      <h2 id="t-actions" class="book-main-title">Todas as ações</h2>
+      <div class="ledger-toolbar">
+        <div class="segmented" role="group" aria-label="Qual livro mostrar">
+          <button type="button" data-mode="real" aria-pressed="true">Livro de verdade</button>
+          <button type="button" data-mode="example" aria-pressed="false">Ver um exemplo</button>
+        </div>
+      </div>
+    </div>
+    {lists.map(({ mode, view: { events: list } }) => (
+      <div class="filters" role="group" aria-label="Filtrar por tipo de ação" data-type-filters={mode} hidden={mode !== 'real'}>
+        <button class="filter" type="button" data-type-filter="all" aria-pressed="true">Todas<span class="count">{list.length}</span></button>
+        {TYPE_ORDER.map(t => <button class="filter" type="button" data-type-filter={t} aria-pressed="false"><Icon name={TYPES[t].icon} />{TYPES[t].label}<span class="count">{count(list, t)}</span></button>)}
+      </div>
+    ))}
+    <div class="sample" data-example-only hidden>
+      <p class="sample-banner">Exemplo · dados fictícios do contrato do livro. Nada disso aconteceu.</p>
+      <button class="btn" type="button" data-tamper><Icon name="pen" />Mudar uma linha escondido</button>
+      <button class="btn" type="button" data-untamper hidden><Icon name="undo" />Desfazer a mudança</button>
+    </div>
+    {lists.map(({ mode, view }) => {
+      const corrected = correctionsOf(view.events);
+      return (
+        <div class:list={['ledger-list', { 'is-sample': mode === 'example' }]} data-ledger-list={mode} hidden={mode !== 'real'}>
+          <ol class="chain" id={`ledger-chain-${mode}`}>
+            {view.events.toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}
+          </ol>
+          {!view.events.length && (
+            <div class="chain-empty" data-empty-for="all">
+              <p class="chain-empty-title">O livro oficial ainda não foi publicado.</p>
+              <p>Ele entra junto com o verificador aberto. Até lá, veja como ele funciona no exemplo.</p>
+            </div>
+          )}
+          {TYPE_ORDER.filter(t => view.events.length && !count(view.events, t)).map(t => (
+            <div class="chain-empty" data-empty-for={t} hidden>
+              <Icon name={TYPES[t].icon} /><p class="chain-empty-title">{EMPTY[t][0]}</p><p>{EMPTY[t][1]}</p>
+            </div>
+          ))}
+          <LedgerData id={`ledger-${mode}`} ledger={view} />
+        </div>
+      );
+    })}
+    <nav class="pager" aria-label="Páginas do livro" data-pager hidden>
+      <button class="btn" type="button" data-page="-1"><Icon name="arrow-left" /><span>Mais novas</span></button>
+      <p class="pager-where" aria-live="polite" data-pager-where></p>
+      <button class="btn" type="button" data-page="1"><span>Mais antigas</span><Icon name="arrow-right" /></button>
+    </nav>
+    <p class="decision-note"><Icon name="doc" /><span>O título de cada decisão vem do <code>DECISOES.md</code> e fica fora da marca. O Conferir prova a linha, não o título.</span></p>
+  </div>
+</section>

@@ -1,6 +1,7 @@
-// /transparencia islands: real or example ledger, type filters, the "edit a line in secret" demo, Conferir.
+// /transparencia islands: real or example ledger, type filters, pages of the list, the
+// "edit a line in secret" demo, Conferir, and the tabs under the first screen.
 import type { LedgerView } from '../lib/ledger-view/source';
-import { toast } from './site';
+import { stopSpeech, toast } from './site';
 import { mountVerify, readLedger } from './verify';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
@@ -13,13 +14,43 @@ const verify = mountVerify(panel, () => ledgers[mode]);
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const params = new URLSearchParams(location.search);
 let mode: Mode = params.has('exemplo') ? 'example' : 'real';
+let filter = 'all';
+let page = 0;
 let tampered: { seq: string; amount: string } | null = null;
 
-function applyFilter(filter: string) {
-  const list = $(`[data-ledger-list="${mode}"]`)!;
+/* ---------- The list, a page at a time ---------- */
+
+const PAGE_SIZE = 4;
+const pager = $('[data-pager]')!;
+const listOf = () => $(`[data-ledger-list="${mode}"]`)!;
+const matching = () => $$('.chain-entry', listOf()).filter(li => filter === 'all' || li.dataset.type === filter);
+
+function render() {
+  const entries = $$('.chain-entry', listOf());
+  const shown = matching();
+  const pages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
+  page = Math.max(0, Math.min(pages - 1, page));
+  entries.forEach(li => { li.hidden = true; });
+  shown.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE).forEach(li => { li.hidden = false; });
+  pager.hidden = pages < 2;
+  $('[data-pager-where]', pager)!.textContent = `Página ${page + 1} de ${pages}`;
+  $<HTMLButtonElement>('[data-page="-1"]', pager)!.disabled = page === 0;
+  $<HTMLButtonElement>('[data-page="1"]', pager)!.disabled = page >= pages - 1;
+}
+pager.addEventListener('click', e => {
+  const btn = (e.target as Element).closest<HTMLButtonElement>('[data-page]');
+  if (!btn) return;
+  page += Number(btn.dataset.page);
+  render();
+  if (btn.disabled) $<HTMLButtonElement>(`[data-page="${-Number(btn.dataset.page)}"]`, pager)?.focus();
+});
+
+function applyFilter(next: string) {
+  filter = next;
+  page = 0;
   $$('[data-type-filter]', $(`[data-type-filters="${mode}"]`)!).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.typeFilter === filter)));
-  $$('.chain-entry', list).forEach(li => { li.hidden = filter !== 'all' && li.dataset.type !== filter; });
-  $$('.chain-empty[data-empty-for]:not([data-empty-for="all"])', list).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
+  $$('.chain-empty[data-empty-for]:not([data-empty-for="all"])', listOf()).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
+  render();
   verify.reset();
 }
 
@@ -40,6 +71,17 @@ document.addEventListener('click', e => {
   if (modeBtn) { setMode(modeBtn.dataset.mode as Mode); return; }
   const filterBtn = target.closest<HTMLElement>('[data-type-filter]');
   if (filterBtn) applyFilter(filterBtn.dataset.typeFilter!);
+});
+
+// When Conferir finds a broken link, turn to the page where it is and show it.
+panel.addEventListener('verified', e => {
+  const seq = (e as CustomEvent<{ sequence: string | null }>).detail.sequence;
+  if (!seq) return;
+  const index = matching().findIndex(li => li.dataset.seq === seq);
+  if (index < 0) return;
+  page = Math.floor(index / PAGE_SIZE);
+  render();
+  $(`.chain-entry[data-seq="${seq}"]`, listOf())?.scrollIntoView({ block: 'center' });
 });
 
 /* ---------- Example only: edit a money line without redoing its mark ---------- */
@@ -74,6 +116,45 @@ untamperBtn?.addEventListener('click', () => {
   toast('Mudança desfeita. O livro voltou ao que era.');
 });
 
+/* ---------- Tabs: como conferir, dinheiro, o que entra ---------- */
+
+const tablist = $('[data-tabs]');
+const tabs = tablist ? $$<HTMLButtonElement>('[role="tab"]', tablist) : [];
+function selectTab(i: number, focus = false) {
+  const next = (i + tabs.length) % tabs.length;
+  stopSpeech();
+  tabs.forEach((tab, k) => {
+    tab.setAttribute('aria-selected', String(k === next));
+    tab.tabIndex = k === next ? 0 : -1;
+    document.getElementById(tab.getAttribute('aria-controls')!)?.classList.toggle('is-active', k === next);
+  });
+  if (focus) tabs[next]!.focus();
+}
+tablist?.addEventListener('click', e => {
+  const tab = (e.target as Element).closest<HTMLButtonElement>('[role="tab"]');
+  if (tab) selectTab(tabs.indexOf(tab));
+});
+tablist?.addEventListener('keydown', e => {
+  const current = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+  const moves: Record<string, number> = { ArrowRight: current + 1, ArrowLeft: current - 1, Home: 0, End: tabs.length - 1 };
+  if (!(e.key in moves)) return;
+  e.preventDefault();
+  selectTab(moves[e.key]!, true);
+});
+const openTabFromHash = (hash: string) => {
+  const i = tabs.findIndex(t => `#${t.getAttribute('aria-controls')}` === hash);
+  if (i < 0) return false;
+  selectTab(i);
+  document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' });
+  return true;
+};
+document.addEventListener('click', e => {
+  const link = (e.target as Element).closest<HTMLAnchorElement>('a[href^="#"]');
+  if (link && openTabFromHash(link.hash)) { e.preventDefault(); history.replaceState(null, '', link.hash); }
+});
+addEventListener('hashchange', () => openTabFromHash(location.hash));
+
 setMode(mode);
 const initialType = params.get('tipo');
 if (initialType && ['finance', 'field', 'candidate', 'project'].includes(initialType)) applyFilter(initialType);
+if (location.hash) openTabFromHash(location.hash);

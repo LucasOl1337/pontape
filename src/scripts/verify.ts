@@ -30,7 +30,8 @@ function describe(r: LedgerVerification, count: number): Shown {
     };
   }
   const at = r.sequence ?? '';
-  const before = at && Number(at) > 1 ? `As ${Number(at) - 1} ações antes dela estão certas.` : undefined;
+  const good = Number(at) - 1;
+  const before = good > 1 ? `As ${good} ações antes dela estão certas.` : good === 1 ? 'A ação antes dela está certa.' : undefined;
   return { state: 'broken', icon: 'x-circle', ...BROKEN[r.code](at), detail: before };
 }
 
@@ -79,6 +80,8 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
     }
     show(describe(result, events.length));
     btn.disabled = false;
+    // Lets a page react to the result, e.g. turn to the page of the book where the chain broke.
+    panel.dispatchEvent(new CustomEvent('verified', { bubbles: true, detail: { sequence: result.valid ? null : result.sequence ?? null } }));
   });
   return { reset };
 }

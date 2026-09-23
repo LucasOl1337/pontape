@@ -1,0 +1,37 @@
+---
+import Icon from '../site/Icon.astro';
+import Sheet from './Sheet.astro';
+import { CONTRIBUTIONS } from '../../data/site/contributions';
+
+const goodFirst = CONTRIBUTIONS.filter(c => c.goodFirst).length;
+const files = [
+  { icon: 'doc', path: 'docs/PRD.md', text: 'O que é o projeto e pra onde vai' },
+  { icon: 'doc', path: 'docs/DECISOES.md', text: 'Cada decisão, com data e quem decidiu' },
+  { icon: 'shield', path: 'livro público', text: 'Toda ação, presa na anterior' },
+  { icon: 'folder', path: 'docs/design/', text: 'Esta cara que você está vendo' },
+] as const;
+---
+<Sheet id="codigo-aberto" kicker="Expediente" title="Aberto pra ver." turn="Aberto pra ajudar." speech="Tudo no projeto é aberto: o código, os documentos, cada decisão e o livro público. Qualquer pessoa pode propor uma melhoria. Um admin revisa antes de entrar. O repositório abre ao público quando a licença for decidida.">
+    <div class="expediente">
+      <div class="expediente-col">
+        <p class="prose-p">O código, os documentos, cada decisão e o livro público ficam num lugar aberto. Qualquer pessoa pode propor uma melhoria. Um admin revisa antes de entrar.</p>
+        <ol class="how-steps">
+          <li><span><strong>Olhe</strong> o código e os documentos.</span></li>
+          <li><span><strong>Escolha</strong> um anúncio dos classificados ou proponha uma ideia.</span></li>
+          <li><span><strong>Um admin revisa</strong> e aprova antes de entrar.</span></li>
+        </ol>
+        <p class="prose-p"><strong>{CONTRIBUTIONS.length} tarefas abertas</strong>, {goodFirst} boas pra quem está começando. <a href="#contribuicoes">Ver os classificados</a></p>
+      </div>
+      <div class="expediente-box">
+        <p class="expediente-title">Repositório do projeto <span class="badge badge--building"><Icon name="lock" />Fechado por enquanto</span></p>
+        <ul class="repo-files">
+          {files.map(f => <li><Icon name={f.icon} /><code>{f.path}</code><span>{f.text}</span></li>)}
+        </ul>
+        <dl class="repo-facts">
+          <div><dt>Licença</dt><dd>A definir</dd></div>
+          <div><dt>Quem aprova</dt><dd>Admins do projeto</dd></div>
+          <div><dt>Abre quando</dt><dd>A licença for decidida</dd></div>
+        </dl>
+      </div>
+    </div>
+</Sheet>
