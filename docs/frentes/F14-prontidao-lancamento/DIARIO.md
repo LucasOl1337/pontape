@@ -52,3 +52,8 @@ Validar build, CSP e diretórios gerados; abrir PR e reportar ao Regente.
 - `npm run check` passou: lint, tipagem, 37 testes e build estático. O build atual encontrou 2 HTML e 0 scripts embutidos; o teste fictício prova o caso com scripts que aparecerá quando a F07 portar a home.
 - Atualizei `LANCAMENTO.md` para orientar a conferir `dist/_headers` gerado e testar a interação final no navegador. `package.json` mudou somente no script de build.
 - Próximo passo: revisar o diff, commitar, enviar branch, abrir PR e avisar o Regente.
+
+## 22/09/2026 · Etapa b em PR
+
+- Commitei e enviei `bruto/f14b-csp`; abri a [PR #29](https://github.com/LucasOl1337/VidaNova/pull/29) para `main`.
+- Próximo passo: reportar ao Regente. Não há decisão pendente para esta etapa; o teste da interface final em navegador permanece no checklist de lançamento.
