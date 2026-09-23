@@ -18,6 +18,9 @@ const statusOf = (id: string) => MODULES.find(m => m.id === id)!.status;
 // journey (PRD §4), each saying if it works yet, and the landing at the top (how to help). Each tread
 // is a tab; its panel shows in place. The builder words live in the Construir caderno (F29).
 const LAST = STEPS.length + 1;
+// From the conversation on, the AI goes along and never stops (D028): a rail under the staircase,
+// from the Conversa tread past the top.
+const RAIL_FROM = STEPS.findIndex(s => s.module === 'M4') + 1;
 const treads: { name: string; icon?: IconName }[] = [
   { name: 'Início' },
   ...STEPS.map(s => ({ name: s.shortName, icon: s.icon })),
@@ -46,7 +49,9 @@ const ways: { icon: IconName; title: string; status: ModuleStatus; lead: string;
       </button>
     ))}
     <span class="walker" aria-hidden="true"><span class="walker-label">alguém</span></span>
+    <span class="rail" aria-hidden="true" style={`--rail-from:${RAIL_FROM}`}><Icon name="voice-ai" /><span class="rail-label">a IA vai junto, sempre e de graça</span></span>
   </div>
+  <p class="sr-only">Da conversa em diante, a IA vai junto da pessoa em todos os passos e continua depois do trabalho, sem prazo e de graça.</p>
 
   <div class="panels">
     <!-- Ground: what it is, why trust it, what to do now and whether it works yet. -->

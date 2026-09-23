@@ -103,8 +103,8 @@ function stairsArt(): string {
     { fill: '#FFFFFF', icon: 'plate', color: INK },
     { fill: '#DCE2FF', icon: 'shirt', color: INK },
     { fill: '#FF6B3D', icon: 'soap', color: INK },
-    { fill: '#1F3FD1', icon: 'briefcase', color: '#FFFFFF' },
-    { fill: INK, icon: 'voice-ai', color: '#FF6B3D' },
+    { fill: '#1F3FD1', icon: 'voice-ai', color: '#FFFFFF' },
+    { fill: INK, icon: 'briefcase', color: '#FF6B3D' },
   ];
   const x0 = 740;
   const w = 76;

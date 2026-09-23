@@ -34,10 +34,12 @@ Nove degraus, cada um é uma aba que abre no mesmo lugar. Setas, Home e End anda
 | Degrau | Rótulo | O que abre |
 |---|---|---|
 | 0 | Início | Título, uma frase de apoio, a linha "Ainda em construção", os botões "Ver como funciona" e "Quero ajudar" |
-| 1 a 7 | Encontro, Conversa, Escolha, Comida e roupa, Trabalho, Apoio da IA, Tudo à vista | "Passo k de 7", título, texto, a linha "já funciona?" na cor do estado da peça, anterior e próximo, "Mais detalhes" |
+| 1 a 7 | Encontro, Conversa, Escolha, Comida e roupa, Apoio da IA, Trabalho, Tudo à vista | "Passo k de 7", título, texto, a linha "já funciona?" na cor do estado da peça, anterior e próximo, "Mais detalhes" |
 | 7 | Tudo à vista | Também os dois únicos números da home: ações no livro e R$ recebido, com "Abrir o livro" |
 | 8 | Sua vez | Doar, Ser voluntário e Oferecer vaga ("Ainda não abriu", e quando abre); Construir junto ("Já dá pra ajudar", leva pra `/construir`) |
 
+- **O apoio da IA vem antes do trabalho** (D028): primeiro a IA ajuda a pessoa a entender o que ela sabe fazer e o que ela quer; depois ela é apresentada pra vaga. Um teste falha se a ordem inverter.
+- **O trilho da IA:** uma linha vermelha por baixo dos nomes dos degraus, que nasce na Conversa, passa por todos e segue depois do "Sua vez" com uma seta, com a frase "a IA vai junto, sempre e de graça". É o desenho da D028: a IA acompanha a pessoa da conversa em diante e nunca para. O leitor de tela ouve a mesma coisa numa frase escondida logo depois da escada.
 - A linha "já funciona?" de cada passo começa com as palavras do estado da peça em `src/data/site/modules.ts`; um teste falha se não bater. Outro teste barra o jargão de quem constrói (peça, gargalo, M1…) no texto da escada.
 - **"Mais detalhes"** abre a ficha da peça: um diálogo pequeno no meio da tela, com o estado, o que é, como funciona, o que falta, quem pode ajudar, e peça anterior e próxima.
 - **Âncoras:** `#inicio`, `#como-funciona` (degrau 1), `#degrau-0` a `#degrau-8`, `#transparencia` (degrau 7), `#ajudar` (degrau 8), `#m1` a `#m9` (ficha da peça).

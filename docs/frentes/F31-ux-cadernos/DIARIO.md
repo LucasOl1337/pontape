@@ -211,3 +211,48 @@ Medido em 1920: logo, título da home, título do livro, título das tarefas e d
 **Decisão proposta:** o botão "Cores" ir pro canto de baixo à **direita** enquanto durar o teste. O texto do site é todo alinhado à esquerda, então o canto direito quase nunca tem conteúdo. O brief manda ele ficar à esquerda; por isso não mexi.
 
 Prints `prints/grade-antes-*` (main em `534096f`) e `prints/grade-depois-*`.
+
+PR #69 integrada. Botão "Cores" pro canto direito aprovado pelo Regente; vai numa PR própria depois da escada.
+
+## 23/09/2026 · PR 4: a ordem da escada e o trilho da IA (D028)
+
+Branch `prumo/f31-ordem-escada`, a partir da `main` em `0c24494`. Pedido do Regente, prioridade sobre a varredura. Fonte: [feedback do Lucas](../../fontes/2026-09-23-feedback-ordem-da-jornada.md), D028 e PRD §4.
+
+### Ordem nova
+
+Encontro, Conversa, Escolha, Comida e roupa, **Apoio da IA**, **Trabalho**, Tudo à vista.
+
+| Degrau | Texto novo | "Já funciona?" |
+|---|---|---|
+| 2 Conversa | Acrescenta "Daqui em diante, a IA vai junto." | igual |
+| 5 Apoio da IA | "A IA conversa com a pessoa pra entender o que ela sabe fazer e o que ela quer. Depois ajuda a se preparar pra buscar trabalho." Título vira "Apoio da IA" (era "Uma IA pra acompanhar") | Ainda não começou. Está no plano. |
+| 6 Trabalho | "Sabendo o que quer, a pessoa é apresentada pra quem oferece vaga, sem expor quem ela é. Depois disso, a IA segue junto, sem prazo e de graça." | Ainda não começou. Está no plano. |
+
+Saiu do Trabalho "A equipe acompanha os primeiros meses": continua na ficha da peça M6 ("Como opera"), e o degrau ficaria com três ideias. O "já funciona?" segue amarrado ao estado da peça pelo teste da F29. Teste novo: a IA (M7) vem depois da comida (M5) e antes do trabalho (M6).
+
+M7 em `modules.ts`: resumo "Uma IA simples, por voz, que acompanha a pessoa do começo ao fim, sem prazo e de graça." e "O que é" com a vocação antes do trabalho, sem jargão.
+
+Também invertidos, pela mesma lógica: a escada do 404 (IA antes de Trabalho) e os dois últimos degraus do cartão de compartilhar (`og.png`).
+
+### O trilho da IA
+
+**O desenho:** uma linha vermelha por baixo dos nomes dos degraus. Nasce embaixo da Conversa com o ícone da IA por voz, passa por baixo de todos os degraus e termina numa seta depois do "Sua vez": continua. Em cima da linha, "a IA vai junto, sempre e de graça", em itálico vermelho, igual ao "alguém" da bolinha. Linha cheia do começo ao fim, enquanto os degraus que faltam são pontilhados: a IA está em todos, a pessoa ainda não.
+
+**Por que embaixo e não um corrimão em diagonal:** um corrimão por cima dos degraus passaria pelo canto de cima à esquerda, onde fica o texto do degrau aberto, até o degrau 3. Ia cruzar os botões. Embaixo, a linha lê como uma linha do tempo, que é o que quem é leigo entende de primeira.
+
+- A altura do trilho (`--rail-h`) entra na conta dos degraus, da bolinha e do espaço do painel. Em 1920 os degraus perdem uns 5 px de altura cada.
+- No celular a escada cresce 1,6rem pra caber o trilho. Em 360×780 os botões do Início continuam acima da barra do "Cores", com 22 px de folga (eram 30).
+- O trilho é só desenho (`aria-hidden`); o leitor de tela ouve uma frase escondida logo depois da escada.
+- Sem rolagem lateral em 1920 e 360. Paleta Noite conferida.
+
+### Verificação
+
+`npm run check` passa (138 testes). Prints `prints/escada-antes-*` (main em `0c24494`) e `prints/escada-depois-*`, em 1920 e 360: Início, Conversa, degrau 5 e degrau 6; mais Noite e o 404.
+
+### Anotado
+
+- 960×600, degrau 8 ("Sua vez"): a rolagem dentro do painel foi de 91 pra 109 px com o trilho. O defeito já estava na lista (média) e é o próximo da varredura, junto com o degrau 7.
+
+### Onde parei
+
+PR aberta e report mandado. Próximo: o botão "Cores" pro canto direito (PR pequena), depois a varredura pelo 960×600.
