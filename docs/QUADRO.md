@@ -2,15 +2,17 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026 · **Site no ar em https://pontape.org** (D019) · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
+Atualizado: 23/09/2026, 08:30 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+
+**Pra começar o dia:** revisar e integrar #60 (fonte fictícia no exemplo do livro), #61 (rolagem lateral do livro no celular) e #62 (404 em 320px com A+); decidir se a vigília de polimento volta; retomar a F25 (assinatura e âncora; chave em `~/.config/pontape/`, âncora 43 carimbada e aguardando `ots upgrade`); issues #55 (beacon do Cloudflare barrado pela CSP) e #57 (rollback ainda fala de Pages). Agentes de sessão zerados em 23/09 de manhã: retomam pelos BRIEFs e DIARIOs. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F26 | [Vigília noturna de polimento](frentes/F26-vigilia-noturna/BRIEF.md) | bruto (Sol) + Vagalume, Candeia, Lampião (Luna) + Coruja (Devin) | `noite/*` | em andamento até 08:00 | Polir pontape.org; resumo em `F26-vigilia-noturna/RESUMO.md` |
+| F26 | [Vigília noturna de polimento](frentes/F26-vigilia-noturna/BRIEF.md) | encerrada | `bruto/f26-vigilia` (checkpoint em `docs/frentes/F26-vigilia-noturna/OPERACAO.md` nessa branch) | **pausada às 00:51** por mensagem ambígua; executores dispensados às 08:30 | PRs #60, #61 e #62 prontas pra revisão; issues #54 a #57 abertas |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Chave pública e âncora OpenTimestamps visíveis e conferíveis no site |
-| F24 | [Ensaio pós-lançamento](frentes/F24-pos-lancamento/BRIEF.md) | bruto | `bruto/f24-pos-lancamento` | despachada | Checklist inteiro contra https://pontape.org e revisão das issues #40 a #43 |
+| F24 | Ensaio pós-lançamento | integrado na [PR #58](https://github.com/LucasOl1337/pontape/pull/58) | | feito | Falhas viraram issues #54 a #57 |
 
 ## Fila
 
