@@ -1,6 +1,34 @@
 # Operação do livro estático
 
-Só o Regente publica o livro de produção. Estes comandos gravam arquivos locais; não fazem deploy, não abrem conta e não fazem contato com serviço de tempo. A primeira ancoragem real permanece com o Regente.
+PRs integradas e decisões novas entram no livro pela automação descrita abaixo. Dinheiro, ações de campo, candidato, correções e primeira ancoragem real continuam sob operação do Regente. Os comandos locais gravam arquivos; não fazem deploy, não abrem conta e não fazem contato com serviço de tempo.
+
+## Ações de projeto automáticas
+
+O workflow `.github/workflows/ledger-project.yml` concilia o projeto a cada push na `main`. Ele também pode ser executado manualmente pelo Actions, somente na `main` deste repositório. Usa apenas o `GITHUB_TOKEN` fornecido pelo GitHub, com `contents: write` e `pull-requests: read` restritos ao job. Não requer segredo novo.
+
+- PR integrada: lê número, `merge_commit_sha` e `merged_at` pela API paginada do GitHub. Aceita apenas PR com base `main` neste repositório e merge alcançável no checkout. Converte o instante de integração para o dia em `America/Sao_Paulo`. Título, corpo e autor não entram no livro.
+- Decisão: lê as linhas `| D### | DD/MM/AAAA |` do histórico de `docs/DECISOES.md`, usando a data declarada na tabela. `sourceCommit` aponta à primeira revisão da linha principal em que o ID existe. Quando a decisão vem por PR, é o commit que a trouxe à main. Ler revisões históricas permite recuperar decisões mesmo se a linha for removida depois.
+- Deduplicação: número da PR ou ID da decisão já registrado é sucesso sem alteração. Mudanças posteriores no mesmo ID não reescrevem o livro; eventual correção continua manual. Criação do repositório e as demais famílias não são geradas pela automação.
+- Recuperação: confere todo o histórico alcançável, não só o último push. Fatos ausentes são acrescentados em ordem topológica de commits; no mesmo commit, por chave de origem (decisões antes de PRs). Lacunas antigas entram no fim do livro, preservando todos os eventos publicados. `occurredOn` conserva o dia do fato e `recordedAt` é o instante atual de registro.
+
+Uma execução sem fatos novos não toca o arquivo nem o checkpoint. Com novos fatos, o comando valida o livro, monta e verifica o lote e usa o mesmo lock e troca atômica do append manual. O workflow roda `npm run check`, faz commit somente de `src/data/ledger/ledger.json` com a mensagem `Registra ações do projeto no livro [ledger-bot]` e dá push normal para main.
+
+Há um grupo fixo de concorrência, sem cancelar a execução ativa. Como o Actions pode substituir execuções pendentes, cada execução recupera também lacunas anteriores. Se outro push avançar a main, o push do bot é recusado: o runner descartável volta à main atualizada e recalcula o lote, em até quatro tentativas. Não usa force nem rebase do JSON encadeado. Se falhar, confira o log e execute novamente o workflow; a idempotência evita repetir fatos já gravados. [Concorrência no Actions, acesso em 22/09/2026](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency).
+
+O push com `GITHUB_TOKEN` não dispara novos workflows de push, portanto não há laço. Também não dispara o CI normal: por isso a verificação completa ocorre antes do push, dentro do próprio job. Não trocar esse token por PAT. Não há `pull_request_target` nem execução de código de fork com escrita. A atualização do arquivo no Git não faz deploy; publicar a versão nova do site continua separado. [Gatilhos e GITHUB_TOKEN, acesso em 22/09/2026](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow).
+
+Para diagnosticar localmente, use um checkout com histórico completo e `gh` autenticado com leitura do repositório:
+
+```sh
+npm run ledger:sync-project
+# Apenas se o Regente precisar aplicar manualmente a conciliação:
+npm run ledger:sync-project -- --apply
+npm run ledger:verify
+```
+
+O padrão é dry-run; `--apply` altera apenas o arquivo local. O comando nunca cria commit, faz push, troca branch ou descarta alterações locais. A fonte é o HEAD do checkout: para reproduzir a automação, use uma branch atualizada a partir da main. Clone raso é recusado. Falha de API, tabela inválida ou livro inválido interrompe a operação sem aplicar parte do lote. Não execute a aplicação em paralelo com edições que não respeitem o lock.
+
+Se uma proteção futura impedir push direto pelo bot ou exigir verificações externas no commit, este fluxo precisará passar por uma PR de atualização do livro, revisada e integrada pelo Regente. Não habilitar bypass, PAT ou mudança de proteção automaticamente. A proteção não foi configurada nesta entrega.
 
 ## Acrescentar um fato
 
