@@ -707,3 +707,16 @@ button.step:active{ transform:translate(2px,2px); box-shadow:2px 2px 0 var(--col
 .chain-art--waiting li:not(.art-link){ border-style:dashed; box-shadow:none; background:var(--color-white); color:var(--color-ink-2) }
 .chain-empty .btn{ margin-top:6px }
 .scoreboard-note > .icon{ width:20px; height:20px }
+
+/* 404: a escada com o degrau que falta */
+.lost{ margin-top:24px }
+.lost h1{ font-size:clamp(2.5rem, 1.5rem + 4.4vw, 4.75rem); line-height:.95; max-width:12ch }
+.lost .lead{ max-width:36ch }
+.lost-grid{ display:grid; gap:32px; align-items:center }
+.lost-stairs{ --height:260px }
+.lost-stairs figcaption{ margin-top:14px; font-size:var(--text-small); color:var(--color-ink-2) }
+.step--missing{ --fill:transparent; --fill-text:var(--color-ink-2); border-style:dashed; box-shadow:none }
+.step-missing-mark{ font:800 1.75rem/1 var(--font-poster); font-stretch:80%; width:28px; text-align:center; color:var(--color-sun) }
+.lost-stairs .stairs li:nth-child(3) .step{ --fill:transparent }
+.lost-stairs .stairs li{ animation:rise .6s var(--ease) both; animation-delay:calc(var(--n) * 90ms) }
+@media (min-width:960px){ .lost-grid{ grid-template-columns:1.1fr .9fr; gap:48px } .lost-stairs{ --height:320px } }

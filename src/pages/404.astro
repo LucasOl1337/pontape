@@ -1,8 +1,40 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/site/Icon.astro';
+import { PROJECT_NAME } from '../data/site/project';
+
+// A staircase with the missing step: the page someone looked for.
+const steps = [
+  { icon: 'plate', label: 'Comida' },
+  { icon: 'shirt', label: 'Roupa' },
+  { icon: null, label: 'Esta página' },
+  { icon: 'briefcase', label: 'Trabalho' },
+  { icon: 'voice-ai', label: 'IA' },
+] as const;
 ---
-<BaseLayout title="Página não encontrada" description="Esta página não existe ou mudou de endereço.">
-  <h1>Página não encontrada</h1>
-  <p>O endereço pode estar errado ou a página pode ter mudado.</p>
-  <p><a href="/">Voltar ao início</a></p>
+<BaseLayout title={`Página não encontrada · ${PROJECT_NAME}`} description="Esta página não existe ou mudou de endereço." noindex>
+  <section class="block lost" aria-labelledby="t-lost">
+    <div class="block-head"><p class="tag"><b>404</b>Endereço sem página</p></div>
+    <div class="lost-grid">
+      <div>
+        <h1 id="t-lost">Página não <span class="highlight">encontrada.</span></h1>
+        <p class="lead">O endereço pode estar errado ou a página pode ter mudado.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="/">Voltar ao início <Icon name="arrow-right" /></a>
+          <a class="btn" href="/transparencia">Abrir o livro público</a>
+          <a class="btn" href="/#contribuicoes">Ver as contribuições</a>
+        </div>
+      </div>
+      <figure class="stairs-box lost-stairs">
+        <ol class="stairs" aria-hidden="true">
+          {steps.map((s, i) => (
+            <li style={`--n:${i + 1}`}>
+              <span class:list={['step', { 'step--missing': !s.icon }]}>{s.icon ? <Icon name={s.icon} /> : <span class="step-missing-mark">?</span>}{s.label}</span>
+            </li>
+          ))}
+        </ol>
+        <figcaption>Esse degrau não existe. Os outros continuam aqui.</figcaption>
+      </figure>
+    </div>
+  </section>
 </BaseLayout>
