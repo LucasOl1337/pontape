@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LivroTopo from '../../components/cronica/LivroTopo.astro';
+import LivroMais from '../../components/cronica/LivroMais.astro';
+import { getExampleLedger, getPublicLedger } from '../../lib/ledger-view/source';
+import { PROJECT_NAME } from '../../data/site/project';
+
+// The technical layer (F32, D029): the whole book as it was on /transparencia, behind "Parte técnica".
+const ledger = await getPublicLedger();
+const example = await getExampleLedger();
+---
+<BaseLayout
+  title={`Parte técnica do livro · ${PROJECT_NAME}`}
+  description={`As marcas SHA-256, a lista completa com filtros, os arquivos pra baixar e o conferidor aberto do livro público do ${PROJECT_NAME}.`}
+  share="transparencia"
+  current="transparencia">
+  <LivroTopo ledger={ledger} example={example} />
+  <LivroMais ledger={ledger} example={example} />
+</BaseLayout>
+<script>import '../../scripts/ledger';</script>

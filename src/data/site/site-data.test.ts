@@ -1,10 +1,13 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { MODULES } from './modules';
 import { NOW_LEAD, STEPS } from './journey';
 import { BOTTLENECKS } from './bottlenecks';
 import { CONTRIBUTIONS } from './contributions';
-import { DECISION_TITLES, parseDecisionTitles } from './decisions';
+import { DECISIONS, DECISION_TITLES, PLAIN_FALLBACK, decisionPlain, parseDecisions, parseDecisionTitles } from './decisions';
+import { LIVRO, PLAIN } from './livro';
+import { TECHNICAL_WORDS, recentLines } from '../../lib/ledger-view/plain';
+import { getPublicLedger } from '../../lib/ledger-view/source';
 import { CADERNOS, CONSTRUIR, MOVED } from './cadernos';
 import { ICON_NAMES } from '../../components/site/icon-names';
 
@@ -79,5 +82,46 @@ describe('título das decisões (D013)', () => {
 
   it('ignora linhas que não são decisão', () => {
     expect(parseDecisionTitles('| ID | Data | Decisão |\n|---|---|---|\n| D042 | 1 | **Algo** [x](y) |')).toEqual({ D042: 'Algo x' });
+  });
+});
+
+describe('decisões em palavras simples (F32)', () => {
+  // Fails to warn whoever records a decision; the site itself falls back and the build goes on.
+  it('toda decisão do DECISOES.md tem a frase da coluna "Em palavras simples"', () => {
+    const missing = Object.entries(DECISIONS).filter(([, d]) => !d.plain).map(([id]) => id);
+    expect(missing, `sem frase simples: ${missing.join(', ')}`).toEqual([]);
+  });
+
+  it('a frase simples não tem palavra técnica nem travessão', () => {
+    for (const [id, d] of Object.entries(DECISIONS)) {
+      expect(d.plain ?? '', id).not.toMatch(TECHNICAL_WORDS);
+      expect(d.plain ?? '', id).not.toContain('—');
+    }
+  });
+
+  it('lê a sexta coluna e, sem ela, cai na frase genérica', () => {
+    const table = '| ID | Data | Decisão | Por quê | Quem | Em palavras simples |\n|---|---|---|---|---|---|\n| D042 | 1 | **Algo** | x | y | O projeto faz algo |\n| D043 | 1 | Outro | x | y | |';
+    expect(parseDecisions(table)).toEqual({ D042: { title: 'Algo', plain: 'O projeto faz algo' }, D043: { title: 'Outro' } });
+    expect(decisionPlain('D999')).toBe(PLAIN_FALLBACK);
+  });
+});
+
+describe('primeira camada da transparência (F32)', () => {
+  it('fala palavra de gente: sem GitHub, PR, hash, marca, nem travessão', () => {
+    const text = JSON.stringify(PLAIN);
+    expect(text).not.toMatch(TECHNICAL_WORDS);
+    expect(text).not.toContain('—');
+  });
+
+  it('as últimas ações do livro de verdade também', async () => {
+    const lines = recentLines((await getPublicLedger()).events, decisionPlain, 50);
+    expect(lines.length).toBeGreaterThan(0);
+    for (const line of lines) expect(`${line.lead ?? ''} ${line.text}`).not.toMatch(TECHNICAL_WORDS);
+  });
+
+  it('a parte técnica existe e recebe os endereços antigos da página única', () => {
+    expect(existsSync(`src/pages${LIVRO.tecnico}.astro`)).toBe(true);
+    const technical = ['LivroTopo', 'LivroMais'].map(c => readFileSync(`src/components/cronica/${c}.astro`, 'utf8')).join('\n');
+    for (const hash of LIVRO.movedHashes) expect(technical, `#${hash}`).toMatch(new RegExp(`id(=|: )["']${hash}["']`));
   });
 });

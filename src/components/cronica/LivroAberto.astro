@@ -1,0 +1,106 @@
+---
+import Icon from '../site/Icon.astro';
+import Corrente from './Corrente.astro';
+import LedgerData from '../ledger/LedgerData.astro';
+import VerifyPanel from '../ledger/VerifyPanel.astro';
+import snapshotData from '../../data/transparency.json';
+import { transparencySnapshotSchema } from '../../lib/transparency';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { recentLines } from '../../lib/ledger-view/plain';
+import { decisionPlain } from '../../data/site/decisions';
+import { LIVRO, PLAIN } from '../../data/site/livro';
+
+// The first layer of /transparencia (F32, D029): what the ledger is, what goes in, why it can be
+// trusted, what already happened and the Conferir button, in plain words. Marks, sources and the
+// full list live on the technical page.
+interface Props { ledger: LedgerView }
+const { ledger } = Astro.props;
+const events = ledger.events;
+const snapshot = transparencySnapshotSchema.parse(snapshotData);
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: snapshot.currency });
+const last = events.at(-1);
+const zone = { timeZone: 'America/Sao_Paulo' } as const;
+const recorded = last && new Date(last.recordedAt);
+const lastText = recorded && `A última entrou em ${recorded.toLocaleDateString('pt-BR', { ...zone, day: '2-digit', month: '2-digit' })}, às ${recorded.toLocaleTimeString('pt-BR', { ...zone, hour: '2-digit', minute: '2-digit' })}.`;
+const note = [lastText ?? PLAIN.empty, snapshot.receivedCents === 0 && !snapshot.donationsEnabled ? PLAIN.zero : ''].filter(Boolean).join(' ');
+const numbers = [
+  { label: events.length === 1 ? 'ação anotada' : 'ações anotadas', value: String(events.length) },
+  { label: 'entrou', value: brl.format(snapshot.receivedCents / 100) },
+  { label: 'saiu', value: brl.format(snapshot.spentCents / 100) },
+];
+const kinds = PLAIN.kinds.map(k => ({ ...k, started: events.some(e => (k.types as readonly string[]).includes(e.payload.type)) }));
+const lines = recentLines(events, decisionPlain);
+const shortDay = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
+---
+<article class="plain" aria-labelledby="page-title">
+  <div class="plain-top">
+    <p class="kicker">Transparência</p>
+    <a class="btn plain-tech" href={LIVRO.tecnico}><Icon name="code" />Parte técnica</a>
+  </div>
+
+  <header class="plain-head">
+    <h1 id="page-title" class="plain-title">Tudo que o projeto faz, <em>à vista.</em></h1>
+    <p class="plain-lead">{PLAIN.lead}</p>
+  </header>
+
+  <div class="plain-side">
+    <div class="plain-numbers">
+      <dl class="plain-count">
+        {numbers.map(n => <div><dt>{n.label}</dt><dd>{n.value}</dd></div>)}
+      </dl>
+      <p class="plain-note">{note}</p>
+    </div>
+    <section class="conferir" id="conferir" aria-labelledby="t-verify">
+      <h2 id="t-verify" class="conferir-title">Confira você mesmo.</h2>
+      <VerifyPanel data="ledger-real" where={PLAIN.verify} plain>
+        <a href="#confiar">Como funciona</a>
+      </VerifyPanel>
+      <LedgerData id="ledger-real" ledger={ledger} />
+    </section>
+  </div>
+
+  <section class="plain-kinds" aria-labelledby="t-kinds">
+    <h2 id="t-kinds" class="plain-h2">O que entra no livro</h2>
+    <ul class="kinds">
+      {kinds.map(k => (
+        <li class="kind">
+          <Icon name={k.icon} />
+          <h3 class="kind-title">{k.title}</h3>
+          <p class="kind-text">{k.text}</p>
+          <p class:list={['kind-state', { 'is-live': k.started && k.live }]}>
+            {k.started && k.live ? <span class="live-dot" aria-hidden="true"></span> : <Icon name="clock" />}
+            {k.started ? k.running : k.waiting}
+          </p>
+        </li>
+      ))}
+    </ul>
+    <p class="plain-rule"><Icon name="shield" /><span>{PLAIN.rule}</span></p>
+  </section>
+
+  <section class="plain-trust" id="confiar" aria-labelledby="t-trust">
+    <h2 id="t-trust" class="plain-h2">Por que dá pra confiar</h2>
+    <div class="trust-body">
+      <div class="trust-text">
+        {PLAIN.trust.map(p => <p>{p}</p>)}
+        <p>{PLAIN.correction}</p>
+        <p class="trust-soon"><Icon name="clock" /><span>{PLAIN.soon}</span></p>
+      </div>
+      <Corrente />
+    </div>
+  </section>
+
+  <section class="plain-recent" aria-labelledby="t-recent">
+    <h2 id="t-recent" class="plain-h2">O que já aconteceu</h2>
+    {lines.length
+      ? <ol class="recent">
+          {lines.map(l => <li><time datetime={l.day}>{shortDay(l.day)}</time><p>{l.lead && <strong>{l.lead}</strong>} {l.text}</p></li>)}
+        </ol>
+      : <p class="plain-note">{PLAIN.empty}</p>}
+    <a class="more-link" href={`${LIVRO.tecnico}#acoes`}>Ver todas, na parte técnica<Icon name="arrow-right" /></a>
+  </section>
+
+  <footer class="plain-end">
+    <p>{PLAIN.end}</p>
+    <a class="btn btn--ink" href={LIVRO.tecnico}><Icon name="code" />Parte técnica</a>
+  </footer>
+</article>

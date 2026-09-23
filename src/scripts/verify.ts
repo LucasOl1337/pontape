@@ -21,18 +21,26 @@ const BROKEN: Record<VerificationCode, (n: string) => Pick<Shown, 'title' | 'tex
   crypto_unavailable: () => ({ title: 'Não deu pra conferir aqui.', text: 'Este navegador não faz a conta SHA-256. Use o verificador aberto.' }),
 };
 
-function describe(r: LedgerVerification, count: number): Shown {
+// The plain panel (first layer of /transparencia, F32) says the same without marks or "SHA-256".
+const PLAIN_BROKEN: Partial<typeof BROKEN> = {
+  checkpoint: () => ({ title: 'O livro não bate com o lacre do fim.', text: 'O livro não confere com o lacre publicado junto com ele.' }),
+  crypto_unavailable: () => ({ title: 'Não deu pra conferir aqui.', text: 'Este navegador não faz essa conta. Tente em outro, ou confira no computador pela parte técnica.' }),
+};
+
+function describe(r: LedgerVerification, count: number, plain: boolean): Shown {
   if (r.valid) {
     if (!count) return { state: 'idle', icon: 'shield', title: 'Nada pra conferir ainda.', text: 'O livro ainda não tem nenhuma ação.' };
-    return {
-      state: 'ok', icon: 'check-circle', title: 'Tudo certo.', text: 'Nada foi apagado nem mudado desde o começo.',
-      detail: `${plural(r.eventCount, 'ação conferida', 'ações conferidas')}, da nº 1 até a nº ${r.eventCount}, e combinam com a marca de controle publicada junto. Marca mais recente: ${shortHash(r.headHash)}.`,
-    };
+    return plain
+      ? { state: 'ok', icon: 'check-circle', title: 'Tudo certo.', text: 'Nenhuma ação foi apagada nem mudada desde o começo.', detail: `${plural(r.eventCount, 'ação conferida', 'ações conferidas')}, uma por uma, no seu aparelho.` }
+      : {
+        state: 'ok', icon: 'check-circle', title: 'Tudo certo.', text: 'Nada foi apagado nem mudado desde o começo.',
+        detail: `${plural(r.eventCount, 'ação conferida', 'ações conferidas')}, da nº 1 até a nº ${r.eventCount}, e combinam com a marca de controle publicada junto. Marca mais recente: ${shortHash(r.headHash)}.`,
+      };
   }
   const at = r.sequence ?? '';
   const good = Number(at) - 1;
   const before = good > 1 ? `As ${good} ações antes dela estão certas.` : good === 1 ? 'A ação antes dela está certa.' : undefined;
-  return { state: 'broken', icon: 'x-circle', ...BROKEN[r.code](at), detail: before };
+  return { state: 'broken', icon: 'x-circle', ...((plain && PLAIN_BROKEN[r.code]) || BROKEN[r.code])(at), detail: before };
 }
 
 export const readLedger = (id: string): LedgerView => JSON.parse(document.getElementById(id)?.textContent ?? '{"events":[]}');
@@ -44,7 +52,8 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
   const bar = panel.querySelector<HTMLElement>('.verify-progress')!;
   const out = panel.querySelector<HTMLElement>('.verify-result')!;
   // Read on every use: a page can point the panel at another list (real or example).
-  const listEl = () => document.getElementById(panel.dataset.list ?? '');
+  const listEl = () => (panel.dataset.list ? document.getElementById(panel.dataset.list) : null);
+  const plain = panel.hasAttribute('data-plain');
   const entry = (seq: string) => listEl()?.querySelector<HTMLElement>(`.chain-entry[data-seq="${seq}"]`);
   const entries = () => [...(listEl()?.querySelectorAll<HTMLElement>('.chain-entry') ?? [])];
   const show = (s: Shown) => {
@@ -78,7 +87,7 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
       entries().filter(li => Number(li.dataset.seq) > brokenAt).forEach(li => li.classList.add('is-unchecked'));
       broken?.scrollIntoView({ block: 'center', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
     }
-    show(describe(result, events.length));
+    show(describe(result, events.length, plain));
     btn.disabled = false;
     // Lets a page react to the result, e.g. turn to the page of the book where the chain broke.
     panel.dispatchEvent(new CustomEvent('verified', { bubbles: true, detail: { sequence: result.valid ? null : result.sequence ?? null } }));

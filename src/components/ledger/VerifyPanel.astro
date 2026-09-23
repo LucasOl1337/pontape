@@ -2,11 +2,12 @@
 import Icon from '../site/Icon.astro';
 
 // `data` is the id of the <script type="application/json"> holding the events to check;
-// `list` is the id of the <ol> whose entries get marked as the check walks the chain.
-interface Props { data: string; list: string; where?: string }
-const { data, list, where = 'Refaz as contas de todas as ações no seu aparelho. Nada é enviado pra gente.' } = Astro.props;
+// `list` is the id of the <ol> whose entries get marked as the check walks the chain, if the page has one.
+// `plain` keeps the result in plain words, without marks (first layer of /transparencia, F32).
+interface Props { data: string; list?: string; where?: string; plain?: boolean }
+const { data, list, where = 'Refaz as contas de todas as ações no seu aparelho. Nada é enviado pra gente.', plain = false } = Astro.props;
 ---
-<div class="verify" data-verify-panel data-source={data} data-list={list}>
+<div class="verify" data-verify-panel data-source={data} data-list={list} data-plain={plain ? '' : undefined}>
   <div class="verify-head">
     <button class="btn btn--primary" type="button" data-verify><Icon name="shield" />Conferir</button>
     <p class="verify-where">{where} <slot /></p>

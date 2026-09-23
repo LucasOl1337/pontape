@@ -3,18 +3,21 @@ import Icon from './Icon.astro';
 import LogoMark from './LogoMark.astro';
 import { PROJECT_NAME } from '../../data/site/project';
 import { CONSTRUIR } from '../../data/site/cadernos';
+import { LIVRO } from '../../data/site/livro';
 
 interface Props { current?: 'home' | 'transparencia' | 'construir' | 'not-found' }
 const { current = 'home' } = Astro.props;
 const onHome = current === 'home';
-// Inside a caderno the door stays marked: the page itself on /construir, its section below it.
-const inConstruir = current === 'construir' ? (Astro.url.pathname.replace(/\/$/, '') === CONSTRUIR.href ? 'page' as const : 'true' as const) : undefined;
+// Inside a section the door stays marked: the page itself at its address, the section below it
+// (the cadernos under /construir, the technical page under /transparencia).
+const path = Astro.url.pathname.replace(/\/$/, '');
+const marked = (section: typeof current, href: string) => (current === section ? (path === href ? 'page' as const : 'true' as const) : undefined);
 // Four doors in plain words (F29). The builder words sit behind "Construir junto".
 const links = [
   { href: onHome ? '#como-funciona' : '/#como-funciona', label: 'Como funciona' },
-  { href: '/transparencia', label: 'Transparência', current: current === 'transparencia' ? 'page' as const : undefined },
+  { href: LIVRO.href, label: 'Transparência', current: marked('transparencia', LIVRO.href) },
   { href: onHome ? '#ajudar' : '/#ajudar', label: 'Como ajudar' },
-  { href: CONSTRUIR.href, label: CONSTRUIR.name, current: inConstruir },
+  { href: CONSTRUIR.href, label: CONSTRUIR.name, current: marked('construir', CONSTRUIR.href) },
 ];
 ---
 <header class="site-header">

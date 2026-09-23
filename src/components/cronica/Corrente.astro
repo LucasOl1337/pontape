@@ -1,0 +1,37 @@
+---
+import { PLAIN } from '../../data/site/livro';
+
+// Why the ledger can be trusted, drawn for someone who never heard of a hash (F32): four actions,
+// each with its seal and linked to the one before; then the same chain with the second one
+// scribbled over, and every seal from there on broken.
+const SHEETS = [0, 1, 2, 3];
+const x = (i: number) => 2 + i * 92;
+const rows = [
+  { id: 'whole', label: PLAIN.chain.whole, brokenFrom: Infinity },
+  { id: 'broken', label: PLAIN.chain.broken, brokenFrom: 1 },
+];
+---
+<div class="corrente">
+  {rows.map(row => (
+    <figure class:list={['corrente-row', { 'is-broken': row.id === 'broken' }]}>
+      <svg class="corrente-art" viewBox="0 0 360 58" aria-hidden="true" focusable="false">
+        {SHEETS.map(i => {
+          const bad = i >= row.brokenFrom;
+          return (
+            <g>
+              {i > 0 && (i > row.brokenFrom
+                ? <g class="c-link is-bad"><rect x={x(i) - 30} y="25" width="15" height="9" rx="4.5" /><rect x={x(i) - 13} y="25" width="15" height="9" rx="4.5" /></g>
+                : <g class="c-link"><rect x={x(i) - 29} y="25" width="16" height="9" rx="4.5" /><rect x={x(i) - 18} y="25" width="16" height="9" rx="4.5" /></g>)}
+              <rect class="c-sheet" x={x(i)} y="5" width="64" height="48" rx="2" />
+              <path class="c-lines" d={`M${x(i) + 10} 17h36M${x(i) + 10} 26h40M${x(i) + 10} 35h28`} />
+              {i === row.brokenFrom && <path class="c-scribble" d={`M${x(i) + 7} 30l7-12 7 14 7-14 7 14 7-14 7 12`} />}
+              <circle class:list={['c-seal', bad ? 'is-bad' : 'is-ok']} cx={x(i) + 53} cy="43" r="9.5" />
+              <path class="c-mark" d={bad ? `M${x(i) + 49.5} 39.5l7 7m0-7l-7 7` : `M${x(i) + 48.5} 43.2l3 3 5.5-6`} />
+            </g>
+          );
+        })}
+      </svg>
+      <figcaption class="corrente-label">{row.label}</figcaption>
+    </figure>
+  ))}
+</div>
