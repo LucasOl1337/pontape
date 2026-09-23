@@ -1,6 +1,15 @@
 ---
 import Icon from '../site/Icon.astro';
 import BlockHead from '../site/BlockHead.astro';
+import { ledgerTrust } from '../../lib/ledger/published';
+import { REPOSITORY_OPEN } from '../../data/site/project';
+
+// F08 trust state (src/data/ledger/trust.json): say plainly what is not active yet.
+const TRUST = [
+  { label: 'Assinatura das marcas', value: ledgerTrust.signature === 'not_configured' ? 'ainda não configurada' : 'ativa' },
+  { label: 'Carimbo de tempo público', value: ledgerTrust.timestamp === 'not_anchored' ? 'ainda não feito' : 'feito' },
+  { label: 'Cópia fora do projeto', value: ledgerTrust.mirror === 'not_configured' ? 'ainda não ativa' : 'ativa' },
+];
 ---
 <section class="block reveal" id="como-conferir" aria-labelledby="t-how-verify"
   data-speech="Como qualquer pessoa confere. Um: cada ação vira um texto, sempre no mesmo formato. Dois: esse texto passa por uma conta pública chamada SHA-256, que devolve uma marca. Mudou uma vírgula, a marca muda inteira. Três: cada ação guarda a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela. O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e a auditoria de fora.">
@@ -16,5 +25,12 @@ import BlockHead from '../site/BlockHead.astro';
     <h3>O que o livro não prova</h3>
     <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Assinar as marcas e carimbar a data num serviço público estão em estudo.</p>
   </div>
-  <p class="soon-note" style="margin-top:20px"><span class="badge badge--planned"><Icon name="clock" />Ainda não abriu</span><span>O verificador aberto e o passo a passo pra conferir sozinho entram junto com o livro oficial.</span></p>
+  <div class="link-row">
+    <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro inteiro</a>
+    <a class="btn" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="shield" />Baixar a marca de controle</a>
+  </div>
+  <p class="verify-cli">Guarde a marca de controle num lugar seu. Numa próxima visita, ela mostra se alguém refez o livro. No computador, o verificador aberto confere tudo sem internet: <code>npm run ledger:verify</code>, com o passo a passo em <code>docs/transparencia/COMO-CONFERIR.md</code>.{!REPOSITORY_OPEN && ' O repositório ainda está fechado.'}</p>
+  <dl class="trust-list">
+    {TRUST.map(t => <div><dt>{t.label}</dt><dd><Icon name="clock" />{t.value}</dd></div>)}
+  </dl>
 </section>

@@ -13,28 +13,36 @@ const PAGES = ['index.html', 'transparencia/index.html'];
 const gz = buffer => gzipSync(buffer, { level: 9 }).length;
 const kb = bytes => `${(bytes / 1024).toFixed(1)} KB`;
 
+// Static imports load with the page; dynamic ones (import("./x.js")) load on demand, e.g. the
+// ledger verifier on the first Conferir. Both must fit: the page alone and the page after a click.
 function assetsOf(html) {
   const found = new Set(html.match(/\/_astro\/[^"')\s]+\.(?:css|js)/g) ?? []);
+  const lazy = new Set();
   const queue = [...found].filter(p => p.endsWith('.js'));
   while (queue.length) {
     const js = readFileSync(join(DIST, queue.pop()), 'utf8');
-    for (const [, name] of js.matchAll(/(?:from|import)\s*"\.\/([^"]+\.js)"/g)) {
+    for (const [, name] of js.matchAll(/(?:from|import)\s*["'`]\.\/([^"'`]+\.js)["'`]/g)) {
       const path = `/_astro/${name}`;
       if (!found.has(path)) { found.add(path); queue.push(path); }
     }
+    for (const [, name] of js.matchAll(/import\(\s*["'`]\.\/([^"'`]+\.js)["'`]\s*\)/g)) lazy.add(`/_astro/${name}`);
   }
-  return [...found];
+  return { eager: [...found], lazy: [...lazy].filter(p => !found.has(p)) };
 }
 
 let failed = false;
 for (const page of PAGES) {
   const html = readFileSync(join(DIST, page), 'utf8');
-  const rows = [[page, gz(html)], ...assetsOf(html).map(p => [p, gz(readFileSync(join(DIST, p)))])];
+  const { eager, lazy } = assetsOf(html);
+  const rows = [[page, gz(html)], ...eager.map(p => [p, gz(readFileSync(join(DIST, p)))])];
+  const lazyRows = lazy.map(p => [p, gz(readFileSync(join(DIST, p)))]);
   const total = rows.reduce((sum, [, size]) => sum + size, 0);
-  const ok = total <= PAGE_LIMIT;
+  const withLazy = total + lazyRows.reduce((sum, [, size]) => sum + size, 0);
+  const ok = withLazy <= PAGE_LIMIT;
   failed ||= !ok;
-  console.log(`${ok ? 'ok ' : 'NÃO'} ${page}: ${kb(total)} de ${kb(PAGE_LIMIT)}`);
+  console.log(`${ok ? 'ok ' : 'NÃO'} ${page}: ${kb(total)} ao abrir, ${kb(withLazy)} com o que carrega sob demanda, de ${kb(PAGE_LIMIT)}`);
   for (const [name, size] of rows) console.log(`      ${kb(size).padStart(8)}  ${name}`);
+  for (const [name, size] of lazyRows) console.log(`      ${kb(size).padStart(8)}  ${name} (sob demanda)`);
 }
 
 const fonts = readdirSync(join(DIST, 'fonts')).filter(f => f.endsWith('.woff2'));

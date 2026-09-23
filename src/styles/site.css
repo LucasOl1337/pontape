@@ -707,3 +707,11 @@ button.step:active{ transform:translate(2px,2px); box-shadow:2px 2px 0 var(--col
 .chain-art--waiting li:not(.art-link){ border-style:dashed; box-shadow:none; background:var(--color-white); color:var(--color-ink-2) }
 .chain-empty .btn{ margin-top:6px }
 .scoreboard-note > .icon{ width:20px; height:20px }
+.verify-cli{ margin-top:16px; max-width:62ch; font-size:var(--text-small); color:var(--color-ink-2) }
+.verify-cli code{ font:600 .875rem var(--font-mono); color:var(--color-ink); overflow-wrap:anywhere }
+.trust-list{ display:grid; gap:8px; margin-top:16px }
+.trust-list div{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; padding:10px 14px; border:2px dashed var(--color-planned); border-radius:12px; background:var(--color-white) }
+.trust-list dt{ font-weight:700 }
+.trust-list dd{ margin:0; display:inline-flex; align-items:center; gap:6px; color:var(--color-ink-2) }
+.trust-list .icon{ width:18px; height:18px }
+@media (min-width:760px){ .trust-list{ grid-template-columns:repeat(3,1fr) } }

@@ -1,9 +1,9 @@
 ---
-import type { LedgerEvent } from '../../lib/ledger/schema';
+import type { LedgerView } from '../../lib/ledger-view/source';
 
-// Hands the published events to the browser as inert JSON (allowed by the CSP), so Conferir
-// checks exactly what the page shows.
-interface Props { id: string; events: LedgerEvent[] }
-const { id, events } = Astro.props;
+// Hands the published events and checkpoint to the browser as inert JSON (allowed by the CSP),
+// so Conferir checks exactly what the page shows.
+interface Props { id: string; ledger: LedgerView }
+const { id, ledger } = Astro.props;
 ---
-<script type="application/json" id={id} set:html={JSON.stringify(events).replaceAll('<', '\\u003c')} />
+<script type="application/json" id={id} set:html={JSON.stringify(ledger).replaceAll('<', '\\u003c')} />

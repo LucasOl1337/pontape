@@ -3,10 +3,10 @@ import Icon from '../site/Icon.astro';
 import ListenButton from '../site/ListenButton.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
-import type { PublicLedger } from '../../lib/ledger-view/source';
+import type { LedgerView } from '../../lib/ledger-view/source';
 import { TYPES } from '../../lib/ledger-view/phrases';
 
-interface Props { ledger: PublicLedger }
+interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
 const snapshot = transparencySnapshotSchema.parse(snapshotData);
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: snapshot.currency });

@@ -3,10 +3,10 @@ import Icon from '../site/Icon.astro';
 import ListenButton from '../site/ListenButton.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
-import type { PublicLedger } from '../../lib/ledger-view/source';
+import type { LedgerView } from '../../lib/ledger-view/source';
 import { PROJECT_NAME, formatDay } from '../../data/site/project';
 
-interface Props { ledger: PublicLedger }
+interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
 // F02 snapshot: validated at build, so the money shown here can only be the honest zero.
 const snapshot = transparencySnapshotSchema.parse(snapshotData);
@@ -54,7 +54,7 @@ const speech = `Aqui é o ${PROJECT_NAME}. O primeiro passo pra quem quer mudar 
       <div class="scoreboard-item"><span class="scoreboard-label">Pessoas atendidas</span><span class="scoreboard-value">0</span></div>
       <div class="scoreboard-item"><span class="scoreboard-label">Ações no livro</span><span class="scoreboard-value">{ledger.events.length}</span></div>
       <p class="scoreboard-note">
-        <span>{snapshot.status}. Dados de <time datetime={snapshot.asOf}>{formatDay(snapshot.asOf)}</time>.{ledger.status === 'pending' && ' O livro público entra junto com o verificador aberto.'}</span>
+        <span>{snapshot.status}. Dados de <time datetime={snapshot.asOf}>{formatDay(snapshot.asOf)}</time>.{ledger.events.length > 0 && ` O livro público já tem ${ledger.events.length} ações do projeto.`}</span>
         <a href="/transparencia">Abrir o livro</a>
       </p>
     </div>

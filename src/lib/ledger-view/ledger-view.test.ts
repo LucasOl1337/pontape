@@ -1,16 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import fixture from '../../data/ledger/example.fixture.json';
-import { GENESIS_HASH as CONTRACT_GENESIS, ledgerPayloadSchema, type LedgerEvent, type LedgerPayload } from '../ledger/schema';
+import { ledgerPayloadSchema, type LedgerEvent, type LedgerPayload } from '../ledger/schema';
+import { appendEvent, verifyLedger } from '../ledger/index';
 import { phrase } from './phrases';
 import { correctionsOf, formatCents, sumField, sumMoney } from './money';
-import { GENESIS_HASH, canonical, chainPayloads, verifyLedger } from './verifier';
 import { getExampleLedger, getPublicLedger } from './source';
 
 const common = { occurredOn: '2000-01-01', correctionOf: null };
 const finance = (amountCents: string, category: string, extra: object = {}) =>
   ledgerPayloadSchema.parse({ ...common, type: 'finance', action: 'movement_recorded', currency: 'BRL', amountCents, category, evidence: 'pending', ...extra });
-const chain = (payloads: LedgerPayload[]) =>
-  chainPayloads(payloads.map((payload, i) => ({ recordedAt: new Date(Date.UTC(2000, 0, 1, 12, i)).toISOString(), payload })));
+async function chain(payloads: LedgerPayload[]): Promise<LedgerEvent[]> {
+  let events: LedgerEvent[] = [];
+  for (const payload of payloads) events = await appendEvent(events, payload, '2000-01-01T12:00:00.000Z');
+  return events;
+}
 
 describe('frase de cada ação', () => {
   // Every action of the v1 contract, so a new action without a sentence fails here.
@@ -66,40 +69,26 @@ describe('dinheiro', () => {
   });
 });
 
-describe('verificador provisório (D014: troca pelo da F08)', () => {
-  it('usa o mesmo começo de corrente do contrato', () => {
-    expect(GENESIS_HASH).toBe(CONTRACT_GENESIS);
+describe('livro da F08 no site (D014)', () => {
+  it('o livro real vem publicado e conferido, sem movimento de dinheiro', async () => {
+    const { events, checkpoint } = await getPublicLedger();
+    expect(events.length).toBeGreaterThanOrEqual(28);
+    expect(await verifyLedger(events, checkpoint)).toMatchObject({ valid: true, eventCount: events.length });
+    expect(events.every(e => e.payload.type === 'project')).toBe(true);
   });
 
-  it('JCS ordena chaves e não deixa espaço', () => {
-    expect(canonical({ b: '1', a: { d: null, c: 1 } })).toBe('{"a":{"c":1,"d":null},"b":"1"}');
+  it('o exemplo é a fixture fictícia da F08, nada a mais, e confere', async () => {
+    const { events, checkpoint } = await getExampleLedger();
+    expect(events.map(e => e.payload)).toEqual(fixture.payloads);
+    expect(await verifyLedger(events, checkpoint)).toMatchObject({ valid: true, eventCount: 20 });
+    expect(sumMoney(events)).toMatchObject({ inCents: 210000n, balanceCents: 141000n });
   });
 
-  it('passa no exemplo e acusa linha mudada, linha apagada e corrente trocada', async () => {
-    const events = await getExampleLedger();
-    expect(await verifyLedger(events)).toEqual({ ok: true, checked: events.length });
-
+  it('o verificador da F08 pega a linha mudada que o modo exemplo simula', async () => {
+    const { events } = await getExampleLedger();
     const changed: LedgerEvent[] = structuredClone(events);
     const money = changed.find(e => e.payload.type === 'finance')!;
-    if (money.payload.type === 'finance') money.payload.amountCents = '999999';
-    expect(await verifyLedger(changed)).toMatchObject({ ok: false, at: money.sequence, reason: 'changed' });
-
-    expect(await verifyLedger([events[0]!, ...events.slice(2)])).toMatchObject({ ok: false, reason: 'missing', expected: '2' });
-
-    const relinked: LedgerEvent[] = structuredClone(events);
-    relinked[2]!.previousHash = GENESIS_HASH;
-    expect(await verifyLedger(relinked)).toMatchObject({ ok: false, at: '3', reason: 'link' });
-  });
-});
-
-describe('fontes do livro', () => {
-  it('o livro real só vem da F08: até lá fica pendente e vazio', () => {
-    expect(getPublicLedger()).toEqual({ status: 'pending', events: [] });
-  });
-
-  it('o exemplo é a fixture fictícia da F08, nada a mais', async () => {
-    const events = await getExampleLedger();
-    expect(events.map(e => e.payload)).toEqual(fixture.payloads);
-    expect(await getExampleLedger()).toEqual(events);
+    if (money.payload.type === 'finance') money.payload.amountCents = String(BigInt(money.payload.amountCents) * 10n);
+    expect(await verifyLedger(changed)).toMatchObject({ valid: false, code: 'hash', sequence: money.sequence });
   });
 });

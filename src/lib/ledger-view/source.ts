@@ -1,25 +1,21 @@
-import { ledgerPayloadSchema, ledgerSchema, type LedgerEvent } from '../ledger/schema';
 import fixture from '../../data/ledger/example.fixture.json';
-import { chainPayloads } from './verifier';
+import { publishedLedger } from '../ledger/published';
+import { appendEvent, createCheckpoint } from '../ledger/verify';
+import type { LedgerCheckpoint, LedgerEvent } from '../ledger/schema';
 
-// The one seam between the site and the ledger data (D014).
-export interface PublicLedger {
-  // 'pending' until F08 publishes the seeded ledger; the page then shows the honest empty state.
-  status: 'published' | 'pending';
+// The one seam between the site and the ledger data. Both sources come from F08 (D014).
+export interface LedgerView {
   events: LedgerEvent[];
+  checkpoint: LedgerCheckpoint;
 }
 
-// TODO(F08): import the seeded ledger from src/lib/ledger/ when its core PR lands. Nothing else changes.
-export function getPublicLedger(): PublicLedger {
-  return { status: 'pending', events: ledgerSchema.parse([]) };
-}
+// Real ledger, checked by F08 at build: the build stops if it does not verify.
+export const getPublicLedger = (): Promise<LedgerView> => publishedLedger();
 
-// Fictional F08 fixture, only for the "Ver um exemplo" mode. Registration times are fixed so the
-// hashes are the same on every build.
-export async function getExampleLedger(): Promise<LedgerEvent[]> {
-  const items = fixture.payloads.map((payload, i) => ({
-    recordedAt: new Date(Date.UTC(2000, 0, 1, 12, i)).toISOString(),
-    payload: ledgerPayloadSchema.parse(payload),
-  }));
-  return ledgerSchema.parse(await chainPayloads(items));
+// Fictional F08 fixture, chained with F08's own appendEvent. Only for "Ver um exemplo".
+const EXAMPLE_RECORDED_AT = '2000-01-01T12:00:00.000Z';
+export async function getExampleLedger(): Promise<LedgerView> {
+  let events: LedgerEvent[] = [];
+  for (const payload of fixture.payloads) events = await appendEvent(events, payload, EXAMPLE_RECORDED_AT);
+  return { events, checkpoint: createCheckpoint(events, EXAMPLE_RECORDED_AT) };
 }
