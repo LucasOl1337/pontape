@@ -3,7 +3,7 @@ import Icon from '../site/Icon.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
 import type { LedgerView } from '../../lib/ledger-view/source';
-import { NOW_LEAD, STEPS } from '../../data/site/journey';
+import { NOW_LEAD, OPENING, STEPS } from '../../data/site/journey';
 import { MODULES } from '../../data/site/modules';
 import { STATUSES, type ModuleStatus } from '../../data/site/statuses';
 import type { IconName } from '../site/icon-names';
@@ -18,9 +18,8 @@ const statusOf = (id: string) => MODULES.find(m => m.id === id)!.status;
 // journey (PRD §4), each saying if it works yet, and the landing at the top (how to help). Each tread
 // is a tab; its panel shows in place. The builder words live in the Construir caderno (F29).
 const LAST = STEPS.length + 1;
-// From the conversation on, the AI goes along and never stops (D028): a handrail on the staircase,
-// from the Conversa tread past the top (F34).
-const RAIL_FROM = STEPS.findIndex(s => s.module === 'M4') + 1;
+// The AI goes along and never stops (D028), from the step marked aiFrom, the system (D032), past the top.
+const RAIL_FROM = STEPS.findIndex(s => s.aiFrom) + 1;
 const treads: { name: string; icon?: IconName }[] = [
   { name: 'Início' },
   ...STEPS.map(s => ({ name: s.shortName, icon: s.icon })),
@@ -51,12 +50,12 @@ const ways: { icon: IconName; title: string; status: ModuleStatus; lead: string;
     <span class="walker" aria-hidden="true"><span class="walker-label">alguém</span></span>
     <span class="rail" aria-hidden="true"><Icon name="voice-ai" /><span class="rail-label">a IA vai junto, sempre e de graça</span></span>
   </div>
-  <p class="sr-only">Da conversa em diante, a IA vai junto da pessoa em todos os passos e continua depois do trabalho, sem prazo e de graça.</p>
+  <p class="sr-only">Desde o passo {RAIL_FROM}, {treads[RAIL_FROM]!.name}, a IA vai junto da pessoa em todos os passos e continua depois do trabalho, sem prazo e de graça.</p>
 
   <div class="panels">
     <!-- Ground: what it is, why trust it, what to do now and whether it works yet. -->
     <div class="panel is-active" id="degrau-0" role="tabpanel" aria-labelledby="degrau-tab-0" tabindex="0" data-panel="0">
-      <p class="panel-text">A gente dá comida, roupa e higiene nos primeiros dias. E ajuda a achar trabalho. Tudo o que a gente faz fica à vista de qualquer pessoa.</p>
+      <p class="panel-text">{OPENING}</p>
       <p class="now now--building"><Icon name={STATUSES.building.icon} /><span><strong>Ainda em construção.</strong> Por enquanto, ninguém é atendido e nenhuma doação é recebida.</span></p>
       <div class="panel-nav">
         <button class="btn btn--ink" type="button" data-go="1">Ver como funciona<Icon name="arrow-right" /></button>

@@ -101,9 +101,9 @@ const COLUMN = 600;
 
 function stairsArt(): string {
   const steps = [
-    { fill: ANIL.paper2, icon: 'plate', color: INK },
-    { fill: ANIL.paper3, icon: 'shirt', color: INK },
-    { fill: ANIL.accentLight, icon: 'soap', color: INK },
+    { fill: ANIL.paper2, icon: 'scale', color: INK },
+    { fill: ANIL.paper3, icon: 'pin', color: INK },
+    { fill: ANIL.accentLight, icon: 'plate', color: INK },
     { fill: ANIL.accent, icon: 'voice-ai', color: ANIL.paper },
     { fill: INK, icon: 'briefcase', color: ANIL.accentLight },
   ];

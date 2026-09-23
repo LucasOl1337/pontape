@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { MODULES } from './modules';
-import { NOW_LEAD, STEPS } from './journey';
+import { NOW_LEAD, OPENING, STEPS } from './journey';
 import { BOTTLENECKS } from './bottlenecks';
 import { CONTRIBUTIONS } from './contributions';
 import { DECISIONS, DECISION_TITLES, PLAIN_FALLBACK, decisionPlain, parseDecisions, parseDecisionTitles } from './decisions';
@@ -27,6 +27,14 @@ describe('dados do site', () => {
     expect(at('M7')).toBeLessThan(at('M6'));
   });
 
+  it('a escada começa pelo sistema de escolha, e a IA vai junto desde ali (D032)', () => {
+    expect(STEPS.filter(s => s.aiFrom)).toEqual([STEPS[0]]);
+    expect(STEPS[0]!.module).toBe('M3');
+    const at = (module: string) => STEPS.findIndex(s => s.module === module);
+    expect(at('M5'), 'a comida vem depois da conversa').toBeGreaterThan(at('M4'));
+    expect(OPENING.indexOf('IA'), 'a home abre pela IA, não pela comida').toBeLessThan(OPENING.indexOf('comida'));
+  });
+
   it('o "já funciona?" de cada passo bate com o estado da peça', () => {
     for (const step of STEPS) {
       const status = MODULES.find(m => m.id === step.module)!.status;
@@ -36,7 +44,7 @@ describe('dados do site', () => {
   });
 
   it('a jornada fala palavra de gente, sem o jargão de quem constrói (F29)', () => {
-    const text = STEPS.map(s => [s.shortName, s.title, s.text, s.now].join(' ')).join(' ');
+    const text = [OPENING, ...STEPS.map(s => [s.shortName, s.title, s.text, s.now].join(' '))].join(' ');
     expect(text).not.toMatch(/\b(m[oó]dulos?|pe[çc]as?|gargalos?|edi[çc][ãa]o|classificados|expediente|issues?|reposit[oó]rio|hash|cnpj|M[1-9])\b/i);
   });
 
@@ -48,7 +56,7 @@ describe('dados do site', () => {
   });
 
   it('texto público não tem travessão', () => {
-    const text = JSON.stringify([MODULES, STEPS, BOTTLENECKS, CADERNOS]);
+    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS]);
     expect(text).not.toContain('—');
   });
 

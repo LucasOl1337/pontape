@@ -35,7 +35,7 @@ export const PLAIN = {
       text: 'Cada real que entra e cada real que sai, até o custo de manter o projeto de pé.',
       waiting: 'Começa quando a doação abrir.', running: 'Já está entrando.' },
     { id: 'atividades', types: ['field', 'candidate'], icon: 'package', title: 'As atividades',
-      text: 'Cada entrega de comida, roupa e higiene, e cada conversa com quem quer mudar de vida.',
+      text: 'Cada conversa com quem quer mudar de vida, e cada entrega de comida, roupa e higiene.',
       waiting: 'Começa quando o atendimento abrir.', running: 'Já está entrando.' },
     { id: 'decisoes', types: ['project'], icon: 'flag', title: 'As decisões',
       text: 'Cada decisão tomada e cada mudança feita no projeto.',
