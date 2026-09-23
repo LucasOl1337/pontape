@@ -2,6 +2,8 @@
 
 Dono: `bruto` (ExecutorBruto) · Worktree: `.worktrees/bruto` · Branch: `bruto/f06-oportunidades` a partir da `main` atualizada
 
+**Em espera desde 22/09/2026 (D009):** a plataforma e a transparência vêm primeiro. Não comece sem o Regente reabrir.
+
 ## Por que agora
 
 O PRD promete trilha até o emprego (Coração da ideia, itens 2 e 6). Entre "foi selecionado" e "recebeu o primeiro salário" existem buracos que ninguém mapeou ainda: documento, endereço, conta pra receber, transporte até o trabalho, e quem contrata. A F03 fechou a parte do dinheiro que entra; esta fecha a parte da vida que sai do outro lado.

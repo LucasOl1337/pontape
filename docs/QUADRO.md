@@ -2,44 +2,46 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 22/09/2026
+Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F01 | [Direção visual e mapa do site](frentes/F01-design-direcao/BRIEF.md) | design | `design/f01-direcao` | despachada | Protótipo da home + direção visual |
-| F02 | [Arquitetura e base do código](frentes/F02-engenharia-base/BRIEF.md) | fino | `fino/f02-codigo` | etapa 2 liberada | Esqueleto Astro + CI, escopo em BRIEF |
-| F06 | [Pesquisa: do selecionado ao primeiro salário](frentes/F06-pesquisa-oportunidades/BRIEF.md) | bruto | `bruto/f06-oportunidades` | despachada | Relatório em `docs/pesquisa/` |
+| F02 | [Base do código (etapa 2)](frentes/F02-engenharia-base/BRIEF.md) | fino | `fino/f02-codigo` | liberada | Esqueleto Astro + CI |
+| F07 | [Site v1 em código](frentes/F07-site-v1/BRIEF.md) | design | `design/f07-prep` | etapa 0 despachada | Protótipo com `/transparencia` e contribuições abertas; código quando a base entrar |
+| F13 | [Contribuições abertas](frentes/F13-contribuicoes-abertas/BRIEF.md) | bruto | `bruto/f13-contribuicoes` | despachada | Labels, modelos, issues e JSON pro site |
 
 ## Fila
 
 | ID | Frente | Depende de |
 |---|---|---|
-| F05 | Captação e seleção: quem é o candidato certo, roteiro da entrevista, voluntários, panfleto, pontos públicos | pronta pra despachar (F04 feita) |
-| F07 | Site v1 em código, a partir do protótipo da F01 sobre a base da F02 | F01, F02 |
-| F08 | Livro-caixa público e painel de transparência ao vivo | F02, F03, decisão 4 do Lucas |
-| F09 | Piloto da entrevista por voz | F02, F04, F05 |
-| F10 | Governança open source: licença, contribuição, código de conduta, templates | F03, decisão 7 do Lucas |
+| F08 | [Livro público de ações](frentes/F08-livro-publico/BRIEF.md) (fino) | F02 etapa 2 |
+| F10 | Governança open source: licença, código de conduta | decisão 7 do Lucas |
+| F05 | Captação e seleção: candidato certo, roteiro, voluntários, panfleto | depois da plataforma (D009) |
+| F06 | [Do selecionado ao primeiro salário](frentes/F06-pesquisa-oportunidades/BRIEF.md) | em espera (D009) |
+| F09 | Piloto da entrevista por voz | F05, depois da plataforma (D009) |
 
 ## Pra o Lucas decidir
 
 Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
-1. Nome e domínio. F03 recomenda **Virarumo**, **Viraelo** ou **Passarumo**, domínios livres em 22/09 ([NOMES.md](pesquisa/NOMES.md))
+1. **Nome e domínio.** Em conversa. Domínio grátis da Hostinger cobre `.com`
 2. Trecho perdido do áudio sobre dinheiro e "igreja"
 3. Trecho perdido antes da parte do design
 4. Doação antes de existir CNPJ. F03 recomenda **só captar depois de associação, CNPJ e conta própria**; Asaas como primeiro teste ([ESTRUTURA-JURIDICA.md](pesquisa/ESTRUTURA-JURIDICA.md), [DOACOES-E-TRANSPARENCIA.md](pesquisa/DOACOES-E-TRANSPARENCIA.md))
 5. Cidade do piloto
 6. Quem decide a seleção do candidato
-7. Licença open source. F03 recomenda **Apache-2.0**; AGPL-3.0 se a prioridade for obrigar quem copia a abrir o código
+7. Licença open source. F03 e F02 recomendam **Apache-2.0**; AGPL-3.0 se a prioridade for obrigar quem copia a abrir o código
 8. Quando abrir o repositório
 9. Responsável legal pelos dados dos candidatos (LGPD)
+10. Apelido por pessoa ("pessoa #014") no livro público, só com consentimento?
 
 ## Feito
 
 | ID | Frente | Resultado |
 |---|---|---|
+| F01 | Direção visual e protótipo | [PR #5](https://github.com/LucasOl1337/VidaNova/pull/5) integrada. [DIRECAO](design/DIRECAO.md), [MAPA-DO-SITE](design/MAPA-DO-SITE.md), protótipo em `design/prototipo/`; propostas em D011 |
 | F02 etapa 1 | Arquitetura | [PR #4](https://github.com/LucasOl1337/VidaNova/pull/4) integrada. [ARQUITETURA.md](arquitetura/ARQUITETURA.md); stack em D006 e D007 |
 | F04 | Pesquisa: voz e dispositivo | [PR #3](https://github.com/LucasOl1337/VidaNova/pull/3) integrada (substituiu a #1 após falha do provedor do Devin). Direção em D008 |
-| F03 | Pesquisa: dinheiro, jurídico e nome | [PR #2](https://github.com/LucasOl1337/VidaNova/pull/2) integrada. Três relatórios em `docs/pesquisa/`; recomendações em "Pra o Lucas decidir" |
+| F03 | Pesquisa: dinheiro, jurídico e nome | [PR #2](https://github.com/LucasOl1337/VidaNova/pull/2) integrada. Três relatórios em `docs/pesquisa/` |
