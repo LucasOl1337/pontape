@@ -68,6 +68,23 @@ PR: https://github.com/LucasOl1337/VidaNova/pull/32, com CI verde. A main trouxe
 
 Onde parei: PR da etapa 1 aberta. Próximo: quando o núcleo da F08 entrar, trocar `getPublicLedger()` e o verificador pelos dela, e tirar os prints com o livro real (onde aparecem os títulos D013).
 
+## F16 · Polimento pro lançamento · 22/09/2026
+
+Branch `design/f16-polimento`, a partir da `main` com a #32.
+
+Feito:
+
+- **Ícone:** `favicon.svg`, `favicon.ico` (16, 32, 48) e `apple-touch-icon.png` (180), gerados no build (`src/pages/*.ts`) a partir de `src/lib/share/logo.ts`. A marca do topo (`LogoMark.astro`) passou a ler o mesmo arquivo.
+- **Prévia de compartilhamento:** `og.png` (home) e `og-transparencia.png` (livro), 1200×630, desenhadas em SVG e rasterizadas com `@resvg/resvg-js` (dependência de desenvolvimento, sem serviço externo). O gerador usa cópias TTF das fontes do site em `src/assets/og/`, que não vão pro site. O texto é medido pelo próprio renderizador, o nome encolhe se for longo e o título cabe em até quatro linhas. O texto do card mora em `src/data/site/share.ts`.
+- **Meta tags** em toda página: `og:*`, `twitter:card`, `description`, `theme-color`, ícones e `canonical` quando houver domínio. O `astro.config.mjs` lê `SITE_URL` no build; sem ela, as URLs ficam relativas.
+- **404** com o layout, a faixa "Em construção", o texto do ExecutorBruto, três caminhos de volta e a escada com o degrau que falta. Ganhou `noindex`.
+- **Simulação do WhatsApp** em `design/compartilhamento/` (`gerar.mjs` lê o `dist/` e monta a conversa). Prints em `design/site-v1/prints/`.
+- Testes: tamanho da imagem, nome longo encolhendo, título dentro da coluna, ICO bem formado. `npm run check` verde; orçamento com home em 29,5 KB e livro em 21,9 KB.
+
+Dúvida: no dia do lançamento, alguém precisa definir `SITE_URL` no build do Pages, senão WhatsApp e X não acham a imagem (eles exigem URL absoluta). Vale entrar no `docs/operacao/LANCAMENTO.md`.
+
+Onde parei: abrindo a PR da F16. Depois, quando a #30 entrar, PR pequena trocando `source.ts` e `verifier.ts` pelo núcleo da F08.
+
 ## Livro real · 22/09/2026 · troca pelo núcleo da F08
 
 Branch `design/f07-livro-real`, a partir da `main` com a #30. A PR da F16 (#33) já estava aberta quando chegou o pedido de fazer a troca primeiro. As duas mexem em `index.astro`, `transparencia.astro` e `site.css`: a que entrar por último precisa de merge da `main`.
