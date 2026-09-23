@@ -89,3 +89,27 @@ Medido com o degrau 5 aberto, paleta Anil:
 Nenhum degrau passa a rolar por dentro (medido em 1280×720, 1366×657, 1440×900, 1750×850 e 1920×1080, todos os degraus); em 1180×700 o "Sua vez" fica com 8 px, que somem com a PR do corrimão, quando sai a faixa de baixo. Primeira tela do celular: os botões do Início terminam em 700 de 780 (360) e 673 de 844 (390). Carvão conferida. `npm run check` passa.
 
 Prints `prints/numeros-antes-*` (`main` depois da F33) e `prints/numeros-depois-*`.
+
+PRs #81 e #82 integradas.
+
+## 23/09/2026 · PR 3: o corrimão da IA
+
+Branch `prumo/f34-corrimao`. Desenho aprovado pelo Regente a partir do protótipo do diagnóstico.
+
+**O que era:** o trilho ficava numa faixa própria, de 19 a 36 px abaixo dos nomes dos degraus, e lia como legenda solta.
+
+**O que ficou:** o trilho é o corrimão da escada. Uma linha na cor de destaque corre colada logo acima do topo de cada degrau, a partir da Conversa (onde a IA entra na jornada), sobe junto com a escada e termina numa seta depois do último degrau: continua. A frase "a IA vai junto, sempre e de graça", com o ícone da IA por voz, fica no alto à direita, em cima do último degrau, onde não tem mais nada. A bolinha de "alguém" anda em cima do corrimão. É cheio do começo ao fim, enquanto os degraus que faltam são pontilhados: a IA já está em todos, a pessoa ainda não.
+
+- Cada degrau desenha o seu pedaço (`.tread.on-rail .tread-block::after`): o degrau de cima e o espelho à esquerda, deslocados `--rail-d` pra cima e pra esquerda. Não precisa de SVG nem de script.
+- Some a faixa de baixo (`--rail-h`). No computador a escada ganha essa altura; no celular a escada ficou 0,5rem mais baixa no total, com mais espaço em cima do último degrau pra frase.
+- No computador o texto do degrau aberto termina acima do corrimão nos degraus 2 e 3 (a margem de baixo inclui `--rail-d`).
+
+Conferido na bancada, com os degraus 0, 3 e 8 abertos, em 1920, 1750, 1440, 1280, 1180, 1024, 960, 390, 360 e 320:
+
+- a frase não encosta no título (13 px no celular; no computador ficam em lados opostos), nem no ícone do "Sua vez", nem na bolinha;
+- o corrimão não encosta no texto nem nos botões do degrau aberto;
+- sem rolagem lateral (a seta fica dentro da escada).
+
+E nenhum degrau rola por dentro em 1180×700, 1280×720, 1366×657, 1440×900, 1750×950 e 1920×1080: o "Sua vez" em 1180×700, que tinha 8 px depois da PR dos números, zerou. No celular os botões do Início terminam em 692 de 780 (360) e 665 de 844 (390).
+
+A F33 deixou uma paleta só (Anil no `:root`, sem seletor nem `?cor=`), então não há mais Carvão pra conferir. `npm run check` passa. Prints `prints/corrimao-antes-*` (`main` depois da #82) e `prints/corrimao-depois-*`.
