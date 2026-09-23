@@ -536,7 +536,11 @@ main:focus{ outline:none }
   .book{ grid-template-columns:minmax(0, 5fr) minmax(0, 7fr); gap:3.5rem; min-height:calc(100svh - var(--header-h) - var(--strip-h)); align-items:start }
 }
 @media (max-width:599px){
-  .pager .btn{ padding:.5rem .6rem; font-size:.875rem; white-space:nowrap }
+  .pager{ display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)) }
+  .pager-where{ grid-column:1 / -1; grid-row:1 }
+  .pager > .btn:first-of-type{ grid-column:1; grid-row:2 }
+  .pager > .btn:last-of-type{ grid-column:2; grid-row:2 }
+  .pager .btn{ justify-content:center; min-width:0; padding:.5rem .6rem; font-size:.875rem; text-align:center; white-space:normal }
   .pager-where{ font-size:1rem; text-align:center }
   .book-numbers dd{ font-size:1.7rem }
 }
