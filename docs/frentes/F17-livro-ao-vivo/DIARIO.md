@@ -20,3 +20,10 @@
 - Dry-run real em HEAD 560a050: nenhum fato pendente. SHA-256 do arquivo antes/depois idêntico: `65330f16b670075aea9de991e7ccb7fde578b0c3d88b9bcec54294e637fa4762`. O livro publicado não foi alterado nesta implementação.
 - Operação documentada: projeto automático, demais famílias e correções manuais; autenticação, recuperação e futura proteção de branch sem configurar bypass. Atualizar Git não publica o site nem ancora checkpoint.
 - Próximo marco: entregar PR de implementação ao Regente, acompanhar integração e validar uma PR posterior entrando sozinha no livro. Esse critério ao vivo permanece pendente até os merges.
+
+## 22/09/2026 · Integração e prova ao vivo
+
+- A implementação foi integrada pelo Regente na [PR #35](https://github.com/LucasOl1337/VidaNova/pull/35), merge `71f68e2`, após CI verde com 125 testes.
+- O merge iniciou a [primeira execução automática do livro](https://github.com/LucasOl1337/VidaNova/actions/runs/35806131656). Esta atualização de diário constitui a PR de teste posterior solicitada pelo BRIEF: seu merge deve gerar um único `project/pull_request_merged` sem append manual.
+- Roteiro de aceitação: após integrar esta atualização, conferir o job, buscar a main, validar o documento com `ledger:verify` e contar exatamente um evento com o número desta PR. Executar novamente a conciliação em dry-run e confirmar zero fatos pendentes e bytes preservados. Dinheiro, campo e candidato devem continuar ausentes do lote automático.
+- Resultado final será registrado após a execução, com links e hashes; não declarar o teste ao vivo concluído antes disso.
