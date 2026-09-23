@@ -29,12 +29,13 @@ O orçamento comprimido depois da remoção ficou em 24,5 KB na home e 34,9 KB n
 - `npm run check`: passou, com 127 testes. Astro mostrou só um hint preexistente em `design/prototipo/ledger.js`.
 - Na bancada `pontape-f27-fino` (workspace 11, Chromium e CDP próprios), conferi home, `/transparencia` e 404 em viewports CSS de 1440 e 360 px. Sem controle órfão nem transbordamento horizontal.
 - Em 360 px, cliquei no menu: abriu e fechou com Escape, devolvendo o foco ao botão. Nos dois tamanhos, ArrowRight selecionou o próximo degrau e moveu o foco.
-- Capturas da home em 1440 e 360 px: `/tmp/f27-prints/home-1440.png` e `/tmp/f27-prints/home-360.png`; também há capturas do livro e da 404 na mesma pasta.
+- Capturas da home em 1440 e 360 px anexadas na [PR #63](https://github.com/LucasOl1337/pontape/pull/63). Também há capturas do livro e da 404 em `/tmp/f27-prints/`.
+- CI da PR: lint, tipos, testes e build passaram.
 
 ## Decisões propostas
 
 Nenhuma.
 
-## Próximo passo
+## Estado final
 
-Abrir a PR para `main`, anexar as duas capturas da home e avisar o Regente. A F29 pode partir da `main` após o merge.
+[PR #63](https://github.com/LucasOl1337/pontape/pull/63) aberta para `main`, com as duas capturas. Aguardando revisão e merge do Regente. A F29 pode partir da `main` após o merge.
