@@ -1,6 +1,6 @@
 // Home page islands: journey tabs, module filters and dialog, compare, contributions, ledger teaser.
 import { stopSpeech } from './site';
-import { mountVerify, readEvents } from './verify';
+import { mountVerify, readLedger } from './verify';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll<T>(s)];
@@ -137,4 +137,7 @@ moreBtn?.addEventListener('click', () => {
 /* ---------- Ledger teaser (block 05) ---------- */
 
 const teaserPanel = $('#transparencia [data-verify-panel]');
-if (teaserPanel) mountVerify(teaserPanel, () => readEvents(teaserPanel.dataset.source!));
+if (teaserPanel) {
+  const ledger = readLedger(teaserPanel.dataset.source!);
+  mountVerify(teaserPanel, () => ledger);
+}

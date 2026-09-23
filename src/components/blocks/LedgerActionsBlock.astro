@@ -4,17 +4,17 @@ import BlockHead from '../site/BlockHead.astro';
 import ChainEntry from '../ledger/ChainEntry.astro';
 import LedgerData from '../ledger/LedgerData.astro';
 import type { LedgerEvent } from '../../lib/ledger/schema';
-import type { PublicLedger } from '../../lib/ledger-view/source';
+import type { LedgerView } from '../../lib/ledger-view/source';
 import { TYPES, TYPE_ORDER, type LedgerType } from '../../lib/ledger-view/phrases';
 import { correctionsOf } from '../../lib/ledger-view/money';
 
-interface Props { ledger: PublicLedger; example: LedgerEvent[] }
+interface Props { ledger: LedgerView; example: LedgerView }
 const { ledger, example } = Astro.props;
 const lists = [
-  { mode: 'real', events: ledger.events },
-  { mode: 'example', events: example },
+  { mode: 'real', view: ledger },
+  { mode: 'example', view: example },
 ] as const;
-const count = (events: readonly LedgerEvent[], type: LedgerType) => events.filter(e => e.payload.type === type).length;
+const count = (events: LedgerEvent[], type: LedgerType) => events.filter(e => e.payload.type === type).length;
 const EMPTY: Record<LedgerType, [string, string]> = {
   finance: ['Nenhum real entrou nem saiu ainda.', 'A doação abre quando existir a conta oficial do projeto. Quando abrir, cada real aparece aqui. Aqui nunca vai ter número inventado.'],
   field: ['Nenhuma entrega na rua ainda.', 'Isso começa com o piloto. Cada comida, kit ou roupa entregue vira uma linha, sem dizer quem recebeu nem onde.'],
@@ -31,7 +31,7 @@ const EMPTY: Record<LedgerType, [string, string]> = {
       <button type="button" data-mode="real" aria-pressed="true">Livro de verdade</button>
       <button type="button" data-mode="example" aria-pressed="false">Ver um exemplo</button>
     </div>
-    {lists.map(({ mode, events }) => (
+    {lists.map(({ mode, view: { events } }) => (
       <div class="filters" role="group" aria-label="Filtrar por tipo de ação" data-type-filters={mode} hidden={mode !== 'real'}>
         <button class="filter" type="button" data-type-filter="all" aria-pressed="true">Todas<span class="count">{events.length}</span></button>
         {TYPE_ORDER.map(t => <button class="filter" type="button" data-type-filter={t} aria-pressed="false"><Icon name={TYPES[t].icon} />{TYPES[t].label}<span class="count">{count(events, t)}</span></button>)}
@@ -44,12 +44,13 @@ const EMPTY: Record<LedgerType, [string, string]> = {
     <button class="btn" type="button" data-tamper><Icon name="pen" />Mudar uma linha escondido</button>
     <button class="btn" type="button" data-untamper hidden><Icon name="undo" />Desfazer a mudança</button>
   </div>
-  {lists.map(({ mode, events }) => {
-    const corrected = correctionsOf([...events]);
+  {lists.map(({ mode, view }) => {
+    const events = view.events;
+    const corrected = correctionsOf(events);
     return (
       <div class:list={['ledger-list', { 'is-sample': mode === 'example' }]} data-ledger-list={mode} hidden={mode !== 'real'}>
         <ol class="chain" id={`ledger-chain-${mode}`}>
-          {[...events].reverse().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}
+          {events.toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}
         </ol>
         {!events.length && (
           <div class="chain-empty" data-empty-for="all">
@@ -63,7 +64,7 @@ const EMPTY: Record<LedgerType, [string, string]> = {
             <Icon name={TYPES[t].icon} /><p class="chain-empty-title">{EMPTY[t][0]}</p><p>{EMPTY[t][1]}</p>
           </div>
         ))}
-        <LedgerData id={`ledger-${mode}`} events={[...events]} />
+        <LedgerData id={`ledger-${mode}`} ledger={view} />
       </div>
     );
   })}

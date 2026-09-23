@@ -67,3 +67,15 @@ Dúvidas:
 PR: https://github.com/LucasOl1337/VidaNova/pull/32, com CI verde. A main trouxe a CSP gerada no build (F14b) no meio do caminho. Fiz merge: o gerador acrescenta os hashes dos blocos JSON do livro (não executam) e a CSP modelo continua sem Google. Aviso pro Regente: o `docs/operacao/LANCAMENTO.md` ainda diz que o Google Fonts segue permitido, e não segue mais.
 
 Onde parei: PR da etapa 1 aberta. Próximo: quando o núcleo da F08 entrar, trocar `getPublicLedger()` e o verificador pelos dela, e tirar os prints com o livro real (onde aparecem os títulos D013).
+
+## Livro real · 22/09/2026 · troca pelo núcleo da F08
+
+Branch `design/f07-livro-real`, a partir da `main` com a #30. A PR da F16 (#33) já estava aberta quando chegou o pedido de fazer a troca primeiro. As duas mexem em `index.astro`, `transparencia.astro` e `site.css`: a que entrar por último precisa de merge da `main`.
+
+- `source.ts`: o livro real vem de `publishedLedger()` (conferido no build pela F08) e o exemplo é a fixture nova de 20 ações, encadeada com o `appendEvent` da F08. O `verifier.ts` provisório saiu.
+- No navegador, o Conferir usa `verifyLedger` de `src/lib/ledger/index.ts` com a marca de controle publicada junto. As falhas da F08 (`hash`, `previous_hash`, `sequence`, `time`, `correction`, `duplicate_source`, `invalid_schema`, `checkpoint`) viraram uma frase cada.
+- O verificador (com zod) só carrega no primeiro clique. O `budget` agora mede também o que carrega sob demanda: home 33,0 KB ao abrir e 57,3 KB depois do Conferir; livro 30,0 e 54,3 KB. O pedaço da F08 tem 24,4 KB comprimido, quase todo zod. Importar só `verify.ts` não muda nada (0,1 KB).
+- "Como conferir" perdeu o "Ainda não abriu": agora tem o download do livro e da marca de controle, o comando `npm run ledger:verify` e o estado lido do `trust.json` (assinatura, carimbo e cópia ainda não ativos).
+- Na bancada: 28 ações reais com "Tudo certo" e as 28 linhas marcadas, 14 decisões com título (D013), exemplo com 20 ações conferindo e quebrando na nº 2 depois de "Mudar uma linha escondido". O Conferir da home também dá "Tudo certo".
+
+Sugestão pra F08: se o verificador do navegador usar `zod/mini`, o Conferir ganha folga no orçamento (hoje sobram 2,7 KB na home).

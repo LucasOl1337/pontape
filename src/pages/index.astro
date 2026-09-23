@@ -13,7 +13,7 @@ import OpenSourceBlock from '../components/blocks/OpenSourceBlock.astro';
 import { getPublicLedger } from '../lib/ledger-view/source';
 import { PROJECT_NAME } from '../data/site/project';
 
-const ledger = getPublicLedger();
+const ledger = await getPublicLedger();
 ---
 <BaseLayout
   title={`${PROJECT_NAME} · o primeiro passo pra quem quer mudar de vida`}

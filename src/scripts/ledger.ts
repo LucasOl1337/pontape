@@ -1,15 +1,15 @@
 // /transparencia islands: real or example ledger, type filters, the "edit a line in secret" demo, Conferir.
-import type { LedgerEvent } from '../lib/ledger/schema';
+import type { LedgerView } from '../lib/ledger-view/source';
 import { toast } from './site';
-import { mountVerify, readEvents } from './verify';
+import { mountVerify, readLedger } from './verify';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll<T>(s)];
 type Mode = 'real' | 'example';
 
-const events: Record<Mode, LedgerEvent[]> = { real: readEvents('ledger-real'), example: readEvents('ledger-example') };
+const ledgers: Record<Mode, LedgerView> = { real: readLedger('ledger-real'), example: readLedger('ledger-example') };
 const panel = $('#conferir [data-verify-panel]')!;
-const verify = mountVerify(panel, () => events[mode]);
+const verify = mountVerify(panel, () => ledgers[mode]);
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const params = new URLSearchParams(location.search);
 let mode: Mode = params.has('exemplo') ? 'example' : 'real';
@@ -52,7 +52,7 @@ const showAmount = (seq: string, cents: string) => {
   if (el) el.textContent = `${value > 0n ? '+' : '−'} ${brl.format(Math.abs(Number(value)) / 100)}`;
 };
 tamperBtn?.addEventListener('click', () => {
-  const target = events.example.find(e => e.payload.type === 'finance');
+  const target = ledgers.example.events.find(e => e.payload.type === 'finance');
   if (!target || target.payload.type !== 'finance') return;
   tampered = { seq: target.sequence, amount: target.payload.amountCents };
   target.payload.amountCents = String(BigInt(target.payload.amountCents) * 10n);
@@ -63,7 +63,7 @@ tamperBtn?.addEventListener('click', () => {
   toast(`Mudamos o valor da ação nº ${target.sequence} sem refazer a marca dela. Agora aperte Conferir.`);
 });
 untamperBtn?.addEventListener('click', () => {
-  const target = events.example.find(e => e.sequence === tampered?.seq);
+  const target = ledgers.example.events.find(e => e.sequence === tampered?.seq);
   if (!target || target.payload.type !== 'finance' || !tampered) return;
   target.payload.amountCents = tampered.amount;
   showAmount(target.sequence, tampered.amount);
