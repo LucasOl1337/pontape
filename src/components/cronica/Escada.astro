@@ -38,7 +38,7 @@ const ways = [
 <section class="stage" id="inicio" aria-labelledby="stage-title" data-escada data-at="0" style={`--n:${treads.length}`}>
   <h1 id="stage-title" class="stage-title">{PROJECT_NAME}: o pontapé inicial pra quem quer <em>mudar de vida.</em></h1>
 
-  <div class="stair" role="tablist" aria-label="Os degraus do projeto. Use as setas pra subir e descer." data-stair>
+  <div class="stair" id="como-funciona" role="tablist" aria-label="Os degraus do projeto. Use as setas pra subir e descer." data-stair>
     {treads.map((t, k) => (
       <button class:list={['tread', { 'is-ahead': k > 0 }]} type="button" role="tab" id={`degrau-tab-${k}`} aria-controls={`degrau-${k}`}
         aria-selected={k === 0 ? 'true' : 'false'} tabindex={k === 0 ? 0 : -1} style={`--k:${k}`}>
