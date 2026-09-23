@@ -15,4 +15,4 @@ Com um [print da home](prints/home-ordem-2026-09-23.png) no computador. Organiza
 
 O Lucas aprovou a ordem e a frase de abertura como o Design/UI propôs. No primeiro degrau fica **Sistema**, e no lugar do Encontro fica **Busca**.
 
-Às 13:40 o Lucas escolheu a frase de abertura curta, que o Design/UI mediu pra caber nas mesmas linhas da de hoje: "A IA vai ajudar a escolher com cuidado quem mais quer mudar. Tudo à vista. Quem entra ganha comida, roupa e ajuda pra achar trabalho."
+Às 13:31 o Lucas escolheu a frase de abertura curta, que o Design/UI mediu pra caber nas mesmas linhas da de hoje: "A IA vai ajudar a escolher com cuidado quem mais quer mudar. Tudo à vista. Quem entra ganha comida, roupa e ajuda pra achar trabalho."
