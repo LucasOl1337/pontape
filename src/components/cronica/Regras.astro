@@ -1,6 +1,5 @@
 ---
 import Icon from '../site/Icon.astro';
-import BlockHead from '../site/BlockHead.astro';
 import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
 
 const RULES = {
@@ -9,15 +8,15 @@ const RULES = {
   candidate: ['Só contagens: quantos contatos, entrevistas, encaminhamentos pra vaga e apoios dos primeiros dias.', 'Nome, rosto, apelido, lugar, história, o caminho de uma pessoa.'],
   project: ['Criação do repositório, decisões registradas, mudanças integradas no código. Com link pra fonte.', 'Texto solto, link qualquer, dado pessoal.'],
 } as const;
-const speech = 'O que entra no livro, e o que nunca entra. ' + TYPE_ORDER.map(t => `${TYPES[t].label}: entra ${RULES[t][0]} Nunca entra: ${RULES[t][1]}`).join(' ');
 ---
-<section class="block block--paper reveal" id="o-que-entra" aria-labelledby="t-types" data-speech={speech}>
-  <BlockHead number="05" label="O que entra" listen="o-que-entra" />
-  <h2 id="t-types">O que entra no livro. E o que nunca entra.</h2>
-  <ul class="type-legend">
-    {TYPE_ORDER.map(t => (
-      <li data-type={t}><span class="type-chip"><Icon name={TYPES[t].icon} />{TYPES[t].label}</span>
-        <dl><dt>Entra</dt><dd>{RULES[t][0]}</dd><div class="never"><dt>Nunca entra</dt><dd>{RULES[t][1]}</dd></div></dl></li>
-    ))}
-  </ul>
-</section>
+<div class="rules" role="table" aria-label="O que entra e o que nunca entra, por tipo de ação">
+  <div class="rules-row rules-row--head" role="row"><span role="columnheader">Tipo</span><span role="columnheader">Entra</span><span role="columnheader">Nunca entra</span></div>
+  {TYPE_ORDER.map(t => (
+    <div class="rules-row" role="row" data-type={t}>
+      <span role="rowheader" class="rules-type"><Icon name={TYPES[t].icon} />{TYPES[t].label}</span>
+      <span role="cell"><span class="rules-label">Entra</span>{RULES[t][0]}</span>
+      <span role="cell" class="rules-never"><span class="rules-label">Nunca entra</span>{RULES[t][1]}</span>
+    </div>
+  ))}
+</div>
+

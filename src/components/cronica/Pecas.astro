@@ -1,0 +1,91 @@
+---
+import Icon from '../site/Icon.astro';
+import Badge from '../site/Badge.astro';
+import ListenButton from '../site/ListenButton.astro';
+import Sheet from './Sheet.astro';
+import { DETAIL_FIELDS, MODULES } from '../../data/site/modules';
+import { STATUSES, STATUS_ORDER, type ModuleStatus } from '../../data/site/statuses';
+import { STATUS_DATE, STATUS_DATE_SPOKEN, formatDay, withName } from '../../data/site/project';
+
+const joinList = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items.at(-1)}`;
+const byStatus = (s: ModuleStatus) => MODULES.filter(m => m.status === s);
+// The state of the nine pieces said as a sentence, the way a reporter would write it.
+const WORDS = ['nenhuma', 'uma', 'duas', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
+const IN_WORDS: Record<ModuleStatus, [string, string]> = {
+  live: ['funcionando', 'funcionando'], building: ['em construção', 'em construção'],
+  bottleneck: ['precisa de ajuda', 'precisam de ajuda'], planned: ['planejada', 'planejadas'],
+};
+const tally = joinList(STATUS_ORDER.map(s => {
+  const n = byStatus(s).length;
+  return `${WORDS[n] ?? n} ${IN_WORDS[s][n > 1 ? 1 : 0]}`;
+}));
+const labelsForSpeech: Record<ModuleStatus, string> = {
+  live: 'Funcionando', building: 'Em construção',
+  bottleneck: 'Precisa de ajuda, que é o que a gente ainda não sabe resolver', planned: 'Planejados',
+};
+const speech = `O projeto tem ${MODULES.length} peças. Estado em ${STATUS_DATE_SPOKEN}. ` + STATUS_ORDER.map(s => {
+  const names = byStatus(s).map(m => m.name);
+  return names.length ? `${labelsForSpeech[s]}: ${names.length}. ${joinList(names)}.` : `${labelsForSpeech[s]}: nenhum ainda.`;
+}).join(' ') + ' Toque numa peça pra saber mais.';
+const moduleSpeech = (m: (typeof MODULES)[number]) =>
+  `Peça ${m.id.slice(1)}: ${m.name}. Estado: ${STATUSES[m.status].label}. ` + DETAIL_FIELDS.map(f => `${f.label}: ${withName(m[f.key])}`).join(' ');
+---
+<Sheet id="modulos" kicker="Os módulos" title="Nove peças." turn="Cada uma diz se já funciona." speech={speech}>
+    <p class="standfirst">O projeto é feito de partes separadas. Em {formatDay(STATUS_DATE)}: {tally}. Toque numa peça pra ver o que é, como funciona e o que falta.</p>
+
+    <div class="filters" role="group" aria-label="Filtrar por estado" data-module-filters>
+      <button class="filter" type="button" data-filter="all" aria-pressed="true">Todas<span class="count">{MODULES.length}</span></button>
+      {STATUS_ORDER.map(s => (
+        <button class="filter" type="button" data-filter={s} aria-pressed="false"><Icon name={STATUSES[s].icon} />{STATUSES[s].label}<span class="count">{byStatus(s).length}</span></button>
+      ))}
+    </div>
+    <p class="filter-note" data-filter-note="all"><span>Estado em {formatDay(STATUS_DATE)}. Toque num selo aí em cima pra entender o que ele quer dizer.</span></p>
+    {STATUS_ORDER.map(s => <p class="filter-note" data-filter-note={s} hidden><Badge status={s} /><span>{STATUSES[s].meaning}</span></p>)}
+
+    <ol class="index">
+      {MODULES.map(m => (
+        <li data-status-item={m.status}>
+          <button class="index-item" type="button" data-module={m.id} data-status={m.status} aria-haspopup="dialog">
+            <span class="index-id">{m.id}</span>
+            <span class="index-body">
+              <span class="index-name">{m.name}</span>
+              <span class="index-summary">{withName(m.summary)}</span>
+            </span>
+            <Badge status={m.status} />
+          </button>
+        </li>
+      ))}
+    </ol>
+    {STATUS_ORDER.filter(s => !byStatus(s).length).map(s => (
+      <div class="index-empty" data-empty-for={s} hidden>
+        {s === 'live'
+          ? <><strong>Nenhuma peça funcionando ainda.</strong><p>É cedo: o projeto começou em setembro de 2026. Quando uma peça entrar no ar, o selo muda aqui, com a data.</p></>
+          : <strong>Nenhuma peça nesse estado.</strong>}
+      </div>
+    ))}
+</Sheet>
+
+<dialog class="dialog" id="module-dialog" aria-labelledby="module-dialog-title">
+  <div class="dialog-head">
+    <div><p class="kicker">Peça <span id="module-dialog-id"></span></p><h2 id="module-dialog-title"></h2></div>
+    <button class="close-btn" type="button" data-close aria-label="Fechar"><Icon name="close" /></button>
+  </div>
+  <div class="dialog-body" id="module-dialog-body"></div>
+</dialog>
+
+{MODULES.map((m, i) => {
+  const prev = MODULES[(i + MODULES.length - 1) % MODULES.length]!;
+  const next = MODULES[(i + 1) % MODULES.length]!;
+  return (
+    <template id={`module-${m.id}`} data-name={m.name}>
+      <p class="dialog-status"><Badge status={m.status} /><span>Estado em {formatDay(STATUS_DATE)}</span><ListenButton speech={moduleSpeech(m)} /></p>
+      <dl class="module-details">
+        {DETAIL_FIELDS.map(f => <div class={f.tone ? `is-${f.tone}` : undefined}><dt>{f.label}</dt><dd>{withName(m[f.key])}</dd></div>)}
+      </dl>
+      <div class="dialog-nav">
+        <button class="btn" type="button" data-module={prev.id} aria-label={`Peça anterior: ${prev.name}`}><Icon name="arrow-left" />{prev.id}</button>
+        <button class="btn" type="button" data-module={next.id} aria-label={`Próxima peça: ${next.name}`}>{next.id}<Icon name="arrow-right" /></button>
+      </div>
+    </template>
+  );
+})}

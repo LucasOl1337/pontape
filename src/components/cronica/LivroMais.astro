@@ -1,0 +1,39 @@
+---
+import ListenButton from '../site/ListenButton.astro';
+import ComoConferir from './ComoConferir.astro';
+import Dinheiro from './Dinheiro.astro';
+import Regras from './Regras.astro';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
+
+// Below the first screen: three tabs that open in place, instead of three more sections to scroll.
+interface Props { ledger: LedgerView; example: LedgerView }
+const { ledger, example } = Astro.props;
+const RULES_SPEECH = 'O que entra no livro, e o que nunca entra. ' + TYPE_ORDER.map(t => TYPES[t].label).join(', ') + ': de cada tipo entra só a ação e a contagem. Nunca entra nome, rosto, apelido, lugar, CPF, chave Pix nem dado pessoal.';
+const TABS = [
+  { id: 'como-conferir', label: 'Como conferir', title: 'Como qualquer pessoa', turn: 'confere.', lead: 'Não precisa confiar na gente, nem no nosso botão. A conta é pública e dá pra refazer em qualquer computador.',
+    speech: 'Como qualquer pessoa confere. Um: cada ação vira um texto, sempre no mesmo formato. Dois: esse texto passa por uma conta pública chamada SHA-256, que devolve uma marca. Mudou uma vírgula, a marca muda inteira. Três: cada ação guarda a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela. O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado.' },
+  { id: 'dinheiro', label: 'Dinheiro', title: 'Quanto entrou, quanto saiu,', turn: 'pra onde foi.', lead: '',
+    speech: 'Quanto entrou, quanto saiu e pra onde foi. Hoje entrou zero real e saiu zero real. A doação só abre quando existir uma conta oficial do projeto. Aqui nunca vai ter número inventado.' },
+  { id: 'o-que-entra', label: 'O que entra', title: 'O que entra no livro.', turn: 'E o que nunca entra.', lead: '', speech: RULES_SPEECH },
+];
+---
+<section class="book-more" aria-label="Mais sobre o livro">
+  <div class="tabs" role="tablist" aria-label="Mais sobre o livro" data-tabs>
+    {TABS.map((t, i) => (
+      <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={t.id} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{t.label}</button>
+    ))}
+  </div>
+  {TABS.map((t, i) => (
+    <div class:list={['tab-panel', { 'is-active': i === 0 }]} id={t.id} role="tabpanel" aria-labelledby={`tab-${t.id}`} tabindex="0" data-speech={t.speech}>
+      <div class="tab-head">
+        <h2 class="tab-title">{t.title} <em>{t.turn}</em></h2>
+        <ListenButton target={t.id} />
+      </div>
+      {t.lead && <p class="tab-lead">{t.lead}</p>}
+      {t.id === 'como-conferir' && <ComoConferir ledger={ledger} />}
+      {t.id === 'dinheiro' && <Dinheiro real={ledger.events} example={example.events} />}
+      {t.id === 'o-que-entra' && <Regras />}
+    </div>
+  ))}
+</section>

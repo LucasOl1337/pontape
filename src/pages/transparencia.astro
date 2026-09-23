@@ -1,11 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LedgerHeroBlock from '../components/blocks/LedgerHeroBlock.astro';
-import LedgerVerifyBlock from '../components/blocks/LedgerVerifyBlock.astro';
-import LedgerActionsBlock from '../components/blocks/LedgerActionsBlock.astro';
-import LedgerMoneyBlock from '../components/blocks/LedgerMoneyBlock.astro';
-import LedgerHowToBlock from '../components/blocks/LedgerHowToBlock.astro';
-import LedgerTypesBlock from '../components/blocks/LedgerTypesBlock.astro';
+import LivroTopo from '../components/cronica/LivroTopo.astro';
+import LivroMais from '../components/cronica/LivroMais.astro';
 import { getExampleLedger, getPublicLedger } from '../lib/ledger-view/source';
 import { SHARE } from '../data/site/share';
 
@@ -17,11 +13,7 @@ const example = await getExampleLedger();
   description={SHARE.transparencia.description}
   share="transparencia"
   current="transparencia">
-  <LedgerHeroBlock ledger={ledger} />
-  <LedgerVerifyBlock />
-  <LedgerActionsBlock ledger={ledger} example={example} />
-  <LedgerMoneyBlock real={ledger.events} example={example.events} />
-  <LedgerHowToBlock />
-  <LedgerTypesBlock />
+  <LivroTopo ledger={ledger} example={example} />
+  <LivroMais ledger={ledger} example={example} />
 </BaseLayout>
 <script>import '../scripts/ledger';</script>

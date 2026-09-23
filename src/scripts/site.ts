@@ -103,5 +103,11 @@ let scrollTicking = false;
 addEventListener('scroll', () => {
   if (scrollTicking) return;
   scrollTicking = true;
-  requestAnimationFrame(() => { header?.classList.toggle('scrolled', scrollY > 8); scrollTicking = false; });
+  requestAnimationFrame(() => {
+    header?.classList.toggle('scrolled', scrollY > 8);
+    // Reading progress under the header, like the thin bar of a long read.
+    const max = root.scrollHeight - innerHeight;
+    header?.style.setProperty('--read', max > 0 ? (scrollY / max).toFixed(4) : '0');
+    scrollTicking = false;
+  });
 }, { passive: true });
