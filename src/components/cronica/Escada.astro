@@ -53,17 +53,6 @@ const ways = [
     <span class="walker" aria-hidden="true"><span class="walker-label">alguém</span></span>
   </div>
 
-  <aside class="today" aria-labelledby="today-title">
-    <h2 class="today-title" id="today-title">Hoje, em números</h2>
-    <dl>
-      <div><dt>Entrou</dt><dd>{brl.format(snapshot.receivedCents / 100)}</dd></div>
-      <div><dt>Saiu</dt><dd>{brl.format(snapshot.spentCents / 100)}</dd></div>
-      <div><dt>Pessoas atendidas</dt><dd>0</dd></div>
-      <div><dt>Ações no livro</dt><dd>{ledger.events.length}</dd></div>
-    </dl>
-    <p><span>{snapshot.status}. Aqui nunca vai ter número inventado.</span> <a href="/transparencia">Abrir o livro</a></p>
-  </aside>
-
   <div class="panels">
     <!-- Ground: what the project is, and the voice invitation for whoever wants to change their life. -->
     <div class="panel is-active" id="degrau-0" role="tabpanel" aria-labelledby="degrau-tab-0" tabindex="0" data-panel="0"
@@ -134,4 +123,14 @@ const ways = [
     </div>
   </div>
 
+  <aside class="today" aria-labelledby="today-title">
+    <h2 class="today-title" id="today-title">Hoje, em números</h2>
+    <dl>
+      <div><dt>Entrou</dt><dd>{brl.format(snapshot.receivedCents / 100)}</dd></div>
+      <div><dt>Saiu</dt><dd>{brl.format(snapshot.spentCents / 100)}</dd></div>
+      <div><dt>Pessoas atendidas</dt><dd>0</dd></div>
+      <div><dt>Ações no livro</dt><dd>{ledger.events.length}</dd></div>
+    </dl>
+    <p><span>{snapshot.status}. Aqui nunca vai ter número inventado.</span> <a href="/transparencia">Abrir o livro</a></p>
+  </aside>
 </section>

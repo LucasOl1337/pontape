@@ -20,7 +20,8 @@ let tampered: { seq: string; amount: string } | null = null;
 
 /* ---------- The list, a page at a time ---------- */
 
-const PAGE_SIZE = 4;
+// Four actions a page on a wide screen, three on a phone: the first screen shows the latest ones.
+const PAGE_SIZE = matchMedia('(min-width: 960px)').matches ? 4 : 3;
 const pager = $('[data-pager]')!;
 const listOf = () => $(`[data-ledger-list="${mode}"]`)!;
 const matching = () => $$('.chain-entry', listOf()).filter(li => filter === 'all' || li.dataset.type === filter);

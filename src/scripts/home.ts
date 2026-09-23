@@ -50,7 +50,9 @@ document.addEventListener('keydown', e => {
   const active = document.activeElement;
   if ($('dialog[open]') || (active && active !== document.body && !active.matches('[data-panel]'))) return;
   e.preventDefault();
+  const onPanel = active?.matches('[data-panel]');
   climb(KEYS[e.key]!(at));
+  if (onPanel) panels[at]!.focus({ preventScroll: true });
 });
 escada.addEventListener('click', e => {
   const btn = (e.target as Element).closest<HTMLButtonElement>('[data-go]');

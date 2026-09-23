@@ -70,7 +70,8 @@ const STEPS = [
     <p class="kicker">O que o livro não prova</p>
     <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Assinar as marcas e carimbar a data num serviço público estão em estudo.</p>
   </aside>
-  <div>
+  <details class="more-details">
+    <summary>Baixar o livro e conferir no seu computador</summary>
     <div class="actions">
       <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro inteiro</a>
       <a class="btn" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="shield" />Baixar a marca de controle</a>
@@ -79,5 +80,5 @@ const STEPS = [
     <dl class="trust-list">
       {TRUST.map(t => <div><dt>{t.label}</dt><dd><Icon name="clock" />{t.value}</dd></div>)}
     </dl>
-  </div>
+  </details>
 </div>
