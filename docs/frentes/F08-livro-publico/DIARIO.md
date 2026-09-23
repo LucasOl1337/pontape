@@ -58,3 +58,10 @@
 
 - `npm run check` passou na base atualizada: 71 testes, livro real válido e build com quatro downloads `/livro/`. Typecheck: zero erros/avisos; um hint já existente no protótipo integrado (`await onStep`, `design/prototipo/ledger.js:140`), sem alteração nessa frente.
 - PR do núcleo em preparação com `fino/f08-verificador` contra main. Entrega mantém o recorte inicial autorizado de 21 fatos; novos eventos entram via append, sem regenerar o lote.
+
+## 22/09/2026 · Entrega do núcleo em PR
+
+- PR aberta: https://github.com/LucasOl1337/VidaNova/pull/30 (`fino/f08-verificador` → `main`). Commits de implementação 67560dc e documentação c90f254; push concluído.
+- Check local passou com 71 testes e teste cruzado D014. CI remoto iniciado em https://github.com/LucasOl1337/VidaNova/actions/runs/35803813872; conferir o check do head final antes de integrar (este registro também gera atualização do CI).
+- Report final ao Regente pelo canal Maestri após conferir o head final. Próximo responsável: Regente revisa e integra; Design/UI consome `src/lib/ledger/index.ts` e `published.ts` conforme o contrato. Agente não executa deploy, criação de chave de produção ou primeira ancoragem.
+- Dúvidas não bloqueantes: custodiante da chave, canal público independente, espelho e frequência da ancoragem. Procedimento proposto e estados ausentes documentados; nenhuma dessas funções anunciada como ativa.
