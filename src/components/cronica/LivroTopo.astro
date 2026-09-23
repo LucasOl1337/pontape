@@ -80,7 +80,7 @@ const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.lengt
       return (
         <div class:list={['ledger-list', { 'is-sample': mode === 'example' }]} data-ledger-list={mode} hidden={mode !== 'real'}>
           <ol class="chain" id={`ledger-chain-${mode}`}>
-            {view.events.toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}
+            {view.events.toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} example={mode === 'example'} />)}
           </ol>
           {!view.events.length && (
             <div class="chain-empty" data-empty-for="all">

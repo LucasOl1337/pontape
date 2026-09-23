@@ -7,13 +7,14 @@ import { formatCents } from '../../lib/ledger-view/money';
 import { DECISION_TITLES } from '../../data/site/decisions';
 import { REPOSITORY_OPEN, formatDay } from '../../data/site/project';
 
-interface Props { event: LedgerEvent; correctedBy?: string; hidden?: boolean }
-const { event: e, correctedBy, hidden = false } = Astro.props;
+interface Props { event: LedgerEvent; correctedBy?: string; hidden?: boolean; example?: boolean }
+const { event: e, correctedBy, hidden = false, example = false } = Astro.props;
 const p = e.payload;
 const type = TYPES[p.type];
 const shortHash = (h: string) => `${h.slice(0, 4)} ${h.slice(4, 8)}`;
 const delta = p.type === 'finance' ? BigInt(p.amountCents) : 0n;
 const sourceUrl = projectSourceUrl(p);
+const placeholderExampleSource = example && p.type === 'project' && p.action === 'decision_recorded' && /^0{40}$/.test(p.sourceCommit);
 // D013: decision title is site content read from DECISOES.md, never part of the hashed event.
 const decisionTitle = p.type === 'project' && p.action === 'decision_recorded' ? DECISION_TITLES[p.decisionId] : undefined;
 const recorded = new Date(e.recordedAt);
@@ -34,10 +35,12 @@ const recordedText = `${recorded.toLocaleDateString('pt-BR', { timeZone: 'Americ
         <span class:list={['chain-amount', { 'is-in': delta > 0n }]} data-amount>{delta > 0n ? '+' : '−'} {formatCents(delta < 0n ? -delta : delta)}</span>
         <span><Icon name="clock" /> {EVIDENCE[p.evidence]}</span>
       </>}
-      {sourceUrl && <>
-        <a href={sourceUrl} rel="noopener">Ver a fonte<Icon name="arrow-right" /></a>
-        {!REPOSITORY_OPEN && <span>Repositório ainda fechado</span>}
-      </>}
+      {sourceUrl && (placeholderExampleSource
+        ? <span>Este exemplo é fictício e não tem fonte real.</span>
+        : <>
+          <a href={sourceUrl} rel="noopener">Ver a fonte<Icon name="arrow-right" /></a>
+          {!REPOSITORY_OPEN && <span>Repositório ainda fechado</span>}
+        </>)}
       {p.type === 'candidate' && <span>Só a contagem. Sem nome, rosto, apelido ou lugar.</span>}
       {p.type === 'field' && <span>Sem dizer quem recebeu nem onde.</span>}
       {p.correctionOf && p.type !== 'finance' && <span>Corrige a ação nº {p.correctionOf}</span>}
