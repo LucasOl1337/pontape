@@ -113,3 +113,41 @@ Conferido na bancada, com os degraus 0, 3 e 8 abertos, em 1920, 1750, 1440, 1280
 E nenhum degrau rola por dentro em 1180×700, 1280×720, 1366×657, 1440×900, 1750×950 e 1920×1080: o "Sua vez" em 1180×700, que tinha 8 px depois da PR dos números, zerou. No celular os botões do Início terminam em 692 de 780 (360) e 665 de 844 (390).
 
 A F33 deixou uma paleta só (Anil no `:root`, sem seletor nem `?cor=`), então não há mais Carvão pra conferir. `npm run check` passa. Prints `prints/corrimao-antes-*` (`main` depois da #82) e `prints/corrimao-depois-*`.
+
+PR #83 integrada.
+
+## 23/09/2026 · PR 4: alvos de toque de 44 px no celular
+
+Branch `prumo/f34-alvos`. Item do diagnóstico, celular de ponta a ponta.
+
+Abaixo de 960 px, todo link que fica sozinho (fora de frase) passa a ter 44 px de altura pra tocar: "Abrir o livro" do degrau 7 (tinha 26), as tarefas e o "Conte no GitHub" das perguntas dos gargalos (23), "Ver todas, na parte técnica" (20), e no livro técnico "Ver a fonte" (20), "marca inteira" (18) e a lista de links de "No seu computador" (22). O link de "onde você está" (Construir junto ›, Transparência ›) ganha a área de toque só com respiro vertical, sem mover o título embaixo. Links dentro de frase ficam como estão (a regra de alvo, WCAG 2.5.8, deixa eles de fora).
+
+No primeiro jeito, o "marca inteira" perdeu o triângulo que mostra que ele abre (`display:inline-flex` no `summary`); ficou com o tipo original e os 44 px vêm de respiro.
+
+Os degraus da escada seguem com 39 px de largura em 360: nove colunas não cabem com 44 cada (anotado no diagnóstico).
+
+Medido de novo em 360×780 e 390×844, na home com os 9 degraus, nos cinco de `/construir`, em `/transparencia`, `/transparencia/tecnico` e no 404: **nenhum alvo solto abaixo de 44 px** e nenhuma rolagem lateral. `npm run check` passa. Prints `prints/alvos-antes-*` e `prints/alvos-depois-*`.
+
+A bancada `prumo-f31` foi fechada de novo às 12:41 (a terceira vez); subi pelo `ensure`, como o Regente pediu.
+
+### Primeira tela no celular, sem a barra do Cores
+
+Conferida em 360×780 e 390×844, página por página, depois da F33, do corrimão e dos alvos. Todas respondem "o que é e o que eu faço" sem rolar:
+
+| Página | O que aparece na primeira tela |
+|---|---|
+| Home | título, escada com o corrimão, a frase de apoio, a linha "Ainda em construção" e os dois botões |
+| `/construir` | título, apoio e três das quatro portas |
+| Peças | título, apoio e as duas primeiras peças |
+| Gargalos | título, apoio e quatro das cinco perguntas |
+| Tarefas | título, filtros e o primeiro cartão |
+| Código aberto | título, apoio e os três passos |
+| `/transparencia` | título, apoio, os três números e o Conferir |
+| `/transparencia/tecnico` | título, os quatro números e o Conferir |
+| 404 | título e as três saídas |
+
+Nada a mudar. Folhas `prints/primeira-tela-360-a.png` e `prints/primeira-tela-360-b.png` (a última é a home em 390).
+
+### Onde parei
+
+Os quatro pontos do brief estão feitos: números sem encostar em nada (PR 2), corrimão (PR 3), alvos de 44 px e primeira tela no celular (PR 4, esta). O texto que vazava no print não era do site (diagnóstico, item 4). Fica anotado, sem mexer: os degraus da escada com 39 px de largura em 360.

@@ -803,6 +803,15 @@ main:focus{ outline:none }
 /* Below 316 px, keep the icons and the missing mark; the names go, like on the home staircase. */
 @media (max-width:315px){ .stairs .step-label{ display:none } }
 
+/* Touch targets (F34): on phones and tablets a link that stands on its own is at least 44 px tall.
+   Links inside running text keep their line (WCAG 2.5.8 leaves them out). The breadcrumb link grows
+   its touch area with padding only, so the headline under it does not move. */
+@media (max-width:959px){
+  .panel-ledger a, .question-help a, .more-link, .sources a, .chain-facts a{ min-height:44px }
+  .chain-full summary{ min-height:44px; padding-block:.75rem }
+  .crumbs a{ padding-block:.85rem }
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important }
 }
