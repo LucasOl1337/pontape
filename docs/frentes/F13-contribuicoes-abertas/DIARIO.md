@@ -29,6 +29,8 @@
 - As demais tarefas cobrem acessibilidade [#8](https://github.com/LucasOl1337/VidaNova/issues/8), conferência pública [#12](https://github.com/LucasOl1337/VidaNova/issues/12) e [#21](https://github.com/LucasOl1337/VidaNova/issues/21), e escuta do nome [#22](https://github.com/LucasOl1337/VidaNova/issues/22).
 - Gerei `docs/contribuicoes/contribuicoes.json` com números reais e um README para manutenção. A conferência automática encontrou as 17 issues abertas, títulos e labels correspondentes, seis primeiros passos e os cinco gargalos cobertos.
 
-## Próximo passo
+## 22/09/2026 · PR aberta
 
-Revisar o diff, commitar, enviar a branch, abrir PR para `main` e avisar o Regente.
+- Revisei o diff e passei `git diff --cached --check`. Commitei e enviei a branch `bruto/f13-contribuicoes`.
+- Abri a [PR #24](https://github.com/LucasOl1337/VidaNova/pull/24) para `main` com os modelos, catálogo e diário. A conferência com o GitHub foi feita antes do commit; os 17 títulos, números e labels continuavam correspondentes.
+- Próximo passo: avisar o Regente com a PR, a lista de issues e as dúvidas pendentes. A F06 permanece em espera.
