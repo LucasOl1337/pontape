@@ -1,16 +1,8 @@
-/* Tokens da variante Crônica (F19 v2): papel de jornal, tinta preta, um vermelho só. */
+/* Tipografia, espaçamento e medidas. As cores ficam em palettes.css. */
 :root{
   --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem; --space-6:1.5rem;
   --space-8:2rem; --space-12:3rem; --space-16:4rem; --space-24:6rem; --space-32:8rem;
   --page:78rem; --measure:36rem;
-
-  --paper:#F3EEE4; --paper-2:#E9E2D4; --paper-3:#DDD4C3;
-  --ink:#17140F; --ink-2:#5A534B; --rule:rgba(23,20,15,.22);
-  --red:#B23A1B;
-  /* Caderno escuro (livro público) */
-  --night:#17140F; --night-2:#221E18; --night-ink:#F3EEE4; --night-ink-2:#B9B0A2; --night-red:#FF8A5E; --night-rule:rgba(243,238,228,.2);
-
-  --status-live:#1D6A3A; --status-building:#825C00; --status-bottleneck:#AD2A1C; --status-planned:#5A534B;
 
   --font-display:"Newsreader Display","Newsreader",Georgia,"Times New Roman",serif;
   --font-serif:"Newsreader",Georgia,"Times New Roman",serif;
