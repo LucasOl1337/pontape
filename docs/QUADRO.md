@@ -45,7 +45,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
 | ID | Frente | Resultado |
 |---|---|---|
-| F28 | Paletas com seletor | [PR #64](https://github.com/LucasOl1337/pontape/pull/64) integrada 09:40 (D025). Jornal, Mata, Mar, Ipê, Sol e Noite em `src/styles/palettes.css`, teste de contraste AA, `?cor=<nome>`. Ajuste da `theme-color` na F28b (bruto) |
+| F28 | Paletas com seletor | [PR #64](https://github.com/LucasOl1337/pontape/pull/64) integrada 09:40 (D025). Jornal, Mata, Mar, Ipê, Sol e Noite em `src/styles/palettes.css`, teste de contraste AA, `?cor=<nome>`. Ajuste da `theme-color` na [PR #65](https://github.com/LucasOl1337/pontape/pull/65) |
 | F27 | Tirar o Ouvir e o A+ | [PR #63](https://github.com/LucasOl1337/pontape/pull/63) integrada 09:25 (D024). HTML da home de 92 KB pra 77 KB |
 | F26 | Vigília noturna de polimento | [#58](https://github.com/LucasOl1337/pontape/pull/58), [#59](https://github.com/LucasOl1337/pontape/pull/59) integradas de madrugada; [#60](https://github.com/LucasOl1337/pontape/pull/60), [#61](https://github.com/LucasOl1337/pontape/pull/61) e [#62](https://github.com/LucasOl1337/pontape/pull/62) revisadas e integradas pelo Regente em 23/09 de manhã. Pausou às 00:51 por mensagem ambígua; executores dispensados |
 | F24 | Ensaio pós-lançamento | [PR #58](https://github.com/LucasOl1337/pontape/pull/58); falhas viraram as issues #54 a #57 |
