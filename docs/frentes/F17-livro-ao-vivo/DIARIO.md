@@ -20,3 +20,8 @@
 - Dry-run real em HEAD 560a050: nenhum fato pendente. SHA-256 do arquivo antes/depois idêntico: `65330f16b670075aea9de991e7ccb7fde578b0c3d88b9bcec54294e637fa4762`. O livro publicado não foi alterado nesta implementação.
 - Operação documentada: projeto automático, demais famílias e correções manuais; autenticação, recuperação e futura proteção de branch sem configurar bypass. Atualizar Git não publica o site nem ancora checkpoint.
 - Próximo marco: entregar PR de implementação ao Regente, acompanhar integração e validar uma PR posterior entrando sozinha no livro. Esse critério ao vivo permanece pendente até os merges.
+
+## 22/09/2026 · Aceite ao vivo pelo Regente
+
+- [PR #35](https://github.com/LucasOl1337/VidaNova/pull/35) integrada. A [execução 35806131656](https://github.com/LucasOl1337/VidaNova/actions/runs/35806131656) terminou com sucesso: bot acrescentou D015 e a própria PR #35 no commit `d0927ea`, levando o livro a 33 fatos.
+- Regente confirmou `ledger:verify` e conferidor Python independentes e aceitou esse resultado como prova ao vivo, dispensando a PR de teste posterior. A PR de diário #36 já estava aberta e foi fechada sem integração conforme a orientação. F17 encerrada; continuação na F20.

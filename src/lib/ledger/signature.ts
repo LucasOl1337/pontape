@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod/mini';
 import { canonicalize } from './canonical.ts';
 import { ledgerCheckpointSchema } from './schema.ts';
 
 export const signedCheckpointSchema = z.strictObject({
   schemaVersion: z.literal(1),
   algorithm: z.literal('Ed25519'),
-  publicKey: z.string().regex(/^[a-f0-9]{64}$/),
+  publicKey: z.string().check(z.regex(/^[a-f0-9]{64}$/)),
   checkpoint: ledgerCheckpointSchema,
-  signature: z.string().regex(/^[a-f0-9]{128}$/),
+  signature: z.string().check(z.regex(/^[a-f0-9]{128}$/)),
 });
 export type SignedCheckpoint = z.infer<typeof signedCheckpointSchema>;
 
