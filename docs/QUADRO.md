@@ -2,15 +2,14 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026, 13:38 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 23/09/2026, 13:45 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
-**Hoje:** home pro leigo (F29), cadernos em páginas (F31), transparência em duas camadas (F32) e paleta Anil (F33, D030) no ar. A escada da F34 foi **reprovada** (D031): a F36 acha o meio termo entre o antes e o agora. A ordem da escada muda de novo (D032): a F37 põe o sistema de escolha, com IA e transparência, no primeiro degrau. Às 13:04 todos os agentes reiniciaram com conversa nova, a pedido do Lucas; cada um retoma pelo BRIEF e pelo DIARIO. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
+**Hoje:** home pro leigo (F29), cadernos em páginas (F31), transparência em duas camadas (F32) e paleta Anil (F33, D030) no ar. A escada da F34 foi **reprovada** (D031) e a F36 trouxe o meio termo; a F37 pôs o sistema de escolha, com IA e transparência, no primeiro degrau (D032). Tudo no ar. Às 13:04 todos os agentes reiniciaram com conversa nova, a pedido do Lucas; cada um retoma pelo BRIEF e pelo DIARIO. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F36 | [Escada: meio termo entre o antes e o agora](frentes/F36-escada-meio-termo/BRIEF.md) | prumo | `prumo/f36-*` | Proposta aprovada 13:20: a F33 levou o ar de 72 px do botão Cores; o Brave do Lucas escala o texto em 1,18 | [PR #86](https://github.com/LucasOl1337/pontape/pull/86) integrada 13:37: a escada de antes de volta, com os nomes, a linha da IA embaixo a partir do Sistema e ar de 40 a 71 px embaixo em toda janela de computador | PR 2: número longe do chão e do ícone, nomes no tablet |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
@@ -47,6 +46,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
 | ID | Frente | Resultado |
 |---|---|---|
+| F36 | Escada: meio termo entre o antes e o agora | [PR #86](https://github.com/LucasOl1337/pontape/pull/86) 13:37 e [#89](https://github.com/LucasOl1337/pontape/pull/89) 13:44 integradas (D031). A escada de antes de volta, com o nome de cada passo e a linha da IA embaixo a partir do Sistema, ar de 40 a 71 px embaixo em toda janela de computador; número a 8 px do chão e longe do ícone; nomes no tablet; no celular, só os números. Causa: a F33 levou o ar do botão Cores, e o Brave do Lucas escala o texto em 1,18 |
 | F37 | A escada começa pelo sistema | [PR #88](https://github.com/LucasOl1337/pontape/pull/88) integrada 13:33 (D032). Sistema, Busca, Conversa, Comida e roupa, Apoio da IA, Trabalho, Tudo à vista; frase de abertura curta; a ordem velha trocada em 11 lugares; teste barra a volta da ordem antiga |
 | F35 | Renomear `--red` pra `--accent` | [PR #85](https://github.com/LucasOl1337/pontape/pull/85) integrada. Só o nome; prints idênticos pixel a pixel |
 | F34 | Celular, trilho da IA e números | **Reprovada pelo Lucas às 13:05 (D031); a F36 refaz a escada.** PRs [#81](https://github.com/LucasOl1337/pontape/pull/81) a [#84](https://github.com/LucasOl1337/pontape/pull/84) integradas até 12:48: números a 8 px do chão e ícone sem invadir; corrimão da IA colado nos degraus; tela baixa sem rolagem; todo alvo solto com 44 px no celular. O texto por trás da escada no print era outra janela vista pela opacidade do Omarchy, não o site |
