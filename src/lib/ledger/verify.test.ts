@@ -48,7 +48,7 @@ describe('livro encadeado', () => {
     const events = await example(); events[0]!.payload.occurredOn = '1999-12-31';
     expect(await verifyLedger(events)).toMatchObject({ valid: false, code: 'hash' });
   });
-  it.each([0, 1, 3])('detecta remoção na posição %i contra checkpoint conhecido', async (index) => {
+  it.each([0, 1, fixture.payloads.length - 1])('detecta remoção na posição %i contra checkpoint conhecido', async (index) => {
     const events = await example(); const checkpoint = createCheckpoint(events, at);
     events.splice(index, 1);
     expect(await verifyLedger(events, checkpoint)).toMatchObject({ valid: false });
@@ -90,7 +90,7 @@ describe('livro encadeado', () => {
     await expect(appendEvent(events, { ...fixture.payloads[0], correctionOf: '9' }, at)).rejects.toThrow('correction');
     await expect(appendEvent(events, { ...fixture.payloads[0], correctionOf: '1', decisionId: 'D998' }, at)).rejects.toThrow('correction');
     const corrected = await appendEvent(events, { ...fixture.payloads[0], correctionOf: '1', occurredOn: '1999-12-31' }, at);
-    expect(corrected).toHaveLength(5);
+    expect(corrected).toHaveLength(fixture.payloads.length + 1);
     await expect(appendEvent(corrected, { ...fixture.payloads[0], correctionOf: '1' }, at)).rejects.toThrow('correction');
   });
   it('soma centavos sem arredondar e exige estorno inverso único', async () => {

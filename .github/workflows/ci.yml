@@ -34,3 +34,5 @@ jobs:
         run: npm run ledger:verify
       - name: Build estático
         run: npm run build
+      - name: Orçamento de assets
+        run: npm run budget

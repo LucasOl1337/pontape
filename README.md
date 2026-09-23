@@ -75,3 +75,5 @@ Toda PR passa por aprovação de admin. Licença e abertura do repositório agua
 O primeiro lote real, com fontes e datas, fica em `src/data/ledger/ledger.json`. Confira com `npm run ledger:verify`. Para propor um evento, `npm run ledger:append -- --event arquivo.json` simula sem gravar; `--apply` é explícito. O Regente opera o livro de produção.
 
 A mesma lógica pode ser importada no navegador por `src/lib/ledger/index.ts`. O build gera os downloads em `/livro/` e falha se a cadeia não conferir. [Como conferir](docs/transparencia/COMO-CONFERIR.md), [contrato para F07](docs/transparencia/CONTRATO.md) e [operação, assinatura e proposta OpenTimestamps](docs/transparencia/OPERACAO.md). Assinatura, ancoragem e espelho externos ainda não estão ativos.
+
+O projeto registra em `package.json` a aprovação de install script apenas para `esbuild@0.28.2`, a versão fixada no lockfile. A política `allowScripts` do npm 11.19 acompanha o repositório; atualização do esbuild exige revisar e aprovar a nova versão. Não usar liberação global de scripts para contornar avisos. [Referência do npm](https://docs.npmjs.com/cli/v11/commands/npm-install-scripts/) (consulta em 22/09/2026).

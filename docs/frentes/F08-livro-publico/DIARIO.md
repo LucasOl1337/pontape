@@ -82,3 +82,14 @@
 - Assinatura/OpenTimestamps aprovados como proposta pelo Regente; custódia e primeira execução real ficam com ele. Próximo: push na mesma PR #30, CI e report “F08 núcleo atualizada”.
 
 - Validação final dos ajustes: `npm run check` passou com 76 testes, CLI dos 26 eventos e build; zero erros/avisos de tipos, um hint preexistente do protótipo. Bundle browser sem globais Node verificou o documento estático novo e a conversão para a data brasileira. Commit e push na mesma PR #30; conferir CI do head atualizado antes da integração.
+
+## 22/09/2026 · Integração com F07 e fixture ampliada
+
+- Regente pediu merge da main com PR #32 (site Astro) na mesma PR #30. Conflito somente em package.json: resolvido preservando scripts de ledger, CSP/build e budget. Ordem de check: lint, typecheck, test, ledger:verify, build, budget; CI ganha budget depois do build.
+- Aprovação de install script avaliada no npm 11.19.0 da versão Node fixada. Documentação oficial permite aprovação fixada; `npm install-scripts approve esbuild --allow-scripts-pin` registrou somente `esbuild@0.28.2: true` em allowScripts. Inspecionado o install.js instalado: preparação/validação do binário da plataforma, com fallback de download no registro npm e verificação de integridade. Sem liberação global ou para versões futuras. Fonte: https://docs.npmjs.com/cli/v11/commands/npm-install-scripts/ (consulta 22/09/2026).
+- Fixture fictícia ampliada de 4 para 20 payloads: doações, gastos nas seis categorias de saída, estorno do gasto alimentar e valor correto, entregas de comida/roupa/higiene e quatro ações agregadas de candidato. Aviso fictício mantido; lote real de 26 eventos intocado.
+- A ampliação expôs um limite da formatação de minuto do exemplo (`12:010` a partir do 11º item). Corrigida só a construção determinística do timestamp em source.ts e seu helper de teste usando Date.UTC. A troca de source/verifier provisórios pelo núcleo permanece com o Design depois do merge, conforme orientação do Regente.
+- Novo teste verifica cadeia completa da fixture, saldo fictício 141000 centavos, categorias, referência de estorno e entregas. Próximo: npm ci com postinstall explícito, check integrado e push/report.
+
+- Validação integrada concluída: `npm ci --foreground-scripts` executou explicitamente o postinstall de esbuild@0.28.2, sem aviso de script não aprovado; `npm install-scripts ls` não encontrou pendências nesta plataforma. Zero vulnerabilidades reportadas pelo npm.
+- `npm run check` passou após reinstalação: **113 testes**, verificador dos 26 fatos, build do site, geração/conferência de CSP e budget. Home 29,1 KB/60 KB, transparência 24,0 KB/60 KB, fontes 87,1 KB/120 KB. Nenhuma alteração do lote real, da interface do verificador ou da decisão de integração da F07.
