@@ -78,3 +78,28 @@ Propostas não equivalem a aprovação e não alteram DECISOES.md.
 - Status: etapa 1 concluída; nenhum código da etapa 2 iniciado. Os dois worktrees próprios estão limpos após envio.
 - Report final pelo Maestri ao Regente leva ambas as PRs, resumo e pendências. Próxima ação: aguardar revisão/OK explícito do Regente antes de etapa 2.
 - Pendências do Lucas preservadas: confirmação humana da seleção, licença, controlador/base legal, titularidade de recebimento, cidade e publicação. Nenhuma dessas decisões foi tomada por agente.
+
+## 2026-09-22 · Etapa 2, marco 1: início autorizado
+
+- OK explícito do Regente recebido; criada `fino/f02-codigo` a partir de `origin/main` no worktree `fino`.
+- Relidos AGENTS, PRD, BRIEF F02, decisões D006–D012, QUADRO e BRIEF F08. Escopo: apenas base estática da F1. F08 só começa após integração desta etapa.
+- Worktree próprio `fino-f04` removido após confirmar limpeza e integração na main, conforme autorização. Devin preservado.
+- Organização: app na raiz, tokens da F01 em `src/styles/tokens.css`, blocos em `src/components/blocks/`, snapshot em `src/data`, contrato puro em `src/lib`. Sem implementar eventos, hash ou scripts da F08.
+- Node 24.21.0 LTS fixado; dependências estáveis verificadas no registro npm. React integrado sem ilha artificial no placeholder. Snapshot validado no build e testado contra campos extras e estados indevidos.
+- Próximo passo: instalar, rodar lint/tipos/testes/build, escrever instruções reproduzíveis e abrir PR com CI verde.
+
+## 2026-09-22 · Etapa 2, marco 2: base executável
+
+- Astro estático + integração React + TypeScript estrito instalados, versões exatas e lockfile. ESLint cobre Astro/TS; Vitest roda em Node, sem navegador.
+- Página provisória em PT-BR, data fixa do snapshot e estado de doações desabilitadas. Sem coleta, animação, fonte externa ou indicação falsa de atualização ao vivo.
+- Schema Zod estrito é usado no build. 22 testes passam: arquivo real, lista fechada, injeção de campos, ausência de campos, tipos/valores/data inválidos. Contrato da F08 permanece separado e ainda não implementado.
+- Primeiro `npm run check` passou: lint limpo, tipos sem erro/aviso, 22 testes, build estático. Próximo passo: confirmar instalação limpa pelo lockfile, HTTP local e CI remoto antes do report.
+- README permite rodar da raiz e documenta Node/instalação/verificações; `.env.example` não exige configuração. CODEOWNERS e CONTRIBUTING rascunho registram revisão por admin, sem criar LICENSE ou configurar proteção de branch.
+
+## 2026-09-22 · Etapa 2, marco 3: validação local concluída
+
+- `npm ci` com Node 24.21.0 seguido de lint, typecheck, 22 testes e build passou; `@types/node` alinhado à versão 24. Auditoria da instalação informou zero vulnerabilidades.
+- HTML gerado conferido: `pt-BR`, um h1, zero recebido/gasto, data 22/09/2026, aviso de doações desabilitadas e nenhum script no placeholder.
+- `npm run dev` respondeu HTTP 200 no endereço local da tarefa; Astro iniciou em segundo plano neste harness. A primeira sonda esperava processo em primeiro plano e foi ajustada; resposta verificada e servidor encerrado com `astro dev stop`. README cobre ambos os modos.
+- Sem verificação visual em navegador nesta etapa de placeholder; não alegar auditoria WCAG ou desempenho em celular. Interface final é F07.
+- Próximo passo: commit/push, PR e CI remoto. F08 não iniciada; nada publicado.
