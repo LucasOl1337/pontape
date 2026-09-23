@@ -21,7 +21,7 @@ npm ci
 npm run ledger:verify
 ```
 
-O comando confere o arquivo `src/data/ledger/ledger.json`. Para uma cópia baixada de `/livro/ledger.json`, use `npm run ledger:verify -- --file /caminho/ledger.json`. Saída `valid: true` significa que a estrutura, os hashes, a ordem e as correções conferem. Saída de erro termina com código diferente de zero. O livro inicial tem 21 fatos reais do projeto e nenhum movimento financeiro. Fontes e datas estão em [FONTES.md](FONTES.md).
+O comando confere o arquivo `src/data/ledger/ledger.json`. Para uma cópia baixada de `/livro/ledger.json`, use `npm run ledger:verify -- --file /caminho/ledger.json`. Saída `valid: true` significa que a estrutura, os hashes, a ordem e as correções conferem. Saída de erro termina com código diferente de zero. O livro inicial tem 26 fatos reais do projeto e nenhum movimento financeiro. Fontes e datas estão em [FONTES.md](FONTES.md).
 
 Guarde o checkpoint fora desta pasta. Depois, ao receber uma versão nova, confira também sua cópia antiga:
 

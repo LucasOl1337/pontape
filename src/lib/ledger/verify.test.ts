@@ -22,22 +22,23 @@ async function rehash(events: LedgerEvent[]): Promise<LedgerEvent[]> {
 }
 
 describe('livro encadeado', () => {
-  it('confere os 21 fatos reais com as fontes exigidas', async () => {
+  it('confere os 26 fatos reais com as fontes exigidas', async () => {
     expect(await verifyDocument(realLedger)).toMatchObject({ valid: true });
     const all = ledgerDocumentSchema.parse(realLedger).events;
     // Pin the historical prefix, while allowing later legitimate appends.
-    const events = all.slice(0, 21);
+    const events = all.slice(0, 26);
     expect(await verifyLedger(all, {
-      schemaVersion: 1, ledger: 'vidanova-public-actions', sequence: '21',
-      headHash: '3ed9801c2dca64b16a74f1f8a97583cc96dfd31e4139a3630eb1d006309ccd6f',
-      generatedAt: '2026-09-23T00:39:39.098Z',
+      schemaVersion: 1, ledger: 'vidanova-public-actions', sequence: '26',
+      headHash: 'ce05cfba4bc24efec75c612c509bd2867b8f4bf03d86401df00de21c80cb4a77',
+      generatedAt: '2026-09-23T00:56:32.239Z',
     })).toMatchObject({ valid: true });
-    expect(events).toHaveLength(21);
+    expect(events).toHaveLength(26);
     expect(events.every(event => event.payload.type === 'project')).toBe(true);
+    expect(events.every(event => event.payload.occurredOn === '2026-09-22')).toBe(true);
     expect(events.flatMap(({ payload }) => payload.type === 'project' && payload.action === 'decision_recorded' ? [payload.decisionId] : []))
-      .toEqual(Array.from({ length: 12 }, (_, i) => `D${String(i + 1).padStart(3, '0')}`));
+      .toEqual(Array.from({ length: 14 }, (_, i) => `D${String(i + 1).padStart(3, '0')}`));
     expect(events.flatMap(({ payload }) => payload.type === 'project' && payload.action === 'pull_request_merged' ? [payload.pullRequest] : []).sort())
-      .toEqual(['2', '23', '24', '25', '26', '3', '4', '5']);
+      .toEqual(['2', '23', '24', '25', '26', '27', '28', '29', '3', '4', '5']);
   });
   it('aceita livro vazio somente com cabeça zero e contagem zero', async () => {
     expect(await verifyDocument({ events: [], checkpoint: createCheckpoint([], at) })).toMatchObject({ valid: true, eventCount: 0 });
@@ -70,6 +71,13 @@ describe('livro encadeado', () => {
     const events = await example(); const checkpoint = createCheckpoint(events.slice(0, 2), at);
     expect(await verifyLedger(events, checkpoint)).toMatchObject({ valid: true, checkpointMatched: true });
     expect(await verifyDocument({ events, checkpoint })).toMatchObject({ valid: false, code: 'checkpoint' });
+  });
+  it('checkpoint não pode anteceder um evento do prefixo, mesmo com relógios fora de ordem', async () => {
+    const events = await example();
+    events[0]!.recordedAt = '2000-01-03T12:00:00.000Z';
+    await rehash(events);
+    expect(await verifyLedger(events)).toMatchObject({ valid: true, lastUpdatedAt: '2000-01-03T12:00:00.000Z' });
+    expect(await verifyLedger(events, createCheckpoint(events, at))).toMatchObject({ valid: false, code: 'checkpoint' });
   });
   it('recusa campos extras no envelope e payload', async () => {
     const events = await example();

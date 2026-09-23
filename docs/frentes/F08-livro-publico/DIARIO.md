@@ -65,3 +65,20 @@
 - Check local passou com 71 testes e teste cruzado D014. CI remoto iniciado em https://github.com/LucasOl1337/VidaNova/actions/runs/35803813872; conferir o check do head final antes de integrar (este registro também gera atualização do CI).
 - Report final ao Regente pelo canal Maestri após conferir o head final. Próximo responsável: Regente revisa e integra; Design/UI consome `src/lib/ledger/index.ts` e `published.ts` conforme o contrato. Agente não executa deploy, criação de chave de produção ou primeira ancoragem.
 - Dúvidas não bloqueantes: custodiante da chave, canal público independente, espelho e frequência da ancoragem. Procedimento proposto e estados ausentes documentados; nenhuma dessas funções anunciada como ativa.
+
+## 22/09/2026 · Ajustes solicitados antes da integração
+
+- Regente revisou a PR #30 e autorizou explicitamente refazer o lote inicial, que ainda não foi publicado. Alterações: `occurredOn` no fuso America/Sao_Paulo, incluir D013/D014 e PRs #27/#28/#29, total 26 fatos; #30 será acrescentada pelo Regente após o merge com o comando normal.
+- CONTRATO deve ser especificação independente completa: contêineres, todas as chaves e enums, identificador literal do checkpoint e vetor mínimo com hash. ARQUITETURA §4.2 deve apontar para a fórmula vigente.
+- Assinatura e OpenTimestamps aprovados como proposta. Custódia e primeira ancoragem permanecem com o Regente. Retomada: executar esses três ajustes na mesma branch/PR e reportar “F08 núcleo atualizada”.
+
+## 22/09/2026 · Ajustes de revisão executados
+
+- Lote inicial refeito com autorização expressa pré-publicação: **26 fatos**, D001–D014 e PRs #2–#5/#23–#29, além da criação. Todos os dias civis são 22/09/2026 em America/Sao_Paulo. `recordedAt` mantém a hora UTC da importação. Nova cabeça: `ce05cfba4bc24efec75c612c509bd2867b8f4bf03d86401df00de21c80cb4a77`. PR #30 fica para o Regente acrescentar após merge.
+- Função pura `dateInSaoPaulo` usa IANA e considera horário de verão histórico; validação compara o dia público ao dia brasileiro do registro. Testes cobrem virada de data, horário de verão e dia ainda futuro no Brasil. O primeiro ensaio do formatter ISO sem era revelou que Intl omite essa parte; corrigido para calendário gregoriano com era explícita antes de gerar qualquer evento.
+- CONTRATO reescrito como especificação normativa independente: contêineres exatos (produção e fixtures), formatos primitivos, lista completa de chaves/ações/enums por família, checkpoint literal `vidanova-public-actions`, fórmula com recordedAt, correções, totais e assinatura. Inclui vetor fictício de um evento, bytes exatos JCS e hash esperado `a8183311eaf2313a098f25b08352e4676b9555c4a3c752efc024c60063c3d454`; fixture e teste impedem divergência entre documento e implementação.
+- ARQUITETURA §4.2 marca a fórmula anterior como histórica e aponta para o CONTRATO v1 vigente. Não houve alteração de BRIEF/DECISOES/QUADRO.
+- Python independente conferiu vetor mínimo, 26 hashes, presença das 14 decisões no commit fonte e as 11 PRs com data brasileira/mergeCommit contra a API. Testes cruzados do Design continuam passando sem mexer no protótipo.
+- Assinatura/OpenTimestamps aprovados como proposta pelo Regente; custódia e primeira execução real ficam com ele. Próximo: push na mesma PR #30, CI e report “F08 núcleo atualizada”.
+
+- Validação final dos ajustes: `npm run check` passou com 76 testes, CLI dos 26 eventos e build; zero erros/avisos de tipos, um hint preexistente do protótipo. Bundle browser sem globais Node verificou o documento estático novo e a conversão para a data brasileira. Commit e push na mesma PR #30; conferir CI do head atualizado antes da integração.

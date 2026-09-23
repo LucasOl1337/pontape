@@ -1,0 +1,26 @@
+{
+  "notice": "DADO FICTÍCIO PARA TESTE DE CONFORMIDADE. Não é uma entrega realizada.",
+  "events": [
+    {
+      "schemaVersion": 1,
+      "sequence": "1",
+      "previousHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "recordedAt": "2000-01-02T12:00:00.000Z",
+      "payload": {
+        "occurredOn": "2000-01-01",
+        "correctionOf": null,
+        "type": "field",
+        "action": "food_delivered",
+        "quantity": "1"
+      },
+      "hash": "a8183311eaf2313a098f25b08352e4676b9555c4a3c752efc024c60063c3d454"
+    }
+  ],
+  "checkpoint": {
+    "schemaVersion": 1,
+    "ledger": "vidanova-public-actions",
+    "sequence": "1",
+    "headHash": "a8183311eaf2313a098f25b08352e4676b9555c4a3c752efc024c60063c3d454",
+    "generatedAt": "2000-01-02T12:00:00.000Z"
+  }
+}

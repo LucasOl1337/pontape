@@ -1,3 +1,4 @@
+import { dateInSaoPaulo } from './date.ts';
 import { canonicalize } from './canonical.ts';
 import {
   GENESIS_HASH, ledgerCheckpointSchema, ledgerDocumentSchema, ledgerPayloadSchema, ledgerSchema,
@@ -42,7 +43,7 @@ export async function verifyLedger(input: unknown, expectedCheckpoint?: unknown)
     if (event.previousHash !== previousHash) return fail('previous_hash');
     const { hash, ...unsigned } = event;
     if (await eventHash(unsigned) !== hash) return fail('hash');
-    if (event.payload.occurredOn > event.recordedAt.slice(0, 10)) return fail('time');
+    if (event.payload.occurredOn > dateInSaoPaulo(event.recordedAt)) return fail('time');
     const payload = event.payload;
     if (payload.correctionOf !== null) {
       const reference = BigInt(payload.correctionOf);
@@ -84,7 +85,7 @@ export async function verifyLedger(input: unknown, expectedCheckpoint?: unknown)
     if (length > BigInt(events.length)) return { valid: false, code: 'checkpoint' };
     const knownEvent = length === 0n ? undefined : events[Number(length - 1n)];
     if (checkpoint.data.headHash !== (knownEvent?.hash ?? GENESIS_HASH)
-      || (knownEvent && checkpoint.data.generatedAt < knownEvent.recordedAt)) return { valid: false, code: 'checkpoint' };
+      || events.slice(0, Number(length)).some(event => checkpoint.data.generatedAt < event.recordedAt)) return { valid: false, code: 'checkpoint' };
   }
   return {
     valid: true, eventCount: events.length, headHash: previousHash,
