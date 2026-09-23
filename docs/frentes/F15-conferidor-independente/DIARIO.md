@@ -41,3 +41,11 @@ Avisar o Regente dessas lacunas; implementar JCS/SHA-256 em Python padrão a par
 - O hash fixo do §7 (`a8183311…c3d454`) foi reproduzido pelo Python. A fixture fictícia de conformidade passou com 1 ação. Um payload com `name` extra e hash recalculado foi recusado antes de validar o hash.
 - O livro real **ainda na branch da PR #30** passou com 26 ações e saldo R$ 0,00. A versão anterior desse livro falhava na linha 15 pela nova regra da data brasileira; a revisão ajustou os dados e passou. Nenhum fato foi inferido do código proibido.
 - A PR #31 foi aberta como rascunho, com CI verde, enquanto aguardamos a integração da #30 na `main`. Ao integrar, rodar os mesmos comandos diretamente em `src/data/ledger/ledger.json` e atualizar a PR #31 antes de marcá-la pronta.
+
+## 22/09/2026 · Livro integrado na main e conferência final
+
+- A PR #30 foi integrada. Fiz rebase somente da branch do worktree `bruto/f15-conferidor` sobre `origin/main`; não alterei o checkout compartilhado. O `CONTRATO.md` integrado não difere da revisão da PR #30 usada para a implementação; reli/comparei somente esse contrato e a ARQUITETURA §4.
+- `python3 tools/conferir.py src/data/ledger/ledger.json` passou com **28 ações** e saldo R$ 0,00. `src/data/ledger/conformance.fixture.json` passou com 1 ação fictícia e o hash fixo do §7. Os vetores `real.json` (21) e `sample.json` (18) continuam passando.
+- Os testes passam a incluir os dois arquivos da F08 diretamente, para evitar regressão quando novos fatos forem acrescentados. A CLI não usa nem importa o verificador TypeScript. A sala limpa foi preservada: nenhum `src/lib/ledger/*.ts` ou `design/prototipo/*.js` foi aberto nesta frente.
+- Não restou lacuna contratual necessária para este conferidor. O limite conhecido é externo ao arquivo: provar ausência de reescrita completa ou retirada do sufixo exige comparar com checkpoint anterior sob outro controle, conforme §5.
+- Validação final após o rebase: 10 testes Python passaram; `npm run check` passou (lint, tipos, testes e build); `git diff --check` passou. A PR #31 pode sair de rascunho após publicar este último commit.

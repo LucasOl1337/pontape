@@ -15,6 +15,7 @@ from tools.conferir import jcs
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "tools" / "conferir.py"
 DATA = ROOT / "design" / "prototipo" / "ledger"
+PUBLISHED = ROOT / "src" / "data" / "ledger"
 VECTOR_HASH = "a8183311eaf2313a098f25b08352e4676b9555c4a3c752efc024c60063c3d454"
 
 
@@ -71,6 +72,13 @@ class ConferirTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 self.assertIn(f"Tudo certo: {count} ações", result.stdout)
         self.assertIn("R$ 4.101,40", run_book(DATA / "sample.json").stdout)
+
+    def test_published_book_and_contract_fixture_pass(self):
+        for name in ("ledger.json", "conformance.fixture.json"):
+            with self.subTest(name=name):
+                result = run_book(PUBLISHED / name)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("Tudo certo:", result.stdout)
 
     def test_first_bad_line_for_four_adulterations(self):
         original = json.loads((DATA / "sample.json").read_text(encoding="utf-8"))
