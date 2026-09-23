@@ -5,6 +5,7 @@ import { ledgerTrust } from '../../lib/ledger/published';
 import type { LedgerView } from '../../lib/ledger-view/source';
 import { phrase } from '../../lib/ledger-view/phrases';
 import { REPOSITORY_OPEN } from '../../data/site/project';
+import { REPOSITORY_URL } from '../../lib/ledger/schema';
 
 interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
@@ -24,6 +25,15 @@ if (last) {
   text = { before: full.slice(0, at), mark: last.previousHash, after: full.slice(at + last.previousHash.length) };
 }
 const links = events.slice(-3);
+const doc = (path: string) => `${REPOSITORY_URL}/blob/main/${path}`;
+// Everything to check the book away from this site, with a real link (F32).
+const SOURCES = [
+  { href: doc('docs/transparencia/COMO-CONFERIR.md'), label: 'Como conferir', text: 'o passo a passo, com o verificador do projeto: npm run ledger:verify' },
+  { href: doc('docs/transparencia/CONFERIR-COM-PYTHON.md'), label: 'Conferidor em Python', text: 'independente, só com o Python: tools/conferir.py' },
+  { href: doc('docs/transparencia/CONTRATO.md'), label: 'Contrato do livro', text: 'os campos, a conta SHA-256 e as regras' },
+  { href: doc('docs/transparencia/OPERACAO.md'), label: 'Operação', text: 'quem registra o quê, assinatura e carimbo de tempo' },
+  { href: REPOSITORY_URL, label: 'Repositório', text: 'o código do site, do livro e do robô que anota' },
+];
 
 // F08 trust state (src/data/ledger/trust.json): say plainly what is not active yet.
 const TRUST = [
@@ -68,17 +78,20 @@ const STEPS = [
 <div class="fine-print">
   <aside class="not-proven">
     <p class="kicker">O que o livro não prova</p>
-    <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Assinar as marcas e carimbar a data num serviço público estão em estudo.</p>
+    <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Vai ter também a assinatura das marcas e o carimbo de data num serviço público: já estão preparados, mas ainda não aparecem aqui.</p>
   </aside>
-  <details class="more-details">
-    <summary>Baixar o livro e conferir no seu computador</summary>
+  <section class="off-site" aria-labelledby="t-off-site">
+    <h3 id="t-off-site" class="off-site-title">No seu computador</h3>
     <div class="actions">
       <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro inteiro</a>
       <a class="btn" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="shield" />Baixar a marca de controle</a>
     </div>
-    <p class="verify-cli">Guarde a marca de controle num lugar seu. Numa próxima visita, ela mostra se alguém refez o livro. No computador, o verificador aberto confere tudo sem internet: <code>npm run ledger:verify</code>, com o passo a passo em <code>docs/transparencia/COMO-CONFERIR.md</code>.{!REPOSITORY_OPEN && ' O repositório ainda está fechado.'}</p>
+    <p class="verify-cli">Guarde a marca de controle num lugar seu. Numa próxima visita, ela mostra se alguém refez o livro. Os dois conferidores rodam sem internet.{!REPOSITORY_OPEN && ' O repositório ainda está fechado.'}</p>
+    <ul class="sources">
+      {SOURCES.map(s => <li><a href={s.href} rel="noopener">{s.label}<Icon name="arrow-right" /></a><span>{s.text}</span></li>)}
+    </ul>
     <dl class="trust-list">
       {TRUST.map(t => <div><dt>{t.label}</dt><dd><Icon name="clock" />{t.value}</dd></div>)}
     </dl>
-  </details>
+  </section>
 </div>

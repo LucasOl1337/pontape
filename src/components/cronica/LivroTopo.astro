@@ -9,9 +9,11 @@ import type { LedgerEvent } from '../../lib/ledger/schema';
 import type { LedgerView } from '../../lib/ledger-view/source';
 import { TYPES, TYPE_ORDER, type LedgerType } from '../../lib/ledger-view/phrases';
 import { correctionsOf } from '../../lib/ledger-view/money';
+import { REPOSITORY_URL } from '../../lib/ledger/schema';
+import { LIVRO } from '../../data/site/livro';
 
-// The first screen of the book: the honest numbers and Conferir on the left, every action on the
-// right, a page at a time, so the book never becomes an endless roll.
+// The first screen of the technical page (F32): the numbers with the latest mark and Conferir on the
+// left, every action on the right, a page at a time, so the book never becomes an endless roll.
 interface Props { ledger: LedgerView; example: LedgerView }
 const { ledger, example } = Astro.props;
 const snapshot = transparencySnapshotSchema.parse(snapshotData);
@@ -32,9 +34,9 @@ const EMPTY: Record<LedgerType, [string, string]> = {
 ---
 <section class="book" id="livro" aria-labelledby="page-title">
   <div class="book-side">
-    <p class="kicker">Caderno especial · Livro público</p>
-    <h1 id="page-title" class="book-title">Tudo que o projeto faz, <em>à vista.</em></h1>
-    <p class="book-rule"><Icon name="shield" /><span>Toda ação aparece. Quem é a pessoa, não.</span></p>
+    <nav class="crumbs" aria-label="Você está em"><ol><li><a href={LIVRO.href}>Transparência</a></li><li aria-current="page">Parte técnica</li></ol></nav>
+    <h1 id="page-title" class="book-title">Por dentro <em>do livro.</em></h1>
+    <p class="book-lead">Pra quem quer conferir por conta própria: as marcas, a lista completa, os arquivos e o código, aberto <a href={REPOSITORY_URL} rel="noopener">no GitHub</a>.</p>
     <dl class="book-numbers">
       <div><dt>Ações no livro</dt><dd>{events.length}</dd></div>
       <div><dt>Entrou</dt><dd>{brl.format(snapshot.receivedCents / 100)}</dd></div>

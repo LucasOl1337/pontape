@@ -516,8 +516,8 @@ body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
 .book{ display:grid; gap:2rem; max-width:var(--page); margin-inline:auto; padding:1.6rem var(--gutter) 2.4rem }
 .book-title{ margin-top:.5rem; font:500 clamp(2.4rem, 1.5rem + 2.6vw, 3.9rem)/.98 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
 .book-title em{ font-style:italic; color:var(--red) }
-.book-rule{ display:flex; flex-wrap:wrap; align-items:center; gap:.5rem .8rem; margin-top:1rem; font:italic 400 1.25rem/1.3 var(--font-serif) }
-.book-rule .icon{ width:1.4rem; height:1.4rem; color:var(--red) }
+.book-lead{ max-width:34rem; margin-top:.8rem; font:400 1.125rem/1.5 var(--font-serif); color:var(--ink-2) }
+.book-lead a{ font-weight:600; color:var(--ink) }
 .book-numbers{ display:grid; grid-template-columns:1fr 1fr; margin-top:1.2rem; border-top:2px solid var(--ink) }
 .book-numbers div{ padding:.6rem .6rem .6rem 0; border-bottom:1px solid var(--rule) }
 .book-numbers div:nth-child(even){ padding-left:1rem; border-left:1px solid var(--rule) }
@@ -577,8 +577,10 @@ body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
 .tab-lead{ max-width:var(--measure); margin-top:.6rem; font-size:var(--t-deck); line-height:1.4; color:var(--ink-2) }
 
 .proof-grid{ display:grid; gap:2rem; margin-top:1.6rem }
-.mini-stair{ display:grid; grid-template-columns:repeat(var(--n), minmax(0, 1fr)); align-items:end; min-height:22rem }
-.mini-stair li{ height:calc((var(--k) + 1) / var(--n) * 100%); min-height:9rem; padding:.9rem .9rem .9rem 1rem; border-top:3px solid var(--ink); border-left:3px solid var(--ink); background:repeating-linear-gradient(-45deg, color-mix(in srgb, var(--ink) 7%, transparent) 0 1px, transparent 1px 9px) }
+.mini-stair{ display:grid; grid-template-columns:repeat(var(--n), minmax(0, 1fr)); align-items:stretch; min-height:22rem }
+/* Every step ends on the same floor and starts one rise above the one before, however long its text:
+   the first one used to spill under the box below (F32). */
+.mini-stair li{ margin-top:calc((var(--n) - 1 - var(--k)) * 3.5rem); min-height:9rem; padding:.9rem .9rem .9rem 1rem; border-top:3px solid var(--ink); border-left:3px solid var(--ink); background:repeating-linear-gradient(-45deg, color-mix(in srgb, var(--ink) 7%, transparent) 0 1px, transparent 1px 9px) }
 .mini-stair li:first-child{ border-left-color:transparent }
 .mini-stair h3{ margin-top:.3rem; font:500 clamp(1.2rem, 1rem + .7vw, 1.6rem)/1.1 var(--font-display) }
 .mini-stair p{ margin-top:.4rem; font:400 .9375rem/1.45 var(--font-sans); color:var(--ink-2) }
@@ -597,16 +599,16 @@ body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
 .proof-own{ font:700 .8125rem var(--font-mono); color:var(--red) }
 .proof-prev{ color:var(--ink-2); font-size:.75rem }
 .fine-print{ display:grid; gap:1.6rem; margin-top:2rem }
-.not-proven{ padding:1.2rem 1.4rem; border-left:4px solid var(--red); background:var(--paper-2) }
+.not-proven{ align-self:start; padding:1.2rem 1.4rem; border-left:4px solid var(--red); background:var(--paper-2) }
 .not-proven p:last-child{ margin-top:.5rem }
-.more-details{ border-block:1px solid var(--ink) }
-.more-details summary{ min-height:48px; display:flex; align-items:center; gap:.5rem; cursor:pointer; font:700 1rem/1.3 var(--font-sans) }
-.more-details summary::after{ content:"+"; margin-left:auto; font:500 1.6rem/1 var(--font-display); color:var(--red) }
-.more-details[open] summary::after{ content:"−" }
-.more-details[open]{ padding-bottom:1rem }
-.fine-print .actions{ margin-top:.4rem }
+.off-site-title{ font:500 var(--t-h3)/1.15 var(--font-display) }
+.fine-print .actions{ margin-top:.8rem }
 .verify-cli{ margin-top:1rem; font:400 var(--t-small)/1.6 var(--font-sans); color:var(--ink-2) }
-.verify-cli code{ color:var(--ink); font-weight:700 }
+.sources{ display:grid; margin-top:1rem; border-top:1px solid var(--ink) }
+.sources li{ display:grid; gap:.1rem; padding-block:.55rem; border-bottom:1px solid var(--rule); font:400 var(--t-small)/1.45 var(--font-sans) }
+.sources a{ display:inline-flex; align-items:center; gap:.3rem; justify-self:start; font-weight:700 }
+.sources .icon{ width:1em; height:1em }
+.sources span{ color:var(--ink-2) }
 .trust-list{ display:grid; margin-top:1rem; border-top:1px solid var(--ink); font:400 var(--t-small)/1.4 var(--font-sans) }
 .trust-list div{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:.3rem 1rem; padding-block:.6rem; border-bottom:1px solid var(--rule) }
 .trust-list dt{ font-weight:700 }
@@ -617,7 +619,7 @@ body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
 }
 @media (max-width:599px){
   .mini-stair{ grid-template-columns:1fr; min-height:0 }
-  .mini-stair li{ height:auto; min-height:0; margin-left:calc(var(--k) * 1.2rem); border-left-color:var(--ink) }
+  .mini-stair li{ min-height:0; margin-top:0; margin-left:calc(var(--k) * 1.2rem); border-left-color:var(--ink) }
 }
 
 .money{ margin-top:1.4rem }
@@ -658,6 +660,79 @@ body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
   .rules-row--head{ display:grid; font:700 .75rem/1.3 var(--font-sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-2) }
   .rules-row--head span:last-child{ color:var(--status-bottleneck) }
   .rules-label{ display:none }
+}
+
+/* ---------- Transparência, first layer (F32, D029): plain words, the technical part behind a button ---------- */
+/* One column on a phone, in reading order; two on a desk, on the header grid (x = logo). */
+.plain{ display:grid; grid-template-columns:minmax(0, 1fr); row-gap:var(--space-6); max-width:var(--page); margin-inline:auto; padding:var(--space-4) var(--gutter) var(--space-16) }
+.plain-top{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.5rem 1rem }
+.plain-tech{ min-height:44px; padding:.4rem .9rem; font-size:.9375rem }
+.plain-title{ font:500 clamp(2.1rem, 1.3rem + 2.6vw, 4.6rem)/1 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
+.plain-title em{ font-style:italic; color:var(--red) }
+.plain-lead{ max-width:40rem; margin-top:var(--space-3); font:400 clamp(1.125rem, 1rem + .5vw, 1.5rem)/1.45 var(--font-serif) }
+.plain-count{ display:grid; grid-template-columns:repeat(3, auto); justify-content:start; border-top:2px solid var(--ink) }
+.plain-count div{ display:flex; flex-direction:column-reverse; justify-content:flex-end; padding:.45rem 1rem .1rem 0 }
+.plain-count div + div{ padding-left:1rem; border-left:1px solid var(--rule) }
+.plain-count dt{ font:700 .875rem/1.3 var(--font-sans); color:var(--ink-2) }
+.plain-count dd{ font:500 clamp(1.5rem, 1.1rem + 1.2vw, 2.4rem)/1.1 var(--font-display); white-space:nowrap }
+.plain-note{ margin-top:.5rem; font:400 .875rem/1.5 var(--font-sans); color:var(--ink-2) }
+.plain-side .conferir{ margin-top:var(--space-4) }
+/* Until the first click the result says nothing new: it stays for the screen reader, out of sight. */
+.verify[data-plain] .verify-result[data-state="idle"]{ position:absolute; width:1px; height:1px; margin:0; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0 }
+.plain-kinds, .plain-trust, .plain-recent{ padding-top:var(--space-3); border-top:2px solid var(--ink) }
+.plain-h2{ font:500 clamp(1.6rem, 1.25rem + 1.1vw, 2.25rem)/1.1 var(--font-display); letter-spacing:-.015em }
+.kinds{ display:grid; gap:var(--space-4); margin-top:var(--space-4) }
+.kind{ display:grid; grid-template-columns:auto minmax(0, 1fr); column-gap:.75rem; align-content:start }
+.kind > .icon{ grid-row:span 3; width:1.7rem; height:1.7rem; margin-top:.05rem; color:var(--red); stroke-width:1.8 }
+.kind-title{ font:600 1.25rem/1.25 var(--font-serif) }
+.kind-text{ margin-top:.15rem; font-size:1.0625rem; line-height:1.45 }
+.kind-state{ display:flex; align-items:center; gap:.45rem; margin-top:.45rem; font:700 .875rem/1.35 var(--font-sans); color:var(--ink-2) }
+.kind-state .icon{ width:1em; height:1em }
+.kind-state.is-live{ color:var(--status-live) }
+.live-dot{ flex-shrink:0; width:.6rem; height:.6rem; border-radius:50%; background:currentColor; box-shadow:0 0 0 3px color-mix(in srgb, currentColor 22%, transparent) }
+.plain-rule{ display:flex; gap:.55rem; align-items:flex-start; margin-top:var(--space-4); font:italic 400 1.125rem/1.4 var(--font-serif) }
+.plain-rule .icon{ width:1.3rem; height:1.3rem; margin-top:.1rem; color:var(--red) }
+.trust-body{ display:grid; gap:var(--space-4); margin-top:var(--space-3) }
+.trust-text p{ font-size:1.0625rem; line-height:1.5 }
+.trust-text p + p{ margin-top:.55rem }
+.trust-text .trust-soon{ display:flex; gap:.45rem; font:400 .9375rem/1.45 var(--font-sans); color:var(--ink-2) }
+.trust-soon .icon{ width:1.05em; height:1.05em; margin-top:.15rem }
+.corrente{ display:grid; gap:var(--space-3); align-content:start }
+.corrente-art{ width:100%; max-width:22rem; height:auto }
+.corrente-label{ margin-top:.3rem; font:700 .875rem/1.35 var(--font-sans); color:var(--ink-2) }
+.is-broken .corrente-label{ color:var(--status-bottleneck) }
+.c-sheet{ fill:var(--paper); stroke:var(--ink); stroke-width:2 }
+.c-lines{ fill:none; stroke:var(--ink-2); stroke-width:2; stroke-linecap:round }
+.c-link rect{ fill:none; stroke:var(--ink); stroke-width:2.2 }
+.c-link.is-bad rect{ stroke:var(--status-bottleneck); stroke-dasharray:3 2 }
+.c-seal.is-ok{ fill:var(--status-live) }
+.c-seal.is-bad{ fill:var(--status-bottleneck) }
+.c-mark{ fill:none; stroke:var(--paper); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round }
+.c-scribble{ fill:none; stroke:var(--status-bottleneck); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round }
+.recent{ margin-top:var(--space-2) }
+.recent li{ display:grid; grid-template-columns:3.1rem minmax(0, 1fr); gap:.75rem; padding-block:.55rem; border-bottom:1px solid var(--rule) }
+.recent time{ font:700 .875rem/1.75 var(--font-sans); color:var(--ink-2); font-variant-numeric:tabular-nums }
+.recent p{ font-size:1.0625rem; line-height:1.45 }
+.recent strong{ font-weight:700; color:var(--red) }
+.plain-recent .more-link{ margin-top:var(--space-3) }
+.plain-end{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--space-3) var(--space-6); padding-top:var(--space-4); border-top:3px double var(--ink) }
+.plain-end p{ max-width:34rem; font:italic 400 1.25rem/1.35 var(--font-serif) }
+@media (min-width:760px){
+  .kinds{ grid-template-columns:repeat(3, minmax(0, 1fr)); gap:0 }
+  .kind{ padding-right:1.5rem }
+  .kind + .kind{ padding-left:1.5rem; border-left:1px solid var(--rule) }
+  .trust-body{ grid-template-columns:minmax(0, 1fr) minmax(16rem, 21rem); column-gap:var(--space-8) }
+}
+@media (min-width:960px){
+  .plain{
+    grid-template-columns:minmax(0, 7fr) minmax(0, 5fr); column-gap:clamp(2.5rem, 4vw, 5rem); padding-top:var(--space-6);
+    grid-template-areas:"top top" "head side" "kinds kinds" "trust recent" "end end";
+  }
+  .plain-top{ grid-area:top } .plain-head{ grid-area:head } .plain-side{ grid-area:side } .plain-kinds{ grid-area:kinds }
+  .plain-trust{ grid-area:trust } .plain-recent{ grid-area:recent } .plain-end{ grid-area:end }
+  .plain-side .conferir{ margin-top:var(--space-4) }
+  /* The button beside its sentence: the whole first layer fits a 1080 screen. */
+  .plain .verify-head{ grid-template-columns:auto minmax(0, 1fr); align-items:center; column-gap:1.25rem }
 }
 
 /* ---------- 404 (same layout, redrawn in this variant) ---------- */

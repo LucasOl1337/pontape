@@ -15,8 +15,8 @@ export const SHARE: Record<'home' | 'transparencia', ShareCard & { title: string
     art: 'stairs',
   },
   transparencia: {
-    title: `Livro público · ${PROJECT_NAME}`,
-    description: 'Todas as ações do projeto num livro público: dinheiro, vida real, candidato e projeto. Cada linha presa na anterior, e qualquer pessoa confere.',
+    title: `Transparência · ${PROJECT_NAME}`,
+    description: `Um livro aberto com tudo que o ${PROJECT_NAME} faz: o dinheiro, as atividades e as decisões. Ninguém apaga escondido, e qualquer pessoa confere.`,
     image: '/og-transparencia.png',
     alt: `${PROJECT_NAME}: Tudo que o projeto faz, à vista. Ilustração de uma corrente de ações.`,
     name: PROJECT_NAME,

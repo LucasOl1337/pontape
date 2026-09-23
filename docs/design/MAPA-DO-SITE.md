@@ -9,7 +9,8 @@ Como o site está depois da F29 (home pro leigo) e da F31 (cadernos em páginas 
 | Endereço | Página | Pra quem | O que mostra |
 |---|---|---|---|
 | `/` | A escada | Quem nunca ouviu falar | O que é, se já funciona e o que fazer agora, numa tela |
-| `/transparencia` | Livro público | Doador, imprensa, quem desconfia | Toda ação do projeto e o botão Conferir |
+| `/transparencia` | Transparência | Doador, imprensa, quem desconfia | O livro em palavra de gente: o que entra, por que confiar, o que já aconteceu e o botão Conferir |
+| `/transparencia/tecnico` | Parte técnica do livro | Quem é técnico | Toda ação com marca e fonte, o exemplo adulterado, os arquivos e os conferidores |
 | `/construir` | Construir junto | Quem quer ajudar a construir | Quatro portas pros cadernos abaixo |
 | `/construir/pecas` | As 9 partes do projeto | Quem constrói | Cada peça com selo de estado e ficha |
 | `/construir/gargalos` | O que a gente ainda não sabe resolver | Especialista | As cinco perguntas em aberto |
@@ -23,7 +24,7 @@ Endereço e âncora ficam em português, porque aparecem no link que as pessoas 
 ## Em todas as páginas
 
 - **Cabeçalho:** marca e quatro itens: Como funciona, Transparência, Como ajudar, Construir junto. No celular, Menu. O item da página fica marcado; dentro de `/construir/*`, "Construir junto" fica marcado.
-- **Faixa preta** "Em construção. O projeto ainda não recebe doação nem atende ninguém. Ver o que já existe" em todas menos a home, que diz isso na primeira tela.
+- **Faixa preta** "Em construção. O projeto ainda não recebe doação nem atende ninguém. Ver o que já existe" em todas menos a home e `/transparencia`, que dizem isso no próprio texto.
 - **Rodapé:** marca, livro público, organização (sem registro formal nem canal de contato), privacidade, data do estado das peças e o link "Pra quem quer construir junto".
 - **Botão "Cores · em teste"**, fixo embaixo à direita até o Lucas escolher a paleta (D025, D026); no celular, numa barra de ponta a ponta. `?cor=<nome>` troca e guarda a escolha no aparelho. O aviso que aparece embaixo (toast) sobe pra ficar acima dele.
 
@@ -44,12 +45,14 @@ Nove degraus, cada um é uma aba que abre no mesmo lugar. Setas, Home e End anda
 - **"Mais detalhes"** abre a ficha da peça: um diálogo pequeno no meio da tela, com o estado, o que é, como funciona, o que falta, quem pode ajudar, e peça anterior e próxima.
 - **Âncoras:** `#inicio`, `#como-funciona` (degrau 1), `#degrau-0` a `#degrau-8`, `#transparencia` (degrau 7), `#ajudar` (degrau 8), `#m1` a `#m9` (ficha da peça).
 
-## Livro público `/transparencia`
+## Transparência `/transparencia` e a parte técnica (F32, D029)
 
-- **Topo:** "Tudo que o projeto faz, à vista.", a regra "Toda ação aparece. Quem é a pessoa, não.", quatro números (ações no livro, entrou, saiu, marca mais recente), a nota do livro estático e o **Conferir**, que refaz a conta de cada ação no aparelho.
-- **Todas as ações:** "Livro de verdade" ou "Ver um exemplo" (`?exemplo`), filtro por tipo, lista em corrente, página por página.
-- **Três abas embaixo:** Como conferir, Dinheiro, O que entra.
-- **Âncoras:** `#livro`, `#conferir`, `#acoes`, `#como-conferir`, `#dinheiro`, `#o-que-entra`.
+Duas camadas. A primeira fala com quem nunca ouviu falar de GitHub; um teste barra nela GitHub, PR, commit, hash, JSON, SHA-256, marca e número de PR. Todo o texto dela mora em `src/data/site/livro.ts`.
+
+- **Primeira camada `/transparencia`,** sem a faixa preta: "Transparência" e o botão **Parte técnica**; o título "Tudo que o projeto faz, à vista." e duas frases; os números numa linha (ações, entrou, saiu) com a hora da última; o **Conferir**, com o resultado em palavra de gente; **O que entra no livro** (o dinheiro, as atividades, as decisões, cada um com o estado); **Por que dá pra confiar** (o lacre e a corrente, com desenho); **O que já aconteceu** (as cinco últimas, com a frase simples de cada decisão e as mudanças do mesmo dia numa linha); e a Parte técnica de novo no fim.
+- **Parte técnica `/transparencia/tecnico`:** "Transparência › Parte técnica", os quatro números com a marca mais recente, o Conferir com a marca, todas as ações ("Livro de verdade" ou "Ver um exemplo", filtro por tipo, página por página, "Mudar uma linha escondido") e três abas: Como conferir (com os downloads e os links do GitHub: como conferir, conferidor em Python, contrato, operação, repositório), Dinheiro, O que entra.
+- **Frase simples da decisão:** a coluna "Em palavras simples" do `DECISOES.md`, lida no build como o título (D013). Sem ela, "Decisão nova sobre o projeto", e um teste avisa.
+- **Âncoras:** `#conferir` e `#confiar` na primeira camada. `#livro`, `#conferir`, `#acoes`, `#como-conferir`, `#dinheiro`, `#o-que-entra` na parte técnica. Os links antigos `/transparencia#acoes`, `#como-conferir`, `#dinheiro`, `#o-que-entra`, `?exemplo` e `?tipo=` levam pra parte técnica.
 - Regras do livro: [contrato da F08](../transparencia/CONTRATO.md).
 
 ## Construir junto `/construir`

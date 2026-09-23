@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LivroAberto from '../../components/cronica/LivroAberto.astro';
+import { getPublicLedger } from '../../lib/ledger-view/source';
+import { SHARE } from '../../data/site/share';
+import { LIVRO } from '../../data/site/livro';
+
+// First layer (F32, D029): plain words and Conferir. No black strip: the page says what has not opened yet.
+const ledger = await getPublicLedger();
+---
+<BaseLayout
+  title={SHARE.transparencia.title}
+  description={SHARE.transparencia.description}
+  share="transparencia"
+  current="transparencia"
+  strip={false}>
+  <script is:inline slot="head" define:vars={{ to: LIVRO.tecnico, hashes: LIVRO.movedHashes, params: LIVRO.movedParams }}>
+    // Links to the single page from before F32 land on the technical page, at the same place.
+    const query = new URLSearchParams(location.search);
+    if (hashes.includes(location.hash.slice(1)) || params.some(p => query.has(p))) location.replace(to + location.search + location.hash);
+  </script>
+  <LivroAberto ledger={ledger} />
+</BaseLayout>
+<script>import '../../scripts/transparencia';</script>

@@ -3,6 +3,7 @@ import fixture from '../../data/ledger/example.fixture.json';
 import { ledgerPayloadSchema, type LedgerEvent, type LedgerPayload } from '../ledger/schema';
 import { appendEvent, verifyLedger } from '../ledger/index';
 import { phrase } from './phrases';
+import { recentLines } from './plain';
 import { correctionsOf, formatCents, sumField, sumMoney } from './money';
 import { getExampleLedger, getPublicLedger } from './source';
 
@@ -90,5 +91,31 @@ describe('livro da F08 no site (D014)', () => {
     const money = changed.find(e => e.payload.type === 'finance')!;
     if (money.payload.type === 'finance') money.payload.amountCents = String(BigInt(money.payload.amountCents) * 10n);
     expect(await verifyLedger(changed)).toMatchObject({ valid: false, code: 'hash', sequence: money.sequence });
+  });
+});
+
+describe('últimas ações em palavra de gente (F32)', () => {
+  const project = (extra: object, occurredOn = '2000-01-01') => ({ ...common, occurredOn, type: 'project' as const, ...extra }) as LedgerPayload;
+  const merged = (n: number, day?: string) => project({ action: 'pull_request_merged', pullRequest: String(n), mergeCommit: String(n % 10).repeat(40) }, day);
+  const decided = (id: string) => project({ action: 'decision_recorded', decisionId: id, sourceCommit: 'c'.repeat(40) });
+  const plain = (id: string) => `Frase de ${id}`;
+
+  it('junta as mudanças seguidas do mesmo dia numa linha, a mais nova primeiro', async () => {
+    const events = await chain([merged(1, '1999-12-31'), merged(2), merged(3), decided('D010'), merged(4)]);
+    expect(recentLines(events, plain)).toEqual([
+      { day: '2000-01-01', text: 'Uma mudança aprovada no projeto.' },
+      { day: '2000-01-01', lead: 'Decisão.', text: 'Frase de D010.' },
+      { day: '2000-01-01', text: '2 mudanças aprovadas no projeto.' },
+      { day: '1999-12-31', text: 'Uma mudança aprovada no projeto.' },
+    ]);
+  });
+
+  it('para no limite e fala de dinheiro e entregas com as frases do livro', async () => {
+    const events = await chain([finance('5000', 'donation'), { ...common, type: 'field', action: 'food_delivered', quantity: '3' }, merged(5), merged(6)]);
+    expect(recentLines(events, plain, 2)).toEqual([
+      { day: '2000-01-01', text: '2 mudanças aprovadas no projeto.' },
+      { day: '2000-01-01', text: '3 entregas de comida.' },
+    ]);
+    expect(recentLines(events, plain).at(-1)).toEqual({ day: '2000-01-01', text: 'Doação recebida: R$\u00a050,00.' });
   });
 });
