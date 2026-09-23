@@ -26,3 +26,18 @@ Diário em `docs/frentes/F14-prontidao-lancamento/DIARIO.md`.
 - `npm run check` passa com os arquivos novos, e o build gera `404.html`, `_headers` e `robots.txt` em `dist/`.
 - A CSP não quebra a página atual nem o protótipo que a F07 vai portar (explique o que você conferiu).
 - PR aberta pra `main` e report ao Regente.
+
+## Etapa b · CSP que não quebra sozinha (aberta pelo Regente após a PR #27)
+
+Branch `bruto/f14b-csp` a partir da `main` atualizada.
+
+A PR #27 fixou à mão o hash de um script do protótipo. Quando a F07 portar a home com ilhas React, o Astro gera scripts embutidos novos e o hash fixo quebra o JavaScript em produção sem ninguém perceber. O build precisa garantir isso sozinho:
+
+1. Prefira gerar: um passo depois do `astro build` que lê todo `dist/**/*.html`, calcula o SHA-256 de cada `<script>` embutido e escreve o `script-src` do `dist/_headers` com esses hashes. Se o Astro 7 tiver CSP nativa que resolva isso de forma limpa, pode usar, explicando por quê.
+2. E sempre conferir: o build falha se algum script embutido do `dist` ficar sem hash na CSP, ou se aparecer `unsafe-inline` em `script-src`.
+3. Teste com um HTML fictício que tenha script embutido: sem o passo, falha; com o passo, passa.
+4. Atualize a seção de CSP do `LANCAMENTO.md` pra dizer que o hash é gerado no build.
+
+Limites: não mexa em componentes nem em `src/lib/ledger/`. Pode mexer em `package.json` só nos scripts de build.
+
+Pronto quando `npm run check` passa, o teste do item 3 prova as duas coisas e a PR foi reportada ao Regente.

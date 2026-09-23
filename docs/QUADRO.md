@@ -10,7 +10,7 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 |---|---|---|---|---|---|
 | F08 | [Livro público de ações](frentes/F08-livro-publico/BRIEF.md) | fino | `fino/f08-verificador` | contrato integrado (#26); núcleo em andamento | Hash encadeado, verificador, livro semeado com ações reais |
 | F07 | [Site v1 em código](frentes/F07-site-v1/BRIEF.md) | design | `design/f07-prep`, depois `design/f07-site` | etapa 0 em andamento; base já na main | Protótipo com `/transparencia` e contribuições abertas, depois código |
-| F14 | [Prontidão pra lançar](frentes/F14-prontidao-lancamento/BRIEF.md) | bruto | `bruto/f14-lancamento` | despachada | Cabeçalhos de segurança, 404, passo a passo do lançamento |
+| F14b | [CSP gerada no build](frentes/F14-prontidao-lancamento/BRIEF.md#etapa-b--csp-que-não-quebra-sozinha-aberta-pelo-regente-após-a-pr-27) | bruto | `bruto/f14b-csp` | despachada | Hash dos scripts embutidos calculado e conferido no build |
 
 ## Fila
 
@@ -25,7 +25,7 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 
 Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
-1. **Nome e domínio.** Em conversa. Domínio grátis da Hostinger cobre `.com`
+1. **Nome e domínio.** Adiado pelo Lucas. Domínio grátis da Hostinger cobre `.com`. No dia: raiz via troca de nameserver ou só `www` via CNAME ([LANCAMENTO](operacao/LANCAMENTO.md))
 2. Trecho perdido do áudio sobre dinheiro e "igreja"
 3. Trecho perdido antes da parte do design
 4. Doação antes de existir CNPJ. F03 recomenda **só captar depois de associação, CNPJ e conta própria**; Asaas como primeiro teste ([ESTRUTURA-JURIDICA.md](pesquisa/ESTRUTURA-JURIDICA.md), [DOACOES-E-TRANSPARENCIA.md](pesquisa/DOACOES-E-TRANSPARENCIA.md))
@@ -40,6 +40,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
 | ID | Frente | Resultado |
 |---|---|---|
+| F14 | Prontidão pra lançar | [PR #27](https://github.com/LucasOl1337/VidaNova/pull/27) integrada. `_headers`, 404, robots, [LANCAMENTO](operacao/LANCAMENTO.md) e [CHECKLIST](operacao/CHECKLIST-LANCAMENTO.md) |
 | F08 contrato | Formato do livro público | [PR #26](https://github.com/LucasOl1337/VidaNova/pull/26) integrada. Quatro famílias com campos fechados; candidato só como contagem agregada; [CONTRATO.md](transparencia/CONTRATO.md) |
 | F10 | Governança | [PR #25](https://github.com/LucasOl1337/VidaNova/pull/25) integrada. GOVERNANCA, conduta, segurança, modelo de PR; Regente ajustou o texto pra dizer a verdade sobre a integração na fase de fundação |
 | F02 etapa 2 | Base do código | [PR #23](https://github.com/LucasOl1337/VidaNova/pull/23) integrada. Astro + TS + React, ESLint, Vitest, CI verde; conferida pelo Regente num worktree limpo |
