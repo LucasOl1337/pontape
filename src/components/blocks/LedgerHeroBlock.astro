@@ -1,12 +1,15 @@
 ---
 import Icon from '../site/Icon.astro';
 import ListenButton from '../site/ListenButton.astro';
+import ChainEntry from '../ledger/ChainEntry.astro';
+import VerifyPanel from '../ledger/VerifyPanel.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
 import type { LedgerView } from '../../lib/ledger-view/source';
-import { TYPES } from '../../lib/ledger-view/phrases';
+import { correctionsOf } from '../../lib/ledger-view/money';
 import { SHARE } from '../../data/site/share';
 
+// The top of the ledger in one screen: what it is, the numbers, Conferir and the latest lines.
 interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
 const snapshot = transparencySnapshotSchema.parse(snapshotData);
@@ -16,46 +19,37 @@ const last = events.at(-1);
 const shortHash = (h: string) => `${h.slice(0, 4)} ${h.slice(4, 8)}`;
 const recorded = last && new Date(last.recordedAt);
 const recordedText = recorded && `${recorded.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}, às ${recorded.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' })}`;
-const art = events.slice(-4).reverse();
+const latest = events.slice(-3).reverse();
+const corrected = correctionsOf(events);
 const stats = [
   { vt: 'stat-actions', label: 'Ações no livro', value: String(events.length), live: events.length > 0 },
   { vt: 'stat-in', label: 'Entrou', value: brl.format(snapshot.receivedCents / 100) },
   { vt: 'stat-out', label: 'Saiu', value: brl.format(snapshot.spentCents / 100) },
   { vt: 'stat-hash', label: 'Marca mais recente', value: last ? shortHash(last.hash) : 'nenhuma' },
 ];
-const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.length ? `Hoje o livro tem ${events.length} ações.` : 'O livro oficial ainda não foi publicado.'} Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não.`;
+const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.length ? `Hoje o livro tem ${events.length} ações.` : 'O livro oficial ainda não foi publicado.'} Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não. O botão Conferir refaz a conta de cada ação no seu aparelho.`;
 ---
-<section class="hero page-hero" id="livro" aria-labelledby="page-title" data-speech={speech}>
-  <div class="hero-bg" aria-hidden="true"><span class="hero-grid"></span><span class="hero-glow"></span></div>
-  <div class="wrap">
-    <div class="page-hero-grid">
-      <div class="page-hero-copy">
-        <div class="hero-kicker">
-          <span class="chip"><Icon name="shield" />Livro público</span>
-          <span class="chip">Transparência total</span>
-          <ListenButton target="livro" />
-        </div>
-        <h1 id="page-title">{SHARE.transparencia.lead} <span class="grad">{SHARE.transparencia.highlight}</span></h1>
-        <p class="lead">Cada ação entra aqui: dinheiro, entrega na rua, passo de candidato e decisão do projeto. Cada linha fica presa na anterior. Qualquer pessoa confere, sem pedir licença.</p>
-        <p class="rule-strip"><Icon name="shield" /><strong>Toda ação aparece. Quem é a pessoa, não.</strong></p>
-        <div class="actions hero-actions">
-          <a class="btn btn--primary" href="#conferir"><Icon name="shield" />Conferir agora</a>
-          <a class="btn" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Baixar o livro</a>
-        </div>
+<section class="page-hero ledger-top" id="livro" aria-labelledby="page-title" data-speech={speech}>
+  <div class="wrap ledger-top-grid">
+    <div class="page-hero-copy">
+      <div class="hero-kicker">
+        <span class="chip"><Icon name="shield" />Livro público</span>
+        <span class="chip">Transparência total</span>
+        <ListenButton target="livro" />
       </div>
-      <ol class:list={['chain-art', { 'chain-art--waiting': !art.length }]} aria-hidden="true">
-        {art.length
-          ? art.map((e, i) => (
-            <li data-type={e.payload.type} style={`--i:${i}`}>
-              <span class="chain-art-icon"><Icon name={TYPES[e.payload.type].icon} /></span>
-              <span class="chain-art-seq mono">nº {e.sequence}</span>
-              <span class="chain-art-hash mono">{shortHash(e.hash)}</span>
-              <span class="chain-art-prev mono">{e.sequence === '1' ? 'começo' : `← ${shortHash(e.previousHash)}`}</span>
-            </li>
-          ))
-          : [1, 2, 3].map(i => <li style={`--i:${i - 1}`}><span class="chain-art-icon"><Icon name="clock" /></span><span class="chain-art-seq mono">nº {i}</span><span class="chain-art-hash mono">aguardando</span></li>)}
-      </ol>
+      <h1 id="page-title">{SHARE.transparencia.lead} <span class="grad">{SHARE.transparencia.highlight}</span></h1>
+      <p class="lead">Dinheiro, entrega na rua, passo de candidato e decisão do projeto. Cada linha fica presa na anterior. Qualquer pessoa confere, sem pedir licença.</p>
+      <p class="rule-strip"><Icon name="shield" /><strong>Toda ação aparece. Quem é a pessoa, não.</strong></p>
     </div>
+
+    <aside class="tile verify-stage" id="conferir" aria-labelledby="t-verify">
+      <div class="tile-kicker"><h2 class="tile-label" id="t-verify">Conferir</h2><span class="glyph rule-glyph"><Icon name="shield" /></span></div>
+      <p class="verify-lead">Confira você mesmo. O botão refaz a conta de cada ação no seu aparelho.</p>
+      <VerifyPanel data="ledger-real" list="ledger-chain-real" where="Se alguém mudou ou apagou uma linha, aparece aqui. Nada é enviado pra gente.">
+        <button class="link-arrow link-button" type="button" data-ledger-tab="como-conferir">Como funciona<Icon name="arrow-right" /></button>
+      </VerifyPanel>
+    </aside>
+
     <div class="stats" role="group" aria-label="O livro hoje">
       {stats.map(s => (
         <div class="tile stat" style={`view-transition-name:${s.vt}`} data-vt={s.vt}>
@@ -65,7 +59,14 @@ const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.lengt
       ))}
       <p class="stats-note"><Icon name="clock" /><span>{last
         ? `Livro estático. Última ação registrada em ${recordedText}. A página é refeita sempre que entra uma ação nova.`
-        : 'O livro oficial ainda não foi publicado. Quando for, aparece aqui a hora da última ação registrada. Nada nesta página se chama ao vivo enquanto não for.'}</span></p>
+        : 'O livro oficial ainda não foi publicado. Nada nesta página se chama ao vivo enquanto não for.'}</span></p>
+    </div>
+
+    <div class="tile ledger-latest">
+      <div class="tile-kicker"><h2 class="tile-label">Últimas ações</h2><button class="link-arrow link-button" type="button" data-ledger-tab="acoes">Ver todas<Icon name="arrow-right" /></button></div>
+      {latest.length
+        ? <ol class="chain chain--compact">{latest.map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} />)}</ol>
+        : <p class="chain-empty-title">O livro oficial ainda não foi publicado.</p>}
     </div>
   </div>
 </section>

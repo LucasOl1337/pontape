@@ -1,5 +1,4 @@
-// Geometry of the hero prism: one beam in, five rays out. Two shapes of the same drawing:
-// wide for desktop, tall for phones, so the five labels always sit where the rays end.
+// Geometry of the hero prism: one beam in, five rays out, the five labels where the rays end.
 type Point = readonly [number, number];
 interface PrismShape {
   width: number;
@@ -44,11 +43,6 @@ export function prismDrawing(s: PrismShape) {
     beamLabel: { y: (s.beamStartY / s.height) * 100 },
   };
 }
-
-export const PRISM_WIDE = prismDrawing({
-  width: 1000, height: 460, apex: [500, 40], left: [330, 400], right: [670, 400],
-  beamStartY: 268, hitAt: 0.42, exitFrom: 0.47, exitTo: 0.7, rayEndHalf: 10,
-});
 
 export const PRISM_TALL = prismDrawing({
   width: 520, height: 600, apex: [250, 150], left: [150, 400], right: [350, 400],

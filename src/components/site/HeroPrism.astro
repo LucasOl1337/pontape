@@ -1,0 +1,32 @@
+---
+import Icon from './Icon.astro';
+import PrismArt from './PrismArt.astro';
+import { PRISM_TALL } from './prism';
+import { PROJECT_NAME } from '../../data/site/project';
+
+// The prism of the first step: one beam in, five supports out. Each ray is a button to its module.
+const rays = [
+  { module: 'M5', icon: 'plate', label: 'Comida' },
+  { module: 'M5', icon: 'shirt', label: 'Roupa' },
+  { module: 'M5', icon: 'soap', label: 'Higiene' },
+  { module: 'M6', icon: 'briefcase', label: 'Trabalho' },
+  { module: 'M7', icon: 'voice-ai', label: 'IA' },
+] as const;
+---
+<figure class="prism" aria-labelledby="prism-caption">
+  <div class="prism-stage">
+    <PrismArt drawing={PRISM_TALL} id="pt" />
+    <span class="prism-label prism-label--in" style={`--y:${PRISM_TALL.beamLabel.y}%`}>Quem quer recomeçar</span>
+    <span class="prism-label prism-label--glass" style={`--x:${PRISM_TALL.glassLabel.x}%;--y:${PRISM_TALL.glassLabel.y}%`}>{PROJECT_NAME}<small>tudo à vista</small></span>
+  </div>
+  <ol class="prism-rays" aria-label="Os cinco apoios que a gente oferece">
+    {rays.map((r, i) => (
+      <li data-ray={i + 1} style={`--i:${i}`}>
+        <button class="ray-chip" type="button" data-module={r.module} aria-haspopup="dialog">
+          <span class="ray-icon"><Icon name={r.icon} /></span><span class="ray-label">{r.label}</span>
+        </button>
+      </li>
+    ))}
+  </ol>
+  <figcaption id="prism-caption">O pontapé inicial: uma pessoa entra, cinco apoios saem, e tudo que passa pelo meio fica à vista.</figcaption>
+</figure>

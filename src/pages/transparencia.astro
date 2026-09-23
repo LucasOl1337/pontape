@@ -1,15 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/site/Icon.astro';
 import LedgerHeroBlock from '../components/blocks/LedgerHeroBlock.astro';
 import LedgerActionsBlock from '../components/blocks/LedgerActionsBlock.astro';
 import LedgerMoneyBlock from '../components/blocks/LedgerMoneyBlock.astro';
 import LedgerHowToBlock from '../components/blocks/LedgerHowToBlock.astro';
 import LedgerTypesBlock from '../components/blocks/LedgerTypesBlock.astro';
 import { getExampleLedger, getPublicLedger } from '../lib/ledger-view/source';
+import { formatCents, sumMoney } from '../lib/ledger-view/money';
 import { SHARE } from '../data/site/share';
 
 const ledger = await getPublicLedger();
 const example = await getExampleLedger();
+// The ledger inside, as a small stair of four blocks: one open at a time, in the same place.
+const BOOK = [
+  { id: 'acoes', name: 'Todas as ações', stat: `${ledger.events.length} linhas, 10 por página`, icon: 'receipt' },
+  { id: 'dinheiro', name: 'Dinheiro', stat: `${formatCents(sumMoney(ledger.events).inCents)} até hoje`, icon: 'coin' },
+  { id: 'como-conferir', name: 'Como conferir', stat: '3 passos e o que não prova', icon: 'shield' },
+  { id: 'o-que-entra', name: 'O que entra', stat: 'E o que nunca entra', icon: 'eye' },
+] as const;
 ---
 <BaseLayout
   title={SHARE.transparencia.title}
@@ -17,9 +26,24 @@ const example = await getExampleLedger();
   share="transparencia"
   current="transparencia">
   <LedgerHeroBlock ledger={ledger} />
-  <LedgerActionsBlock ledger={ledger} example={example} />
-  <LedgerMoneyBlock real={ledger.events} example={example.events} />
-  <LedgerHowToBlock ledger={ledger} />
-  <LedgerTypesBlock />
+  <section class="section section--band ledger-book" aria-label="O livro por dentro">
+    <div class="wrap">
+      <div class="book-stair" role="tablist" aria-label="O livro por dentro" data-ledger-tabs>
+        {BOOK.map((b, i) => (
+          <button class="book-step" role="tab" type="button" id={`aba-${b.id}`} aria-controls={b.id} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} style={`--i:${i};--sc:var(--step-${[4, 1, 5, 7][i]})`}>
+            <span class="step-icon"><Icon name={b.icon} /></span>
+            <span class="book-step-name">{b.name}</span>
+            <span class="book-step-stat">{b.stat}</span>
+          </button>
+        ))}
+      </div>
+      <div class="book-stage">
+        <LedgerActionsBlock ledger={ledger} example={example} />
+        <LedgerMoneyBlock real={ledger.events} example={example.events} />
+        <LedgerHowToBlock ledger={ledger} />
+        <LedgerTypesBlock />
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 <script>import '../scripts/ledger';</script>

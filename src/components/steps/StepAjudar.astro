@@ -1,0 +1,53 @@
+---
+import Icon from '../site/Icon.astro';
+import Badge from '../site/Badge.astro';
+import PanelHead from '../stair/PanelHead.astro';
+import PanelNav from '../stair/PanelNav.astro';
+import { stepTabId, type HomeStep } from '../stair/steps';
+import type { IconName } from '../site/icon-names';
+import { CONTRIBUTIONS } from '../../data/site/contributions';
+
+interface Props { step: HomeStep; n: number; total: number; prev: HomeStep }
+const { step, n, total, prev } = Astro.props;
+const goodFirst = CONTRIBUTIONS.filter(c => c.goodFirst).length;
+const ways: { icon: IconName; title: string; text: string; open: boolean; when: string; go?: { step: string; label: string } }[] = [
+  { icon: 'coin', title: 'Doar', text: 'Seu dinheiro vira comida, roupa e higiene. E cada real aparece no livro público.', open: false, when: 'Abre quando a conta oficial do projeto existir.', go: { step: 'gargalo-receber-doacao-do-jeito-certo', label: 'Entender por quê' } },
+  { icon: 'people', title: 'Ser voluntário', text: 'Vá até a pessoa com o aparelho da conversa. A gente treina você antes.', open: false, when: 'Abre com o piloto na primeira cidade.' },
+  { icon: 'briefcase', title: 'Oferecer vaga', text: 'Dê a primeira chance pra alguém que chegou preparado e quer muito trabalhar.', open: false, when: 'Abre quando as primeiras pessoas forem escolhidas.' },
+  { icon: 'code', title: 'Contribuir', text: 'Código, design, pesquisa, campo, direito. Tem espaço pra muita coisa.', open: true, when: `${CONTRIBUTIONS.length} tarefas abertas, ${goodFirst} boas pra quem está começando.`, go: { step: 'contribuicoes', label: 'Ver as contribuições' } },
+];
+const speech = 'Tem quatro jeitos de ajudar: doar, ser voluntário, oferecer uma vaga ou contribuir com o projeto. A doação, o voluntariado e as vagas ainda não abriram. As contribuições já estão listadas, e pegar uma abre junto com o repositório. Tudo no projeto é aberto: o código, os documentos, cada decisão e o livro público. Um admin revisa antes de entrar. A gente não guarda contato de ninguém por enquanto.';
+---
+<section class="stage-panel panel-help" id={step.id} role="tabpanel" aria-labelledby={stepTabId(step.id)} tabindex="-1" data-speech={speech}>
+  <PanelHead n={n} total={total} name={step.name} panel={step.id} titleId="t-help">
+    Tem lugar pra você aqui.
+  </PanelHead>
+  <ul class="help-grid">
+    {ways.map((w, i) => (
+      <li class="tile help-card" style={`--hc:var(--s${[1, 3, 4, 5][i]})`}>
+        <div class="tile-kicker">
+          <span class="glyph"><Icon name={w.icon} /></span>
+          {w.open ? <Badge status="building" /> : <span class="badge badge--planned"><Icon name="clock" />Ainda não abriu</span>}
+        </div>
+        <h3>{w.title}</h3>
+        <p>{w.text}</p>
+        <p class="help-when">{w.when}</p>
+        {w.go && <button class="link-arrow" type="button" data-go={w.go.step}>{w.go.label}<Icon name="arrow-right" /></button>}
+      </li>
+    ))}
+  </ul>
+  <div class="tile open-strip" id="codigo-aberto">
+    <div class="open-copy">
+      <p class="tile-label">Código aberto</p>
+      <p class="open-line">Aberto pra ver. Aberto pra ajudar.</p>
+      <p>Código, documentos, decisões e o livro ficam abertos. Qualquer pessoa propõe melhoria; um admin revisa antes de entrar.</p>
+    </div>
+    <dl class="repo-facts">
+      <div><dt>Repositório</dt><dd><Icon name="lock" />Fechado por enquanto</dd></div>
+      <div><dt>Licença</dt><dd>A definir</dd></div>
+      <div><dt>Quem aprova</dt><dd>Admins do projeto</dd></div>
+    </dl>
+  </div>
+  <p class="data-note"><Icon name="lock" /><span>A gente não guarda contato de ninguém por enquanto. Lista de aviso e formulário só quando existir um responsável legal pelos dados.</span></p>
+  <PanelNav prev={prev} />
+</section>

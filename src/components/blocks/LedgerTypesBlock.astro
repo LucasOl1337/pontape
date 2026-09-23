@@ -1,6 +1,6 @@
 ---
 import Icon from '../site/Icon.astro';
-import BlockHead from '../site/BlockHead.astro';
+import ListenButton from '../site/ListenButton.astro';
 import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
 
 const RULES = {
@@ -11,15 +11,14 @@ const RULES = {
 } as const;
 const speech = 'O que entra no livro, e o que nunca entra. ' + TYPE_ORDER.map(t => `${TYPES[t].label}: entra ${RULES[t][0]} Nunca entra: ${RULES[t][1]}`).join(' ');
 ---
-<section class="section" id="o-que-entra" aria-labelledby="t-types" data-speech={speech}>
-  <div class="wrap">
-    <div class="section-head reveal">
-      <BlockHead number="04" label="O que entra" listen="o-que-entra" />
-      <h2 id="t-types">O que entra no livro. E o que nunca entra.</h2>
-    </div>
+<section class="book-panel" id="o-que-entra" role="tabpanel" aria-labelledby="aba-o-que-entra" tabindex="-1" hidden data-speech={speech}>
+  <div class="book-head">
+    <h2>O que entra no livro. E o que nunca entra.</h2>
+    <ListenButton target="o-que-entra" />
+  </div>
     <ul class="bento type-legend">
       {TYPE_ORDER.map(t => (
-        <li class="tile type-rule c2 reveal" data-type={t}>
+        <li class="tile type-rule c2" data-type={t}>
           <span class="type-chip"><Icon name={TYPES[t].icon} />{TYPES[t].label}</span>
           <dl>
             <div><dt><Icon name="check" />Entra</dt><dd>{RULES[t][0]}</dd></div>
@@ -28,5 +27,4 @@ const speech = 'O que entra no livro, e o que nunca entra. ' + TYPE_ORDER.map(t 
         </li>
       ))}
     </ul>
-  </div>
 </section>

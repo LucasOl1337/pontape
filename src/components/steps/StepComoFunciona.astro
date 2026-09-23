@@ -1,0 +1,47 @@
+---
+import Icon from '../site/Icon.astro';
+import Badge from '../site/Badge.astro';
+import PanelHead from '../stair/PanelHead.astro';
+import PanelNav from '../stair/PanelNav.astro';
+import { stepTabId, type HomeStep } from '../stair/steps';
+import { STEPS } from '../../data/site/journey';
+import { MODULES } from '../../data/site/modules';
+
+interface Props { step: HomeStep; n: number; total: number; prev: HomeStep; next: HomeStep }
+const { step, n, total, prev, next } = Astro.props;
+const speech = 'Dinheiro sozinho não resolve. A raiz é acertar a pessoa e dar um caminho inteiro. '
+  + `São ${STEPS.length} passos. ` + STEPS.map((s, i) => `${i + 1}: ${s.title}. ${s.text}`).join(' ');
+const moduleOf = (id: string) => MODULES.find(m => m.id === id)!;
+---
+<section class="stage-panel panel-journey" id={step.id} role="tabpanel" aria-labelledby={stepTabId(step.id)} tabindex="-1" data-speech={speech}>
+  <PanelHead n={n} total={total} name={step.name} panel={step.id} titleId="t-how">
+    Sete passos. Do primeiro encontro ao trabalho.
+    <p class="lead" slot="lead">Dinheiro sozinho não resolve. A raiz é acertar a pessoa e dar um caminho inteiro, do prato de comida até o primeiro salário.</p>
+  </PanelHead>
+  <div class="journey">
+    <div class="mini-stair" role="tablist" aria-label="Os sete passos" data-substair>
+      {STEPS.map((s, i) => (
+        <button class="mini-step" role="tab" type="button" id={`passo-tab-${i + 1}`} aria-controls={`passo-${i + 1}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} style={`--i:${i};--sc:var(--step-${i + 1})`}>
+          <span class="mini-step-num mono">{i + 1}</span><Icon name={s.icon} /><span class="mini-step-name">{s.shortName}</span>
+        </button>
+      ))}
+    </div>
+    <div class="journey-detail">
+      {STEPS.map((s, i) => {
+        const m = moduleOf(s.module);
+        return (
+          <div class="tile passo" id={`passo-${i + 1}`} role="tabpanel" aria-labelledby={`passo-tab-${i + 1}`} tabindex="0" hidden={i !== 0} style={`--sc:var(--step-${i + 1})`}>
+            <div class="tile-kicker"><span class="glyph"><Icon name={s.icon} /></span><span class="tile-label">Passo {i + 1} de {STEPS.length}</span></div>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+            <p class="step-who"><span class="tile-label">Quem faz</span>{s.who.map(w => <span class="chip">{w}</span>)}</p>
+            <button class="step-module" type="button" data-module={m.id} aria-haspopup="dialog">
+              <span class="module-id">{m.id}</span><span class="step-module-name">{m.name}</span><Badge status={m.status} /><Icon name="arrow-right" class="arrow" />
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+  <PanelNav prev={prev} next={next} />
+</section>

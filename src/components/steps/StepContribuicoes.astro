@@ -1,0 +1,57 @@
+---
+import Icon from '../site/Icon.astro';
+import NotOpenBadge from '../site/NotOpenBadge.astro';
+import PanelHead from '../stair/PanelHead.astro';
+import PanelNav from '../stair/PanelNav.astro';
+import { stepTabId, type HomeStep } from '../stair/steps';
+import { CONTRIBUTIONS, CONTRIBUTION_TYPES, issueUrl } from '../../data/site/contributions';
+import { bottleneckTitle } from '../../data/site/bottlenecks';
+import { REPOSITORY_OPEN } from '../../data/site/project';
+
+interface Props { step: HomeStep; n: number; total: number; prev: HomeStep; next: HomeStep }
+const { step, n, total, prev, next } = Astro.props;
+// Six cards per page: the grid never grows past the stage; the rest is one click away.
+const PAGE = 6;
+const goodFirst = CONTRIBUTIONS.filter(c => c.goodFirst);
+const joinList = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items.at(-1)}`;
+const types = (Object.keys(CONTRIBUTION_TYPES) as (keyof typeof CONTRIBUTION_TYPES)[])
+  .map(t => ({ id: t, ...CONTRIBUTION_TYPES[t], count: CONTRIBUTIONS.filter(c => c.type === t).length }))
+  .filter(t => t.count > 0);
+const speech = `Tem ${CONTRIBUTIONS.length} tarefas abertas. ${goodFirst.length} são boas pra quem está começando: ${joinList(goodFirst.map(c => c.title))}. Pegar uma tarefa abre junto com o repositório.`;
+---
+<section class="stage-panel panel-contrib" id={step.id} role="tabpanel" aria-labelledby={stepTabId(step.id)} tabindex="-1" data-speech={speech}>
+  <PanelHead n={n} total={total} name={step.name} panel={step.id} titleId="t-contrib">
+    Onde você pode ajudar agora.
+  </PanelHead>
+  <div class="filters contrib-filters" role="group" aria-label="Filtrar contribuições" data-contrib-filters>
+    <button class="filter" type="button" data-contrib="all" aria-pressed="true">Todas<span class="count">{CONTRIBUTIONS.length}</span></button>
+    <button class="filter" type="button" data-contrib="first" aria-pressed="false"><Icon name="sprout" />Bom primeiro passo<span class="count">{goodFirst.length}</span></button>
+    {types.map(t => <button class="filter" type="button" data-contrib={t.id} aria-pressed="false"><Icon name={t.icon} />{t.label}<span class="count">{t.count}</span></button>)}
+  </div>
+  <ul class="contrib-grid" data-contrib-grid data-page-size={PAGE}>
+    {CONTRIBUTIONS.map((c, i) => {
+      const unlocks = bottleneckTitle(c.bottleneck);
+      return (
+        <li class="tile contrib-card" data-type={c.type} data-first={String(c.goodFirst)} hidden={i >= PAGE} style={`--vt:contrib-${c.id}`}>
+          <div class="tile-kicker">
+            <span class="chip"><Icon name={CONTRIBUTION_TYPES[c.type].icon} />{CONTRIBUTION_TYPES[c.type].label}</span>
+            {c.goodFirst && <span class="chip chip--first"><Icon name="sprout" />Bom primeiro passo</span>}
+          </div>
+          <h3>{c.title}</h3>
+          <p class="contrib-summary">{c.summary}</p>
+          <div class="contrib-foot">
+            <p class="contrib-unlocks"><span class="module-id">{c.module}</span>{unlocks ? <span>Destrava: {unlocks}</span> : <span>Melhora a plataforma</span>}</p>
+            <p class="contrib-status"><a class="link-arrow" href={issueUrl(c.issueNumber)} rel="noopener">#{c.issueNumber}{REPOSITORY_OPEN ? <Icon name="arrow-up-right" /> : <><Icon name="lock" /><span class="sr-only">, repositório ainda fechado</span></>}</a></p>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+  <div class="pager" data-contrib-pager>
+    <button class="btn btn--small" type="button" data-page="-1" aria-label="Página anterior"><Icon name="arrow-left" /></button>
+    <p class="pager-label mono" aria-live="polite" data-page-label>1 de {Math.ceil(CONTRIBUTIONS.length / PAGE)}</p>
+    <button class="btn btn--small" type="button" data-page="1" aria-label="Próxima página"><Icon name="arrow-right" /></button>
+    <p class="soon-note"><NotOpenBadge /><span>Cada tarefa é uma issue. Pegar uma abre junto com o repositório.</span></p>
+  </div>
+  <PanelNav prev={prev} next={next} />
+</section>

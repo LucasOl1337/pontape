@@ -1,0 +1,14 @@
+---
+import Icon from '../site/Icon.astro';
+import type { HomeStep } from './steps';
+
+// Previous and next step, for whoever does not use the arrows.
+interface Props { prev?: HomeStep; next?: HomeStep }
+const { prev, next } = Astro.props;
+---
+<nav class="panel-nav" aria-label="Outros degraus">
+  {prev && <button class="btn btn--small" type="button" data-go={prev.id}><Icon name="arrow-left" /><span>Descer: {prev.name}</span></button>}
+  {next
+    ? <button class="btn btn--small btn--primary" type="button" data-go={next.id}><span>Subir: {next.name}</span><Icon name="arrow-right" /></button>
+    : <button class="btn btn--small" type="button" data-go="inicio"><span>Voltar ao começo</span><Icon name="undo" /></button>}
+</nav>

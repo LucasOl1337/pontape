@@ -1,0 +1,64 @@
+---
+import Icon from '../site/Icon.astro';
+import ListenButton from '../site/ListenButton.astro';
+import NotOpenBadge from '../site/NotOpenBadge.astro';
+import HeroPrism from '../site/HeroPrism.astro';
+import { stepTabId, type HomeStep } from '../stair/steps';
+import snapshotData from '../../data/transparency.json';
+import { transparencySnapshotSchema } from '../../lib/transparency';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { PROJECT_NAME, formatDay } from '../../data/site/project';
+import { SHARE } from '../../data/site/share';
+
+interface Props { step: HomeStep; next: HomeStep; ledger: LedgerView }
+// No step nav here: "Subir o primeiro degrau" is the way up.
+const { step, next, ledger } = Astro.props;
+// F02 snapshot: validated at build, so the money shown here can only be the honest zero.
+const snapshot = transparencySnapshotSchema.parse(snapshotData);
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: snapshot.currency });
+const stats = [
+  { vt: 'stat-in', label: 'Entrou', value: brl.format(snapshot.receivedCents / 100) },
+  { vt: 'stat-out', label: 'Saiu', value: brl.format(snapshot.spentCents / 100) },
+  { vt: 'stat-people', label: 'Pessoas atendidas', value: '0' },
+  { vt: 'stat-actions', label: 'Ações no livro', value: String(ledger.events.length), live: true },
+];
+const speech = `Aqui é o ${PROJECT_NAME}. O primeiro passo pra quem quer mudar de vida. A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial. Tudo que a gente faz fica num livro público, e qualquer pessoa confere. É um projeto sem fins lucrativos, com código aberto. O site é uma escada de sete degraus. Use as setas ou toque num degrau pra subir.`;
+const forYou = `Oi. Que bom que você está aqui. O ${PROJECT_NAME} ajuda quem quer mudar de vida. A gente dá comida, roupa e higiene nos primeiros dias. E ajuda você a arrumar um trabalho. É de graça. Pra participar, você só precisa conversar com a gente. Não precisa ler nem escrever. A conversa ainda não abriu. Quando abrir, vai ser aqui no site, com um voluntário na rua, ou num ponto perto de você.`;
+---
+<section class="stage-panel panel-inicio" id={step.id} role="tabpanel" aria-labelledby={stepTabId(step.id)} tabindex="-1" data-speech={speech}>
+  <div class="inicio-grid">
+    <div class="inicio-copy">
+      <div class="hero-kicker">
+        <span class="chip"><span class="chip-dot" aria-hidden="true"></span>Sem fins lucrativos</span>
+        <span class="chip">Código aberto</span>
+        <ListenButton target={step.id} />
+      </div>
+      <h2 class="display" id="t-inicio">{SHARE.home.lead} <span class="grad">{SHARE.home.highlight}</span></h2>
+      <p class="lead">A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial.</p>
+      <div class="actions">
+        <button class="btn btn--primary" type="button" data-go={next.id}>Subir o primeiro degrau<Icon name="arrow-right" /></button>
+        <a class="btn" href="/transparencia"><Icon name="eye" />Abrir o livro público</a>
+      </div>
+      <div class="foryou" id="pra-voce" data-speech={forYou}>
+        <ListenButton target="pra-voce" big />
+        <div>
+          <p class="foryou-title">Você quer mudar de vida?</p>
+          <p>Aperte e escute. Não precisa ler. É de graça.</p>
+          <p class="foryou-soon"><NotOpenBadge /><span>No site, na rua ou num ponto perto de você.</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="inicio-side">
+      <HeroPrism />
+      <div class="stats" role="group" aria-label="Números de hoje">
+        {stats.map(s => (
+          <div class="tile stat" style={`view-transition-name:${s.vt}`} data-vt={s.vt}>
+            <span class="stat-label">{s.live && <span class="live-dot" aria-hidden="true"></span>}{s.label}</span>
+            <span class="stat-value">{s.value}</span>
+          </div>
+        ))}
+      </div>
+      <p class="stats-note"><Icon name="clock" /><span>{snapshot.status}. Dados de <time datetime={snapshot.asOf}>{formatDay(snapshot.asOf)}</time>. Aqui nunca vai ter número inventado.</span></p>
+    </div>
+  </div>
+</section>

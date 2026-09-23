@@ -73,6 +73,8 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
       if (pause) await new Promise(res => setTimeout(res, pause));
     }
     if (!result.valid && result.sequence) {
+      // A page that splits the list in pages shows the one holding the broken line (ledger.ts).
+      panel.dispatchEvent(new CustomEvent('verify:broken', { detail: result.sequence }));
       const broken = entry(result.sequence);
       broken?.classList.add('is-broken');
       entries().filter(li => Number(li.dataset.seq) > brokenAt).forEach(li => li.classList.add('is-unchecked'));

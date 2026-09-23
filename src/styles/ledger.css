@@ -63,51 +63,67 @@
 .verify-result[data-state="broken"]{background:var(--bad-bg);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
 .verify-result[data-state="broken"] > .icon,.verify-result[data-state="broken"] .verify-title{color:var(--bad)}
 
-/* ---------- /transparencia hero ---------- */
-.page-hero{padding-bottom:clamp(2.5rem,1.5rem + 3vw,4.5rem)}
-.page-hero-grid{display:grid;gap:44px;align-items:center}
-@media (min-width:1024px){ .page-hero-grid{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:64px} }
-.page-hero-copy{display:grid;justify-items:start;gap:24px}
-.page-hero-copy .hero-kicker,.page-hero-copy .hero-actions{justify-content:flex-start}
-.page-hero h1{font-size:clamp(2.5rem,1.3rem + 4.2vw,4.5rem);max-width:11em}
-.rule-strip{display:inline-flex;align-items:center;gap:10px;padding:10px 18px 10px 14px;border-radius:var(--r-pill);border:1px solid color-mix(in srgb,var(--ok) 30%,transparent);background:var(--ok-bg);color:var(--text);font-size:var(--text-small)}
-.rule-strip .icon{color:var(--ok)}
-.chain-art{position:relative;display:grid;gap:20px}
-.chain-art li{--c:var(--type-project);position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"icon seq hash" "icon prev hash";align-items:center;gap:2px 14px;
-  padding:14px 18px;margin-left:calc(var(--i) * 22px);border-radius:18px;border:1px solid var(--line-2);
-  background:linear-gradient(180deg,var(--tile-top),var(--tile-bottom)),color-mix(in srgb,var(--surface) 88%,transparent);box-shadow:inset 0 1px 0 var(--highlight),var(--shadow-tile)}
-.chain-art li[data-type="finance"]{--c:var(--type-finance)} .chain-art li[data-type="field"]{--c:var(--type-field)} .chain-art li[data-type="candidate"]{--c:var(--type-candidate)}
-.chain-art li + li::before{content:"";position:absolute;left:calc(34px - 22px);top:-21px;width:2px;height:20px;background:linear-gradient(180deg,var(--c),color-mix(in srgb,var(--c) 30%,transparent))}
-.chain-art li:first-child{border-color:color-mix(in srgb,var(--c) 45%,var(--line-2));box-shadow:inset 0 1px 0 var(--highlight),0 0 40px -12px var(--c),var(--shadow-tile)}
-.chain-art-icon{grid-area:icon;display:grid;place-items:center;width:38px;height:38px;border-radius:12px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
-.chain-art-icon .icon{width:20px;height:20px}
-.chain-art-seq{grid-area:seq;font-size:.8125rem;color:var(--text-2)}
-.chain-art-prev{grid-area:prev;font-size:.75rem;color:var(--text-3)}
-.chain-art-hash{grid-area:hash;font-size:1.0625rem;color:var(--text);letter-spacing:.02em}
-@media (max-width:599px){ .chain-art li{margin-left:calc(var(--i) * 10px)} .chain-art li:nth-child(n+4){display:none} }
-
-/* ---------- Todas as ações, with Conferir beside the list ---------- */
-.ledger-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;margin-bottom:22px}
-.ledger-layout{display:grid;gap:var(--gap);align-items:start}
-@media (min-width:1100px){
-  .ledger-layout{grid-template-columns:minmax(0,1fr) minmax(0,25rem);gap:32px}
-  .ledger-layout .verify-stage{position:sticky;top:92px;order:2}
-  .ledger-main{order:1}
+/* ---------- /transparencia: the top in one screen ---------- */
+.ledger-top{padding:clamp(1.75rem,1rem + 2vw,2.75rem) 0 clamp(2rem,1rem + 3vw,3.5rem)}
+.ledger-top-grid{display:grid;gap:var(--gap);align-items:stretch}
+@media (min-width:1024px){
+  .ledger-top-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-areas:"copy verify" "stats latest"}
+  .page-hero-copy{grid-area:copy} .ledger-top .verify-stage{grid-area:verify} .ledger-top .stats{grid-area:stats} .ledger-latest{grid-area:latest}
 }
-.verify-stage{gap:14px;scroll-margin-top:96px;
+.page-hero-copy{display:grid;align-content:center;justify-items:start;gap:18px;padding-right:clamp(0px,2vw,32px)}
+.page-hero-copy .hero-kicker{justify-content:flex-start}
+.page-hero h1{font-size:clamp(2.25rem,1.1rem + 3.6vw,4.25rem);letter-spacing:-.05em;max-width:11em}
+.page-hero .lead{font-size:clamp(1.0625rem,.95rem + .4vw,1.25rem);max-width:36rem}
+.rule-strip{display:inline-flex;align-items:center;gap:10px;padding:9px 16px 9px 12px;border-radius:var(--r-pill);border:1px solid color-mix(in srgb,var(--ok) 30%,transparent);background:var(--ok-bg);color:var(--text);font-size:var(--text-small)}
+.rule-strip .icon{color:var(--ok)}
+.verify-stage{gap:12px;
   background:
     radial-gradient(90% 60% at 100% 0%,color-mix(in srgb,var(--ok) 12%,transparent),transparent 65%),
     radial-gradient(80% 60% at 0% 100%,color-mix(in srgb,var(--s4) 12%,transparent),transparent 65%),
     linear-gradient(180deg,var(--tile-top),var(--tile-bottom)),var(--surface)}
-.verify-stage h2{font-size:clamp(1.75rem,1.4rem + 1.4vw,2.375rem);margin-top:6px}
-.verify-stage .eyebrow-num .icon{width:13px;height:13px;color:var(--ok)}
-.decision-note{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;font-size:var(--text-small);color:var(--text-2)}
+.tile .verify-lead{font-size:1.1875rem;font-weight:600;letter-spacing:-.02em;line-height:1.3;color:var(--text)}
+.link-button{border:0;background:none;padding:0;font:inherit;font-weight:500;cursor:pointer}
+.ledger-top .stats{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start}
+@media (min-width:640px) and (max-width:1023px){ .ledger-top .stats{grid-template-columns:repeat(4,minmax(0,1fr))} }
+.ledger-top .stats-note{grid-column:1 / -1}
+.ledger-latest{gap:12px;padding:16px 18px}
+
+/* ---------- The ledger inside: four tabs as a small stair ---------- */
+.ledger-book{padding-block:clamp(2rem,1rem + 3vw,4rem)}
+.book-stair{display:flex;align-items:flex-end;gap:10px;margin-bottom:var(--gap);scroll-margin-top:84px}
+.book-step{--h:calc(4.75rem + var(--i) * 1.125rem);flex:1 1 0;min-width:0;height:var(--h);display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;align-content:end;column-gap:12px;row-gap:1px;
+  padding:12px 16px;border-radius:18px;border:1px solid var(--line);color:var(--text);font:inherit;text-align:left;
+  background:linear-gradient(180deg,var(--tile-top),var(--tile-bottom)),var(--surface);box-shadow:inset 0 1px 0 var(--highlight),var(--shadow-tile);
+  transition:border-color .25s,background .25s,translate .3s var(--ease-out)}
+.book-step .step-icon{grid-column:1;grid-row:1 / 3;align-self:center;display:grid;place-items:center;width:38px;height:38px;border-radius:12px;color:var(--sc);background:color-mix(in srgb,var(--sc) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--sc) 22%,transparent)}
+.book-step .step-icon .icon{width:18px;height:18px}
+.book-step-name{grid-column:2;font-weight:600;font-size:1.0625rem;letter-spacing:-.02em;line-height:1.2}
+.book-step-stat{grid-column:2;font-size:var(--text-micro);color:var(--text-3)}
+.book-step:hover{translate:0 -3px;border-color:var(--line-2)}
+.book-step[aria-selected="true"]{border-color:color-mix(in srgb,var(--sc) 60%,transparent);
+  background:radial-gradient(120% 100% at 0% 0%,color-mix(in srgb,var(--sc) 20%,transparent),transparent 70%),linear-gradient(180deg,var(--tile-top),var(--tile-bottom)),var(--surface);
+  box-shadow:inset 0 1px 0 var(--highlight),0 18px 50px -24px var(--sc)}
+.book-step[aria-selected="true"] .step-icon{color:var(--btn-text);background:var(--sc)}
+.book-step[aria-selected="true"] .book-step-stat{color:var(--text-2)}
+@media (max-width:719px){
+  .book-stair{gap:6px}
+  .book-step{--h:calc(3.75rem + var(--i) * .75rem);grid-template-columns:1fr;justify-items:center;text-align:center;padding:8px 4px;align-content:center}
+  .book-step .step-icon{grid-row:auto;width:30px;height:30px}
+  .book-step-name{grid-column:1;font-size:.75rem;font-weight:500}
+  .book-step-stat{display:none}
+}
+.book-panel{display:grid;gap:14px;padding-top:6px}
+.book-panel:focus{outline:none}
+.book-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+.book-head h2{font-size:clamp(1.5rem,1rem + 1.4vw,2.25rem);letter-spacing:-.035em}
+.book-lead{color:var(--text-2);max-width:44rem}
+.ledger-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px}
+.decision-note{display:flex;align-items:flex-start;gap:10px;font-size:var(--text-small);color:var(--text-2)}
 .decision-note .icon{margin-top:2px}
-.sample-banner{display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 12px;margin-bottom:16px;padding:12px 16px;border-radius:14px;border:1px dashed color-mix(in srgb,var(--building) 55%,transparent);background:var(--building-bg);color:var(--text);font-size:var(--text-small)}
+.sample-banner{display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 12px;padding:12px 16px;border-radius:14px;border:1px dashed color-mix(in srgb,var(--building) 55%,transparent);background:var(--building-bg);color:var(--text);font-size:var(--text-small)}
 .sample-banner .mono{color:var(--building);font-weight:600;letter-spacing:.08em}
-.sample-tools{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
-.tile .sample-tools p{font-size:var(--text-small)}
-.sample-tools .btn{justify-self:start}
+.sample-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:var(--text-small);color:var(--text-2)}
+.ledger-list{max-width:60rem}
 .ledger-list .chain-empty{margin-top:10px}
 
 /* ---------- Dinheiro ---------- */
@@ -165,3 +181,14 @@
 .type-rule dt .icon{width:1.1em;height:1.1em;stroke-width:2}
 .type-rule .never dt{color:var(--bad)}
 .type-rule dd{font-size:var(--text-small);color:var(--text-2)}
+
+/* Full list, tighter: the mark sits at the right of each line on wide screens */
+@media (min-width:760px){
+  .ledger-list .chain-card{grid-template-columns:minmax(0,1fr) auto;column-gap:18px;row-gap:4px;padding:12px 16px}
+  .ledger-list .chain-card > :not(.chain-seal){grid-column:1}
+  .ledger-list .chain-seal{grid-column:2;grid-row:1 / 5;align-self:start;flex-direction:column;align-items:flex-end;margin:0;padding:0 0 0 16px;border-top:0;border-left:1px dashed var(--line-2);min-height:100%;text-align:right}
+  .ledger-list .chain-full[open]{flex-basis:auto}
+  .ledger-list .chain-node{margin-top:10px}
+  .ledger-list .chain{gap:8px}
+}
+.ledger-top .stat-value{font-size:clamp(1.375rem,1rem + 1vw,1.875rem)}

@@ -1,6 +1,7 @@
-// /transparencia islands: real or example ledger, type filters, the "edit a line in secret" demo, Conferir.
+// /transparencia: the four tabs of the ledger, real or example ledger, type filters and pages,
+// the "edit a line in secret" demo, and Conferir.
 import type { LedgerView } from '../lib/ledger-view/source';
-import { toast } from './site';
+import { stopSpeech, toast } from './site';
 import { mountVerify, readLedger } from './verify';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
@@ -13,13 +14,66 @@ const verify = mountVerify(panel, () => ledgers[mode]);
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const params = new URLSearchParams(location.search);
 let mode: Mode = params.has('exemplo') ? 'example' : 'real';
+let filter = 'all';
+let page = 0;
 let tampered: { seq: string; amount: string } | null = null;
 
-function applyFilter(filter: string) {
-  const list = $(`[data-ledger-list="${mode}"]`)!;
+/* ---------- Tabs: the small stair of the ledger ---------- */
+
+const tablist = $('[data-ledger-tabs]')!;
+const tabs = $$<HTMLElement>('[role="tab"]', tablist);
+function selectTab(id: string, { focus = false, scroll = false } = {}) {
+  const index = Math.max(0, tabs.findIndex(t => t.getAttribute('aria-controls') === id));
+  stopSpeech();
+  tabs.forEach((t, k) => {
+    t.setAttribute('aria-selected', String(k === index));
+    t.tabIndex = k === index ? 0 : -1;
+    document.getElementById(t.getAttribute('aria-controls')!)!.hidden = k !== index;
+  });
+  if (focus) tabs[index]!.focus();
+  if (scroll) tablist.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+}
+tablist.addEventListener('click', e => {
+  const tab = (e.target as Element).closest<HTMLElement>('[role="tab"]');
+  if (tab) selectTab(tab.getAttribute('aria-controls')!);
+});
+tablist.addEventListener('keydown', e => {
+  const i = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+  const keys: Record<string, number> = { ArrowRight: i + 1, ArrowUp: i + 1, ArrowLeft: i - 1, ArrowDown: i - 1, Home: 0, End: tabs.length - 1 };
+  if (!(e.key in keys)) return;
+  e.preventDefault();
+  const next = tabs[Math.max(0, Math.min(tabs.length - 1, keys[e.key]!))]!;
+  selectTab(next.getAttribute('aria-controls')!, { focus: true });
+});
+
+/* ---------- The list: mode, filter and pages ---------- */
+
+const pager = $('[data-ledger-pager]');
+// Ten lines per page; five on a phone, where each line is taller.
+const pageSize = matchMedia('(max-width: 719px)').matches ? 5 : Number(pager?.dataset.pageSize ?? 10);
+const list = () => $(`[data-ledger-list="${mode}"]`)!;
+const matching = () => $$('.chain-entry', list()).filter(li => filter === 'all' || li.dataset.type === filter);
+
+function render() {
+  const all = $$('.chain-entry', list());
+  const shown = matching();
+  const pages = Math.max(1, Math.ceil(shown.length / pageSize));
+  page = Math.max(0, Math.min(pages - 1, page));
+  all.forEach(li => { li.hidden = true; });
+  shown.slice(page * pageSize, (page + 1) * pageSize).forEach(li => { li.hidden = false; });
+  $$('.chain-empty[data-empty-for]:not([data-empty-for="all"])', list()).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
+  if (pager) {
+    pager.hidden = pages < 2;
+    $('[data-page-label]', pager)!.textContent = `${page + 1} de ${pages}`;
+    $$<HTMLButtonElement>('[data-page]', pager).forEach(b => { b.disabled = b.dataset.page === '-1' ? page === 0 : page >= pages - 1; });
+  }
+}
+
+function applyFilter(next: string) {
+  filter = next;
+  page = 0;
   $$('[data-type-filter]', $(`[data-type-filters="${mode}"]`)!).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.typeFilter === filter)));
-  $$('.chain-entry', list).forEach(li => { li.hidden = filter !== 'all' && li.dataset.type !== filter; });
-  $$('.chain-empty[data-empty-for]:not([data-empty-for="all"])', list).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
+  render();
   verify.reset();
 }
 
@@ -37,9 +91,29 @@ function setMode(next: Mode) {
 document.addEventListener('click', e => {
   const target = e.target as Element;
   const modeBtn = target.closest<HTMLElement>('[data-mode]');
-  if (modeBtn) { setMode(modeBtn.dataset.mode as Mode); return; }
+  if (modeBtn) { setMode(modeBtn.dataset.mode as Mode); selectTab('acoes'); return; }
   const filterBtn = target.closest<HTMLElement>('[data-type-filter]');
-  if (filterBtn) applyFilter(filterBtn.dataset.typeFilter!);
+  if (filterBtn) { applyFilter(filterBtn.dataset.typeFilter!); return; }
+  const pageBtn = target.closest<HTMLButtonElement>('[data-page]');
+  if (pageBtn && pager?.contains(pageBtn) && !pageBtn.disabled) {
+    page += Number(pageBtn.dataset.page);
+    render();
+    list().scrollIntoView({ block: 'nearest' });
+    return;
+  }
+  const tabLink = target.closest<HTMLElement>('[data-ledger-tab]');
+  if (tabLink) selectTab(tabLink.dataset.ledgerTab!, { scroll: true });
+});
+
+// Conferir walks every line, on every page. If one is broken, show the page that holds it.
+panel.addEventListener('verify:broken', e => {
+  const seq = (e as CustomEvent<string>).detail;
+  if (filter !== 'all') applyFilter('all');
+  const index = matching().findIndex(li => li.dataset.seq === seq);
+  if (index < 0) return;
+  selectTab('acoes');
+  page = Math.floor(index / pageSize);
+  render();
 });
 
 /* ---------- Example only: edit a money line without redoing its mark ---------- */
@@ -74,6 +148,14 @@ untamperBtn?.addEventListener('click', () => {
   toast('Mudança desfeita. O livro voltou ao que era.');
 });
 
+/* ---------- Start ---------- */
+
 setMode(mode);
 const initialType = params.get('tipo');
 if (initialType && ['finance', 'field', 'candidate', 'project'].includes(initialType)) applyFilter(initialType);
+const fromHash = () => {
+  const id = location.hash.slice(1);
+  if (tabs.some(t => t.getAttribute('aria-controls') === id)) selectTab(id, { scroll: true });
+};
+fromHash();
+addEventListener('hashchange', fromHash);

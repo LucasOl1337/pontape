@@ -26,6 +26,10 @@
   --spectrum:linear-gradient(90deg,var(--s1),var(--s2) 25%,var(--s3) 50%,var(--s4) 75%,var(--s5));
   --grad-text:linear-gradient(100deg,#FFB08F 0%,#FFD98A 22%,#8CF0D6 45%,#9CC0FF 70%,#D2BCFF 100%);
 
+  /* Os sete degraus da home e os sete passos da jornada andam pelo espectro */
+  --step-1:var(--s1); --step-2:color-mix(in srgb,var(--s1) 50%,var(--s2)); --step-3:var(--s2); --step-4:var(--s3);
+  --step-5:var(--s4); --step-6:color-mix(in srgb,var(--s4) 50%,var(--s5)); --step-7:var(--s5);
+
   /* Estado dos módulos */
   --live:#5BE0A0; --live-bg:rgba(91,224,160,.12);
   --building:#F7C95C; --building-bg:rgba(247,201,92,.12);

@@ -1,7 +1,20 @@
 ---
 import LogoMark from './LogoMark.astro';
 import { PROJECT_NAME, STATUS_DATE, formatDay } from '../../data/site/project';
+
+// The home fits in one screen, so its footer is a single line; the full text lives in "Como ajudar".
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
 ---
+{compact ? (
+<footer class="site-footer site-footer--compact">
+  <div class="footer-line">
+    <p class="footer-brand"><LogoMark /><span>{PROJECT_NAME}</span></p>
+    <p>Sem fins lucrativos, ainda sem registro formal. Nenhum dado pessoal coletado. Estado em <time datetime={STATUS_DATE}>{formatDay(STATUS_DATE)}</time>.</p>
+    <p><a href="/transparencia">Livro público</a></p>
+  </div>
+</footer>
+) : (
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-top">
@@ -17,3 +30,4 @@ import { PROJECT_NAME, STATUS_DATE, formatDay } from '../../data/site/project';
     <p class="footer-wordmark" aria-hidden="true">{PROJECT_NAME}</p>
   </div>
 </footer>
+)}

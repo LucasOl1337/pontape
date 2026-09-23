@@ -1,0 +1,47 @@
+---
+import Icon from '../site/Icon.astro';
+import NotOpenBadge from '../site/NotOpenBadge.astro';
+import PanelHead from '../stair/PanelHead.astro';
+import PanelNav from '../stair/PanelNav.astro';
+import { stepTabId, type HomeStep } from '../stair/steps';
+import { BOTTLENECKS } from '../../data/site/bottlenecks';
+import { CONTRIBUTIONS } from '../../data/site/contributions';
+
+interface Props { step: HomeStep; n: number; total: number; prev: HomeStep; next: HomeStep }
+const { step, n, total, prev, next } = Astro.props;
+const speech = 'Estes são os problemas que a gente ainda não sabe resolver. '
+  + BOTTLENECKS.map((b, i) => `${i + 1}: ${b.title}.`).join(' ')
+  + ' Se você entende de algum desses assuntos, sua ajuda vale muito.';
+const tasks = (id: string) => CONTRIBUTIONS.filter(c => c.bottleneck === id).length;
+---
+<section class="stage-panel panel-bottlenecks" id={step.id} role="tabpanel" aria-labelledby={stepTabId(step.id)} tabindex="-1" data-speech={speech}>
+  <PanelHead n={n} total={total} name={step.name} panel={step.id} titleId="t-bottlenecks">
+    O que a gente ainda não sabe resolver.
+    <p class="lead" slot="lead">Falar disso também é transparência. Se você entende de algum desses assuntos, sua ajuda vale muito.</p>
+  </PanelHead>
+  <div class="bn">
+    <div class="bn-list" role="tablist" aria-label="Gargalos" aria-orientation="vertical" data-bottleneck-tabs>
+      {BOTTLENECKS.map((b, i) => (
+        <button class="bn-tab" role="tab" type="button" id={`gargalo-tab-${b.id}`} aria-controls={`gargalo-${b.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+          <span class="num-badge" aria-hidden="true">{i + 1}</span><span class="bn-tab-title">{b.title}</span><span class="badge badge--bottleneck">{b.modules}</span>
+        </button>
+      ))}
+    </div>
+    {BOTTLENECKS.map((b, i) => (
+      <article class="tile bn-detail" id={`gargalo-${b.id}`} role="tabpanel" aria-labelledby={`gargalo-tab-${b.id}`} tabindex="0" hidden={i !== 0}>
+        <p class="tile-label">Gargalo {i + 1} de {BOTTLENECKS.length} · {b.modules}</p>
+        <h3>{b.title}</h3>
+        <p class="bn-why">{b.why}</p>
+        <dl class="bn-facts">
+          <div><dt>O que já está andando</dt><dd>{b.progress}</dd></div>
+          <div><dt>Quem pode ajudar</dt><dd>{b.helpers}</dd></div>
+        </dl>
+        <div class="tile-foot">
+          <NotOpenBadge />
+          <button class="link-arrow" type="button" data-go="contribuicoes">{tasks(b.id) ? `${tasks(b.id)} ${tasks(b.id) === 1 ? 'tarefa destrava' : 'tarefas destravam'} esse gargalo` : 'Ver as contribuições'}<Icon name="arrow-right" /></button>
+        </div>
+      </article>
+    ))}
+  </div>
+  <PanelNav prev={prev} next={next} />
+</section>

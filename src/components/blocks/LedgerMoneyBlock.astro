@@ -1,6 +1,6 @@
 ---
 import Icon from '../site/Icon.astro';
-import BlockHead from '../site/BlockHead.astro';
+import ListenButton from '../site/ListenButton.astro';
 import type { LedgerEvent } from '../../lib/ledger/schema';
 import { OUT_CATEGORIES } from '../../lib/ledger-view/phrases';
 import { formatCents, sumMoney } from '../../lib/ledger-view/money';
@@ -9,22 +9,21 @@ interface Props { real: LedgerEvent[]; example: LedgerEvent[] }
 const { real, example } = Astro.props;
 const panels = [{ mode: 'real', totals: sumMoney(real) }, { mode: 'example', totals: sumMoney(example) }] as const;
 ---
-<section class="section" id="dinheiro" aria-labelledby="t-money"
+<section class="book-panel" id="dinheiro" role="tabpanel" aria-labelledby="aba-dinheiro" tabindex="-1" hidden
   data-speech="Quanto entrou, quanto saiu e pra onde foi. Hoje entrou zero real e saiu zero real. A doação só abre quando existir uma conta oficial do projeto. Aqui nunca vai ter número inventado.">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <BlockHead number="02" label="Dinheiro" listen="dinheiro" />
-      <h2 id="t-money">Quanto entrou, quanto saiu, pra onde foi.</h2>
-      <p class="lead">Até o custo pra manter o projeto de pé aparece aqui.</p>
-    </div>
+  <div class="book-head">
+    <h2>Quanto entrou, quanto saiu, pra onde foi.</h2>
+    <ListenButton target="dinheiro" />
+  </div>
+  <p class="book-lead">Até o custo pra manter o projeto de pé aparece aqui.</p>
     {panels.map(({ mode, totals }) => (
       <div data-money={mode} hidden={mode !== 'real'}>
         {mode === 'example' && <p class="sample-banner"><span class="mono">EXEMPLO</span><span>Valores fictícios.</span></p>}
         <div class="bento bento--3 money">
-          <div class="tile total total--in reveal"><span class="stat-label"><Icon name="arrow-left" />Entrou</span><span class="total-value" data-total-in>{formatCents(totals.inCents)}</span></div>
-          <div class="tile total total--out reveal"><span class="stat-label"><Icon name="arrow-right" />Saiu</span><span class="total-value">{formatCents(totals.outCents)}</span></div>
-          <div class="tile total total--balance reveal"><span class="stat-label"><Icon name="coin" />Em caixa</span><span class="total-value" data-total-balance>{formatCents(totals.balanceCents)}</span></div>
-          <div class:list={['tile', 'money-part', 'reveal', mode === 'real' && totals.inCents === 0n ? 'c2' : 'c4']}>
+          <div class="tile total total--in"><span class="stat-label"><Icon name="arrow-left" />Entrou</span><span class="total-value" data-total-in>{formatCents(totals.inCents)}</span></div>
+          <div class="tile total total--out"><span class="stat-label"><Icon name="arrow-right" />Saiu</span><span class="total-value">{formatCents(totals.outCents)}</span></div>
+          <div class="tile total total--balance"><span class="stat-label"><Icon name="coin" />Em caixa</span><span class="total-value" data-total-balance>{formatCents(totals.balanceCents)}</span></div>
+          <div class:list={['tile', 'money-part', mode === 'real' && totals.inCents === 0n ? 'c2' : 'c4']}>
             <h3>Pra onde foi</h3>
             <ul class="bars">
               {OUT_CATEGORIES.map(c => {
@@ -40,7 +39,7 @@ const panels = [{ mode: 'real', totals: sumMoney(real) }, { mode: 'example', tot
             </ul>
           </div>
           {mode === 'real' && totals.inCents === 0n && (
-            <div class="tile why-zero reveal">
+            <div class="tile why-zero">
               <span class="glyph"><Icon name="lock" /></span>
               <h3>Por que está zerado?</h3>
               <p>A doação só abre quando existir uma conta oficial do projeto. Assim todo real tem dono, nota e prestação de contas. Aqui nunca vai ter número inventado.</p>
@@ -50,5 +49,4 @@ const panels = [{ mode: 'real', totals: sumMoney(real) }, { mode: 'example', tot
         </div>
       </div>
     ))}
-  </div>
 </section>

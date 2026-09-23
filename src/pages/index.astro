@@ -1,33 +1,66 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroBlock from '../components/blocks/HeroBlock.astro';
-import ForYouBlock from '../components/blocks/ForYouBlock.astro';
-import ProblemBlock from '../components/blocks/ProblemBlock.astro';
-import JourneyBlock from '../components/blocks/JourneyBlock.astro';
-import ModulesBlock from '../components/blocks/ModulesBlock.astro';
-import TransparencyBlock from '../components/blocks/TransparencyBlock.astro';
-import BottlenecksBlock from '../components/blocks/BottlenecksBlock.astro';
-import ContributionsBlock from '../components/blocks/ContributionsBlock.astro';
-import HelpBlock from '../components/blocks/HelpBlock.astro';
-import OpenSourceBlock from '../components/blocks/OpenSourceBlock.astro';
+import Icon from '../components/site/Icon.astro';
+import StepInicio from '../components/steps/StepInicio.astro';
+import StepComoFunciona from '../components/steps/StepComoFunciona.astro';
+import StepModulos from '../components/steps/StepModulos.astro';
+import StepLivro from '../components/steps/StepLivro.astro';
+import StepGargalos from '../components/steps/StepGargalos.astro';
+import StepContribuicoes from '../components/steps/StepContribuicoes.astro';
+import StepAjudar from '../components/steps/StepAjudar.astro';
+import { stepTabId, type HomeStep } from '../components/stair/steps';
 import { getPublicLedger } from '../lib/ledger-view/source';
 import { SHARE } from '../data/site/share';
+import { MODULES } from '../data/site/modules';
+import { BOTTLENECKS } from '../data/site/bottlenecks';
+import { CONTRIBUTIONS } from '../data/site/contributions';
+import { STEPS as JOURNEY } from '../data/site/journey';
+import { PROJECT_NAME } from '../data/site/project';
+import { formatCents, sumMoney } from '../lib/ledger-view/money';
 
 const ledger = await getPublicLedger();
+const needsHelp = MODULES.filter(m => m.status === 'bottleneck').length;
+
+// The stair: one block per part of the site. The chosen block grows and its content fills the stage.
+const STAIR: HomeStep[] = [
+  { id: 'inicio', name: PROJECT_NAME, icon: 'flag', stat: 'O que é e pra quem' },
+  { id: 'como-funciona', name: 'Como funciona', icon: 'sprout', stat: `${JOURNEY.length} passos até o trabalho` },
+  { id: 'modulos', name: 'Módulos', icon: 'package', stat: `${MODULES.length} blocos · ${needsHelp} pedem ajuda` },
+  { id: 'transparencia', name: 'Livro público', icon: 'shield', stat: `${ledger.events.length} ações · ${formatCents(sumMoney(ledger.events).inCents)}` },
+  { id: 'gargalos', name: 'Gargalos', icon: 'alert', stat: `${BOTTLENECKS.length} em aberto` },
+  { id: 'contribuicoes', name: 'Contribuições', icon: 'code', stat: `${CONTRIBUTIONS.length} tarefas abertas` },
+  { id: 'ajudar', name: 'Como ajudar', icon: 'people', stat: '4 jeitos de entrar' },
+];
+const total = STAIR.length;
+const at = (i: number) => STAIR[i]!;
 ---
 <BaseLayout
   title={SHARE.home.title}
   description={SHARE.home.description}
-  share="home">
-  <HeroBlock ledger={ledger} />
-  <ForYouBlock />
-  <ProblemBlock />
-  <JourneyBlock />
-  <ModulesBlock ledger={ledger} />
-  <TransparencyBlock ledger={ledger} />
-  <BottlenecksBlock />
-  <ContributionsBlock />
-  <HelpBlock />
-  <OpenSourceBlock />
+  share="home"
+  compactFooter>
+  <h1 class="sr-only">{PROJECT_NAME}: o primeiro passo pra quem quer mudar de vida</h1>
+  <div class="stairway" data-stairway data-active="inicio">
+    <div class="stair" role="tablist" aria-label={`A escada do ${PROJECT_NAME}: ${total} degraus`} aria-orientation="vertical">
+      {STAIR.map((s, i) => (
+        <button class="step" role="tab" type="button" id={stepTabId(s.id)} aria-controls={s.id} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-step={s.id} style={`--i:${i};--sc:var(--step-${i + 1})`}>
+          <span class="step-num mono">Degrau {i + 1}</span><span class="step-icon"><Icon name={s.icon} /></span>
+          <span class="step-name">{s.name}</span>
+          <span class="step-stat">{s.stat}</span>
+        </button>
+      ))}
+      <p class="stair-hint" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> sobem e descem a escada</p>
+      <p class="stair-now" aria-hidden="true" data-stair-now>Degrau 1 de {total} · <strong>{at(0).name}</strong></p>
+    </div>
+    <div class="stage" data-stage>
+      <StepInicio step={at(0)} next={at(1)} ledger={ledger} />
+      <StepComoFunciona step={at(1)} n={2} total={total} prev={at(0)} next={at(2)} />
+      <StepModulos step={at(2)} n={3} total={total} prev={at(1)} next={at(3)} />
+      <StepLivro step={at(3)} n={4} total={total} prev={at(2)} next={at(4)} ledger={ledger} />
+      <StepGargalos step={at(4)} n={5} total={total} prev={at(3)} next={at(5)} />
+      <StepContribuicoes step={at(5)} n={6} total={total} prev={at(4)} next={at(6)} />
+      <StepAjudar step={at(6)} n={7} total={total} prev={at(5)} />
+    </div>
+  </div>
 </BaseLayout>
 <script>import '../scripts/home';</script>

@@ -1,0 +1,88 @@
+---
+import Icon from '../site/Icon.astro';
+import Badge from '../site/Badge.astro';
+import ListenButton from '../site/ListenButton.astro';
+import PanelHead from '../stair/PanelHead.astro';
+import PanelNav from '../stair/PanelNav.astro';
+import { stepTabId, type HomeStep } from '../stair/steps';
+import type { IconName } from '../site/icon-names';
+import { DETAIL_FIELDS, MODULES } from '../../data/site/modules';
+import { STATUSES, STATUS_ORDER } from '../../data/site/statuses';
+import { STATUS_DATE, STATUS_DATE_SPOKEN, formatDay, withName } from '../../data/site/project';
+
+interface Props { step: HomeStep; n: number; total: number; prev: HomeStep; next: HomeStep }
+const { step, n, total, prev, next } = Astro.props;
+const joinList = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items.at(-1)}`;
+const byStatus = (s: string) => MODULES.filter(m => m.status === s);
+const labelsForSpeech: Record<string, string> = {
+  live: 'Funcionando', building: 'Em construção',
+  bottleneck: 'Precisa de ajuda, que é o que a gente ainda não sabe resolver', planned: 'Planejados',
+};
+const speech = `O projeto tem ${MODULES.length} blocos. Estado em ${STATUS_DATE_SPOKEN}. ` + STATUS_ORDER.map(s => {
+  const names = byStatus(s).map(m => m.name);
+  return names.length ? `${labelsForSpeech[s]}: ${names.length}. ${joinList(names)}.` : `${labelsForSpeech[s]}: nenhum ainda.`;
+}).join(' ') + ' Toque num bloco pra saber mais.';
+const moduleSpeech = (m: (typeof MODULES)[number]) =>
+  `Bloco ${m.id.slice(1)}: ${m.name}. Estado: ${STATUSES[m.status].label}. ` + DETAIL_FIELDS.map(f => `${f.label}: ${withName(m[f.key])}`).join(' ');
+const ICONS: Record<string, IconName> = { M1: 'phone', M2: 'shield', M3: 'pin', M4: 'mic', M5: 'plate', M6: 'briefcase', M7: 'voice-ai', M8: 'code', M9: 'pen' };
+---
+<section class="stage-panel panel-modules" id={step.id} role="tabpanel" aria-labelledby={stepTabId(step.id)} tabindex="-1" data-speech={speech}>
+  <PanelHead n={n} total={total} name={step.name} panel={step.id} titleId="t-modules">
+    Nove blocos. Cada um diz se já funciona.
+  </PanelHead>
+  <div class="module-toolbar">
+    <div class="filters" role="group" aria-label="Filtrar por estado" data-module-filters>
+      <button class="filter" type="button" data-filter="all" aria-pressed="true">Todos<span class="count">{MODULES.length}</span></button>
+      {STATUS_ORDER.map(s => (
+        <button class="filter" type="button" data-filter={s} aria-pressed="false"><Icon name={STATUSES[s].icon} />{STATUSES[s].label}<span class="count">{byStatus(s).length}</span></button>
+      ))}
+    </div>
+    <p class="filter-note" data-filter-note="all"><span class="status-date">Estado em {formatDay(STATUS_DATE)}</span><span>Toque num bloco pra ver o que falta.</span></p>
+    {STATUS_ORDER.map(s => <p class="filter-note" data-filter-note={s} hidden><Badge status={s} /><span>{STATUSES[s].meaning}</span></p>)}
+  </div>
+  <ul class="module-grid" data-module-grid>
+    {MODULES.map(m => (
+      <li class="module-cell" data-status-item={m.status} style={`--vt:mod-${m.id.toLowerCase()}`}>
+        <button class:list={['tile', 'tile--action', 'module-card', { 'module-card--feature': m.id === 'M2' }]} type="button" data-module={m.id} data-status={m.status} aria-haspopup="dialog">
+          <span class="tile-kicker"><span class="module-id">{m.id}</span><Badge status={m.status} /></span>
+          <span class="module-name">{m.name}</span>
+          <span class="module-summary">{withName(m.summary)}</span>
+          <span class="tile-art" aria-hidden="true"><Icon name={ICONS[m.id]!} /></span>
+        </button>
+      </li>
+    ))}
+  </ul>
+  {STATUS_ORDER.filter(s => !byStatus(s).length).map(s => (
+    <div class="tile module-empty" data-empty-for={s} hidden>
+      {s === 'live'
+        ? <><strong>Nenhum bloco funcionando ainda.</strong><p>É cedo: o projeto começou em setembro de 2026. Quando um bloco entrar no ar, o selo muda aqui, com a data.</p></>
+        : <strong>Nenhum bloco nesse estado.</strong>}
+    </div>
+  ))}
+  <PanelNav prev={prev} next={next} />
+</section>
+
+<dialog class="dialog" id="module-dialog" aria-labelledby="module-dialog-title">
+  <div class="dialog-head">
+    <div><span class="module-id" id="module-dialog-id"></span><h2 id="module-dialog-title"></h2></div>
+    <button class="close-btn" type="button" data-close aria-label="Fechar"><Icon name="close" /></button>
+  </div>
+  <div class="dialog-body" id="module-dialog-body"></div>
+</dialog>
+
+{MODULES.map((m, i) => {
+  const before = MODULES[(i + MODULES.length - 1) % MODULES.length]!;
+  const after = MODULES[(i + 1) % MODULES.length]!;
+  return (
+    <template id={`module-${m.id}`} data-name={m.name}>
+      <p class="dialog-status"><Badge status={m.status} /><span class="status-date">Estado em {formatDay(STATUS_DATE)}</span><ListenButton speech={moduleSpeech(m)} /></p>
+      <dl class="module-details">
+        {DETAIL_FIELDS.map(f => <div class={f.tone ? `is-${f.tone}` : undefined}><dt>{f.label}</dt><dd>{withName(m[f.key])}</dd></div>)}
+      </dl>
+      <div class="dialog-nav">
+        <button class="btn btn--small" type="button" data-module={before.id} aria-label={`Bloco anterior: ${before.name}`}><Icon name="arrow-left" />{before.id}</button>
+        <button class="btn btn--small" type="button" data-module={after.id} aria-label={`Próximo bloco: ${after.name}`}>{after.id}<Icon name="arrow-right" /></button>
+      </div>
+    </template>
+  );
+})}

@@ -13,9 +13,10 @@ interface Props {
   current?: 'home' | 'transparencia';
   share?: keyof typeof SHARE;
   noindex?: boolean;
+  compactFooter?: boolean;
 }
 
-const { title, description, current, share = 'home', noindex = false } = Astro.props;
+const { title, description, current, share = 'home', noindex = false, compactFooter = false } = Astro.props;
 const card = SHARE[share];
 // Share previews need absolute URLs. `site` comes from SITE_URL at build (astro.config.mjs);
 // until the domain exists the paths stay relative.
@@ -30,8 +31,8 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <meta name="theme-color" content="#07080B" />
     <meta name="color-scheme" content="dark light" />
     {noindex && <meta name="robots" content="noindex" />}
-    <!-- Theme before first paint: the saved choice, or the device's. Without JS the site stays dark. -->
-    <script is:inline>(function(){let t;try{t=localStorage.getItem('theme')}catch{/* no storage */}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t;})();</script>
+    <!-- Before first paint: theme (saved choice, or the device's) and the js class. Without JS the site stays dark and shows every step. -->
+    <script is:inline>(function(){let t;try{t=localStorage.getItem('theme')}catch{/* no storage */}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';const r=document.documentElement;r.dataset.theme=t;r.classList.replace('no-js','js');})();</script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -62,7 +63,7 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <StatusStrip />
     <SiteHeader current={current} />
     <main id="conteudo" tabindex="-1"><slot /></main>
-    <SiteFooter />
+    <SiteFooter compact={compactFooter} />
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script>import '../scripts/site';</script>
   </body>

@@ -1,0 +1,15 @@
+---
+import ListenButton from '../site/ListenButton.astro';
+
+// Header of a step on the stage: where you are on the stair, the title and Ouvir.
+interface Props { n: number; total: number; name: string; panel: string; titleId: string }
+const { n, total, name, panel, titleId } = Astro.props;
+---
+<header class="panel-head">
+  <div class="eyebrow-row">
+    <p class="eyebrow"><span class="eyebrow-num">{String(n).padStart(2, '0')}</span>Degrau {n} de {total} · {name}</p>
+    <ListenButton target={panel} />
+  </div>
+  <h2 id={titleId}><slot /></h2>
+  <slot name="lead" />
+</header>
