@@ -8,7 +8,7 @@ assignees: ""
 
 ## Qual gargalo?
 
-Escolha um dos [gargalos do mapa do site](https://github.com/LucasOl1337/VidaNova/blob/main/docs/design/MAPA-DO-SITE.md#06--gargalos) e diga o que falta resolver.
+Escolha uma das [perguntas em aberto do site](https://pontape.org/construir/gargalos) e diga o que falta resolver.
 
 ## Sua ideia
 
