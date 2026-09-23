@@ -4,6 +4,8 @@ Rascunho da fundação; governança completa vem da F10.
 
 Leia o [PRD](docs/PRD.md), as [decisões](docs/DECISOES.md) e o [AGENTS.md](AGENTS.md). Para configurar o projeto e validar uma mudança, siga o [README](README.md).
 
+Veja também [governança](GOVERNANCA.md), [código de conduta](CODE_OF_CONDUCT.md), [segurança](SECURITY.md) e [modelo de PR](.github/pull_request_template.md).
+
 1. Trabalhe numa branch própria, com uma mudança de propósito claro por PR. Nesta máquina, agentes usam seus worktrees; o checkout compartilhado pertence ao Regente.
 2. Escreva interface e documentação em PT-BR; código e identificadores em inglês. Use tokens de `src/styles/tokens.css` e blocos de `src/components/blocks/`.
 3. Use somente dados fictícios, identificados como fictícios, em testes e exemplos. Dados pessoais reais, credenciais e comprovantes privados nunca entram no Git.
