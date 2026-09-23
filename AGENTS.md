@@ -10,14 +10,14 @@ Organização sem fins lucrativos e open source que acha pessoas em vulnerabilid
 |---|---|---|
 | `regente` | Regente · Claude Opus 5.5 | Coordena, escreve briefs, revisa, integra na main, fala com o Lucas |
 | `design` | Design/UI · Claude Opus 5.5 | UI, UX, design system, protótipos, texto de interface |
-| `fino` | EngenheiroFino · Codex GPT-6-Astra | Arquitetura e partes delicadas: dinheiro, dados, IA de voz |
+| `fino` | EngenheiroFino · Codex (GPT-6-Sol desde 23/09) | Arquitetura e partes delicadas: dinheiro, dados, IA de voz |
 | `bruto` | ExecutorBruto · Codex GPT-6-Sol | Volume: pesquisa extensa, implementação de módulo |
 | `devin` | SubAgente (ligado ao EngenheiroFino) | Trabalho braçal, briefado e revisado pelo EngenheiroFino |
 | `var-1` a `var-5` | Prisma, Crônica, Ábaco (Claude Opus 5.5), Maracatu (Codex GPT-6-Astra), Pluma (Codex GPT-6-Sol) | Uma variante visual cada (F19), até o Lucas escolher a direção |
 
 Executor reporta ao Regente com `maestri ask "Regente" "<resumo + link da PR>"`. Só o Regente fala com o Lucas.
 
-**Vigília noturna (F26, a partir de 23/09/2026):** o ExecutorBruto (GPT-6-Sol) é o gestor, com executores GPT-6-Luna e Devin, e pode revisar e integrar PRs de polimento dentro das regras do [BRIEF da F26](docs/frentes/F26-vigilia-noturna/BRIEF.md). Nessa rodada ninguém chama o Regente, o Design/UI nem o EngenheiroFino.
+**Vigília noturna (F26, noite de 22 pra 23/09/2026):** encerrada. O que ela fez está no Quadro, seção Feito.
 
 ## Memória em arquivo
 
