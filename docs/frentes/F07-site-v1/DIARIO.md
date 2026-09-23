@@ -32,4 +32,36 @@ Dúvidas:
 1. Frase de decisão hoje é só "Decisão D006 registrada", porque o contrato não tem descrição. Posso mostrar o título da decisão tirado do `DECISOES.md` no build (conteúdo do site, não do livro), ou fica só o ID com o link?
 2. O BRIEF fala em "seção na página de código aberto". Hoje só existe o bloco 09 na home, e pus lá uma faixa com o número de contribuições. Precisa de página própria de código aberto?
 
-Onde parei: abrindo a PR da etapa 0. Próximo: etapa 1 na `design/f07-site`.
+Etapa 0 entregue na PR #28, integrada. Respostas do Regente: D013 (título da decisão pode aparecer, fora da marca) e D014 (livro real e verificador do site vêm só da F08).
+
+## Marco 2 · 22/09/2026 · etapa 1: site em código
+
+Branch `design/f07-site`, a partir da `main` com a base da F02, o contrato da F08 e a etapa 0.
+
+Feito:
+
+- **Home e `/transparencia` em Astro**, um componente por bloco em `src/components/blocks/` (10 da home, 6 do livro), peças comuns em `src/components/site/` e `src/components/ledger/`. Visual igual ao protótipo aprovado; estilos portados pra `src/styles/` (tokens em `tokens.css`).
+- **Dados fora do componente:** `src/data/site/` tem nome e data do estado (`project.ts`, um lugar só), estados, módulos, jornada, gargalos, contribuições (lidas e validadas de `docs/contribuicoes/contribuicoes.json` no build) e títulos das decisões (lidos do `DECISOES.md` no build, D013).
+- **Livro (D014):** `src/lib/ledger-view/` usa os tipos de `src/lib/ledger/schema.ts`. O livro real sai de `getPublicLedger()` em `source.ts`, que hoje devolve "pendente" e vazio: a página mostra "O livro oficial ainda não foi publicado" e chama pro exemplo. O exemplo é a fixture da F08, e nada além dela. O verificador provisório fica sozinho em `verifier.ts`, atrás do tipo `LedgerVerifier`. Na troca, só esses dois arquivos mudam.
+- **D013:** decisão mostra o título do `DECISOES.md` embaixo da frase, com estilo de citação, e uma nota fixa: "O Conferir prova a linha, não o título."
+- **"Ver a fonte"** agora diz "Repositório ainda fechado" em texto, sem cadeado.
+- **HTML pronto no build.** JS só pra alternar e conferir, com scripts do Astro e sem React: home 1,6 KB, livro 1,1 KB, comum 1,2 KB, Conferir 1,8 KB (comprimidos). O zod não vai pro navegador.
+- **Fontes no próprio site:** três woff2 variáveis com subset latino (87 KB) e as licenças OFL em `public/fonts/`.
+- **CSP mais fechada** em `public/_headers`: sem Google, sem hash de script inline. Testei servindo `dist/` com essa CSP: JS, fontes e Conferir funcionam.
+- **Orçamento medido:** `npm run budget` (`scripts/check-budget.mjs`) segue os imports de cada página e reprova acima de 60 KB. Hoje a home tem 29,1 KB, o livro 21,5 KB e as fontes 87,1 KB de 120 KB. Entrou no `npm run check`.
+- **Testes:** frase pra toda ação do contrato, somas BigInt, contagens, verificador (linha mudada, apagada e corrente trocada), livro real pendente, exemplo igual à fixture, dados do site e títulos das decisões. Total do repositório: 67.
+
+Decisões propostas:
+
+| # | Proposta | Por quê |
+|---|---|---|
+| P12 | Nada de React nestas duas páginas; ilhas com `<script>` do Astro | Só o runtime do React passaria da metade do orçamento de 60 KB |
+| P13 | Tirar o Google da CSP e o hash de script inline | Fontes agora são locais e não sobrou script inline |
+| P14 | Rodar `npm run budget` no CI | Hoje só roda no `check`; o workflow é da F02 |
+
+Dúvidas:
+
+1. O exemplo agora é só a fixture da F08 (4 ações). "Simular uma ação chegando" saiu, e "Mudar uma linha escondido" continua. A F08 pode aumentar a fixture fictícia (gastos por categoria, estorno, entregas) pra o exemplo mostrar o dinheiro de verdade?
+2. Posso pôr `npm run budget` no CI, ou fica pra F02?
+
+Onde parei: abrindo a PR da etapa 1. Próximo: quando o núcleo da F08 entrar, trocar `getPublicLedger()` e o verificador pelos dela, e tirar os prints com o livro real (onde aparecem os títulos D013).
