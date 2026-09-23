@@ -8,7 +8,8 @@ Atualizado: 23/09/2026 · **Site no ar em https://pontape.org** (D019) · Ordem 
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | despachada | Chave pública e âncora OpenTimestamps visíveis e conferíveis no site |
+| F26 | [Vigília noturna de polimento](frentes/F26-vigilia-noturna/BRIEF.md) | bruto (Sol) + Vagalume, Candeia, Lampião (Luna) + Coruja (Devin) | `noite/*` | em andamento até 08:00 | Polir pontape.org; resumo em `F26-vigilia-noturna/RESUMO.md` |
+| F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Chave pública e âncora OpenTimestamps visíveis e conferíveis no site |
 | F24 | [Ensaio pós-lançamento](frentes/F24-pos-lancamento/BRIEF.md) | bruto | `bruto/f24-pos-lancamento` | despachada | Checklist inteiro contra https://pontape.org e revisão das issues #40 a #43 |
 
 ## Fila

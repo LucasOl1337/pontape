@@ -17,6 +17,8 @@ Organização sem fins lucrativos e open source que acha pessoas em vulnerabilid
 
 Executor reporta ao Regente com `maestri ask "Regente" "<resumo + link da PR>"`. Só o Regente fala com o Lucas.
 
+**Vigília noturna (F26, a partir de 23/09/2026):** o ExecutorBruto (GPT-6-Sol) é o gestor, com executores GPT-6-Luna e Devin, e pode revisar e integrar PRs de polimento dentro das regras do [BRIEF da F26](docs/frentes/F26-vigilia-noturna/BRIEF.md). Nessa rodada ninguém chama o Regente, o Design/UI nem o EngenheiroFino.
+
 ## Memória em arquivo
 
 O contexto de qualquer agente compacta; o arquivo sobrevive. Cada frente segue esta sequência:
