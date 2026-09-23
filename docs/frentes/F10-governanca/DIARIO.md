@@ -31,3 +31,8 @@ Conferir links, tempo de leitura e limites; revisar diff, abrir PR e reportar ao
 - `git diff --cached --check` passou. O diff de `CONTRIBUTING.md` contém só a linha de links.
 - `npm run check` passou: lint, tipagem Astro, 22 testes e build estático.
 - Próximo passo: commitar, enviar a branch, abrir PR e avisar o Regente. Não há decisão pendente que impeça esta PR; o canal privado e a licença ficam explicitamente a definir pelo Lucas.
+
+## 22/09/2026 · PR aberta
+
+- Commitei a documentação em `bruto/f10-governanca`, enviei a branch e abri a [PR #25](https://github.com/LucasOl1337/VidaNova/pull/25) para `main`.
+- Próximo passo: reportar ao Regente. Dúvidas de produto para Lucas: qual canal privado será adotado para conduta e segurança, e qual licença será escolhida na frente futura F10b. Nenhuma exige resposta para revisar esta PR.
