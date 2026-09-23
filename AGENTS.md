@@ -12,6 +12,8 @@ Organização sem fins lucrativos e open source que acha pessoas em vulnerabilid
 | `design` | Design/UI · Claude Opus 5.5 | UI, UX, design system, protótipos, texto de interface |
 | `fino` | EngenheiroFino · Codex (GPT-6-Sol desde 23/09) | Arquitetura e partes delicadas: dinheiro, dados, IA de voz |
 | `bruto` | ExecutorBruto · Codex GPT-6-Sol | Volume: pesquisa extensa, implementação de módulo |
+| `anil` | Anil · Claude Fable 5.1 (xhigh) | Paletas de cor (F30), desde 23/09 |
+| `prumo` | Prumo · Claude Opus 5.5 (xhigh) | Layout e UX do site (F31), desde 23/09 |
 | `devin` | SubAgente (ligado ao EngenheiroFino) | Trabalho braçal, briefado e revisado pelo EngenheiroFino |
 | `var-1` a `var-5` | Prisma, Crônica, Ábaco (Claude Opus 5.5), Maracatu (Codex GPT-6-Astra), Pluma (Codex GPT-6-Sol) | Uma variante visual cada (F19), até o Lucas escolher a direção |
 

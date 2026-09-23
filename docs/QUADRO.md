@@ -2,15 +2,16 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026, 09:45 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 23/09/2026, 10:00 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
-**Hoje:** o Lucas achou a home poluída pra quem é leigo ([feedback](fontes/2026-09-23-feedback-home.md)). F27 (sem Ouvir e A+, D024) e F28 (seletor de paletas temporário, D025) já no ar; F29 reorganiza a home pro leigo. PRs #60, #61 e #62 da vigília integradas às 09:30. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
+**Hoje:** F27 (sem Ouvir e A+), F28 (seletor de paletas) e F29 (home pro leigo) no ar. O Lucas reprovou as cinco paletas da F28 e achou os cadernos cortados e densos ([feedback](fontes/2026-09-23-feedback-paletas-e-cadernos.md)): F30 (Anil, Fable) refaz as paletas e F31 (Prumo, Opus xhigh) assume layout e UX (D026, D027). Design/UI em espera. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F29 | [Home que um leigo entende](frentes/F29-home-pra-leigo/BRIEF.md) | design | `design/f29-home-leigo` | proposta aprovada; F27 já na main | Um título, menu com 4 (Como funciona, Transparência, Como ajudar, Construir junto), degrau enxuto, caderno "Construir junto" |
+| F30 | [Paletas, rodada 2](frentes/F30-paletas-fable/BRIEF.md) | anil | `anil/f30-paletas` | despachada 10:00 | Cinco candidatas novas no nível da Jornal, com pesquisa de referência |
+| F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | despachada 10:00 | Primeira PR: como o caderno abre; depois varredura em 1920, 1440, 960 e 360 |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
 Issues abertas: #55 (beacon do Cloudflare barrado pela CSP), #56 (livro em 320 px, parte do A+ some com a F27), #57 (rollback ainda fala de Pages).
@@ -45,6 +46,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
 | ID | Frente | Resultado |
 |---|---|---|
+| F29 | Home que um leigo entende | [PR #66](https://github.com/LucasOl1337/pontape/pull/66) integrada 09:55. Um título, menu com quatro itens, degrau enxuto, caderno "Construir junto" no lugar da faixa "Nesta edição" |
 | F28 | Paletas com seletor | [PR #64](https://github.com/LucasOl1337/pontape/pull/64) integrada 09:40 (D025). Jornal, Mata, Mar, Ipê, Sol e Noite em `src/styles/palettes.css`, teste de contraste AA, `?cor=<nome>`. Ajuste da `theme-color` na [PR #65](https://github.com/LucasOl1337/pontape/pull/65) |
 | F27 | Tirar o Ouvir e o A+ | [PR #63](https://github.com/LucasOl1337/pontape/pull/63) integrada 09:25 (D024). HTML da home de 92 KB pra 77 KB |
 | F26 | Vigília noturna de polimento | [#58](https://github.com/LucasOl1337/pontape/pull/58), [#59](https://github.com/LucasOl1337/pontape/pull/59) integradas de madrugada; [#60](https://github.com/LucasOl1337/pontape/pull/60), [#61](https://github.com/LucasOl1337/pontape/pull/61) e [#62](https://github.com/LucasOl1337/pontape/pull/62) revisadas e integradas pelo Regente em 23/09 de manhã. Pausou às 00:51 por mensagem ambígua; executores dispensados |
