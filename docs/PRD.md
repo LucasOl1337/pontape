@@ -1,6 +1,6 @@
 # PRD · VidaNova (nome provisório)
 
-Rascunho v0.1 · 22/09/2026 · dono: Regente · fonte: [spec 01 do Lucas](fontes/2026-09-22-spec-01.md)
+Rascunho v0.2 · 22/09/2026 · dono: Regente · fontes: [spec 01](fontes/2026-09-22-spec-01.md) e [spec 02](fontes/2026-09-22-spec-02.md) do Lucas
 
 Este é o documento-guia do produto. Mudança de escopo passa pelo Lucas; o Regente atualiza o texto. Agente que achar furo ou contradição anota no próprio `DIARIO.md` e avisa o Regente.
 
@@ -11,7 +11,7 @@ Validado pelo Lucas em 22/09/2026, em ordem de prioridade. Se algo no resto do d
 1. **Objetivo:** tirar do desamparo quem quer mudar de vida de verdade e não tem condição nem pro primeiro passo.
 2. **A raiz:** dinheiro sozinho não resolve. Acertar a pessoa certa e dar a ela uma trilha completa até o emprego.
 3. **A IA é o filtro:** entrevista rápida por voz, sem precisar ler. Entende quem está pronto e ajuda a pessoa a pensar no que pode realizar.
-4. **Transparência total:** cada real que entra e sai aparece ao vivo, com comprovante, custo de operação incluído. É o que gera confiança pra doar.
+4. **Transparência total:** toda ação da plataforma aparece ao vivo pra quem quiser ver: cada real que entra e sai, com comprovante, e cada ação na vida real ou com candidato. Com criptografia aberta, pra qualquer um conferir que nada foi apagado ou mexido. É o que gera confiança pra doar.
 5. **O básico vem da doação:** comida por alguns dias, roupa nova e limpa, higiene.
 6. **Trabalho:** rede de emprego e pessoas ou empresas que se oferecem pra contratar o candidato certo.
 7. **IA contínua:** o selecionado segue com acesso a uma IA simples.
@@ -22,6 +22,16 @@ Validado pelo Lucas em 22/09/2026, em ordem de prioridade. Se algo no resto do d
 12. **Destino:** organização sem fins lucrativos de verdade, com nome próprio e domínio.
 
 Em uma frase: a IA acha e prepara quem quer mudar de vida, a doação dá o empurrão inicial, a rede dá o emprego, e tudo fica à vista, sempre.
+
+## Ordem de execução
+
+Direção do Lucas em 22/09/2026 ([spec 02](fontes/2026-09-22-spec-02.md)):
+
+1. **Primeiro, a plataforma e a parte visual.** A página que apresenta bem a ideia, os gargalos e as contribuições abertas.
+2. **Junto, o sistema de transparência total:** livro público de todas as ações, ao vivo, com criptografia aberta e verificável por qualquer um, tudo open source.
+3. **Depois** entrevista, filtros e conexões (M3 a M7).
+
+Regra que concilia transparência total com dignidade (princípios 1 e 2): **toda ação aparece; quem é a pessoa, não.** Evento de candidato sai sem nome, rosto, local exato ou qualquer dado que leve à pessoa. Se um evento de candidato pode ter um apelido por pessoa (ex.: "pessoa #014") pra dar pra seguir a trajetória, está em aberto (§10, pergunta 10).
 
 ## 1. Em uma frase
 
@@ -62,7 +72,7 @@ Cada módulo vira um bloco no site e uma ou mais frentes de trabalho em [QUADRO.
 | ID | Módulo | O que precisa existir | Tipo |
 |---|---|---|---|
 | M1 | **Site público** | Home modular por blocos: hero, como funciona, módulos, transparência, gargalos, como ajudar, open source | Produto |
-| M2 | **Doação e transparência ao vivo** | Receber doação; livro-caixa público com toda entrada e saída, comprovante, categoria e data, atualizado ao vivo | Produto + gargalo |
+| M2 | **Doação e transparência total** | Receber doação; livro público de todas as ações (dinheiro, vida real, candidato, decisões do projeto), com comprovante, ao vivo e com criptografia aberta verificável | Produto + gargalo |
 | M3 | **Captação de candidatos** | Voluntários, panfletos, pontos públicos, site. Critério de quem é "o candidato certo" | Gargalo |
 | M4 | **Entrevista por voz** | IA que conversa por voz (e talvez visual) com quem não lê; dispositivo que leva isso até a pessoa | Gargalo |
 | M5 | **Ponte inicial** | Comida, roupa, higiene: compra, entrega, parceiros, registro no livro-caixa | Operação |
@@ -73,7 +83,7 @@ Cada módulo vira um bloco no site e uma ou mais frentes de trabalho em [QUADRO.
 
 ## 6. Princípios
 
-1. **Transparência primeiro.** Todo real que entra e sai é público, com comprovante, categoria e data. Custo de operação também. Painel vazio mostra zero honesto, nunca número inventado.
+1. **Transparência primeiro.** Toda ação é pública: todo real que entra e sai, com comprovante, categoria e data, custo de operação incluído, e toda ação na vida real ou com candidato. Qualquer um consegue verificar que o registro não foi alterado. Painel vazio mostra zero honesto, nunca número inventado.
 2. **Dignidade.** Texto público nunca rebaixa ninguém. Nada de foto, nome ou história de candidato sem consentimento explícito. O resultado se prova com número e relato autorizado.
 3. **Voz primeiro.** O candidato consegue passar pela jornada inteira sem ler.
 4. **Privacidade desde o início.** Dado de pessoa vulnerável é sensível (LGPD). Coleta o mínimo, pseudonimiza, e dado real nunca entra no repositório.
@@ -104,7 +114,7 @@ Requisitos: mobile-first, rápido em celular barato, acessível (WCAG AA), PT-BR
 | Fase | Entrega | Depende de |
 |---|---|---|
 | F0 · Fundação | PRD, repositório, arquitetura, direção visual, pesquisas de base | nada |
-| F1 · Site no ar | Site v1 publicado no domínio escolhido, painel de transparência já visível | nome e domínio (Lucas), F0 |
+| F1 · Site no ar | Site v1 publicado no domínio escolhido: ideia, gargalos, contribuições abertas e o livro público de ações já rodando, começando pelas ações do próprio projeto | nome e domínio (Lucas), F0 |
 | F2 · Doação ao vivo | Receber doação e mostrar toda movimentação no painel em tempo real | estrutura jurídica e conta (Lucas), F1 |
 | F3 · Piloto de entrevista | Entrevista por voz funcionando num dispositivo, testada com voluntários | F0 (pesquisa de voz) |
 | F4 · Primeiros candidatos | Piloto numa cidade: captação, seleção, ponte inicial | F2, F3, cidade do piloto (Lucas) |
@@ -129,6 +139,7 @@ Requisitos: mobile-first, rápido em celular barato, acessível (WCAG AA), PT-BR
 7. **Licença open source.** MIT, Apache 2.0, AGPL? A pesquisa traz recomendação.
 8. **Repositório público.** O repo nasceu privado. Abre quando nome e licença estiverem decididos?
 9. **Responsável legal pelos dados.** Quem é o controlador dos dados dos candidatos (LGPD) e com qual base legal, antes de entrevistar gente de verdade?
+10. **Apelido por pessoa no livro público.** Evento de candidato sai sempre sem identidade. Pode ter um apelido fixo por pessoa ("pessoa #014") pra dar pra seguir a trajetória? Ajuda a confiança, mas numa cidade pequena junta data e ação e pode revelar quem é. Proposta: só com consentimento da pessoa.
 
 ## 11. Riscos
 
