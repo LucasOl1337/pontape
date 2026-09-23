@@ -22,10 +22,10 @@ function contrast(first: string, second: string) {
 }
 
 const pairs = [
-  ['--ink', '--paper'], ['--ink-2', '--paper'], ['--red', '--paper'],
-  ['--paper', '--ink'], ['--paper', '--red'],
-  ['--night-ink', '--night'], ['--night-ink-2', '--night'], ['--night-red', '--night'],
-  ['--night', '--night-red'], ['--inverse-muted', '--ink'], ['--inverse-accent', '--ink'],
+  ['--ink', '--paper'], ['--ink-2', '--paper'], ['--accent', '--paper'],
+  ['--paper', '--ink'], ['--paper', '--accent'],
+  ['--night-ink', '--night'], ['--night-ink-2', '--night'], ['--night-accent', '--night'],
+  ['--night', '--night-accent'], ['--inverse-muted', '--ink'], ['--inverse-accent', '--ink'],
   ['--status-live', '--paper'], ['--status-building', '--paper'],
   ['--status-bottleneck', '--paper'], ['--status-planned', '--paper'],
   ['--status-building', '--status-building-bg'],
@@ -52,8 +52,8 @@ describe('paleta Anil', () => {
     expect(ANIL.paper3).toBe(colors['--paper-3']);
     expect(ANIL.ink).toBe(colors['--ink']);
     expect(ANIL.ink2).toBe(colors['--ink-2']);
-    expect(ANIL.accent).toBe(colors['--red']);
-    expect(ANIL.accentLight).toBe(colors['--night-red']);
+    expect(ANIL.accent).toBe(colors['--accent']);
+    expect(ANIL.accentLight).toBe(colors['--night-accent']);
     expect(ANIL.building).toBe(colors['--status-building']);
     expect(ANIL.buildingBg).toBe(colors['--status-building-bg']);
   });
