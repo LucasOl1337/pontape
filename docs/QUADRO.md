@@ -2,14 +2,16 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026, 12:20 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 23/09/2026, 12:30 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
-**Hoje:** F27 (sem Ouvir e A+), F28 (seletor de paletas) e F29 (home pro leigo) no ar. O Lucas reprovou as cinco paletas da F28 e achou os cadernos cortados e densos ([feedback](fontes/2026-09-23-feedback-paletas-e-cadernos.md)): F30 (Anil, Fable) refaz as paletas e F31 (Prumo, Opus xhigh) assume layout e UX (D026, D027). Design/UI volta em xhigh pra F32 (transparência em duas camadas, D029). A IA vem antes do trabalho e acompanha a pessoa sempre (D028). · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
+**Hoje:** home pro leigo (F29), cadernos em páginas e varredura (F31), transparência em duas camadas (F32) no ar. O Lucas escolheu a paleta **Anil** (D030): F33 promove ela e tira o seletor; F34 cuida do celular, do trilho da IA e dos números em cima dos botões. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
+| F33 | [A Anil vira a paleta do site](frentes/F33-paleta-anil/BRIEF.md) | anil | `anil/f33-paleta-anil` | despachada 12:30 (D030) | Anil no `:root`, seletor e restos dele fora, favicon e prévia na Anil |
+| F34 | [Celular, trilho da IA e números](frentes/F34-celular/BRIEF.md) | prumo | `prumo/f34-*` | despachada 12:30 | Reproduzir o print do Lucas; código depois da F33 |
 | F32b | Filtros da parte técnica em palavra de gente | design | [PR #74](https://github.com/LucasOl1337/pontape/pull/74) integrada 11:30 | Feito. Design/UI em espera |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
