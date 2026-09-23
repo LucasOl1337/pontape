@@ -1,23 +1,37 @@
 ---
 import '../styles/global.css';
+import IconSprite from '../components/site/IconSprite.astro';
+import StatusStrip from '../components/site/StatusStrip.astro';
+import SiteHeader from '../components/site/SiteHeader.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
 
 interface Props {
   title: string;
   description: string;
+  current?: 'home' | 'transparencia';
 }
 
-const { title, description } = Astro.props;
+const { title, description, current } = Astro.props;
 ---
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="no-js">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#F4F1EA" />
+    <link rel="preload" href="/fonts/atkinson-next-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
   </head>
   <body>
-    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <IconSprite />
+    <a class="skip-link" href="#conteudo">Pular pro conteúdo</a>
+    <StatusStrip />
+    <SiteHeader current={current} />
     <main id="conteudo" tabindex="-1"><slot /></main>
+    <SiteFooter />
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script>import '../scripts/site';</script>
   </body>
 </html>

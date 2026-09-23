@@ -1,0 +1,23 @@
+---
+import Icon from '../site/Icon.astro';
+import BlockHead from '../site/BlockHead.astro';
+import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
+
+const RULES = {
+  finance: ['Toda doação, todo gasto, tarifa e estorno, com valor e categoria. O comprovante aparece como pendente até dar pra publicar sem dado pessoal.', 'Quem doou, CPF, chave Pix, conta.'],
+  field: ['Quantas entregas de comida, roupa e kit de higiene.', 'Quem recebeu, lugar.'],
+  candidate: ['Só contagens: quantos contatos, entrevistas, encaminhamentos pra vaga e apoios dos primeiros dias.', 'Nome, rosto, apelido, lugar, história, o caminho de uma pessoa.'],
+  project: ['Criação do repositório, decisões registradas, mudanças integradas no código. Com link pra fonte.', 'Texto solto, link qualquer, dado pessoal.'],
+} as const;
+const speech = 'O que entra no livro, e o que nunca entra. ' + TYPE_ORDER.map(t => `${TYPES[t].label}: entra ${RULES[t][0]} Nunca entra: ${RULES[t][1]}`).join(' ');
+---
+<section class="block block--paper reveal" id="o-que-entra" aria-labelledby="t-types" data-speech={speech}>
+  <BlockHead number="05" label="O que entra" listen="o-que-entra" />
+  <h2 id="t-types">O que entra no livro. E o que nunca entra.</h2>
+  <ul class="type-legend">
+    {TYPE_ORDER.map(t => (
+      <li data-type={t}><span class="type-chip"><Icon name={TYPES[t].icon} />{TYPES[t].label}</span>
+        <dl><dt>Entra</dt><dd>{RULES[t][0]}</dd><div class="never"><dt>Nunca entra</dt><dd>{RULES[t][1]}</dd></div></dl></li>
+    ))}
+  </ul>
+</section>

@@ -1,10 +1,32 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import TransparencySnapshot from '../components/blocks/TransparencySnapshot.astro';
+import HeroBlock from '../components/blocks/HeroBlock.astro';
+import ForYouBlock from '../components/blocks/ForYouBlock.astro';
+import ProblemBlock from '../components/blocks/ProblemBlock.astro';
+import JourneyBlock from '../components/blocks/JourneyBlock.astro';
+import ModulesBlock from '../components/blocks/ModulesBlock.astro';
+import TransparencyBlock from '../components/blocks/TransparencyBlock.astro';
+import BottlenecksBlock from '../components/blocks/BottlenecksBlock.astro';
+import ContributionsBlock from '../components/blocks/ContributionsBlock.astro';
+import HelpBlock from '../components/blocks/HelpBlock.astro';
+import OpenSourceBlock from '../components/blocks/OpenSourceBlock.astro';
+import { getPublicLedger } from '../lib/ledger-view/source';
+import { PROJECT_NAME } from '../data/site/project';
+
+const ledger = getPublicLedger();
 ---
-<BaseLayout title="VidaNova · Em construção" description="Uma iniciativa para ajudar quem quer recomeçar. Plataforma em construção.">
-  <h1>VidaNova</h1>
-  <p>Estamos construindo a plataforma para ajudar quem quer recomeçar.</p>
-  <p>O atendimento e as doações ainda não começaram.</p>
-  <TransparencySnapshot />
+<BaseLayout
+  title={`${PROJECT_NAME} · o primeiro passo pra quem quer mudar de vida`}
+  description="Projeto sem fins lucrativos e aberto: o primeiro passo pra quem quer mudar de vida, com toda ação num livro público que qualquer um confere.">
+  <HeroBlock ledger={ledger} />
+  <ForYouBlock />
+  <ProblemBlock />
+  <JourneyBlock />
+  <ModulesBlock />
+  <TransparencyBlock ledger={ledger} />
+  <BottlenecksBlock />
+  <ContributionsBlock />
+  <HelpBlock />
+  <OpenSourceBlock />
 </BaseLayout>
+<script>import '../scripts/home';</script>

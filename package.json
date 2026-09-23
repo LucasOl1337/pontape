@@ -8,16 +8,17 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/csp-headers.mjs generate && node scripts/csp-headers.mjs verify",
     "preview": "astro preview",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "astro check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "npm run lint && npm run typecheck && npm test && npm run ledger:verify && npm run build",
+    "check": "npm run lint && npm run typecheck && npm test && npm run ledger:verify && npm run build && npm run budget",
     "ledger:append": "node scripts/ledger/append.ts",
     "ledger:verify": "node scripts/ledger/verify.ts",
-    "ledger:sign": "node scripts/ledger/sign.ts"
+    "ledger:sign": "node scripts/ledger/sign.ts",
+    "budget": "node scripts/check-budget.mjs"
   },
   "dependencies": {
     "@astrojs/react": "7.0.0",
@@ -37,5 +38,8 @@
     "typescript": "6.0.3",
     "typescript-eslint": "8.70.1",
     "vitest": "5.0.1"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }
