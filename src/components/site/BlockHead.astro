@@ -5,6 +5,6 @@ interface Props { number: string; label: string; listen?: string; speech?: strin
 const { number, label, listen, speech } = Astro.props;
 ---
 <div class="block-head">
-  <p class="tag"><b>{number}</b>{label}</p>
+  <p class="tag"><span class="tag-num">{number}</span><span class="tag-label">{label}</span></p>
   {(listen || speech) && <ListenButton target={listen} speech={speech} />}
 </div>

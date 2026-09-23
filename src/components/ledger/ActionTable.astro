@@ -1,0 +1,50 @@
+---
+import Icon from '../site/Icon.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { EVIDENCE, TYPES } from '../../lib/ledger-view/phrases';
+import { correctionsOf, formatCents } from '../../lib/ledger-view/money';
+import { formatDay } from '../../data/site/project';
+import { shortHash } from '../../scripts/hashprint';
+import { labelOf } from './labels';
+
+// Every action, newest first, as an explorer table. The number opens the action in the inspector.
+interface Props { events: LedgerEvent[]; id: string; caption: string }
+const { events, id, caption } = Astro.props;
+const corrected = correctionsOf(events);
+---
+<div class="table-wrap">
+  <table class="actions-table" id={id}>
+    <caption class="sr-only">{caption}</caption>
+    <thead>
+      <tr><th scope="col">Nº</th><th scope="col">Tipo</th><th scope="col">O que foi</th><th scope="col">Dia</th><th scope="col">Detalhe</th><th scope="col">Marca</th></tr>
+    </thead>
+    <tbody>
+      {events.toReversed().map(e => {
+        const p = e.payload;
+        const label = labelOf(e);
+        const delta = p.type === 'finance' ? BigInt(p.amountCents) : 0n;
+        const fix = corrected[e.sequence];
+        return (
+          <tr data-seq={e.sequence} data-type={p.type}>
+            <td class="col-seq"><button type="button" class="seq-btn" data-select={e.sequence}><span class="sr-only">Abrir a ação </span>nº {e.sequence}</button></td>
+            <td class="col-type"><span class="type-tag" data-type={p.type}><Icon name={TYPES[p.type].icon} /></span>{label.kind}</td>
+            <td class="col-what"><span class="what">{label.what}</span>{label.context && <span class="context">{label.context}</span>}</td>
+            <td class="col-day"><time datetime={p.occurredOn}>{formatDay(p.occurredOn)}</time></td>
+            <td class="col-detail">
+              {p.type === 'finance' && <>
+                <span class:list={['amount', { 'is-in': delta > 0n }]} data-amount>{delta > 0n ? '+' : '−'} {formatCents(delta < 0n ? -delta : delta)}</span>
+                <span class="muted">{EVIDENCE[p.evidence]}</span>
+              </>}
+              {label.source && <a href={label.source} rel="noopener">Ver a fonte</a>}
+              {p.type === 'candidate' && <span class="muted">Só a contagem. Sem nome, rosto, apelido ou lugar.</span>}
+              {p.type === 'field' && <span class="muted">Sem dizer quem recebeu nem onde.</span>}
+              {p.correctionOf && p.type !== 'finance' && <span class="muted">Corrige a nº {p.correctionOf}</span>}
+              {fix && <span class="fix"><Icon name="undo" />{p.type === 'finance' ? 'Estornada' : 'Corrigida'} pela nº {fix}</span>}
+            </td>
+            <td class="col-hash"><code>{shortHash(e.hash)}</code><span class="row-state" aria-hidden="true"></span></td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,76 @@
+---
+import Icon from '../site/Icon.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { TYPES, TYPE_ORDER, phrase, type LedgerType } from '../../lib/ledger-view/phrases';
+import { formatDay } from '../../data/site/project';
+
+// The timeline as an abacus: one rod per kind of action, one bead per action, placed by its
+// number in the chain. An empty rod says why it is empty. Beads are one tab stop (arrow keys move).
+interface Props { events: LedgerEvent[]; id: string; link?: (seq: string) => string; label: string }
+const { events, id, link, label } = Astro.props;
+const N = events.length;
+const EMPTY: Record<LedgerType, string> = {
+  finance: 'A doação ainda não abriu',
+  field: 'Começa com o piloto',
+  candidate: 'A entrevista ainda não abriu',
+  project: 'Nenhuma ação do projeto ainda',
+};
+const KINDS = {
+  start: 'repositório criado', decision: 'decisão', change: 'mudança integrada',
+  in: 'entrou', out: 'saiu', undo: 'estorno', count: 'contagem',
+} as const;
+type Kind = keyof typeof KINDS;
+const kindOf = ({ payload: p }: LedgerEvent): Kind => {
+  if (p.type === 'project') return p.action === 'repository_created' ? 'start' : p.action === 'decision_recorded' ? 'decision' : 'change';
+  if (p.type === 'finance') return p.action === 'reversal' ? 'undo' : p.category === 'donation' ? 'in' : 'out';
+  return 'count';
+};
+const x = (seq: string) => `${((Number(seq) - 0.5) / Math.max(N, 1)) * 100}%`;
+const rods = TYPE_ORDER.map(type => ({ type, beads: events.filter(e => e.payload.type === type) }));
+const kinds = [...new Set(events.map(kindOf))].filter(k => k !== 'count');
+// A tick where the day of the fact changes; labels closer than 12% apart are skipped.
+const days: { at: string; label: string }[] = [];
+let lastDay = events[0]?.payload.occurredOn ?? '';
+let lastAt = 0;
+for (const e of events) {
+  if (e.payload.occurredOn === lastDay) continue;
+  lastDay = e.payload.occurredOn;
+  const at = ((Number(e.sequence) - 1) / Math.max(N, 1)) * 100;
+  if (at - lastAt >= 12) { days.push({ at: `${at}%`, label: formatDay(e.payload.occurredOn).slice(0, 5) }); lastAt = at; }
+}
+let first = true;
+---
+<figure class="abacus" id={id} style={`--n:${Math.max(N, 1)}`}>
+  <div class="abacus-rods" role="group" aria-label={label} data-roving>
+    {rods.map(({ type, beads }) => (
+      <div class="rod" data-type={type}>
+        <p class="rod-label"><span class="type-tag" data-type={type}><Icon name={TYPES[type].icon} /></span><span class="rod-name">{TYPES[type].label}</span><span class="rod-count">{beads.length}</span></p>
+        <div class="rod-line">
+          {beads.length === 0 && <span class="rod-empty">{EMPTY[type]}</span>}
+          {beads.map(e => {
+            const Tag = link ? 'a' : 'button';
+            const attrs = link ? { href: link(e.sequence) } : { type: 'button' as const, 'data-select': e.sequence };
+            const tab = first ? '0' : '-1';
+            first = false;
+            return (
+              <Tag class="bead" data-seq={e.sequence} data-kind={kindOf(e)} style={`--x:${x(e.sequence)}`} {...attrs}
+                data-roving-item tabindex={tab} data-tip={`nº ${e.sequence} · ${phrase(e.payload)}`}>
+                <span class="sr-only">Ação nº {e.sequence}, {TYPES[type].label}: {phrase(e.payload)}</span>
+              </Tag>
+            );
+          })}
+        </div>
+      </div>
+    ))}
+    <div class="abacus-axis" aria-hidden="true">
+      <span class="axis-start">nº 1{lastDay && events[0] && ` · ${formatDay(events[0].payload.occurredOn).slice(0, 5)}`}</span>
+      {days.map(d => <span class="axis-day" style={`--x:${d.at}`}>{d.label}</span>)}
+      <span class="axis-end">nº {N}</span>
+    </div>
+  </div>
+  {kinds.length > 0 && (
+    <figcaption class="abacus-legend">
+      {kinds.map(k => <span class="legend-item"><span class="bead-key" data-kind={k} aria-hidden="true"></span>{KINDS[k]}</span>)}
+    </figcaption>
+  )}
+</figure>

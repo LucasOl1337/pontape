@@ -1,50 +1,56 @@
 ---
 import Icon from '../site/Icon.astro';
 import ListenButton from '../site/ListenButton.astro';
-import snapshotData from '../../data/transparency.json';
-import { transparencySnapshotSchema } from '../../lib/transparency';
+import HashPrint from '../ledger/HashPrint.astro';
 import type { LedgerView } from '../../lib/ledger-view/source';
-import { TYPES } from '../../lib/ledger-view/phrases';
+import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
+import { formatCents, sumMoney } from '../../lib/ledger-view/money';
+import { recordedText } from '../../scripts/hashprint';
 
 interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
-const snapshot = transparencySnapshotSchema.parse(snapshotData);
-const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: snapshot.currency });
-const events = ledger.events;
+const { events, checkpoint } = ledger;
+const money = sumMoney(events);
 const last = events.at(-1);
-const shortHash = (h: string) => `${h.slice(0, 4)} ${h.slice(4, 8)}`;
-const recorded = last && new Date(last.recordedAt);
-const recordedText = recorded && `${recorded.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}, às ${recorded.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' })}`;
-const art = events.slice(-4).reverse();
-const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.length ? `Hoje o livro tem ${events.length} ações.` : 'O livro oficial ainda não foi publicado.'} Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não.`;
+const byType = TYPE_ORDER.map(type => ({ type, count: events.filter(e => e.payload.type === type).length }));
+const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.length ? `Hoje o livro tem ${events.length} ações.` : 'O livro ainda não tem nenhuma ação.'} Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não. Aperte Conferir e o seu aparelho refaz a conta de cada linha.`;
 ---
 <section class="page-hero" id="livro" aria-labelledby="page-title" data-speech={speech}>
-  <div class="page-hero-inner">
-    <div class="page-hero-grid">
-      <div>
-        <div class="kicker">
-          <span class="chip">Livro público</span>
-          <span class="chip">Transparência total</span>
-          <ListenButton target="livro" />
-        </div>
-        <h1 id="page-title">Tudo que o projeto faz, <span class="highlight">à vista.</span></h1>
+  <div class="hero-inner">
+    <nav class="crumbs" aria-label="Você está em"><a href="/">Início</a><span aria-hidden="true">/</span><span aria-current="page">Livro público</span></nav>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <h1 id="page-title">Livro público. <span class="h1-sub">Tudo que o projeto faz, à vista.</span></h1>
         <p class="lead">Cada ação entra aqui: dinheiro, entrega na rua, passo de candidato e decisão do projeto. Cada linha fica presa na anterior. Qualquer pessoa confere, sem pedir licença.</p>
         <p class="rule-strip"><Icon name="shield" /><strong>Toda ação aparece. Quem é a pessoa, não.</strong></p>
+        <div class="actions">
+          <a class="btn btn--primary" href="#conferir"><Icon name="shield" />Conferir o livro</a>
+          <ListenButton target="livro" />
+        </div>
       </div>
-      <ol class:list={['chain-art', { 'chain-art--waiting': !art.length }]} aria-hidden="true">
-        {art.length
-          ? art.map((e, i) => <>{i > 0 && <li class="art-link"></li>}<li data-type={e.payload.type}><Icon name={TYPES[e.payload.type].icon} /><span>{shortHash(e.hash)}</span><span class="art-seq">nº {e.sequence}</span></li></>)
-          : [1, 2, 3].map(i => <>{i > 1 && <li class="art-link"></li>}<li><Icon name="clock" /><span>aguardando</span><span class="art-seq">nº {i}</span></li></>)}
-      </ol>
+      <div class="panel checkpoint">
+        <p class="checkpoint-head"><span>Marca de controle</span><code>{checkpoint.ledger}</code></p>
+        <dl class="checkpoint-list">
+          <div class="is-wide"><dt>Marca da ponta</dt><dd><HashPrint hash={checkpoint.headHash} class="hashprint--big" /><code class="hash-full">{checkpoint.headHash}</code></dd></div>
+          <div><dt>Ponta da corrente</dt><dd>{last ? `ação nº ${last.sequence}` : 'nenhuma'}</dd></div>
+          <div><dt>Registrada</dt><dd>{last ? recordedText(last.recordedAt) : 'nada ainda'}</dd></div>
+          <div><dt>Formato</dt><dd>versão {checkpoint.schemaVersion}</dd></div>
+        </dl>
+        <div class="checkpoint-actions">
+          <a class="btn btn--small" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Livro inteiro</a>
+          <a class="btn btn--small" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="download" />Marca de controle</a>
+        </div>
+      </div>
     </div>
-    <div class="scoreboard" role="group" aria-label="O livro hoje">
-      <div class="scoreboard-item"><span class="scoreboard-label">Ações no livro</span><span class="scoreboard-value">{events.length}</span></div>
-      <div class="scoreboard-item"><span class="scoreboard-label">Entrou</span><span class="scoreboard-value">{brl.format(snapshot.receivedCents / 100)}</span></div>
-      <div class="scoreboard-item"><span class="scoreboard-label">Saiu</span><span class="scoreboard-value">{brl.format(snapshot.spentCents / 100)}</span></div>
-      <div class="scoreboard-item"><span class="scoreboard-label">Marca mais recente</span><span class="scoreboard-value">{last ? shortHash(last.hash) : 'nenhuma'}</span></div>
-      <p class="scoreboard-note"><Icon name="clock" /><span>{last
-        ? `Livro estático. Última ação registrada em ${recordedText}. A página é refeita sempre que entra uma ação nova.`
-        : 'O livro oficial ainda não foi publicado. Quando for, aparece aqui a hora da última ação registrada. Nada nesta página se chama ao vivo enquanto não for.'}</span></p>
-    </div>
+    <dl class="stats stats--row" aria-label="O livro hoje">
+      <div class="stat stat--wide">
+        <dt>Ações no livro</dt><dd class="stat-value">{events.length}</dd>
+        <dd class="type-counts">{byType.map(t => <span><span class="type-dot" data-type={t.type} aria-hidden="true"></span>{TYPES[t.type].label} {t.count}</span>)}</dd>
+      </div>
+      <div class="stat"><dt>Entrou</dt><dd class="stat-value">{formatCents(money.inCents)}</dd></div>
+      <div class="stat"><dt>Saiu</dt><dd class="stat-value">{formatCents(money.outCents)}</dd></div>
+      <div class="stat"><dt>Em caixa</dt><dd class="stat-value">{formatCents(money.balanceCents)}</dd></div>
+    </dl>
+    <p class="stats-note"><Icon name="clock" /><span>Livro estático, refeito a cada ação nova. {last ? `Última ação registrada em ${recordedText(last.recordedAt)}.` : 'Nenhuma ação registrada ainda.'} Nada aqui se chama ao vivo enquanto não for.</span></p>
   </div>
 </section>

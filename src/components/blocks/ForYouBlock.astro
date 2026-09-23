@@ -1,23 +1,27 @@
 ---
 import Icon from '../site/Icon.astro';
 import ListenButton from '../site/ListenButton.astro';
+import NotOpenBadge from '../site/NotOpenBadge.astro';
 import { PROJECT_NAME } from '../../data/site/project';
+
+const ways = [
+  { icon: 'phone', label: 'Aqui no site' },
+  { icon: 'people', label: 'Com um voluntário na rua' },
+  { icon: 'pin', label: 'Num ponto perto de você' },
+] as const;
 ---
-<!-- 01 · Pra você -->
-<section class="block block--sun reveal" id="pra-voce" aria-labelledby="t-for-you"
+<section class="block block--voice" id="pra-voce" aria-labelledby="t-for-you"
   data-speech={`Oi. Que bom que você está aqui. O ${PROJECT_NAME} ajuda quem quer mudar de vida. A gente dá comida, roupa e higiene nos primeiros dias. E ajuda você a arrumar um trabalho. É de graça. Pra participar, você só precisa conversar com a gente. Não precisa ler nem escrever. A conversa ainda não abriu. Quando abrir, vai ser aqui no site, com um voluntário na rua, ou num ponto perto de você.`}>
-  <div class="block-head"><p class="tag"><b>01</b>Pra você</p></div>
-  <div class="voice-grid">
-    <div>
+  <div class="voice-panel">
+    <div class="voice-copy">
+      <p class="tag"><span class="tag-num">01</span><span class="tag-label">Pra você</span></p>
       <h2 id="t-for-you">Você quer mudar de vida?</h2>
       <p class="lead">Aperte o botão e escute. Não precisa ler.</p>
     </div>
     <ListenButton target="pra-voce" big />
+    <ul class="entry-points" aria-label="Onde a conversa vai acontecer">
+      {ways.map(w => <li><Icon name={w.icon} /><span>{w.label}</span><NotOpenBadge /></li>)}
+    </ul>
+    <p class="voice-note">É de graça. A conversa é por voz. A gente ainda está preparando tudo.</p>
   </div>
-  <ul class="entry-points">
-    <li><Icon name="phone" /><strong>Aqui no site</strong><span class="badge badge--planned"><Icon name="clock" />Ainda não abriu</span></li>
-    <li><Icon name="people" /><strong>Com um voluntário na rua</strong><span class="badge badge--planned"><Icon name="clock" />Ainda não abriu</span></li>
-    <li><Icon name="pin" /><strong>Num ponto perto de você</strong><span class="badge badge--planned"><Icon name="clock" />Ainda não abriu</span></li>
-  </ul>
-  <p class="note">É de graça. A conversa é por voz. A gente ainda está preparando tudo.</p>
 </section>

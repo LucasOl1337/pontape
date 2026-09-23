@@ -1,0 +1,7 @@
+---
+import { HASHPRINT_VIEWBOX, hashPath } from '../../scripts/hashprint';
+
+interface Props { hash: string; class?: string }
+const { hash, class: className } = Astro.props;
+---
+<svg class:list={['hashprint', className]} viewBox={HASHPRINT_VIEWBOX} preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d={hashPath(hash)} vector-effect="non-scaling-stroke" /></svg>

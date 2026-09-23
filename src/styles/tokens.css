@@ -1,38 +1,38 @@
-/* Tokens da direção visual: docs/design/DIRECAO.md. Único lugar das cores, fontes e medidas. */
+/* Tokens da variante Ábaco (F19 v3): explorador de dados escuro. Único lugar das cores, fontes e medidas. */
 :root{
-  /* Espaço (grade de 4px) e medidas da base F02 */
+  color-scheme:dark;
+  /* Espaço (grade de 4px) */
   --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem; --space-6:1.5rem;
   --space-8:2rem; --space-12:3rem; --space-16:4rem; --space-24:6rem;
-  --content-width:75rem; --radius-card:1rem; --border-width:2px;
+  --content-width:80rem; --radius:12px; --radius-sm:8px;
 
-  --color-paper:#F4F1EA; --color-paper-2:#E9E4D8; --color-white:#FFFFFF;
-  --color-ink:#16181D; --color-ink-2:#4A4F5A;
-  --color-indigo:#1F3FD1; --color-indigo-dark:#1730A8; --color-indigo-light:#DCE2FF;
-  --color-sun:#FF6B3D; --color-sun-light:#FFD8CB;
-  --color-live:#12663C; --color-live-bg:#DDF3E6;
-  --color-building:#F4C20D; --color-building-bg:#FFF3C4;
-  --color-bottleneck:#C62A1F; --color-bottleneck-text:#A31F16; --color-bottleneck-bg:#FDE2DF;
-  --color-planned:#5B606B;
-  --color-type-finance:#9A3412; --color-type-finance-bg:#FFE4D6;
-  --color-type-field:#1730A8; --color-type-field-bg:#DCE2FF;
-  --color-type-candidate:#5B21B6; --color-type-candidate-bg:#EDE4FB;
-  --color-type-project:#16181D; --color-type-project-bg:#E9E4D8;
+  /* Superfícies: do fundo pro painel mais alto */
+  --bg:#0B0E13; --bg-2:#0E1218; --panel:#121821; --panel-2:#18202B; --panel-3:#1E2734;
+  --line:#232C39; --line-2:#334154;
+  /* Texto: todos passam AA no painel mais claro */
+  --text:#E9EEF5; --text-2:#AAB4C3; --text-3:#7F8A9C;
+  /* Ação e estados. Menta quer dizer "confere" e é a única cor de ação. */
+  --accent:#7EE2A8; --accent-2:#A6F0C6; --accent-ink:#062014; --accent-wash:rgba(126,226,168,.12);
+  --ok:#7EE2A8; --broken:#FF7070; --broken-wash:rgba(255,112,112,.12);
+  --building:#F2C14E; --bottleneck:#FF8A7A; --planned:#8D98AA; --live:#7EE2A8;
+  /* Tipos de ação: paleta validada pra daltonismo no fundo escuro (pares vizinhos). Sempre com ícone e nome. */
+  --type-finance:#c98500; --type-field:#199e70; --type-candidate:#d95926; --type-project:#3987e5;
+  /* Os nomes de cor que a lib do livro usa nas categorias de gasto */
+  --color-sun:#c98500; --color-indigo:#3987e5; --color-ink-2:#8D98AA; --color-paper-2:#AAB4C3;
 
-  --font-poster:"Archivo","Arial Narrow",system-ui,sans-serif;
   --font-text:"Atkinson Hyperlegible Next",system-ui,sans-serif;
-  --font-mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;
+  --font-mono:"Atkinson Hyperlegible Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
 
-  --text-display:clamp(2.5rem, 1.326rem + 5.217vw, 5.5rem);
-  --text-h2:clamp(2rem, 1.413rem + 2.609vw, 3.5rem);
-  --text-h3:clamp(1.3125rem, 1.19rem + .5435vw, 1.625rem);
-  --text-lead:clamp(1.25rem, 1.152rem + .4348vw, 1.5rem);
-  --text-body:1.125rem;
+  --text-display:clamp(1.875rem, 1.45rem + 1.9vw, 3rem);
+  --text-h2:clamp(1.5rem, 1.28rem + 1vw, 2.125rem);
+  --text-h3:clamp(1.1875rem, 1.12rem + .3vw, 1.375rem);
+  --text-lead:clamp(1.125rem, 1.08rem + .2vw, 1.25rem);
+  --text-body:1.0625rem;
   --text-small:.9375rem;
+  --text-micro:.8125rem;
 
   --gutter:16px;
-  --border:2px solid var(--color-ink);
-  --shadow:4px 4px 0 var(--shadow-color, var(--color-ink));
   --ease:cubic-bezier(.2,.8,.2,1);
 }
 @media (min-width:600px){ :root{ --gutter:24px } }
-@media (min-width:960px){ :root{ --gutter:32px } }
+@media (min-width:960px){ :root{ --gutter:40px } }

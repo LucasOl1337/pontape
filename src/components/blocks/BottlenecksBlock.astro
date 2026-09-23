@@ -3,28 +3,38 @@ import Icon from '../site/Icon.astro';
 import BlockHead from '../site/BlockHead.astro';
 import NotOpenBadge from '../site/NotOpenBadge.astro';
 import { BOTTLENECKS } from '../../data/site/bottlenecks';
+import { CONTRIBUTIONS } from '../../data/site/contributions';
 
 const speech = 'Estes são os problemas que a gente ainda não sabe resolver. '
   + BOTTLENECKS.map((b, i) => `${i + 1}: ${b.title}.`).join(' ')
   + ' Se você entende de algum desses assuntos, sua ajuda vale muito.';
+const tasks = (id: string) => CONTRIBUTIONS.filter(c => c.bottleneck === id).length;
 ---
-<section class="block block--paper reveal" id="gargalos" aria-labelledby="t-bottlenecks" data-speech={speech}>
-  <BlockHead number="06" label="Gargalos" listen="gargalos" />
-  <h2 id="t-bottlenecks">O que a gente ainda não sabe resolver.</h2>
-  <p class="lead">Falar disso também é transparência. Se você entende de algum desses assuntos, sua ajuda vale muito.</p>
-  <div class="bottlenecks">
+<section class="block" id="gargalos" aria-labelledby="t-bottlenecks" data-speech={speech}>
+  <BlockHead number="07" label="Gargalos" listen="gargalos" />
+  <div class="block-intro">
+    <h2 id="t-bottlenecks">O que a gente ainda não sabe resolver.</h2>
+    <p class="lead">Falar disso também é transparência. {BOTTLENECKS.length} problemas em aberto. Se você entende de algum, sua ajuda vale muito.</p>
+  </div>
+  <ol class="issue-list">
     {BOTTLENECKS.map((b, i) => (
-      <details class="bottleneck" id={`gargalo-${b.id}`} open={i === 0}>
-        <summary><span class="bottleneck-num">{i + 1}</span><span class="bottleneck-head"><span class="bottleneck-title">{b.title}</span><span class="module-id">{b.modules}</span></span><Icon name="chevron-down" class="chevron" /></summary>
-        <div class="bottleneck-body">
-          <dl>
+      <li>
+        <details class="issue" id={`gargalo-${b.id}`} open={i === 0}>
+          <summary>
+            <span class="issue-mark" aria-hidden="true"><Icon name="alert" /></span>
+            <span class="issue-num">#{String(i + 1).padStart(2, '0')}</span>
+            <span class="issue-title">{b.title}</span>
+            <span class="issue-meta"><span class="module-id">{b.modules}</span><span class="issue-tasks">{tasks(b.id)} {tasks(b.id) === 1 ? 'tarefa' : 'tarefas'}</span></span>
+            <Icon name="chevron-down" class="chevron" />
+          </summary>
+          <dl class="issue-body">
             <div><dt>Por que é difícil</dt><dd>{b.why}</dd></div>
             <div><dt>O que já está andando</dt><dd>{b.progress}</dd></div>
             <div><dt>Quem pode ajudar</dt><dd>{b.helpers}</dd></div>
           </dl>
           <p class="soon-note"><NotOpenBadge /><span>Dar uma ideia abre junto com o repositório. As tarefas deste gargalo estão nas <a href="#contribuicoes">contribuições abertas</a>.</span></p>
-        </div>
-      </details>
+        </details>
+      </li>
     ))}
-  </div>
+  </ol>
 </section>

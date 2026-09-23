@@ -1,43 +1,33 @@
 ---
 import Icon from '../site/Icon.astro';
-import ListenButton from '../site/ListenButton.astro';
+import BlockHead from '../site/BlockHead.astro';
+import Badge from '../site/Badge.astro';
+import NotOpenBadge from '../site/NotOpenBadge.astro';
+
+const WAYS = [
+  { icon: 'coin', title: 'Doar', text: 'Seu dinheiro vira comida, roupa e higiene. E cada real aparece no livro público.', open: false, when: 'Abre quando a conta oficial do projeto existir.', link: { href: '#gargalo-receber-doacao-do-jeito-certo', label: 'Entender por quê' } },
+  { icon: 'people', title: 'Ser voluntário', text: 'Vá até a pessoa com o aparelho da conversa. A gente treina você antes.', open: false, when: 'Abre com o piloto na primeira cidade.' },
+  { icon: 'briefcase', title: 'Oferecer vaga', text: 'Dê a primeira chance pra alguém que chegou preparado e quer muito trabalhar.', open: false, when: 'Abre quando as primeiras pessoas forem escolhidas.' },
+  { icon: 'code', title: 'Contribuir', text: 'Código, design, pesquisa, campo, direito. Tem espaço pra muita coisa.', open: true, when: 'As tarefas já estão listadas. Pegar uma abre junto com o repositório.', link: { href: '#contribuicoes', label: 'Ver as contribuições' } },
+] as const;
 ---
-<!-- 08 · Como ajudar -->
-<section class="block block--indigo reveal" id="ajudar" aria-labelledby="t-help"
+<section class="block" id="ajudar" aria-labelledby="t-help"
   data-speech="Tem quatro jeitos de ajudar: doar, ser voluntário, oferecer uma vaga ou contribuir com o projeto. A doação, o voluntariado e as vagas ainda não abriram. As contribuições já estão listadas, e pegar uma abre junto com o repositório. A gente não guarda contato de ninguém por enquanto.">
-  <div class="block-head">
-    <p class="tag"><b>08</b>Como ajudar</p>
-    <ListenButton target="ajudar" />
+  <BlockHead number="09" label="Como ajudar" listen="ajudar" />
+  <div class="block-intro">
+    <h2 id="t-help">Tem lugar pra você aqui.</h2>
+    <p class="lead">Quatro jeitos de entrar. Cada um diz, sem enrolação, se já dá pra começar.</p>
   </div>
-  <h2 id="t-help">Tem lugar pra você aqui.</h2>
-  <p class="lead">Quatro jeitos de entrar. Cada um diz, sem enrolação, se já dá pra começar.</p>
-  <ul class="help-cards">
-    <li class="help-card">
-      <span class="help-card-icon"><Icon name="coin" /></span>
-      <h3>Doar</h3>
-      <p>Seu dinheiro vira comida, roupa e higiene. E cada real aparece no livro público.</p>
-      <p class="help-card-status"><span class="badge badge--planned"><Icon name="clock" />Ainda não abriu</span>Abre quando a conta oficial do projeto existir.</p>
-      <a class="btn" href="#gargalos">Entender por quê</a>
-    </li>
-    <li class="help-card">
-      <span class="help-card-icon"><Icon name="people" /></span>
-      <h3>Ser voluntário</h3>
-      <p>Vá até a pessoa com o aparelho da conversa. A gente treina você antes.</p>
-      <p class="help-card-status"><span class="badge badge--planned"><Icon name="clock" />Ainda não abriu</span>Abre com o piloto na primeira cidade.</p>
-    </li>
-    <li class="help-card">
-      <span class="help-card-icon"><Icon name="briefcase" /></span>
-      <h3>Oferecer vaga</h3>
-      <p>Dê a primeira chance pra alguém que chegou preparado e quer muito trabalhar.</p>
-      <p class="help-card-status"><span class="badge badge--planned"><Icon name="clock" />Ainda não abriu</span>Abre quando as primeiras pessoas forem escolhidas.</p>
-    </li>
-    <li class="help-card">
-      <span class="help-card-icon"><Icon name="code" /></span>
-      <h3>Contribuir</h3>
-      <p>Código, design, pesquisa, campo, direito. Tem espaço pra muita coisa.</p>
-      <p class="help-card-status"><span class="badge badge--building"><Icon name="cone" />Em construção</span>As tarefas já estão listadas. Pegar uma abre junto com o repositório.</p>
-      <a class="btn" href="#contribuicoes">Ver as contribuições</a>
-    </li>
+  <ul class="help-grid">
+    {WAYS.map(w => (
+      <li class="panel help-card">
+        <p class="help-head"><span class="help-icon"><Icon name={w.icon} /></span>{w.open ? <Badge status="building" /> : <NotOpenBadge />}</p>
+        <h3>{w.title}</h3>
+        <p>{w.text}</p>
+        <p class="help-when">{w.when}</p>
+        {'link' in w && w.link && <a class="panel-link" href={w.link.href}>{w.link.label}<Icon name="arrow-right" /></a>}
+      </li>
+    ))}
   </ul>
   <p class="data-note"><Icon name="lock" /><span>A gente não guarda contato de ninguém por enquanto. Lista de aviso e formulário só quando existir um responsável legal pelos dados.</span></p>
 </section>

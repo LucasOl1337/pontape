@@ -2,18 +2,21 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroBlock from '../components/blocks/HeroBlock.astro';
 import ForYouBlock from '../components/blocks/ForYouBlock.astro';
+import MoneyBlock from '../components/blocks/MoneyBlock.astro';
+import TimelineBlock from '../components/blocks/TimelineBlock.astro';
 import ProblemBlock from '../components/blocks/ProblemBlock.astro';
 import JourneyBlock from '../components/blocks/JourneyBlock.astro';
 import ModulesBlock from '../components/blocks/ModulesBlock.astro';
-import TransparencyBlock from '../components/blocks/TransparencyBlock.astro';
 import BottlenecksBlock from '../components/blocks/BottlenecksBlock.astro';
 import ContributionsBlock from '../components/blocks/ContributionsBlock.astro';
 import HelpBlock from '../components/blocks/HelpBlock.astro';
 import OpenSourceBlock from '../components/blocks/OpenSourceBlock.astro';
-import { getPublicLedger } from '../lib/ledger-view/source';
+import { getExampleLedger, getPublicLedger } from '../lib/ledger-view/source';
 import { SHARE } from '../data/site/share';
 
+// Ábaco (F19 v3): the page opens on the ledger and its numbers; the idea explains itself around it.
 const ledger = await getPublicLedger();
+const example = await getExampleLedger();
 ---
 <BaseLayout
   title={SHARE.home.title}
@@ -21,10 +24,11 @@ const ledger = await getPublicLedger();
   share="home">
   <HeroBlock ledger={ledger} />
   <ForYouBlock />
+  <MoneyBlock real={ledger.events} example={example.events} number="02" ownSwitch />
+  <TimelineBlock real={ledger.events} number="03" link />
   <ProblemBlock />
-  <JourneyBlock />
+  <JourneyBlock events={ledger.events} />
   <ModulesBlock />
-  <TransparencyBlock ledger={ledger} />
   <BottlenecksBlock />
   <ContributionsBlock />
   <HelpBlock />
