@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "anchors": [
+    {
+      "sequence": "43",
+      "signedCheckpoint": {
+        "file": "checkpoint-43-assinado.json",
+        "sha256": "5f46711bad79586f131b9b9363bed9f0428a8924026a6ca89fdefbf49693b880"
+      },
+      "proofs": [
+        {
+          "file": "checkpoint-43-assinado.json.ots",
+          "sha256": "474dc97e593db21b5bd3650fbef7876689dd2355de07fb5d462d4ddaf5b073af"
+        }
+      ],
+      "status": "pending",
+      "bitcoin": null
+    }
+  ]
+}

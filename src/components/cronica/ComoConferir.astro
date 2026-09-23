@@ -1,7 +1,7 @@
 ---
 import Icon from '../site/Icon.astro';
 import { canonicalize } from '../../lib/ledger/canonical';
-import { ledgerTrust } from '../../lib/ledger/published';
+import { ledgerTrust, latestAnchor } from '../../lib/ledger/published';
 import type { LedgerView } from '../../lib/ledger-view/source';
 import { phrase } from '../../lib/ledger-view/phrases';
 import { REPOSITORY_OPEN } from '../../data/site/project';
@@ -25,11 +25,11 @@ if (last) {
 }
 const links = events.slice(-3);
 
-// F08 trust state (src/data/ledger/trust.json): say plainly what is not active yet.
 const TRUST = [
-  { label: 'Assinatura das marcas', value: ledgerTrust.signature === 'not_configured' ? 'ainda não configurada' : 'ativa' },
-  { label: 'Carimbo de tempo público', value: ledgerTrust.timestamp === 'not_anchored' ? 'ainda não feito' : 'feito' },
-  { label: 'Cópia fora do projeto', value: ledgerTrust.mirror === 'not_configured' ? 'ainda não ativa' : 'ativa' },
+  { label: 'Quem assina', value: 'Regente · Ed25519' },
+  { label: 'Última marca assinada', value: latestAnchor ? `até a ação nº ${latestAnchor.sequence}` : 'nenhuma ainda' },
+  { label: 'Carimbo de tempo público', value: ledgerTrust.timestamp.status === 'confirmed' ? 'confirmado no Bitcoin' : ledgerTrust.timestamp.status === 'pending' ? 'pendente de confirmação no Bitcoin' : 'ainda não feito' },
+  { label: 'Cópia fora do projeto', value: 'ainda não ativa' },
 ];
 const STEPS = [
   { title: 'Cada ação vira um texto padrão.', text: `Sempre os mesmos campos, na mesma ordem. Sem nome de ninguém.${last ? ` Ao lado, o texto da ação nº ${last.sequence}, do jeito exato que entra na conta.` : ''}` },
@@ -68,8 +68,18 @@ const STEPS = [
 <div class="fine-print">
   <aside class="not-proven">
     <p class="kicker">O que o livro não prova</p>
-    <p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora. Assinar as marcas e carimbar a data num serviço público estão em estudo.</p>
+    <p>A conta confere se as ações combinam com suas marcas. A assinatura cobre só até a ação indicada abaixo. Isso não prova que tudo aconteceu ou foi registrado. Ainda precisamos da conferência com o extrato do banco e de auditoria de fora.</p>
   </aside>
+  <dl class="trust-list" aria-label="Assinatura e carimbo do livro">
+    {TRUST.map(t => <div><dt>{t.label}</dt><dd>{t.value}</dd></div>)}
+  </dl>
+  <p class="verify-cli">Chave pública do Regente: <code style="overflow-wrap:anywhere">{ledgerTrust.signature.publicKey}</code></p>
+  <p class="verify-cli">Compare esta chave com uma cópia obtida fora do site e do repositório. Esse canal independente ainda não foi publicado. O botão confere a assinatura; não consulta o Bitcoin.</p>
+  {latestAnchor && <div class="actions">
+    <a class="btn" href={`/livro/ancoras/${latestAnchor.signedCheckpoint.file}`} download>Baixar marca assinada nº {latestAnchor.sequence}</a>
+    <a class="btn" href={`/livro/ancoras/${latestAnchor.proofs.at(-1)!.file}`} download>Baixar prova OpenTimestamps</a>
+    <a href="/livro/ancoras/index.json">Histórico de âncoras</a>
+  </div>}
   <details class="more-details">
     <summary>Baixar o livro e conferir no seu computador</summary>
     <div class="actions">
@@ -77,8 +87,6 @@ const STEPS = [
       <a class="btn" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="shield" />Baixar a marca de controle</a>
     </div>
     <p class="verify-cli">Guarde a marca de controle num lugar seu. Numa próxima visita, ela mostra se alguém refez o livro. No computador, o verificador aberto confere tudo sem internet: <code>npm run ledger:verify</code>, com o passo a passo em <code>docs/transparencia/COMO-CONFERIR.md</code>.{!REPOSITORY_OPEN && ' O repositório ainda está fechado.'}</p>
-    <dl class="trust-list">
-      {TRUST.map(t => <div><dt>{t.label}</dt><dd><Icon name="clock" />{t.value}</dd></div>)}
-    </dl>
+
   </details>
 </div>

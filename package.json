@@ -19,7 +19,9 @@
     "ledger:verify": "node scripts/ledger/verify.ts",
     "ledger:sign": "node scripts/ledger/sign.ts",
     "budget": "node scripts/check-budget.mjs",
-    "ledger:sync-project": "node scripts/ledger/sync-project.ts"
+    "ledger:sync-project": "node scripts/ledger/sync-project.ts",
+    "ledger:anchor": "node scripts/ledger/anchor.ts",
+    "ledger:anchor-upgrade": "node scripts/ledger/anchor-upgrade.ts"
   },
   "dependencies": {
     "@astrojs/react": "7.0.0",

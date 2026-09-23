@@ -1,6 +1,6 @@
 import { canonicalize } from '../../lib/ledger/canonical';
-import { ledgerTrust } from '../../lib/ledger/published';
+import { publishedAuthentication } from '../../lib/ledger/published';
 
-export function GET() {
-  return new Response(canonicalize(ledgerTrust), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+export async function GET() {
+  return new Response(canonicalize((await publishedAuthentication()).trust), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
 }

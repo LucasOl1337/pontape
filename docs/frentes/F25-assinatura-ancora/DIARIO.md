@@ -1,0 +1,21 @@
+# F25 · Diário do EngenheiroFino
+
+## 23/09/2026 · Início e desenho
+
+- Branch `fino/f25-ancora` criada de main. Lidos AGENTS, PRD, QUADRO, BRIEF, assinatura/verificador e componentes do site. Não alterar scripts/deploy, publicar ou acessar a chave privada real.
+- Lidos somente os dois arquivos públicos da âncora 43 em ~/.config/pontape/ancoras. `ots info` com cliente 0.7.2 mostra quatro atestações pendentes e digest SHA-256 `5f46711bad79586f131b9b9363bed9f0428a8924026a6ca89fdefbf49693b880` do envelope assinado.
+- Desenho: configuração da chave separada do índice versionado de âncoras. O trust.json servido no build combina ambos, evitando estado de timestamp duplicado e divergente. Assinatura antiga precisa conferir com o prefixo correspondente do livro atual; não implica assinatura de eventos posteriores.
+- Arquivos públicos imutáveis: assinatura e recibo inicial preservados byte a byte; upgrade gera outra prova com hash no nome e acrescenta referência no índice. Índice atualizado atomicamente sob lock. Prova só é confirmada após verificação contra Bitcoin Core, não apenas por conter uma atestação.
+- Scripts em dry-run não leem chave, não chamam rede e não escrevem. Aplicação do operador usa ambiente Python separado e cliente OTS fixado. Testes usarão chaves efêmeras e adapters simulados; sem novas operações com a chave real.
+- Referência primária: [cliente OpenTimestamps 0.7.2](https://github.com/opentimestamps/opentimestamps-client/tree/opentimestamps-client-v0.7.2), acesso em 23/09/2026. Upgrade completa a prova; conferência independente usa Bitcoin Core.
+
+## 23/09/2026 · PARADA solicitada pelo Lucas via Regente
+
+- Ordem recebida: parar F25 imediatamente, salvar WIP e fazer push na `fino/f25-ancora`, sem PR e sem novas tarefas. Trabalho interrompido nesta etapa.
+- WIP implementa schemas estritos de confiança/índice, importação pública da âncora 43, validação da assinatura contra o prefixo do livro, trust servido derivado de configuração + índice, scripts anchor/upgrade com dry-run, lock e preservação dos arquivos originais; UI mostra chave, cobertura e pendência, e carrega verificação de assinatura no clique.
+- A chave privada real NÃO foi lida. Apenas os dois arquivos públicos solicitados foram copiados. Nenhum stamp/upgrade real foi executado, nenhuma publicação/PR foi feita e scripts/deploy permaneceu intacto.
+- Verificação já iniciada antes da parada terminou: `npm run check` passou, 135 testes, livro 43 válido, build/CSP e budget (home 27,1 KB; transparência 35,5 KB inicial / 44,9 KB após Conferir). Isso NÃO encerra a F25: faltam revisão e prova no navegador.
+- Ambiente temporário OTS: `/tmp/pontape-f25-ots`, cliente 0.7.2; versões transitivas congeladas em `scripts/ledger/requirements-ots.txt`. `ots-proof.py inspect` da âncora 43 retornou pending/bitcoin null. Não depende desse venv no build/CI.
+- Bancada própria `pontape-f25` chegou a abrir somente about:blank e foi encerrada na parada. Não houve navegação/teste visual nem servidor local iniciado. Check e preparo da bancada já encerraram seus processos.
+- Próximos passos somente quando houver nova autorização: (1) fetch/merge origin/main com D022, que renomeou repo/remote para LucasOl1337/pontape, preservando repository_created histórico; (2) revisar armazenamento imutável/recuperação de falhas e adapter Python, adicionar teste offline do caminho Bitcoin confirmado e de prova não vinculada; (3) completar CONTRATO, COMO-CONFERIR, OPERACAO e texto antigo em CONFERIR-COM-PYTHON; documentar instalação reproduzível e proposta de canal independente para chave; (4) validar assinatura e estado pendente no navegador da bancada; (5) check final, commit e PR/report só após autorização de retomada.
+- Pontos para revisão: schema de trust de saída inclui timestamp calculado do índice, enquanto src/data/ledger/trust.json guarda só configuração; documentar essa distinção. Status confirmado depende de Bitcoin Core mainnet via Python, não do navegador; ainda falta exercitar esse caminho com mocks offline. Interrupção entre arquivos e índice pode deixar órfãos públicos; rotina aceita somente bytes idênticos em recuperação, e precisa ter operação de recuperação documentada. Mensagem de no-op "já ancorado no índice" pode ser ajustada para não sugerir confirmação Bitcoin.
