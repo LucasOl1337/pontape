@@ -26,3 +26,9 @@
 - Sem `SITE_URL`, OG tem imagem relativa; com `SITE_URL=https://pontape.example` apenas para teste local, home, transparência e 404 geraram `og:url`, `og:image`, `twitter:image` e canonical absolutos. A publicação ainda depende de domínio real escolhido e variável configurada no Pages.
 - Falhas persistentes: quatro âncoras do menu na 404 apontam para IDs que só existem na home; o exemplo fictício exibe “Ver a fonte” para commit de 40 zeros; A+ em 320 px amplia a largura do documento de 320 para 328 px. Prints da versão atual guardados em `docs/operacao/ensaio/`. Abrirei issues e indicarei no relatório que o visual precisa ser refeito na variante F19 escolhida.
 - Corrigi no checklist apenas a descrição do cache: `_astro/` é imutável por um ano, fontes locais têm cache de uma semana. Próximo passo: relatório final, issues, PR e aviso ao Regente.
+
+## 22/09/2026 · Falhas registradas
+
+- Relatório `docs/operacao/ENSAIO-LANCAMENTO.md` cobre os 10 itens do checklist e os extras pedidos. Capturas da versão PontaPé estão no branch da F18.
+- Abri #40 (âncoras do menu na 404), #41 (fonte fictícia com commit inexistente), #42 (A+ gera 8 px de transbordamento em 320 px) e #43 (concordância “As 1 ações” após detectar adulteração). Cada issue traz passos e evidência; #42 deve ser reavaliada na variante visual F19 escolhida.
+- Próximo passo: atualizar relatório com links das issues, conferir commit e abrir PR. O ensaio de HTTPS/cabeçalhos reais e o aceite de carga permanecem para a publicação autorizada.
