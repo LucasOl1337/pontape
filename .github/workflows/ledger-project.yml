@@ -1,0 +1,64 @@
+name: Livro de ações do projeto
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ledger-project-main
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    if: github.repository == 'LucasOl1337/VidaNova' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Reconciliar projeto e publicar somente o livro
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            # Only this disposable Actions checkout is reset between attempts.
+            # Recompute from new main; never rebase an already-hashed ledger.
+            git switch -C ledger-project-sync origin/main
+            npm ci
+            npm run ledger:sync-project -- --apply
+            npm run ledger:verify
+            if git diff --quiet -- src/data/ledger/ledger.json; then
+              echo 'Nenhum fato novo. Sem commit.'
+              exit 0
+            fi
+            # Token pushes do not trigger CI either, so validate before writing main.
+            npm run check
+            git add -- src/data/ledger/ledger.json
+            git diff --cached --name-only | while IFS= read -r path; do
+              test "$path" = 'src/data/ledger/ledger.json'
+            done
+            git commit -m 'Registra ações do projeto no livro [ledger-bot]'
+            if git push origin HEAD:refs/heads/main; then
+              exit 0
+            fi
+            echo "Push recusado na tentativa $attempt; reconciliando novamente sem force."
+          done
+          echo 'Não foi possível gravar. Main foi preservada; reexecute o workflow após conferir a causa.' >&2
+          exit 1
