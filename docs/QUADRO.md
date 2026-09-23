@@ -2,15 +2,15 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026, 12:48 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 23/09/2026, 13:08 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
-**Hoje:** home pro leigo (F29), cadernos em páginas e varredura (F31), transparência em duas camadas (F32) no ar. O Lucas escolheu a paleta **Anil** (D030): F33 promove ela e tira o seletor; F34 cuida do celular, do trilho da IA e dos números em cima dos botões. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
+**Hoje:** home pro leigo (F29), cadernos em páginas (F31), transparência em duas camadas (F32) e paleta Anil (F33, D030) no ar. A escada da F34 foi **reprovada** (D031): a F36 acha o meio termo entre o antes e o agora. Às 13:04 todos os agentes reiniciaram com conversa nova, a pedido do Lucas; cada um retoma pelo BRIEF e pelo DIARIO. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F32b | Filtros da parte técnica em palavra de gente | design | [PR #74](https://github.com/LucasOl1337/pontape/pull/74) integrada 11:01 | Feito. Design/UI em espera |
+| F36 | [Escada: meio termo entre o antes e o agora](frentes/F36-escada-meio-termo/BRIEF.md) | prumo | `prumo/f36-*` | Despachada 13:08 (D031) | Proposta no DIARIO com a causa do enquadramento |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
@@ -47,7 +47,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 | ID | Frente | Resultado |
 |---|---|---|
 | F35 | Renomear `--red` pra `--accent` | [PR #85](https://github.com/LucasOl1337/pontape/pull/85) integrada. Só o nome; prints idênticos pixel a pixel |
-| F34 | Celular, trilho da IA e números | PRs [#81](https://github.com/LucasOl1337/pontape/pull/81) a [#84](https://github.com/LucasOl1337/pontape/pull/84) integradas até 12:48: números a 8 px do chão e ícone sem invadir; corrimão da IA colado nos degraus; tela baixa sem rolagem; todo alvo solto com 44 px no celular. O texto por trás da escada no print era outra janela vista pela opacidade do Omarchy, não o site |
+| F34 | Celular, trilho da IA e números | **Reprovada pelo Lucas às 13:05 (D031); a F36 refaz a escada.** PRs [#81](https://github.com/LucasOl1337/pontape/pull/81) a [#84](https://github.com/LucasOl1337/pontape/pull/84) integradas até 12:48: números a 8 px do chão e ícone sem invadir; corrimão da IA colado nos degraus; tela baixa sem rolagem; todo alvo solto com 44 px no celular. O texto por trás da escada no print era outra janela vista pela opacidade do Omarchy, não o site |
 | F33 | A Anil vira a paleta do site | [PR #80](https://github.com/LucasOl1337/pontape/pull/80) integrada 12:20 (D030). Seletor fora; favicon, ícone e imagens de compartilhar na Anil. Proposta pra depois da F34: renomear `--red` pra `--accent` |
 | F32 | Transparência que um leigo entende | [PR #73](https://github.com/LucasOl1337/pontape/pull/73) integrada 10:58 (D029). `/transparencia` em palavra de gente, com a corrente desenhada; tudo técnico em `/transparencia/tecnico`. Decisões com frase simples na sexta coluna do DECISOES. Primeira camada de 40,5 pra 28 KB |
 | F30 | Paletas, rodada 2 (Anil, Fable) | [PR #70](https://github.com/LucasOl1337/pontape/pull/70) integrada 10:35. Anil, Pauta, Envelope, Pêssego e Carvão no lugar das reprovadas, cada uma a partir de um material; pesquisa em [PALETAS.md](pesquisa/PALETAS.md). Aguardando o Lucas escolher |
