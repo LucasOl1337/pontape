@@ -2,12 +2,13 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
+Atualizado: 23/09/2026 · **Site no ar em https://pontape.org** (D019) · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
+| F24 | [Ensaio pós-lançamento](frentes/F24-pos-lancamento/BRIEF.md) | bruto | `bruto/f24-pos-lancamento` | despachada | Checklist inteiro contra https://pontape.org e revisão das issues #40 a #43 |
 
 ## Fila
 
