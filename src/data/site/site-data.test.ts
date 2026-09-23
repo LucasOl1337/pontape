@@ -18,6 +18,12 @@ describe('dados do site', () => {
     for (const step of STEPS) expect(MODULES.some(m => m.id === step.module)).toBe(true);
   });
 
+  it('o apoio da IA vem antes do trabalho (D028)', () => {
+    const at = (module: string) => STEPS.findIndex(s => s.module === module);
+    expect(at('M7')).toBeGreaterThan(at('M5'));
+    expect(at('M7')).toBeLessThan(at('M6'));
+  });
+
   it('o "já funciona?" de cada passo bate com o estado da peça', () => {
     for (const step of STEPS) {
       const status = MODULES.find(m => m.id === step.module)!.status;
