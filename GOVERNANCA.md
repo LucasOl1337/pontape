@@ -1,6 +1,6 @@
-# Governança do VidaNova
+# Governança do PontaPé
 
-O projeto aceita ajuda de fora, mas o repositório ainda é privado e **não tem licença definida**. Lucas decidirá quando abrir e licenciar ([PRD, §10](docs/PRD.md#10-perguntas-pro-lucas)).
+O projeto aceita ajuda de fora. O repositório é **público** desde 23/09/2026, com licença **Apache-2.0** ([LICENSE](LICENSE), D020). O site está em https://pontape.org.
 
 ## Quem faz o quê
 
@@ -16,7 +16,7 @@ O projeto aceita ajuda de fora, mas o repositório ainda é privado e **não tem
 2. CI e agentes podem apontar problemas. Lucas ou um admin humano confere conteúdo, segurança e adequação à missão e aprova a PR.
 3. O Regente integra a mudança aprovada. Reprovação ou ajuste deve ter motivo claro, sem expor dados protegidos.
 
-**Fase de fundação.** Enquanto o repositório é privado, as frentes da equipe de agentes são revisadas e integradas pelo Regente, que é um agente de IA, por delegação do Lucas. Tudo fica registrado no [quadro](docs/QUADRO.md), nas [decisões](docs/DECISOES.md) e, quando ativo, no livro público. Contribuição de fora sempre passa pela aprovação humana do Lucas ou de um admin.
+**Fase de fundação.** Por enquanto, as frentes da equipe de agentes são revisadas e integradas pelo Regente, que é um agente de IA, por delegação do Lucas. Tudo fica registrado no [quadro](docs/QUADRO.md), nas [decisões](docs/DECISOES.md) e, quando ativo, no livro público. Contribuição de fora sempre passa pela aprovação humana do Lucas ou de um admin.
 
 Contribuir não dá acesso de admin automaticamente. Lucas decide concessão, escopo e revogação; o Regente registra cada decisão em [`docs/DECISOES.md`](docs/DECISOES.md) antes de mudar o acesso. A permissão deve ser a menor necessária.
 

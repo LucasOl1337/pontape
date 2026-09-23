@@ -8,6 +8,7 @@ Atualizado: 23/09/2026 · **Site no ar em https://pontape.org** (D019) · Ordem 
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
+| F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | despachada | Chave pública e âncora OpenTimestamps visíveis e conferíveis no site |
 | F24 | [Ensaio pós-lançamento](frentes/F24-pos-lancamento/BRIEF.md) | bruto | `bruto/f24-pos-lancamento` | despachada | Checklist inteiro contra https://pontape.org e revisão das issues #40 a #43 |
 
 ## Fila
@@ -21,7 +22,7 @@ Atualizado: 23/09/2026 · **Site no ar em https://pontape.org** (D019) · Ordem 
 
 ## Pra o Lucas decidir
 
-0. **Custódia da chave de assinatura do livro e primeira ancoragem pública (OpenTimestamps).** Prontos pra rodar ([OPERACAO](transparencia/OPERACAO.md))
+0. ~~Custódia da chave e primeira ancoragem~~ **Resolvido:** chave com o Regente fora do repo, checkpoint 43 assinado e carimbado (F25)
 
 Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
@@ -31,8 +32,8 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 4. Doação antes de existir CNPJ. F03 recomenda **só captar depois de associação, CNPJ e conta própria**; Asaas como primeiro teste ([ESTRUTURA-JURIDICA.md](pesquisa/ESTRUTURA-JURIDICA.md), [DOACOES-E-TRANSPARENCIA.md](pesquisa/DOACOES-E-TRANSPARENCIA.md))
 5. Cidade do piloto
 6. Quem decide a seleção do candidato
-7. Licença open source (e canal privado de denúncia e segurança, hoje "a definir"). F03 e F02 recomendam **Apache-2.0**; AGPL-3.0 se a prioridade for obrigar quem copia a abrir o código
-8. Quando abrir o repositório
+7. ~~Licença~~ **Resolvido:** Apache-2.0 (D020); aviso privado de vulnerabilidade ligado no GitHub
+8. ~~Abrir o repositório~~ **Resolvido:** público desde 23/09/2026 (D020)
 9. Responsável legal pelos dados dos candidatos (LGPD)
 10. Apelido por pessoa ("pessoa #014") no livro público, só com consentimento?
 
