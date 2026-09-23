@@ -11,6 +11,7 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 | F07 | [Site v1 em código](frentes/F07-site-v1/BRIEF.md) | design | `design/f07-livro-real` | falta ligar no livro real | Trocar `source.ts` e `verifier.ts` pelo núcleo da F08 (já na main) |
 | F16 | [Polimento pro lançamento](frentes/F16-polimento-lancamento/BRIEF.md) | design | `design/f16-polimento` | despachada | Favicon, prévia de compartilhamento, 404 com layout |
 | F15 | [Conferidor independente do livro (Python, sala limpa)](frentes/F15-conferidor-independente/BRIEF.md) | bruto | `bruto/f15-conferidor` | despachada | `tools/conferir.py` escrito só a partir do contrato |
+| F17 | [Livro ao vivo pras ações do projeto](frentes/F17-livro-ao-vivo/BRIEF.md) | fino | `fino/f17-ao-vivo` | despachada | PR integrada e decisão nova entram sozinhas no livro |
 
 ## Fila
 
