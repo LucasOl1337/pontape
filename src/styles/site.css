@@ -243,8 +243,9 @@ main:focus{ outline:none }
   .stair{ inset:0 var(--gutter) }
   .stage{ --corner-w:calc((100cqw - 2 * var(--gutter)) * 4 / var(--n) - 1.2rem) }
 }
-/* A short stage (laptops): the step keeps what matters and drops the extras. */
-@container (max-height:700px){
+/* A short stage (laptops): the step keeps what matters and drops the extras. The stage is never
+   under 46rem (736 px), so the threshold sits above that (F34). */
+@container (max-height:800px){
   .panel-note{ display:none }
   .panel-text{ font-size:1.0625rem }
   .panel-nav .btn{ min-height:44px; padding:.5rem .9rem; font-size:.9375rem }
