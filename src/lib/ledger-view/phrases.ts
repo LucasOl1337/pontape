@@ -7,10 +7,11 @@ export type LedgerType = LedgerPayload['type'];
 type FinancePayload = Extract<LedgerPayload, { type: 'finance' }>;
 export type OutCategory = Exclude<FinancePayload['category'], 'donation'>;
 
+// Entregas and Atendimento are the two halves of "As atividades" on the first layer of /transparencia (F32b).
 export const TYPES: Record<LedgerType, { label: string; icon: IconName }> = {
   finance: { label: 'Dinheiro', icon: 'coin' },
-  field: { label: 'Vida real', icon: 'package' },
-  candidate: { label: 'Candidato', icon: 'person' },
+  field: { label: 'Entregas', icon: 'package' },
+  candidate: { label: 'Atendimento', icon: 'person' },
   project: { label: 'Projeto', icon: 'flag' },
 };
 export const TYPE_ORDER: LedgerType[] = ['finance', 'field', 'candidate', 'project'];

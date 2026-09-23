@@ -190,3 +190,14 @@ Prints em `prints/`: `antes-*` é a main de hoje (a página única, que é o ant
 ### Onde parei
 
 PR aberta pra `main` e report mandado pro Regente. Próximo passo, se ele pedir: ajustes da revisão.
+
+## 23/09/2026 · Revisão do Regente e fila
+
+PR #73 integrada. As duas propostas:
+
+1. **"Pra onde foi" na primeira camada:** aprovado, mas só quando a doação abrir. Por agora nada.
+2. **Filtros da parte técnica:** "Vida real" vira "Entregas" e "Candidato" vira "Atendimento", pra bater com "As atividades" da primeira camada. Feito na F32b, branch `design/f32b-filtros`: o rótulo sai de `TYPES` em `phrases.ts`, então muda junto nos filtros, no selo de cada ação e na aba O que entra. A lista vazia do atendimento diz "Nenhum atendimento ainda."
+
+### Fila
+
+- Quando a doação abrir (`donationsEnabled` em `src/data/transparency.json` e o primeiro real no livro): levar as barras do "Pra onde foi" (Comida, Roupa, Higiene, Operação, Tarifas, Devoluções) pra primeira camada, embaixo dos números, em palavra de gente. A parte técnica continua com a aba Dinheiro inteira.
