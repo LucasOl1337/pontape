@@ -14,7 +14,7 @@ Propostas não equivalem a aprovação e não alteram DECISOES.md.
 
 | Tema | Proposta | Estado |
 |---|---|---|
-| Stack web | Astro estático + TypeScript + ilhas React | Direção confirmada pelo Regente; etapa 2 ainda aguarda OK |
+| Stack web | Astro estático + TypeScript + ilhas React | Aprovada; etapa 2 entregue na PR #23, aguardando integração |
 | Hospedagem | Cloudflare Pages para assets; F1 sem Supabase | Direção confirmada; sem criação de conta/deploy |
 | Banco/backend | PostgreSQL/Supabase em São Paulo, Auth/Storage, Edge Functions por turno | Proposto; verificar contratos, custo e recuperação antes de dados reais |
 | Tempo real | Realtime só da projeção pública na F2, cursor/HTTP para recuperar lacunas | Proposto |
@@ -103,3 +103,13 @@ Propostas não equivalem a aprovação e não alteram DECISOES.md.
 - `npm run dev` respondeu HTTP 200 no endereço local da tarefa; Astro iniciou em segundo plano neste harness. A primeira sonda esperava processo em primeiro plano e foi ajustada; resposta verificada e servidor encerrado com `astro dev stop`. README cobre ambos os modos.
 - Sem verificação visual em navegador nesta etapa de placeholder; não alegar auditoria WCAG ou desempenho em celular. Interface final é F07.
 - Próximo passo: commit/push, PR e CI remoto. F08 não iniciada; nada publicado.
+
+
+## 2026-09-22 · Etapa 2, entrega
+
+- PR para main: https://github.com/LucasOl1337/VidaNova/pull/23, branch `fino/f02-codigo`.
+- Commits de implementação/documentação: `2e63944` e `5d2b022`. CI desse envio passou: https://github.com/LucasOl1337/VidaNova/actions/runs/35802128063 (lint, tipos, 22 testes e build).
+- Critérios cumpridos: execução da raiz, React pronto, tokens/blocos no caminho combinado, snapshot fechado validado no build e testado, CI sem deploy/segredo, README, env de exemplo, CODEOWNERS e contribuição sujeita a admin.
+- Escopo preservado: sem Supabase, Docker, Playwright, LICENSE ou código da F08. Nenhum dado coletado, conta criada ou publicação realizada. Worktree `fino-f04` removido; checkout compartilhado e Devin preservados.
+- Este commit apenas registra a entrega. Conferir também o CI do head atual na PR antes de integrar. Report pelo Maestri ao Regente com link, validação e ausência de novas dúvidas de escopo; reenviar uma vez se a resposta demorar.
+- Próximo passo: revisão e integração pelo Regente. F08 somente após esta etapa integrada, partindo da main atualizada conforme seu BRIEF. Interface completa segue com F07.
