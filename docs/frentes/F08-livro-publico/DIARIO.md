@@ -18,3 +18,78 @@
 
 - `npm run check` passou: lint, tipos (zero erros/avisos), 34 testes e build estático.
 - PR inicial contém somente contrato/tipos, helper de fontes, fixture, testes e documentação. O livro real e o verificador vêm na continuação.
+
+## 22/09/2026 · Contrato integrado; núcleo e livro real
+
+- PR #26 de contrato integrada pelo Regente e repassada ao Design/UI. Continuação em `fino/f08-verificador`, atualizada por fast-forward com `origin/main` 3d767c8. #25 (governança) também incluída na base.
+- Livro semeado com 21 fatos reais: criação do repositório, D001–D012, PRs #2–#5 e #23–#26. Datas/commits conferidos pela API GitHub e Git; referência e consulta em `docs/transparencia/FONTES.md`. Importação histórica explicitamente distinta do momento dos fatos.
+- Implementados JCS, SHA-256 encadeado, checkpoints de prefixo conhecido, estornos e correções; entrypoint do navegador sem dependência Node. CLI verifica a mesma lógica. Publicação dry-run por padrão, lock exclusivo e substituição atômica do documento eventos+checkpoint.
+- 67 testes passaram na primeira rodada: adulteração, retirada inclusive do fim, reordenação, privacidade, números grandes, referência, estorno, concorrência e dry-run. Lint depois apontou três construções intencionais nos vetores de teste; ajustadas sem suprimir regras.
+- Rotas estáticas de download em `/livro/`; build valida a cadeia. Não há UI nova de transparência, responsabilidade da F07.
+- Assinatura Ed25519 offline implementada, com chave privada obrigatoriamente externa ao repositório e verificação por chave confiável explícita no navegador. Testes só usam chaves efêmeras. Nenhuma chave de produção criada, assinatura real publicada ou ancoragem executada.
+- Próximo: rodar check completo, conferir bundle web, registrar limites operacionais e abrir PR do núcleo.
+
+## Proposta operacional de criptografia aberta
+
+- Custódia pendente: Lucas/Regente nomeiam responsável pela chave Ed25519, backup e revogação. Chave pública e rotações precisam de canal independente; assinatura com chave trazida no próprio arquivo não basta para provar autoria. A CLI entrega arquivo com chave pública e checkpoint assinado quando o operador aplicar explicitamente.
+- Ancoragem proposta: Regente guarda checkpoint canônico imutável e executa OpenTimestamps sem conta/pagamento (`ots stamp`, depois `upgrade` e `verify`). Primeira execução real não é do agente. Prova pendente não vira selo confirmado; manter `.ots` final e cópia independente. A verificação pelo cliente oficial requer Bitcoin Core; não ocultar essa dependência.
+- Espelho independente continua ausente. Assinatura, carimbo e espelho têm estados explícitos desativados. Hash não prova fatos fora do livro nem omissões anteriores à publicação; checkpoint guardado é a referência contra reescrita e truncamento do fim.
+- Procedimento concreto em `docs/transparencia/OPERACAO.md`; consultas ao RFC 8785, Node Web Crypto e OpenTimestamps em 22/09/2026. Nenhuma decisão de custódia bloqueia o núcleo estático.
+
+## 22/09/2026 · Validação do núcleo
+
+- `npm run check` passou com 68 testes: lint, tipos sem erro/aviso, testes, CLI real e build. CI passa a executar `ledger:verify` explicitamente.
+- Bundle `platform: browser` compilado e executado em contexto JS sem globais Node: os 21 eventos conferiram usando Web Crypto. Isso verifica portabilidade da lógica; não é teste visual de navegador nem aceite da UI F07.
+- Conferência independente com Python/hashlib bateu com os hashes dos 21 eventos e com os bytes dos downloads gerados. O teste histórico fixa o checkpoint inicial e permite novas inclusões legítimas, sem exigir livro eternamente com 21 eventos.
+- CLI de assinatura testada com chave Ed25519 temporária e fictícia fora do repositório: assinatura válida, recusa de sobrescrita e de chave interna; tudo removido no cleanup. Nenhuma chave de produção.
+- Adicionado download completo `/livro/ledger.json` para conferir eventos e checkpoint de um mesmo build sem combinar respostas de versões diferentes. Downloads separados continuam disponíveis.
+- Estado pronto para PR: nenhuma mudança em UI da F07, nenhum banco, conta, deploy ou chamada real a calendários OpenTimestamps. Pendências de custódia/espelho não bloqueiam o núcleo. Regente precisa revisar o primeiro lote real e executar a primeira ancoragem quando aprovar o procedimento.
+
+## 22/09/2026 · D014 e teste cruzado independente
+
+- Main atualizada por fast-forward até 68cf25b, trazendo protótipo integrado, D013/D014 e F14. Nenhum arquivo de outro agente foi editado.
+- Conforme instrução do Regente, usei `design/prototipo/ledger/real.json` e `sample.json` como vetores produzidos pelo gerador independente do Design. **Não são fonte do livro de produção.**
+- Todos os hashes bateram desde a primeira conferência. `real.json` passou com 21 eventos. O sample inicialmente falhou em `time` nas sequências 10 e 12, que têm horários anteriores ao registro precedente.
+- Causa da divergência: restrição extra do meu verificador, não falha JCS/SHA-256 do Design. O contrato v1 garante ordem pela sequência, não por relógio monotônico. Corrigi a verificação para aceitar relógios não ordenados; `lastUpdatedAt` é o maior horário declarado. O escritor local ainda recusa regressão do seu relógio ao acrescentar evento novo. A data do fato continua limitada à data do registro.
+- Testes cruzados permanentes: real do protótipo válido; sample fictício válido com 18 eventos e saldo 410140 centavos; hash de cada evento comparado individualmente. Suite agora tem 71 testes passando. Divergência e resolução reportadas ao Regente via Maestri.
+- Verificador puro exportado em `src/lib/ledger/index.ts`; `published.ts` é o carregador de build separado. F07 pode importar sem copiar lógica.
+
+## 22/09/2026 · Check final após integração da main
+
+- `npm run check` passou na base atualizada: 71 testes, livro real válido e build com quatro downloads `/livro/`. Typecheck: zero erros/avisos; um hint já existente no protótipo integrado (`await onStep`, `design/prototipo/ledger.js:140`), sem alteração nessa frente.
+- PR do núcleo em preparação com `fino/f08-verificador` contra main. Entrega mantém o recorte inicial autorizado de 21 fatos; novos eventos entram via append, sem regenerar o lote.
+
+## 22/09/2026 · Entrega do núcleo em PR
+
+- PR aberta: https://github.com/LucasOl1337/VidaNova/pull/30 (`fino/f08-verificador` → `main`). Commits de implementação 67560dc e documentação c90f254; push concluído.
+- Check local passou com 71 testes e teste cruzado D014. CI remoto iniciado em https://github.com/LucasOl1337/VidaNova/actions/runs/35803813872; conferir o check do head final antes de integrar (este registro também gera atualização do CI).
+- Report final ao Regente pelo canal Maestri após conferir o head final. Próximo responsável: Regente revisa e integra; Design/UI consome `src/lib/ledger/index.ts` e `published.ts` conforme o contrato. Agente não executa deploy, criação de chave de produção ou primeira ancoragem.
+- Dúvidas não bloqueantes: custodiante da chave, canal público independente, espelho e frequência da ancoragem. Procedimento proposto e estados ausentes documentados; nenhuma dessas funções anunciada como ativa.
+
+## 22/09/2026 · Ajustes solicitados antes da integração
+
+- Regente revisou a PR #30 e autorizou explicitamente refazer o lote inicial, que ainda não foi publicado. Alterações: `occurredOn` no fuso America/Sao_Paulo, incluir D013/D014 e PRs #27/#28/#29, total 26 fatos; #30 será acrescentada pelo Regente após o merge com o comando normal.
+- CONTRATO deve ser especificação independente completa: contêineres, todas as chaves e enums, identificador literal do checkpoint e vetor mínimo com hash. ARQUITETURA §4.2 deve apontar para a fórmula vigente.
+- Assinatura e OpenTimestamps aprovados como proposta. Custódia e primeira ancoragem permanecem com o Regente. Retomada: executar esses três ajustes na mesma branch/PR e reportar “F08 núcleo atualizada”.
+
+## 22/09/2026 · Ajustes de revisão executados
+
+- Lote inicial refeito com autorização expressa pré-publicação: **26 fatos**, D001–D014 e PRs #2–#5/#23–#29, além da criação. Todos os dias civis são 22/09/2026 em America/Sao_Paulo. `recordedAt` mantém a hora UTC da importação. Nova cabeça: `ce05cfba4bc24efec75c612c509bd2867b8f4bf03d86401df00de21c80cb4a77`. PR #30 fica para o Regente acrescentar após merge.
+- Função pura `dateInSaoPaulo` usa IANA e considera horário de verão histórico; validação compara o dia público ao dia brasileiro do registro. Testes cobrem virada de data, horário de verão e dia ainda futuro no Brasil. O primeiro ensaio do formatter ISO sem era revelou que Intl omite essa parte; corrigido para calendário gregoriano com era explícita antes de gerar qualquer evento.
+- CONTRATO reescrito como especificação normativa independente: contêineres exatos (produção e fixtures), formatos primitivos, lista completa de chaves/ações/enums por família, checkpoint literal `vidanova-public-actions`, fórmula com recordedAt, correções, totais e assinatura. Inclui vetor fictício de um evento, bytes exatos JCS e hash esperado `a8183311eaf2313a098f25b08352e4676b9555c4a3c752efc024c60063c3d454`; fixture e teste impedem divergência entre documento e implementação.
+- ARQUITETURA §4.2 marca a fórmula anterior como histórica e aponta para o CONTRATO v1 vigente. Não houve alteração de BRIEF/DECISOES/QUADRO.
+- Python independente conferiu vetor mínimo, 26 hashes, presença das 14 decisões no commit fonte e as 11 PRs com data brasileira/mergeCommit contra a API. Testes cruzados do Design continuam passando sem mexer no protótipo.
+- Assinatura/OpenTimestamps aprovados como proposta pelo Regente; custódia e primeira execução real ficam com ele. Próximo: push na mesma PR #30, CI e report “F08 núcleo atualizada”.
+
+- Validação final dos ajustes: `npm run check` passou com 76 testes, CLI dos 26 eventos e build; zero erros/avisos de tipos, um hint preexistente do protótipo. Bundle browser sem globais Node verificou o documento estático novo e a conversão para a data brasileira. Commit e push na mesma PR #30; conferir CI do head atualizado antes da integração.
+
+## 22/09/2026 · Integração com F07 e fixture ampliada
+
+- Regente pediu merge da main com PR #32 (site Astro) na mesma PR #30. Conflito somente em package.json: resolvido preservando scripts de ledger, CSP/build e budget. Ordem de check: lint, typecheck, test, ledger:verify, build, budget; CI ganha budget depois do build.
+- Aprovação de install script avaliada no npm 11.19.0 da versão Node fixada. Documentação oficial permite aprovação fixada; `npm install-scripts approve esbuild --allow-scripts-pin` registrou somente `esbuild@0.28.2: true` em allowScripts. Inspecionado o install.js instalado: preparação/validação do binário da plataforma, com fallback de download no registro npm e verificação de integridade. Sem liberação global ou para versões futuras. Fonte: https://docs.npmjs.com/cli/v11/commands/npm-install-scripts/ (consulta 22/09/2026).
+- Fixture fictícia ampliada de 4 para 20 payloads: doações, gastos nas seis categorias de saída, estorno do gasto alimentar e valor correto, entregas de comida/roupa/higiene e quatro ações agregadas de candidato. Aviso fictício mantido; lote real de 26 eventos intocado.
+- A ampliação expôs um limite da formatação de minuto do exemplo (`12:010` a partir do 11º item). Corrigida só a construção determinística do timestamp em source.ts e seu helper de teste usando Date.UTC. A troca de source/verifier provisórios pelo núcleo permanece com o Design depois do merge, conforme orientação do Regente.
+- Novo teste verifica cadeia completa da fixture, saldo fictício 141000 centavos, categorias, referência de estorno e entregas. Próximo: npm ci com postinstall explícito, check integrado e push/report.
+
+- Validação integrada concluída: `npm ci --foreground-scripts` executou explicitamente o postinstall de esbuild@0.28.2, sem aviso de script não aprovado; `npm install-scripts ls` não encontrou pendências nesta plataforma. Zero vulnerabilidades reportadas pelo npm.
+- `npm run check` passou após reinstalação: **113 testes**, verificador dos 26 fatos, build do site, geração/conferência de CSP e budget. Home 29,1 KB/60 KB, transparência 24,0 KB/60 KB, fontes 87,1 KB/120 KB. Nenhuma alteração do lote real, da interface do verificador ou da decisão de integração da F07.

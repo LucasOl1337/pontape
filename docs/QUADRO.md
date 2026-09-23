@@ -8,9 +8,10 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F08 | [Livro público de ações](frentes/F08-livro-publico/BRIEF.md) | fino | `fino/f08-verificador` | PR #30 em ajuste | Fuso de Brasília, contrato completo pra sala limpa, conflito com a #32 |
-| F07 | [Site v1 em código](frentes/F07-site-v1/BRIEF.md) | design | `design/f07-livro-real` | etapa 1 integrada (#32); falta ligar no livro real | Trocar `source.ts` e `verifier.ts` pelo núcleo da F08 quando a #30 entrar |
-| F15 | [Conferidor independente do livro (Python, sala limpa)](frentes/F15-conferidor-independente/BRIEF.md) | bruto | `bruto/f15-conferidor` | despachada | `tools/conferir.py` escrito só a partir do contrato |
+| F07 | [Site v1 em código](frentes/F07-site-v1/BRIEF.md) | design | `design/f07-livro-real` | falta ligar no livro real | Trocar `source.ts` e `verifier.ts` pelo núcleo da F08 (já na main) |
+| F16 | [Polimento pro lançamento](frentes/F16-polimento-lancamento/BRIEF.md) | design | `design/f16-polimento` | despachada | Favicon, prévia de compartilhamento, 404 com layout |
+| F18 | [Ensaio do lançamento](frentes/F18-ensaio-lancamento/BRIEF.md) | bruto | `bruto/f18-ensaio` | despachada | Checklist inteiro no build local, falhas viram issue |
+| F17 | [Livro ao vivo pras ações do projeto](frentes/F17-livro-ao-vivo/BRIEF.md) | fino | `fino/f17-ao-vivo` | despachada | PR integrada e decisão nova entram sozinhas no livro |
 
 ## Fila
 
@@ -22,6 +23,8 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 | F09 | Piloto da entrevista por voz | F05, depois da plataforma (D009) |
 
 ## Pra o Lucas decidir
+
+0. **Custódia da chave de assinatura do livro e primeira ancoragem pública (OpenTimestamps).** Prontos pra rodar ([OPERACAO](transparencia/OPERACAO.md))
 
 Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
@@ -41,6 +44,8 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 | ID | Frente | Resultado |
 |---|---|---|
 | F14b | CSP gerada no build | [PR #29](https://github.com/LucasOl1337/VidaNova/pull/29) integrada. Build calcula o hash de todo script embutido e falha se faltar algum ou se aparecer `unsafe-inline` |
+| F15 | Conferidor independente em Python | [PR #31](https://github.com/LucasOl1337/VidaNova/pull/31) integrada. Sala limpa: escrito só pelo contrato, confere as 29 ações reais e pega adulteração |
+| F08 núcleo | Livro público real e verificador | [PR #30](https://github.com/LucasOl1337/VidaNova/pull/30) integrada. 26 fatos reais conferidos pelo Regente contra git e GitHub; Regente acrescentou #32 e #30 com `ledger:append` (28 fatos). Assinatura e OpenTimestamps prontos, aguardando custódia |
 | F07 etapa 1 | Site v1 em código | [PR #32](https://github.com/LucasOl1337/VidaNova/pull/32) integrada. Home e `/transparencia` em Astro, 16 blocos, fontes locais, orçamento medido (home 29 KB, livro 21 KB de 60) |
 | F07 etapa 0 | Protótipo do livro público | [PR #28](https://github.com/LucasOl1337/VidaNova/pull/28) integrada. `/transparencia` com as quatro famílias, Conferir por SHA-256 no navegador, contribuições reais, D011 e D012 aplicados |
 | F14 | Prontidão pra lançar | [PR #27](https://github.com/LucasOl1337/VidaNova/pull/27) integrada. `_headers`, 404, robots, [LANCAMENTO](operacao/LANCAMENTO.md) e [CHECKLIST](operacao/CHECKLIST-LANCAMENTO.md) |
