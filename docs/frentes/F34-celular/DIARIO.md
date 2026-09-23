@@ -49,4 +49,20 @@ Protótipo só com CSS injetado na bancada (nada no repositório): **o trilho so
 
 ### Onde parei
 
-Diagnóstico mandado pro Regente. Esperando o aviso da F33.
+Diagnóstico aprovado pelo Regente, com o corrimão. A F33 entrou (#80, `5a70ad0`): o botão Cores e os restos dele saíram e a Anil virou o `:root`.
+
+## 23/09/2026 · PR 1: o ajuste de tela baixa voltou a valer
+
+Branch `prumo/f34-tela-baixa`. Achado conferindo a PR dos números: na `main`, logo depois da F33, o "Sua vez" rola **39 px por dentro** em 1180×700 (na F31 era zero).
+
+**Causa:** o ajuste de tela baixa (`@container (max-height:700px)`, que esconde a nota "A gente não guarda contato..." e diminui o texto e os botões do degrau) só valia porque a caixa da escada descontava a altura da barra do Cores: o palco ficava com 664 px. Sem a barra, o palco nunca fica abaixo da altura mínima de 46rem (736 px), e o ajuste parou de valer em qualquer tela.
+
+**Correção:** o limite sobe pra 800 px. Volta a valer onde valia antes da F33 (laptop de 720 e 768 de altura) e continua desligado em 1440×900 pra cima.
+
+| Tamanho | `main` (degraus 0, 4, 7, 8) | Depois |
+|---|---|---|
+| 1180×700 | 0, 0, 0, 39 | 0, 0, 0, 1 |
+| 1280×720 | 0, 0, 0, 0 | igual |
+| 1366×657 | 0, 0, 0, 0 | igual |
+
+`npm run check` passa. Prints `prints/tela-baixa-antes-1180-d8.png` e `prints/tela-baixa-depois-1180-d8.png`.
