@@ -9,13 +9,11 @@ import { REPOSITORY_OPEN } from '../../data/site/project';
 // "Todas" shows the first HOME_LIMIT ads; the rest open with one button.
 const HOME_LIMIT = 6;
 const goodFirst = CONTRIBUTIONS.filter(c => c.goodFirst);
-const joinList = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items.at(-1)}`;
 const types = (Object.keys(CONTRIBUTION_TYPES) as (keyof typeof CONTRIBUTION_TYPES)[])
   .map(t => ({ id: t, ...CONTRIBUTION_TYPES[t], count: CONTRIBUTIONS.filter(c => c.type === t).length }))
   .filter(t => t.count > 0);
-const speech = `Tem ${CONTRIBUTIONS.length} tarefas abertas. ${goodFirst.length} são boas pra quem está começando: ${joinList(goodFirst.map(c => c.title))}. Pegar uma tarefa abre junto com o repositório.`;
 ---
-<Sheet id="contribuicoes" kicker="Classificados" title="Precisa-se." turn="Onde você pode ajudar agora." speech={speech}>
+<Sheet id="contribuicoes" kicker="Classificados" title="Precisa-se." turn="Onde você pode ajudar agora.">
     <p class="standfirst">Tarefas concretas, uma por anúncio. Cada uma diz o tipo, se é um bom primeiro passo e qual gargalo ela destrava.</p>
     <div class="filters" role="group" aria-label="Filtrar contribuições" data-contrib-filters>
       <button class="filter" type="button" data-contrib="all" aria-pressed="true">Todas<span class="count">{CONTRIBUTIONS.length}</span></button>

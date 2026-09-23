@@ -4,11 +4,8 @@ import NotOpenBadge from '../site/NotOpenBadge.astro';
 import Sheet from './Sheet.astro';
 import { BOTTLENECKS } from '../../data/site/bottlenecks';
 
-const speech = 'Estes são os problemas que a gente ainda não sabe resolver. '
-  + BOTTLENECKS.map((b, i) => `${i + 1}: ${b.title}.`).join(' ')
-  + ' Se você entende de algum desses assuntos, sua ajuda vale muito.';
 ---
-<Sheet id="gargalos" kicker="Os gargalos" title="O que a gente ainda" turn="não sabe resolver." speech={speech}>
+<Sheet id="gargalos" kicker="Os gargalos" title="O que a gente ainda" turn="não sabe resolver.">
     <p class="standfirst">Falar disso também é transparência. São {BOTTLENECKS.length} perguntas em aberto. Se você entende de algum desses assuntos, sua ajuda vale muito.</p>
     <div class="questions">
       {BOTTLENECKS.map((b, i) => (

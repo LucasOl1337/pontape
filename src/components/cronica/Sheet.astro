@@ -1,20 +1,18 @@
 ---
 import Icon from '../site/Icon.astro';
-import ListenButton from '../site/ListenButton.astro';
 
 // A "caderno" that opens over the staircase, in place: one per part that is detail, not story.
 // Without JS it shows inline at the end of the page, so nothing is out of reach.
-interface Props { id: string; kicker: string; title: string; turn?: string; speech?: string }
-const { id, kicker, title, turn, speech } = Astro.props;
+interface Props { id: string; kicker: string; title: string; turn?: string }
+const { id, kicker, title, turn } = Astro.props;
 ---
-<dialog class="sheet" id={id} aria-labelledby={`t-${id}`} data-speech={speech}>
+<dialog class="sheet" id={id} aria-labelledby={`t-${id}`}>
   <div class="sheet-head">
     <div>
       <p class="kicker">{kicker}</p>
       <h2 id={`t-${id}`} class="sheet-title">{title}{turn && <> <em>{turn}</em></>}</h2>
     </div>
     <div class="sheet-tools">
-      {speech && <ListenButton target={id} />}
       <button class="close-btn" type="button" data-close aria-label="Fechar"><Icon name="close" /></button>
     </div>
   </div>

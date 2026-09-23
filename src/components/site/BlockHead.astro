@@ -1,10 +1,7 @@
 ---
-import ListenButton from './ListenButton.astro';
-
-interface Props { number: string; label: string; listen?: string; speech?: string }
-const { number, label, listen, speech } = Astro.props;
+interface Props { number: string; label: string }
+const { number, label } = Astro.props;
 ---
 <div class="block-head">
   <p class="tag"><b>{number}</b>{label}</p>
-  {(listen || speech) && <ListenButton target={listen} speech={speech} />}
 </div>

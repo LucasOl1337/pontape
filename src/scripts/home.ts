@@ -1,8 +1,6 @@
 // Home: the staircase (a tab list you climb with the arrows), the "cadernos" that open in place
 // over it, the module dialog and the classified-ad filters. Everything answers to the URL hash,
 // so the header links, /transparencia and shared links land on the right step or sheet.
-import { stopSpeech } from './site';
-
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll<T>(s)];
 
@@ -16,7 +14,6 @@ let at = 0;
 
 function climb(k: number, { focusTab = false } = {}) {
   const next = Math.max(0, Math.min(tabs.length - 1, k));
-  if (next !== at) stopSpeech();
   at = next;
   tabs.forEach((tab, i) => {
     tab.setAttribute('aria-selected', String(i === at));
@@ -80,14 +77,12 @@ function openSheet(id: string) {
     const opener = document.activeElement as HTMLElement | null;
     closeSheets();
     focusBefore = opener && !opener.closest('dialog') ? opener : focusBefore;
-    stopSpeech();
     sheet.showModal();
     sheet.scrollTop = 0;
   }
   return sheet;
 }
 $$<HTMLDialogElement>('dialog.sheet').forEach(sheet => sheet.addEventListener('close', () => {
-  stopSpeech();
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   if (!$('dialog.sheet[open]') && focusBefore?.isConnected) focusBefore.focus({ preventScroll: true });
 }));
@@ -97,7 +92,6 @@ let moduleOrigin: HTMLElement | null = null;
 function openModule(id: string, origin?: HTMLElement | null) {
   const tpl = document.getElementById(`module-${id}`) as HTMLTemplateElement | null;
   if (!moduleDialog || !tpl) return;
-  stopSpeech();
   $('#module-dialog-id')!.textContent = id;
   $('#module-dialog-title')!.textContent = tpl.dataset.name ?? '';
   $('#module-dialog-body')!.replaceChildren(tpl.content.cloneNode(true));
@@ -106,7 +100,6 @@ function openModule(id: string, origin?: HTMLElement | null) {
   $('.close-btn', moduleDialog)?.focus();
 }
 moduleDialog?.addEventListener('close', () => {
-  stopSpeech();
   if (/^#m[1-9]$/i.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
   if (moduleOrigin?.isConnected) moduleOrigin.focus({ preventScroll: true });
 });

@@ -1,15 +1,14 @@
 ---
 import Icon from '../site/Icon.astro';
 import Badge from '../site/Badge.astro';
-import ListenButton from '../site/ListenButton.astro';
 import Sheet from './Sheet.astro';
 import { DETAIL_FIELDS, MODULES } from '../../data/site/modules';
 import { STATUSES, STATUS_ORDER, type ModuleStatus } from '../../data/site/statuses';
-import { STATUS_DATE, STATUS_DATE_SPOKEN, formatDay, withName } from '../../data/site/project';
+import { STATUS_DATE, formatDay, withName } from '../../data/site/project';
 
 const joinList = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items.at(-1)}`;
 const byStatus = (s: ModuleStatus) => MODULES.filter(m => m.status === s);
-// The state of the nine pieces said as a sentence, the way a reporter would write it.
+// The state of the nine pieces in a sentence, the way a reporter would write it.
 const WORDS = ['nenhuma', 'uma', 'duas', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
 const IN_WORDS: Record<ModuleStatus, [string, string]> = {
   live: ['funcionando', 'funcionando'], building: ['em construção', 'em construção'],
@@ -19,18 +18,8 @@ const tally = joinList(STATUS_ORDER.map(s => {
   const n = byStatus(s).length;
   return `${WORDS[n] ?? n} ${IN_WORDS[s][n > 1 ? 1 : 0]}`;
 }));
-const labelsForSpeech: Record<ModuleStatus, string> = {
-  live: 'Funcionando', building: 'Em construção',
-  bottleneck: 'Precisa de ajuda, que é o que a gente ainda não sabe resolver', planned: 'Planejados',
-};
-const speech = `O projeto tem ${MODULES.length} peças. Estado em ${STATUS_DATE_SPOKEN}. ` + STATUS_ORDER.map(s => {
-  const names = byStatus(s).map(m => m.name);
-  return names.length ? `${labelsForSpeech[s]}: ${names.length}. ${joinList(names)}.` : `${labelsForSpeech[s]}: nenhum ainda.`;
-}).join(' ') + ' Toque numa peça pra saber mais.';
-const moduleSpeech = (m: (typeof MODULES)[number]) =>
-  `Peça ${m.id.slice(1)}: ${m.name}. Estado: ${STATUSES[m.status].label}. ` + DETAIL_FIELDS.map(f => `${f.label}: ${withName(m[f.key])}`).join(' ');
 ---
-<Sheet id="modulos" kicker="Os módulos" title="Nove peças." turn="Cada uma diz se já funciona." speech={speech}>
+<Sheet id="modulos" kicker="Os módulos" title="Nove peças." turn="Cada uma diz se já funciona.">
     <p class="standfirst">O projeto é feito de partes separadas. Em {formatDay(STATUS_DATE)}: {tally}. Toque numa peça pra ver o que é, como funciona e o que falta.</p>
 
     <div class="filters" role="group" aria-label="Filtrar por estado" data-module-filters>
@@ -78,7 +67,7 @@ const moduleSpeech = (m: (typeof MODULES)[number]) =>
   const next = MODULES[(i + 1) % MODULES.length]!;
   return (
     <template id={`module-${m.id}`} data-name={m.name}>
-      <p class="dialog-status"><Badge status={m.status} /><span>Estado em {formatDay(STATUS_DATE)}</span><ListenButton speech={moduleSpeech(m)} /></p>
+      <p class="dialog-status"><Badge status={m.status} /><span>Estado em {formatDay(STATUS_DATE)}</span></p>
       <dl class="module-details">
         {DETAIL_FIELDS.map(f => <div class={f.tone ? `is-${f.tone}` : undefined}><dt>{f.label}</dt><dd>{withName(m[f.key])}</dd></div>)}
       </dl>
