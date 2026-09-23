@@ -23,6 +23,15 @@ Liste as decisões propostas (stack, hospedagem, banco, licença sugerida) no se
 
 Esqueleto na stack aprovada: lint, typecheck, teste e build rodando; CI no GitHub Actions; `.env.example`; `CODEOWNERS` com `@LucasOl1337`; `CONTRIBUTING.md` em rascunho dizendo que toda PR passa por aprovação de admin. Página inicial é placeholder: a interface vem da F01 e F07.
 
+**Escopo aprovado pelo Regente em 22/09/2026 (D006, D007):**
+
+- Só o que a F1 usa: Astro + TypeScript, integração React pronta pras ilhas, ESLint, Vitest, build estático. Supabase, Edge Functions, Docker e Playwright entram quando a F08 ou F09 precisar.
+- App na raiz do repositório, pra `npm install && npm run dev` funcionar direto. `docs/` continua onde está.
+- Um lugar só para os tokens visuais (ex.: `src/styles/tokens.css`) e uma pasta de blocos (ex.: `src/components/blocks/`), pra F07 encaixar o protótipo da F01 sem reestruturar.
+- Snapshot estático do painel de transparência como dado versionado (ex.: `src/data/transparency.json`), com zero, data de referência e "Doações ainda não habilitadas", e um teste que garante que ele só tem campos da lista fechada.
+- CI roda lint, typecheck, teste e build em toda PR. Sem deploy, sem segredo.
+- `LICENSE` fica de fora até o Lucas decidir.
+
 ## Delegação
 
 A F04 (pesquisa de voz e dispositivo) é sua pra briefar ao SubAgente, revisar e integrar. O brief dela está em [`../F04-pesquisa-voz-dispositivo/BRIEF.md`](../F04-pesquisa-voz-dispositivo/BRIEF.md). O worktree dele já existe em `.worktrees/devin`, branch `devin/f04-voz`.
