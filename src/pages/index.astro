@@ -20,11 +20,11 @@ const ledger = await getPublicLedger();
   description={SHARE.home.description}
   share="home">
   <HeroBlock ledger={ledger} />
+  <JourneyBlock />
+  <TransparencyBlock ledger={ledger} />
   <ForYouBlock />
   <ProblemBlock />
-  <JourneyBlock />
   <ModulesBlock />
-  <TransparencyBlock ledger={ledger} />
   <BottlenecksBlock />
   <ContributionsBlock />
   <HelpBlock />

@@ -141,3 +141,34 @@ if (teaserPanel) {
   const ledger = readLedger(teaserPanel.dataset.source!);
   mountVerify(teaserPanel, () => ledger);
 }
+
+/* Maracatu: the five supports form an explorable staircase. Native buttons keep
+   all choices reachable without relying on gestures; reduced motion stays instant. */
+const climb = $('[data-climb]');
+if (climb) {
+  const choices = $$<HTMLButtonElement>('[data-climb-step]', climb);
+  const character = $<SVGElement>('[data-climber]', climb);
+  const caption = $('#climb-caption', climb);
+  const details = $<HTMLButtonElement>('[data-climb-details]', climb);
+  const choose = (button: HTMLButtonElement) => {
+    const index = Number(button.dataset.climbStep);
+    choices.forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
+    if (character) character.style.transform = `translate(${index * 108}px, ${index * -58}px)`;
+    if (caption) caption.textContent = button.dataset.climbText ?? '';
+    if (details) details.dataset.module = button.dataset.climbModule;
+  };
+  choices.forEach((button, index) => {
+    button.addEventListener('click', () => choose(button));
+    button.addEventListener('keydown', event => {
+      const offsets: Record<string, number> = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 };
+      let next: number;
+      if (event.key in offsets) next = (index + offsets[event.key]! + choices.length) % choices.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = choices.length - 1;
+      else return;
+      event.preventDefault();
+      choices[next]!.focus({ preventScroll: true });
+      choose(choices[next]!);
+    });
+  });
+}

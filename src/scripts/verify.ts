@@ -60,7 +60,7 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
     bar.hidden = !events.length;
     bar.style.setProperty('--p', '0%');
     show({ state: 'running', icon: 'shield', title: 'Conferindo…', text: `Refazendo a conta de ${plural(events.length, 'ação', 'ações')}, uma por uma.` });
-    const { verifyLedger } = await import('../lib/ledger/index');
+    const { verifyLedger } = await import('../lib/ledger/verify');
     const result = await verifyLedger(events, checkpoint);
     // Walk the marks down to the first break, so the check is visible line by line.
     const brokenAt = result.valid ? Infinity : Number(result.sequence ?? 0);

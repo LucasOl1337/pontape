@@ -1,5 +1,7 @@
 ---
 import Icon from '../site/Icon.astro';
+import MaracatuArt from '../site/MaracatuArt.astro';
+import { MODULES } from '../../data/site/modules';
 import ListenButton from '../site/ListenButton.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
@@ -12,11 +14,11 @@ const { ledger } = Astro.props;
 const snapshot = transparencySnapshotSchema.parse(snapshotData);
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: snapshot.currency });
 const steps = [
-  { module: 'M5', icon: 'plate', label: 'Comida' },
-  { module: 'M5', icon: 'shirt', label: 'Roupa' },
-  { module: 'M5', icon: 'soap', label: 'Higiene' },
-  { module: 'M6', icon: 'briefcase', label: 'Trabalho' },
-  { module: 'M7', icon: 'voice-ai', label: 'IA' },
+  { module: 'M5', icon: 'plate', label: 'Comida', text: 'Comida por alguns dias. O básico pra começar.' },
+  { module: 'M5', icon: 'shirt', label: 'Roupa', text: 'Roupa nova e limpa para os primeiros dias.' },
+  { module: 'M5', icon: 'soap', label: 'Higiene', text: 'Higiene básica. Cuidado que faz parte do caminho.' },
+  { module: 'M6', icon: 'briefcase', label: 'Trabalho', text: 'Uma rede de oportunidades para chegar ao emprego.' },
+  { module: 'M7', icon: 'voice-ai', label: 'IA junto', text: 'Uma IA simples, por voz, pra planejar o próximo passo.' },
 ] as const;
 const speech = `Aqui é o ${PROJECT_NAME}. O primeiro passo pra quem quer mudar de vida. A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial. Tudo que a gente faz fica num livro público, e qualquer pessoa confere. É um projeto sem fins lucrativos, com código aberto.`;
 ---
@@ -29,7 +31,7 @@ const speech = `Aqui é o ${PROJECT_NAME}. O primeiro passo pra quem quer mudar 
           <span class="chip">Código aberto</span>
           <ListenButton target="inicio" />
         </div>
-        <h1 id="hero-title">O primeiro passo pra quem quer <span class="highlight">mudar de vida.</span></h1>
+        <h1 id="hero-title">Uma vida nova<br />começa <span class="highlight">junto.</span></h1>
         <p class="lead">A gente encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial.</p>
         <p class="promise"><Icon name="eye" /><span>Tudo que a gente faz fica num livro público. Qualquer pessoa confere.</span></p>
         <div class="actions">
@@ -37,14 +39,35 @@ const speech = `Aqui é o ${PROJECT_NAME}. O primeiro passo pra quem quer mudar 
           <a class="btn" href="/transparencia">Abrir o livro público</a>
         </div>
       </div>
-      <figure class="hero-stairs stairs-box">
-        <span class="sun" aria-hidden="true"></span>
-        <ol class="stairs" aria-label="Os cinco degraus que a gente oferece">
-          {steps.map((s, i) => (
-            <li style={`--n:${i + 1}`}><button class="step" type="button" data-module={s.module} aria-haspopup="dialog"><Icon name={s.icon} />{s.label}</button></li>
-          ))}
-        </ol>
-        <figcaption>Um degrau de cada vez. Toque num degrau pra ver como ele funciona.</figcaption>
+      <figure class="pop-scene" aria-label="Explore os cinco apoios do caminho" data-climb>
+        <div class="scene-topline"><span>O PRIMEIRO PASSO É SÓ O COMEÇO</span><span aria-hidden="true">↗</span></div>
+        <div class="scene-canvas">
+          <MaracatuArt kind="flower" class="scene-flower" />
+          <svg class="climb-art" viewBox="0 0 600 480" fill="none" aria-hidden="true" focusable="false">
+            <circle cx="294" cy="141" r="104" fill="#ffb9d2" />
+            <path d="M12 376h108v-58h108v-58h108v-58h108v-58h108v296H12Z" fill="#6225dc" />
+            <path d="M120 376v64m108-122v122m108-180v180m108-238v238" stroke="#451597" stroke-width="2" />
+            <path d="M444 331a54 54 0 0 1 108 0v109H444Z" fill="#b8e66b" />
+            <path d="M458 383h79m-79 17h79m-79 17h79" stroke="#6225dc" stroke-width="3" />
+            <circle cx="282" cy="343" r="26" fill="#ffc72c" />
+            <path d="m269 343 10 10 18-21" stroke="#33124d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+            <g class="climber" data-climber>
+              <path d="m49 348-3 24m31-24 10 24" stroke="#33124d" stroke-width="15" stroke-linecap="round" />
+              <path d="M29 348v-39a32 32 0 0 1 64 0v39Z" fill="#f26643" />
+              <circle cx="61" cy="252" r="23" fill="#33124d" />
+              <path d="m31 306-15 22m74-22 20-28" stroke="#33124d" stroke-width="13" stroke-linecap="round" />
+              <path d="M46 304h29" stroke="#ffc72c" stroke-width="4" />
+            </g>
+            <path d="m171 183 10-23m-43 36-19-12m72 30 24 1" stroke="#33124d" stroke-width="5" stroke-linecap="round" />
+            <path d="M34 440h532" stroke="#33124d" stroke-width="3" stroke-linecap="round" />
+          </svg>
+          <span class="scene-sticker">Ninguém<br />sobe só.</span>
+        </div>
+        <div class="climb-controls" role="group" aria-label="Escolha um apoio para subir a escada">
+          {steps.map((s, i) => <button type="button" data-climb-step={i} data-climb-text={s.text} data-climb-module={s.module} aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`Degrau ${i + 1}: ${s.label}`}><span>{i + 1}</span>{s.label}</button>)}
+        </div>
+        <figcaption class="climb-caption"><p id="climb-caption" aria-live="polite">{steps[0].text}</p><button type="button" class="climb-details" data-module="M5" data-climb-details aria-haspopup="dialog">Ver apoio <Icon name="arrow-right" /></button></figcaption>
+        <p class="scene-note">Caminho planejado. {MODULES.find(m => m.id === 'M5')?.status === 'planned' ? 'Ainda não começou.' : 'A operação ainda não começou.'}</p>
       </figure>
     </div>
 

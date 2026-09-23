@@ -1,5 +1,6 @@
 ---
 import Icon from '../site/Icon.astro';
+import MaracatuArt from '../site/MaracatuArt.astro';
 import BlockHead from '../site/BlockHead.astro';
 import Badge from '../site/Badge.astro';
 import ListenButton from '../site/ListenButton.astro';
@@ -36,6 +37,7 @@ const moduleSpeech = (m: (typeof MODULES)[number]) =>
     {MODULES.map(m => (
       <li data-status-item={m.status}><button class="module-card" type="button" data-module={m.id} data-status={m.status} aria-haspopup="dialog">
         <span class="module-card-head"><span class="module-id">{m.id}</span><Badge status={m.status} /></span>
+        <span class="module-art"><MaracatuArt kind={m.id === 'M2' ? 'book' : m.id === 'M3' || m.id === 'M6' ? 'person' : m.id === 'M5' || m.id === 'M9' ? 'flower' : 'arch'} /></span>
         <span class="module-name">{m.name}</span>
         <span class="module-summary">{withName(m.summary)}</span>
         <span class="module-more">Ver o bloco<Icon name="arrow-right" /></span>

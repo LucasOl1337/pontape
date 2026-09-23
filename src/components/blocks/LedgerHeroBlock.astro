@@ -4,7 +4,7 @@ import ListenButton from '../site/ListenButton.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
 import type { LedgerView } from '../../lib/ledger-view/source';
-import { TYPES } from '../../lib/ledger-view/phrases';
+import MaracatuArt from '../site/MaracatuArt.astro';
 
 interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
@@ -15,7 +15,6 @@ const last = events.at(-1);
 const shortHash = (h: string) => `${h.slice(0, 4)} ${h.slice(4, 8)}`;
 const recorded = last && new Date(last.recordedAt);
 const recordedText = recorded && `${recorded.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}, às ${recorded.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' })}`;
-const art = events.slice(-4).reverse();
 const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.length ? `Hoje o livro tem ${events.length} ações.` : 'O livro oficial ainda não foi publicado.'} Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não.`;
 ---
 <section class="page-hero" id="livro" aria-labelledby="page-title" data-speech={speech}>
@@ -31,11 +30,11 @@ const speech = `Livro público. Tudo que o projeto faz, à vista. ${events.lengt
         <p class="lead">Cada ação entra aqui: dinheiro, entrega na rua, passo de candidato e decisão do projeto. Cada linha fica presa na anterior. Qualquer pessoa confere, sem pedir licença.</p>
         <p class="rule-strip"><Icon name="shield" /><strong>Toda ação aparece. Quem é a pessoa, não.</strong></p>
       </div>
-      <ol class:list={['chain-art', { 'chain-art--waiting': !art.length }]} aria-hidden="true">
-        {art.length
-          ? art.map((e, i) => <>{i > 0 && <li class="art-link"></li>}<li data-type={e.payload.type}><Icon name={TYPES[e.payload.type].icon} /><span>{shortHash(e.hash)}</span><span class="art-seq">nº {e.sequence}</span></li></>)
-          : [1, 2, 3].map(i => <>{i > 1 && <li class="art-link"></li>}<li><Icon name="clock" /><span>aguardando</span><span class="art-seq">nº {i}</span></li></>)}
-      </ol>
+      <div class="ledger-illustration" aria-hidden="true">
+        <MaracatuArt kind="book" class="book-art" />
+        <MaracatuArt kind="flower" class="ledger-flower" />
+        <p class="ledger-art-caption"><strong>Livro aberto.</strong>Confiança se constrói à vista.</p>
+      </div>
     </div>
     <div class="scoreboard" role="group" aria-label="O livro hoje">
       <div class="scoreboard-item"><span class="scoreboard-label">Ações no livro</span><span class="scoreboard-value">{events.length}</span></div>

@@ -1,0 +1,27 @@
+---
+interface Props { kind?: 'flower' | 'person' | 'book' | 'arch'; class?: string }
+const { kind = 'flower', class: className = '' } = Astro.props;
+---
+<svg class={`maracatu-art ${className}`} viewBox="0 0 200 200" fill="none" aria-hidden="true" focusable="false">
+  {kind === 'flower' && <>
+    <path d="M100 20C136-20 174 18 151 54C202 48 213 103 168 120C203 158 160 198 124 175C111 224 55 205 60 159C14 181-12 127 28 102C-10 67 33 23 67 47C62 13 92 4 100 20Z" fill="currentColor" />
+    <circle cx="100" cy="101" r="34" fill="var(--color-building)" />
+  </>}
+  {kind === 'person' && <>
+    <circle cx="100" cy="40" r="27" fill="var(--color-sun)" />
+    <path d="M51 143V105a49 49 0 0 1 98 0v38Z" fill="currentColor" />
+    <path d="M72 143v38M126 143v38" stroke="var(--color-ink)" stroke-width="22" stroke-linecap="round" />
+    <path d="m57 100-31 33m116-34 31-34" stroke="var(--color-sun)" stroke-width="18" stroke-linecap="round" />
+  </>}
+  {kind === 'book' && <>
+    <rect x="26" y="30" width="139" height="157" rx="16" fill="var(--color-ink)" />
+    <path d="M26 164V32a14 14 0 0 1 14-14h125v140H41a15 15 0 0 0 0 30h124" fill="var(--color-sun)" />
+    <path d="M51 18v140" stroke="var(--color-ink)" stroke-width="4" />
+    <path d="m82 90 17 17 36-41" stroke="var(--color-ink)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M48 174h116" stroke="var(--color-paper)" stroke-width="6" />
+  </>}
+  {kind === 'arch' && <>
+    <path d="M20 185V90a80 80 0 0 1 160 0v95h-45V90a35 35 0 0 0-70 0v95Z" fill="currentColor" />
+    <circle cx="100" cy="142" r="25" fill="var(--color-sun)" />
+  </>}
+</svg>
