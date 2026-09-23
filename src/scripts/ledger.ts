@@ -12,10 +12,8 @@ import { hashPrintSvg, recordedText, shortHash } from './hashprint';
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll<T>(s)];
 type Mode = 'real' | 'example';
-type Label = { what: string; kind: string; context?: string; source?: string };
 
 const ledgers: Record<Mode, LedgerView> = { real: readLedger('ledger-real'), example: readLedger('ledger-example') };
-const labels: Record<Mode, Record<string, Label>> & { repositoryOpen: boolean } = JSON.parse($('#ledger-labels')?.textContent ?? '{"real":{},"example":{},"repositoryOpen":false}');
 const panel = $('#conferir [data-verify-panel]')!;
 const verify = mountVerify(panel, () => ledgers[mode]);
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -32,7 +30,8 @@ mountFlowHover();
 const esc = (s: string) => s.replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
 const icon = (name: string) => `<svg class="icon" aria-hidden="true" focusable="false"><use href="#i-${name}"/></svg>`;
 const amountText = (cents: string) => { const v = BigInt(cents); return `${v > 0n ? '+' : '−'} ${brl.format(Math.abs(Number(v)) / 100)}`; };
-const unsignedOf = ({ hash: _hash, ...rest }: LedgerEvent) => rest;
+// Everything but the mark itself: exactly what the SHA-256 receives.
+const unsignedOf = (e: LedgerEvent) => ({ schemaVersion: e.schemaVersion, sequence: e.sequence, previousHash: e.previousHash, recordedAt: e.recordedAt, payload: e.payload });
 
 /* ---------- Inspector ---------- */
 
@@ -40,9 +39,22 @@ const inspector = $('[data-inspector]')!;
 const body = $('[data-inspector-body]', inspector)!;
 const title = $('[data-inspector-title]', inspector)!;
 const stepBtns = $$<HTMLButtonElement>('[data-inspector-step]', inspector);
+const repositoryOpen = inspector.dataset.repoOpen === 'true';
+
+// The sentences of an action (built at build time) live in its row of the actions table.
+function labelOf(e: LedgerEvent) {
+  const row = $(`#table-${mode} tr[data-seq="${e.sequence}"]`);
+  const text = (sel: string) => (row && $(sel, row)?.textContent?.trim()) || undefined;
+  return {
+    what: text('.what') ?? '',
+    context: text('.context'),
+    kind: text('.col-type') ?? TYPES[e.payload.type].label,
+    source: (row && $<HTMLAnchorElement>('.col-detail a', row)?.href) || undefined,
+  };
+}
 
 function render(e: LedgerEvent) {
-  const l = labels[mode][e.sequence] ?? { what: '', kind: TYPES[e.payload.type].label };
+  const l = labelOf(e);
   const p = e.payload;
   const first = e.sequence === '1';
   const prevSeq = String(Number(e.sequence) - 1);
@@ -56,7 +68,7 @@ function render(e: LedgerEvent) {
     ['Marca da anterior', first
       ? `<span>Nenhuma. Esta é a nº 1: o pontapé inicial da corrente.</span><code class="hash-full">${e.previousHash}</code>`
       : `${hashPrintSvg(e.previousHash, 'hashprint hashprint--big')}<code class="hash-full">${e.previousHash}</code><button class="link-btn" type="button" data-select="${prevSeq}">Ir pra nº ${prevSeq}${icon('arrow-right')}</button>`],
-    ...(l.source ? [['Fonte', `<a href="${esc(l.source)}" rel="noopener">Ver no GitHub${icon('arrow-right')}</a>${labels.repositoryOpen ? '' : '<span class="muted">Repositório ainda fechado</span>'}`]] : []),
+    ...(l.source ? [['Fonte', `<a href="${esc(l.source)}" rel="noopener">Ver no GitHub${icon('arrow-right')}</a>${repositoryOpen ? '' : '<span class="muted">Repositório ainda fechado</span>'}`]] : []),
   ];
   title.textContent = `Ação nº ${e.sequence}`;
   body.innerHTML = `<dl class="inspector-fields">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>

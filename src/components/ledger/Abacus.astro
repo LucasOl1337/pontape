@@ -54,9 +54,7 @@ let first = true;
             first = false;
             return (
               <Tag class="bead" data-seq={e.sequence} data-kind={kindOf(e)} style={`--x:${x(e.sequence)}`} {...attrs}
-                data-roving-item tabindex={tab} data-tip={`nº ${e.sequence} · ${phrase(e.payload)}`}>
-                <span class="sr-only">Ação nº {e.sequence}, {TYPES[type].label}: {phrase(e.payload)}</span>
-              </Tag>
+                data-roving-item tabindex={tab} aria-label={`nº ${e.sequence}, ${TYPES[type].label}: ${phrase(e.payload)}`}></Tag>
             );
           })}
         </div>

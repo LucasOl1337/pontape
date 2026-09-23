@@ -12,7 +12,8 @@ import { shortHash } from '../../scripts/hashprint';
 interface Props { events: LedgerEvent[] }
 const { events } = Astro.props;
 const last = events.at(-1);
-const unsigned = last && (({ hash: _hash, ...rest }) => rest)(last);
+// Everything but the mark itself: exactly what the SHA-256 receives.
+const unsigned = last && { schemaVersion: last.schemaVersion, sequence: last.sequence, previousHash: last.previousHash, recordedAt: last.recordedAt, payload: last.payload };
 const text = unsigned ? canonicalize(unsigned) : '';
 // F08 trust state (src/data/ledger/trust.json): say plainly what is not active yet.
 const TRUST = [

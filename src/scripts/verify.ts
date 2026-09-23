@@ -44,10 +44,11 @@ const fingerprints = (stored: string, redone: string) => `<div class="print-diff
 
 export const readLedger = (id: string): LedgerView => JSON.parse(document.getElementById(id)?.textContent ?? '{"events":[]}');
 
-// Wires one Conferir panel. `getLedger` lets a page swap which ledger is checked (real or example);
-// `data-marks` on the panel lists the containers whose [data-seq] items light up, read on every use.
+// Wires one Conferir panel. `getLedger` lets a page swap which ledger is checked (real or example),
+// or fetch the published file on the first click (home); `data-marks` on the panel lists the
+// containers whose [data-seq] items light up, read on every use.
 // The F08 verifier (with zod) loads only on the first click, so it never weighs on the page load.
-export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
+export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView | Promise<LedgerView>) {
   const btn = panel.querySelector<HTMLButtonElement>('[data-verify]')!;
   const bar = panel.querySelector<HTMLElement>('.verify-progress')!;
   const out = panel.querySelector<HTMLElement>('.verify-result')!;
@@ -77,9 +78,17 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
   };
 
   btn.addEventListener('click', async () => {
-    const { events, checkpoint } = getLedger();
     clearMarks();
     btn.disabled = true;
+    let ledger: LedgerView;
+    try {
+      ledger = await getLedger();
+    } catch {
+      show({ state: 'idle', icon: 'shield', title: 'Não deu pra baixar o livro agora.', text: 'Confira a internet e aperte Conferir de novo.' });
+      btn.disabled = false;
+      return;
+    }
+    const { events, checkpoint } = ledger;
     bar.hidden = !events.length;
     bar.style.setProperty('--p', '0%');
     if (log) { log.replaceChildren(); log.hidden = !events.length; }

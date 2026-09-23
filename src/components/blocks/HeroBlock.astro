@@ -4,7 +4,6 @@ import ListenButton from '../site/ListenButton.astro';
 import ChainStrip from '../ledger/ChainStrip.astro';
 import ChainMap from '../ledger/ChainMap.astro';
 import VerifyPanel from '../ledger/VerifyPanel.astro';
-import LedgerData from '../ledger/LedgerData.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
 import type { LedgerView } from '../../lib/ledger-view/source';
@@ -82,9 +81,8 @@ const speech = `Aqui é o ${PROJECT_NAME}. O pontapé inicial pra quem quer muda
           <p class="map-label"><span>nº 1</span><span>as {actions(events.length)}, da primeira à mais nova</span><span>nº {events.length}</span></p>
           <ChainMap events={events} id="map-home" />
         </div>
-        <VerifyPanel data="ledger-home" marks="#chain-home, #map-home" />
+        <VerifyPanel marks="#chain-home, #map-home" where="Baixa o livro publicado e refaz a conta de cada ação no seu aparelho. Nada é enviado pra gente." />
       </div>
     </div>
   </div>
-  <LedgerData id="ledger-home" ledger={ledger} />
 </section>

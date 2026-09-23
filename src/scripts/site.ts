@@ -64,12 +64,19 @@ function speak(text: string, btn: HTMLElement) {
   }
 }
 if ('speechSynthesis' in window) speechSynthesis.getVoices();
+// A block without its own speech is read from its fields ("O que é: ..."), after an optional lead.
+function spokenText(el: HTMLElement | null, lead = '') {
+  if (!el) return undefined;
+  if (el.dataset.speech) return el.dataset.speech;
+  const fields = [...el.querySelectorAll('dt')].map(dt => `${dt.textContent}: ${dt.nextElementSibling?.textContent ?? ''}`);
+  return [lead, ...fields].join(' ').trim() || undefined;
+}
 
 document.addEventListener('click', e => {
   const target = e.target as Element;
   const listen = target.closest<HTMLElement>('[data-listen], button[data-speech]');
   if (listen) {
-    const text = listen.dataset.speech ?? document.getElementById(listen.dataset.listen ?? '')?.dataset.speech;
+    const text = listen.dataset.speech ?? spokenText(document.getElementById(listen.dataset.listen ?? ''), listen.dataset.lead);
     if (text) speak(text, listen);
     return;
   }

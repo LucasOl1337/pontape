@@ -1,6 +1,7 @@
 // Home page islands: the ledger in the hero (Conferir, chain), money switch, module status page,
 // bottleneck links and open contributions.
-import { mountVerify, readLedger } from './verify';
+import type { LedgerView } from '../lib/ledger-view/source';
+import { mountVerify } from './verify';
 import { mountChainLinks, mountFlowHover, mountRoving } from './explorer';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
@@ -12,11 +13,16 @@ mountFlowHover();
 
 /* ---------- Ledger in the hero ---------- */
 
+// The home checks the same published file anyone can download, fetched only on the first click.
 const heroPanel = $('#livro-agora [data-verify-panel]');
-if (heroPanel) {
-  const ledger = readLedger(heroPanel.dataset.source!);
-  mountVerify(heroPanel, () => ledger);
+let published: Promise<LedgerView> | undefined;
+async function fetchLedger(): Promise<LedgerView> {
+  const res = await fetch('/livro/ledger.json');
+  if (!res.ok) throw new Error(`livro ${res.status}`);
+  return res.json();
 }
+// A failed download is not cached, so the next click tries again.
+if (heroPanel) mountVerify(heroPanel, () => published ??= fetchLedger().catch(err => { published = undefined; throw err; }));
 
 /* ---------- Money: real ledger or fictional example ---------- */
 

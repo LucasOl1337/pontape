@@ -18,8 +18,7 @@ const speech = `O projeto tem ${MODULES.length} módulos. Estado em ${STATUS_DAT
   const names = byStatus(s).map(m => m.name);
   return names.length ? `${labelsForSpeech[s]}: ${names.length}. ${joinList(names)}.` : `${labelsForSpeech[s]}: nenhum ainda.`;
 }).join(' ') + ' Toque num módulo pra saber mais.';
-const moduleSpeech = (m: (typeof MODULES)[number]) =>
-  `Módulo ${m.id.slice(1)}: ${m.name}. Estado: ${STATUSES[m.status].label}. ` + DETAIL_FIELDS.map(f => `${f.label}: ${withName(m[f.key])}`).join(' ');
+const moduleLead = (m: (typeof MODULES)[number]) => `Módulo ${m.id.slice(1)}: ${m.name}. Estado: ${STATUSES[m.status].label}.`;
 ---
 <section class="block" id="modulos" aria-labelledby="t-modules" data-speech={speech}>
   <BlockHead number="06" label="Módulos" listen="modulos" />
@@ -53,8 +52,8 @@ const moduleSpeech = (m: (typeof MODULES)[number]) =>
               <Icon name="chevron-down" class="chevron" />
             </summary>
             <div class="module-detail">
-              <ListenButton speech={moduleSpeech(m)} />
-              <dl class="module-fields">
+              <ListenButton target={`${m.id.toLowerCase()}-campos`} lead={moduleLead(m)} />
+              <dl class="module-fields" id={`${m.id.toLowerCase()}-campos`}>
                 {DETAIL_FIELDS.map(f => <div class={f.tone ? `is-${f.tone}` : undefined}><dt>{f.label}</dt><dd>{withName(m[f.key])}</dd></div>)}
               </dl>
             </div>

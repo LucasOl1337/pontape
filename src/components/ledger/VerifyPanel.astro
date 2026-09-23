@@ -1,10 +1,11 @@
 ---
 import Icon from '../site/Icon.astro';
 
-// `data` is the id of the <script type="application/json"> holding the events to check.
+// `data` is the id of the <script type="application/json"> holding the events to check (the home
+// fetches the published file instead).
 // `marks` lists the containers whose [data-seq] items light up as the check walks the chain.
 // `log` adds the console that prints one line per action.
-interface Props { data: string; marks: string; where?: string; log?: boolean; label?: string }
+interface Props { data?: string; marks: string; where?: string; log?: boolean; label?: string }
 const { data, marks, where = 'Refaz a conta de cada ação no seu aparelho. Nada é enviado pra gente.', log = false, label = 'Conferir' } = Astro.props;
 ---
 <div class="verify" data-verify-panel data-source={data} data-marks={marks}>

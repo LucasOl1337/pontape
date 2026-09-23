@@ -29,3 +29,18 @@ Dono: Ábaco (Claude Opus 5.5) · Branch `variante/v3-abaco` · Worktree `.workt
 5. **Conferir em console:** o verificador da F08 roda e o log desce linha por linha.
 
 **Próximo passo:** tokens + CSS base, peças do explorador, home, depois `/transparencia`.
+
+## 22/09/2026 · Marco 2: rodada 1 pronta
+
+**Feito:** home e `/transparencia` completas na direção. Peças novas em `src/components/ledger/` (ChainStrip, ChainMap, HashPrint, Abacus, MoneyFlow, ActionTable, labels) e blocos reescritos. Scripts: `verify.ts` (Conferir com log e marca refeita), `explorer.ts` (setas, ligação entre blocos, busca), `ledger.ts` (modo real/exemplo, inspetor, filtros, mudança escondida), `home.ts`.
+
+**Achados no caminho:**
+- O Sankey com slots fixos quebrava quando "Em caixa" era grande. Troquei por barras empilhadas proporcionais e rótulos que se afastam com linha-guia.
+- O servidor de dev travou o Conferir (504 no zod) depois de rodar `astro check` com ele no ar: cache do Vite. Reiniciar resolve; não é bug do site.
+- Orçamento: home cabe (35,0 KB ao abrir) baixando o livro publicado só no clique. `/transparencia` fica 7,8 KB acima; explicado no README.
+- Concordância herdada da v1: "As 1 ações antes dela". Corrigido.
+
+**Decisões propostas (pro Regente):**
+- Se o Lucas escolher esta direção, vale publicar o livro de exemplo como arquivo (`/livro/exemplo.json`) pra `/transparencia` baixar sob demanda também e caber nos 60 KB.
+
+**Estado:** PR em rascunho `F19 v3 · Ábaco`. Porta 4343. Rodada 2 (F22) começa em `design/variantes/r2-v3/`.

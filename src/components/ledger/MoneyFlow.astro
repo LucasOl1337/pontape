@@ -6,8 +6,9 @@ import { formatCents, sumMoney } from '../../lib/ledger-view/money';
 import type { IconName } from '../site/icon-names';
 
 // Money flow (Sankey): everything that came in, split into where it went and what stays in the
-// till. Each destination gets a fixed slot so labels never collide; the band's thickness is the value.
-// Built at build time from the ledger sums (BigInt), so the picture is exactly the ledger.
+// till. Built at build time from the ledger sums (BigInt), so the picture is exactly the ledger.
+// Bands and bars are proportional; labels keep a minimum distance and a leader line points to
+// their bar. With no money yet, a dashed skeleton shows where each band will be.
 interface Props { events: LedgerEvent[]; mode: 'real' | 'example'; caption?: string }
 const { events, mode, caption } = Astro.props;
 const totals = sumMoney(events);
@@ -20,52 +21,65 @@ const rows: Row[] = [
 const scaleCents = totals.inCents > totals.outCents ? totals.inCents : totals.outCents;
 const empty = scaleCents <= 0n;
 
-const SLOT = 48;
-const EXTRA = 14; // air before "Em caixa": it is what stays, not an expense
-const H = rows.length * SLOT + EXTRA;
-const MAX_BAR = H - 48;
-const px = (cents: bigint) => empty ? 0 : (Number(cents) / Number(scaleCents)) * MAX_BAR;
-const W = 100; // viewBox width; the SVG stretches sideways, the bars and labels stay in px
+const LABEL = 48; // minimum distance between two labels
+const GAP = 6; // air between two bars on the right
+const H = rows.length * LABEL + 8;
+const W = 100; // viewBox width; the SVG stretches sideways, bars and labels stay in px
+const gaps = GAP * Math.max(rows.filter(r => r.value > 0n).length - 1, 0);
+const px = (cents: bigint) => empty ? 0 : (Number(cents) / Number(scaleCents)) * (H - 24 - gaps);
+const sourceH = empty ? 2 : px(scaleCents);
+const sourceTop = (H - sourceH) / 2;
 
-let cursor = (H - px(scaleCents)) / 2;
+// Right side: bars stacked in order, each with its own band from the source.
+let source = sourceTop;
+let target = (H - px(scaleCents) - gaps) / 2;
 const flows = rows.map((r, i) => {
-  const center = i * SLOT + SLOT / 2 + (r.id === 'balance' ? EXTRA : 0);
   const h = r.value > 0n ? Math.max(px(r.value), 2) : 0;
-  const sy0 = cursor;
-  cursor += px(r.value);
-  const ty0 = center - h / 2;
-  const share = empty ? 0 : Math.round((Number(r.value) / Number(scaleCents)) * 1000) / 10;
-  return { ...r, center, h, ty0, sy0, sy1: sy0 + px(r.value), share };
+  const ty0 = empty ? i * LABEL + LABEL / 2 + 4 : target;
+  const f = { ...r, h, ty0, sy0: source, sy1: source + px(r.value), labelY: ty0 + h / 2,
+    share: empty ? 0 : Math.round((Number(r.value) / Number(scaleCents)) * 1000) / 10 };
+  source += px(r.value);
+  if (h) target += h + GAP;
+  return f;
 });
+// Labels start at their bar's center, get pushed down apart, then back up from the bottom edge.
+flows.forEach((f, i) => { if (i) f.labelY = Math.max(f.labelY, flows[i - 1]!.labelY + LABEL); });
+for (let i = flows.length - 1; i >= 0; i--) {
+  const max = i === flows.length - 1 ? H - LABEL / 2 : flows[i + 1]!.labelY - LABEL;
+  flows[i]!.labelY = Math.max(LABEL / 2, Math.min(flows[i]!.labelY, max));
+}
 const n = (v: number) => v.toFixed(1);
-const path = (f: (typeof flows)[number]) => empty || f.value <= 0n
-  ? `M0 ${n(H / 2)}C${W / 2} ${n(H / 2)} ${W / 2} ${n(f.center)} ${W} ${n(f.center)}`
+const band = (f: (typeof flows)[number]) => empty || !f.h
+  ? `M0 ${n(H / 2)}C${W / 2} ${n(H / 2)} ${W / 2} ${n(f.ty0)} ${W} ${n(f.ty0)}`
   : `M0 ${n(f.sy0)}C${W / 2} ${n(f.sy0)} ${W / 2} ${n(f.ty0)} ${W} ${n(f.ty0)}V${n(f.ty0 + f.h)}C${W / 2} ${n(f.ty0 + f.h)} ${W / 2} ${n(f.sy1)} 0 ${n(f.sy1)}Z`;
-const srcTop = empty ? H / 2 - 1 : (H - px(scaleCents)) / 2;
-const srcH = empty ? 2 : px(scaleCents);
 ---
 <figure class:list={['flow', { 'flow--empty': empty }]} data-flow={mode}>
   <div class="flow-grid" style={`--h:${H}px`}>
-    <div class="flow-source" style={`--y:${H / 2}px`}>
+    <div class="flow-source">
       <span class="flow-label">Entrou</span>
       <span class="flow-value">{formatCents(totals.inCents)}</span>
       <span class="flow-note">em doações</span>
     </div>
     <div class="flow-canvas" aria-hidden="true">
-      <span class="flow-bar flow-bar--source" style={`top:${n(srcTop)}px;height:${n(srcH)}px`}></span>
+      <span class="flow-bar flow-bar--source" style={`top:${n(sourceTop)}px;height:${n(sourceH)}px`}></span>
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" focusable="false">
-        {flows.map(f => <path class:list={['flow-band', { 'is-zero': empty || f.value <= 0n }]} data-cat={f.id} d={path(f)} vector-effect="non-scaling-stroke" />)}
+        {flows.map(f => <path class:list={['flow-band', { 'is-zero': empty || !f.h }]} data-cat={f.id} d={band(f)} vector-effect="non-scaling-stroke" />)}
       </svg>
-      {flows.map(f => <span class:list={['flow-bar', { 'is-zero': f.value <= 0n }]} data-cat={f.id} style={`top:${n(f.value > 0n ? f.ty0 : f.center - 8)}px;height:${n(f.value > 0n ? f.h : 16)}px`}></span>)}
+      {flows.map(f => <span class:list={['flow-bar', { 'is-zero': !f.h }]} data-cat={f.id} style={`top:${n(f.h ? f.ty0 : f.ty0 - 8)}px;height:${n(f.h || 16)}px`}></span>)}
     </div>
-    <ul class="flow-targets" aria-hidden="true">
-      {flows.map(f => (
-        <li data-cat={f.id} style={`--y:${f.center}px`}>
-          <span class="flow-target-name"><Icon name={f.icon} />{f.name}</span>
-          <span class="flow-target-value">{formatCents(f.value)}<small>{f.share.toLocaleString('pt-BR')}%</small></span>
-        </li>
-      ))}
-    </ul>
+    <div class="flow-targets" aria-hidden="true">
+      <svg class="flow-leaders" viewBox={`0 0 12 ${H}`} preserveAspectRatio="none" focusable="false">
+        {flows.map(f => <path data-cat={f.id} d={`M0 ${n(f.ty0 + f.h / 2)}L12 ${n(f.labelY)}`} vector-effect="non-scaling-stroke" />)}
+      </svg>
+      <ul>
+        {flows.map(f => (
+          <li data-cat={f.id} style={`--y:${n(f.labelY)}px`}>
+            <span class="flow-target-name"><Icon name={f.icon} />{f.name}</span>
+            <span class="flow-target-value">{formatCents(f.value)}{!empty && <small>{f.share.toLocaleString('pt-BR')}%</small>}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
   {caption && <figcaption>{caption}</figcaption>}
   <details class="flow-table">
