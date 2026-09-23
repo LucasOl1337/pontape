@@ -190,7 +190,7 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
 .panel-nav{ display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; margin-top:clamp(.8rem, 2.4cqh, 1.5rem) }
 .panel-more{ display:inline-flex; align-items:center; min-height:44px; margin-left:.4rem; padding-inline:.2rem; font-size:1.0625rem }
 .panel-ways{ display:grid; grid-template-columns:1fr 1fr; gap:0 1.6rem; margin-top:clamp(.7rem, 2.2cqh, 1.4rem); border-top:1px solid var(--ink) }
-.panel-ways li{ display:grid; grid-template-columns:2rem minmax(0, 1fr); align-items:start; gap:.2rem .7rem; padding-block:clamp(.45rem, 1.4cqh, .8rem); border-bottom:1px solid var(--rule) }
+.panel-ways li{ display:grid; grid-template-columns:2rem minmax(0, 1fr); align-items:start; align-content:start; gap:.2rem .7rem; padding-block:clamp(.45rem, 1.4cqh, .8rem); border-bottom:1px solid var(--rule) }
 .panel-ways .way-icon{ grid-row:span 2; width:1.8rem; height:1.8rem; margin-top:.1rem; color:var(--red); stroke-width:1.7 }
 .way-title{ font:500 clamp(1.2rem, 2.9cqh, 1.6rem)/1.1 var(--font-display) }
 .way-when{ font:400 .9375rem/1.4 var(--font-sans); color:var(--ink-2) }
@@ -221,9 +221,9 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
 /* Narrow or short: title, staircase, step, all in the flow. The title keeps its size here, so the
    staircase under it never jumps. */
 @media not ((min-width:900px) and (min-height:560px)){
-  .stage{ display:flex; flex-direction:column; gap:1rem; padding:1.2rem var(--gutter) 1.6rem; --label-h:3rem; --head:1.5rem; --u:calc((min(28svh, 15rem) - var(--label-h) - var(--head)) / (var(--n) - 1)) }
+  .stage{ display:flex; flex-direction:column; gap:.8rem; padding:1.2rem var(--gutter) 1.6rem; --label-h:3rem; --head:1.5rem; --u:calc((min(24svh, 15rem) - var(--label-h) - var(--head)) / (var(--n) - 1)) }
   .stage-title{ font-size:clamp(1.75rem, 8.2vw, 2.6rem) }
-  .stair{ position:relative; height:min(28svh, 15rem); margin-inline:calc(-1 * var(--gutter)); padding-inline:.4rem }
+  .stair{ position:relative; height:min(24svh, 15rem); margin-inline:calc(-1 * var(--gutter)); padding-inline:.4rem }
   .tread-name{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap }
   .tread-icon{ width:clamp(18px, 5.2vw, 30px); height:clamp(18px, 5.2vw, 30px); margin-top:.6rem }
   .walker{ width:16px; height:16px; margin:0 0 -9.5px -8px; box-shadow:0 0 0 3px var(--paper) }
