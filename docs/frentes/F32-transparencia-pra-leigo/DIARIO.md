@@ -115,6 +115,78 @@ Pra mudança aprovada, o livro só tem o número. Proposta: na primeira camada, 
 - Mudam: `transparencia.astro` (vira `transparencia/index.astro`), `LivroTopo.astro` (topo de parte técnica), `ComoConferir.astro` (links), `verify.ts` (resultado em palavra de gente), `decisions.ts` (lê a coluna nova, se existir), `share.ts`, `SiteHeader.astro` (Transparência marcado também na parte técnica), `check-budget.mjs` (página nova no orçamento), `site.css` (só regras do livro).
 - Não toco: `src/lib/ledger/**`, `src/data/ledger/**`, `scripts/ledger/**`, `.github/**`, `palettes.css`, `DECISOES.md`.
 
-### Onde parei
+### Onde parei (proposta)
 
 Proposta escrita e mandada pro Regente. Próximo passo: prints de antes na bancada, depois a primeira camada.
+
+## 23/09/2026 · OK do Regente
+
+Aprovada inteira. A coluna "Em palavras simples" entrou no `DECISOES.md` (commit `a1ae8c4`) com as 29 frases como estavam. Pedido: ler a coluna 6 em `decisions.ts` com o fallback, e um teste que falhe se alguma decisão ficar sem frase (o build segue, o teste avisa). Juntar as mudanças do mesmo dia também aprovado. Antes disso, aviso da #69 do Prumo: `--page` 100rem e o livro na grade do logo (x=193 em 1920).
+
+## 23/09/2026 · Feito
+
+Rebaseada na `main` com a #69, a #70 (F30), o `a1ae8c4` e, no fim, a #71 e a #72 do Prumo. A #72 levou o botão "Cores" pro canto de baixo à direita: conferi de novo e ele fica fora da coluna de conteúdo em 1920 e abaixo do Conferir em 360, sem cobrir nada. A primeira camada nasceu da proposta sem mudar a ordem; o resto é ajuste de medida.
+
+**O que mudou em relação à proposta**
+
+- **Conferir no largo:** o botão fica ao lado da frase. Com isso a primeira camada inteira, do topo ao "Ver todas", cabe em 1920×1080.
+- **Título da primeira camada** no tamanho do da home (até 4,6rem), em duas linhas no largo. Em 360 também são duas.
+- **Resultado do Conferir antes do clique:** na primeira camada o "Ainda não conferido" some da vista (continua pro leitor de tela), porque repetia a frase do lado do botão. Depois do clique: "Tudo certo. Nenhuma ação foi apagada nem mudada desde o começo. 64 ações conferidas, uma por uma, no seu aparelho." Os dois erros que falavam de marca e SHA-256 ganharam versão em palavra de gente.
+- **"Ao vivo"** só aparece nas decisões, com um ponto verde (`--status-live`). Dinheiro e atividades dizem "Começa quando…"; quando entrar a primeira ação de cada um, a linha vira "Já está entrando." sozinha (o dado vem da contagem do livro).
+- **Parte técnica:** título "Por dentro *do livro.*", caminho "Transparência › Parte técnica" e uma frase com o link do GitHub. O "Baixar o livro e conferir no seu computador" deixou de ficar escondido num abre-e-fecha e virou o bloco "No seu computador", com os dois downloads e cinco links de verdade (como conferir, conferidor em Python, contrato, operação, repositório). A frase de assinatura e carimbo diz "vai ter" e "já estão preparados".
+- **Conserto que já existia na main:** na aba Como conferir, o texto do passo 1 da escadinha vazava pra baixo da caixa "O que o livro não prova" (print `antes-1920-como-conferir.png`). Agora cada passo começa um degrau acima do anterior e termina no mesmo chão, cresça o texto o quanto crescer. A caixa ao lado fica presa no topo.
+- **Menu:** "Transparência" fica marcado também na parte técnica (`aria-current="true"`), igual Construir junto nos cadernos.
+- **Cartão de compartilhar:** título "Transparência · PontaPé" e descrição em palavra de gente. A imagem não muda.
+- **Mapa do site:** a seção do livro em `docs/design/MAPA-DO-SITE.md` reescrita pras duas camadas, e a linha da faixa preta diz que ela não aparece na home nem em `/transparencia`.
+
+**Onde ficou cada coisa (nada técnico sumiu)**
+
+| O que | Onde |
+|---|---|
+| Marca mais recente, marca inteira de cada ação, "presa na nº" | Parte técnica, topo e lista |
+| Número da PR, "Ver a fonte", tipo "Projeto · mudança" | Parte técnica, lista |
+| Filtros (Dinheiro, Vida real, Candidato, Projeto) e páginas | Parte técnica, lista |
+| Exemplo fictício e "Mudar uma linha escondido" | Parte técnica, "Ver um exemplo" |
+| Nota do `DECISOES.md` e título de quem constrói | Parte técnica, embaixo da lista |
+| Os três passos, texto da ação, marca SHA-256, corrente | Parte técnica, aba Como conferir |
+| O que o livro não prova | Parte técnica, aba Como conferir |
+| Baixar livro e marca de controle, `npm run ledger:verify`, `COMO-CONFERIR.md` | Parte técnica, "No seu computador", agora com link |
+| Conferidor em Python, contrato, operação, repositório | Parte técnica, "No seu computador" (novos como link) |
+| Assinatura, carimbo, cópia fora do projeto | Parte técnica, "No seu computador" |
+| Dinheiro (entrou, saiu, em caixa, pra onde foi) e O que entra/nunca entra | Parte técnica, abas Dinheiro e O que entra |
+| "Livro estático…" | Parte técnica, nota dos números |
+
+**Teste do leigo, na primeira tela**
+
+1. **O que é isso?** O título e "Um livro aberto com tudo que o PontaPé faz…"
+2. **O que entra?** "o dinheiro, as atividades e as decisões" no apoio; por extenso em "O que entra no livro".
+3. **Por que confiar?** "Ninguém consegue apagar nem mudar escondido, e qualquer pessoa confere." no apoio; por extenso em "Por que dá pra confiar", com o desenho.
+4. **O que já aconteceu?** Os números numa linha (64 ações, R$ 0,00 entrou, R$ 0,00 saiu) e a hora da última; as cinco últimas em "O que já aconteceu".
+5. **Confira você mesmo.** O botão Conferir e uma frase.
+
+Em 1920×1080 tudo isso cabe na primeira tela, de 1 a 5 por extenso. Em 360×780 cabem o topo com o botão Parte técnica, o título, o apoio, os números e o Conferir inteiro: as cinco respostas na forma curta, e o detalhe logo depois de rolar.
+
+**Verificação**
+
+- `npm run check` passa: lint, `astro check` sem erro, 148 testes, livro íntegro, build, CSP (9 páginas, 8 hashes, incluindo o script de redirecionamento) e orçamento.
+- Testes novos: toda decisão do `DECISOES.md` tem frase simples (o aviso pedido); a frase simples, o texto de `livro.ts` e as últimas ações do livro de verdade não têm nenhuma palavra da lista técnica nem travessão; a coluna 6 é lida e, sem ela, cai em "Decisão nova sobre o projeto"; mudanças seguidas do mesmo dia viram uma linha; os endereços antigos existem na parte técnica.
+- Peso (gzip, HTML + CSS + JS): primeira camada **40,5 KB → 28,0 KB**; parte técnica 42,7 KB (a página de antes tinha 40,5), medidos depois do rebase final. Altura da primeira camada: 2457 → 1665 px em 1920; 4610 → 3177 px em 360.
+- Na bancada `pontape-f32-design` (workspace 6), 1920×1080 e 360×780:
+  - `document.body.innerText` da primeira camada inteira, rodapé incluso, sem nenhuma palavra da lista (GitHub, PR, commit, merge, hash, JSON, SHA-256, JCS, Ed25519, checkpoint, repositório, marca, `#número`) e sem travessão.
+  - 360 sem rolagem lateral (`scrollWidth` = 360), nas duas camadas.
+  - Conferir na primeira camada: "Tudo certo", 64 ações (eram 64 na hora; os prints finais, depois do rebase, já mostram 66). Na parte técnica: "Ver um exemplo", "Mudar uma linha escondido", Conferir → "A corrente quebrou na ação nº 2."
+  - `/transparencia/?exemplo#como-conferir` cai em `/transparencia/tecnico` com a aba Como conferir aberta.
+  - Teclado com Tab de verdade: pular pro conteúdo, logo, menu, Parte técnica, Conferir, Como funciona, Ver todas, Parte técnica, rodapé, Cores. Todos com contorno de foco.
+  - Paletas carvão (escura) e pêssego: tudo por token, o desenho da corrente inclusive.
+
+Prints em `prints/`: `antes-*` é a main de hoje (a página única, que é o antes das duas camadas); `depois-1920`, `depois-360` e `depois-360-inteira` são a primeira camada; `depois-tecnico-*` a parte técnica; `*-como-conferir` mostra a aba com o conserto da escadinha e os links.
+
+### Decisões propostas
+
+- Quando entrar o primeiro real, levar o "Pra onde foi" (as barras por categoria) pra primeira camada. É conta de gente e hoje, com tudo zero, só pesaria.
+- Na parte técnica, os filtros "Vida real" e "Candidato" podiam virar "Entregas" e "Atendimento", pra bater com "As atividades" da primeira camada. Não mexi porque o rótulo sai de `phrases.ts` e aparece na lista toda.
+- A frase das mudanças diz só "N mudanças aprovadas no projeto". Se um dia valer a pena dizer qual, o caminho é o mesmo das decisões: uma frase simples fora da marca, escrita por quem integra a PR.
+
+### Onde parei
+
+PR aberta pra `main` e report mandado pro Regente. Próximo passo, se ele pedir: ajustes da revisão.
