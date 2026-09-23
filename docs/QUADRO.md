@@ -10,7 +10,6 @@ Atualizado: 23/09/2026, 12:48 · **Site no ar em https://pontape.org** (D019), p
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F35 | Renomear `--red` pra `--accent` | anil | `anil/f35-accent` | despachada 12:48 | Só nome, zero pixel diferente |
 | F32b | Filtros da parte técnica em palavra de gente | design | [PR #74](https://github.com/LucasOl1337/pontape/pull/74) integrada 11:01 | Feito. Design/UI em espera |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
@@ -47,6 +46,7 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
 | ID | Frente | Resultado |
 |---|---|---|
+| F35 | Renomear `--red` pra `--accent` | [PR #85](https://github.com/LucasOl1337/pontape/pull/85) integrada. Só o nome; prints idênticos pixel a pixel |
 | F34 | Celular, trilho da IA e números | PRs [#81](https://github.com/LucasOl1337/pontape/pull/81) a [#84](https://github.com/LucasOl1337/pontape/pull/84) integradas até 12:48: números a 8 px do chão e ícone sem invadir; corrimão da IA colado nos degraus; tela baixa sem rolagem; todo alvo solto com 44 px no celular. O texto por trás da escada no print era outra janela vista pela opacidade do Omarchy, não o site |
 | F33 | A Anil vira a paleta do site | [PR #80](https://github.com/LucasOl1337/pontape/pull/80) integrada 12:20 (D030). Seletor fora; favicon, ícone e imagens de compartilhar na Anil. Proposta pra depois da F34: renomear `--red` pra `--accent` |
 | F32 | Transparência que um leigo entende | [PR #73](https://github.com/LucasOl1337/pontape/pull/73) integrada 10:58 (D029). `/transparencia` em palavra de gente, com a corrente desenhada; tudo técnico em `/transparencia/tecnico`. Decisões com frase simples na sexta coluna do DECISOES. Primeira camada de 40,5 pra 28 KB |
