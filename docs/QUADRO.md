@@ -11,6 +11,7 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 | F16 | [Polimento pro lançamento](frentes/F16-polimento-lancamento/BRIEF.md) | design | `design/f16-polimento` | PR #33 em revisão | Favicon, prévia de compartilhamento, 404 com layout |
 | F18 | [Ensaio do lançamento](frentes/F18-ensaio-lancamento/BRIEF.md) | bruto | `bruto/f18-ensaio` | despachada | Checklist inteiro no build local, falhas viram issue |
 | F17 | [Livro ao vivo pras ações do projeto](frentes/F17-livro-ao-vivo/BRIEF.md) | fino | `fino/f17-ao-vivo` | despachada | PR integrada e decisão nova entram sozinhas no livro |
+| F19 | [Cinco variantes visuais](frentes/F19-variantes-visuais/BRIEF.md) | Prisma, Crônica, Ábaco (Opus 5.5), Maracatu (GPT-6-Astra), Pluma (GPT-6-Sol) | `variante/v1..v5` | despachada | Lucas escolhe a direção entre as cinco (portas 4341 a 4345) |
 
 ## Fila
 
