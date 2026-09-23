@@ -129,3 +129,25 @@ Os degraus da escada seguem com 39 px de largura em 360: nove colunas não cabem
 Medido de novo em 360×780 e 390×844, na home com os 9 degraus, nos cinco de `/construir`, em `/transparencia`, `/transparencia/tecnico` e no 404: **nenhum alvo solto abaixo de 44 px** e nenhuma rolagem lateral. `npm run check` passa. Prints `prints/alvos-antes-*` e `prints/alvos-depois-*`.
 
 A bancada `prumo-f31` foi fechada de novo às 12:41 (a terceira vez); subi pelo `ensure`, como o Regente pediu.
+
+### Primeira tela no celular, sem a barra do Cores
+
+Conferida em 360×780 e 390×844, página por página, depois da F33, do corrimão e dos alvos. Todas respondem "o que é e o que eu faço" sem rolar:
+
+| Página | O que aparece na primeira tela |
+|---|---|
+| Home | título, escada com o corrimão, a frase de apoio, a linha "Ainda em construção" e os dois botões |
+| `/construir` | título, apoio e três das quatro portas |
+| Peças | título, apoio e as duas primeiras peças |
+| Gargalos | título, apoio e quatro das cinco perguntas |
+| Tarefas | título, filtros e o primeiro cartão |
+| Código aberto | título, apoio e os três passos |
+| `/transparencia` | título, apoio, os três números e o Conferir |
+| `/transparencia/tecnico` | título, os quatro números e o Conferir |
+| 404 | título e as três saídas |
+
+Nada a mudar. Folhas `prints/primeira-tela-360-a.png` e `prints/primeira-tela-360-b.png` (a última é a home em 390).
+
+### Onde parei
+
+Os quatro pontos do brief estão feitos: números sem encostar em nada (PR 2), corrimão (PR 3), alvos de 44 px e primeira tela no celular (PR 4, esta). O texto que vazava no print não era do site (diagnóstico, item 4). Fica anotado, sem mexer: os degraus da escada com 39 px de largura em 360.
