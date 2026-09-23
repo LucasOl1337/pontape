@@ -2,15 +2,14 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 23/09/2026, 09:40 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 23/09/2026, 09:45 · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
-**Hoje:** o Lucas achou a home poluída pra quem é leigo ([feedback](fontes/2026-09-23-feedback-home.md)). Três frentes em paralelo: F27 tira o Ouvir e o A+ (D024), F28 põe um seletor de paletas temporário (D025), F29 reorganiza a home pro leigo depois que a F27 entrar. PRs #60, #61 e #62 da vigília integradas às 09:30. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
+**Hoje:** o Lucas achou a home poluída pra quem é leigo ([feedback](fontes/2026-09-23-feedback-home.md)). F27 (sem Ouvir e A+, D024) e F28 (seletor de paletas temporário, D025) já no ar; F29 reorganiza a home pro leigo. PRs #60, #61 e #62 da vigília integradas às 09:30. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
 ## Em andamento
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F28 | [Paletas com seletor](frentes/F28-paletas/BRIEF.md) | bruto | `bruto/f28-paletas` | despachada 09:40 | Jornal + Mata, Mar, Ipê, Sol, Noite, com `?cor=` e teste de contraste |
 | F29 | [Home que um leigo entende](frentes/F29-home-pra-leigo/BRIEF.md) | design | `design/f29-home-leigo` | proposta aprovada; F27 já na main | Um título, menu com 4 (Como funciona, Transparência, Como ajudar, Construir junto), degrau enxuto, caderno "Construir junto" |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
@@ -46,7 +45,8 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
 | ID | Frente | Resultado |
 |---|---|---|
-| F27 | Tirar o Ouvir e o A+ | [PR #63](https://github.com/LucasOl1337/pontape/pull/63) integrada 10:15 (D024). HTML da home de 92 KB pra 77 KB |
+| F28 | Paletas com seletor | [PR #64](https://github.com/LucasOl1337/pontape/pull/64) integrada 09:40 (D025). Jornal, Mata, Mar, Ipê, Sol e Noite em `src/styles/palettes.css`, teste de contraste AA, `?cor=<nome>`. Ajuste da `theme-color` na F28b (bruto) |
+| F27 | Tirar o Ouvir e o A+ | [PR #63](https://github.com/LucasOl1337/pontape/pull/63) integrada 09:25 (D024). HTML da home de 92 KB pra 77 KB |
 | F26 | Vigília noturna de polimento | [#58](https://github.com/LucasOl1337/pontape/pull/58), [#59](https://github.com/LucasOl1337/pontape/pull/59) integradas de madrugada; [#60](https://github.com/LucasOl1337/pontape/pull/60), [#61](https://github.com/LucasOl1337/pontape/pull/61) e [#62](https://github.com/LucasOl1337/pontape/pull/62) revisadas e integradas pelo Regente em 23/09 de manhã. Pausou às 00:51 por mensagem ambígua; executores dispensados |
 | F24 | Ensaio pós-lançamento | [PR #58](https://github.com/LucasOl1337/pontape/pull/58); falhas viraram as issues #54 a #57 |
 | F14b | CSP gerada no build | [PR #29](https://github.com/LucasOl1337/VidaNova/pull/29) integrada. Build calcula o hash de todo script embutido e falha se faltar algum ou se aparecer `unsafe-inline` |
