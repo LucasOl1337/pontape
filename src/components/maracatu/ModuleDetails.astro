@@ -1,0 +1,12 @@
+---
+import { MODULES, DETAIL_FIELDS } from '../../data/site/modules';
+import { withName } from '../../data/site/project';
+import Badge from '../site/Badge.astro';
+import ListenButton from '../site/ListenButton.astro';
+---
+{MODULES.map(m => <dialog class="pop-dialog" id={`detail-${m.id}`} aria-labelledby={`detail-title-${m.id}`}>
+  <div class="pop-dialog-head"><Badge status={m.status} /><button class="small-control" data-close aria-label="Fechar" type="button">×</button></div>
+  <h2 id={`detail-title-${m.id}`}>{m.name}</h2>
+  <ListenButton speech={`${m.name}. ${DETAIL_FIELDS.map(f => `${f.label}. ${withName(m[f.key])}`).join(' ')}`} />
+  <dl>{DETAIL_FIELDS.map(f => <div><dt>{f.label}</dt><dd>{withName(m[f.key])}</dd></div>)}</dl>
+</dialog>)}

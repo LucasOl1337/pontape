@@ -1,33 +1,82 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroBlock from '../components/blocks/HeroBlock.astro';
-import ForYouBlock from '../components/blocks/ForYouBlock.astro';
-import ProblemBlock from '../components/blocks/ProblemBlock.astro';
-import JourneyBlock from '../components/blocks/JourneyBlock.astro';
-import ModulesBlock from '../components/blocks/ModulesBlock.astro';
-import TransparencyBlock from '../components/blocks/TransparencyBlock.astro';
-import BottlenecksBlock from '../components/blocks/BottlenecksBlock.astro';
-import ContributionsBlock from '../components/blocks/ContributionsBlock.astro';
-import HelpBlock from '../components/blocks/HelpBlock.astro';
-import OpenSourceBlock from '../components/blocks/OpenSourceBlock.astro';
-import { getPublicLedger } from '../lib/ledger-view/source';
+import Stairway from '../components/maracatu/Stairway.astro';
+import ModuleDetails from '../components/maracatu/ModuleDetails.astro';
+import MaracatuArt from '../components/site/MaracatuArt.astro';
+import Badge from '../components/site/Badge.astro';
+import Icon from '../components/site/Icon.astro';
+import ListenButton from '../components/site/ListenButton.astro';
+import { STEPS } from '../data/site/journey';
+import { MODULES } from '../data/site/modules';
+import { BOTTLENECKS } from '../data/site/bottlenecks';
+import { CONTRIBUTIONS, CONTRIBUTION_TYPES, issueUrl } from '../data/site/contributions';
+import { PROJECT_NAME, REPOSITORY_OPEN, withName } from '../data/site/project';
 import { SHARE } from '../data/site/share';
-
+import { getPublicLedger } from '../lib/ledger-view/source';
+import { sumMoney, formatCents } from '../lib/ledger-view/money';
 const ledger = await getPublicLedger();
+const money = sumMoney(ledger.events);
+const titles = ['A ideia', 'O caminho', 'Os módulos', 'À vista', 'Sua parte'];
 ---
-<BaseLayout
-  title={SHARE.home.title}
-  description={SHARE.home.description}
-  share="home">
-  <HeroBlock ledger={ledger} />
-  <ForYouBlock />
-  <ProblemBlock />
-  <JourneyBlock />
-  <ModulesBlock />
-  <TransparencyBlock ledger={ledger} />
-  <BottlenecksBlock />
-  <ContributionsBlock />
-  <HelpBlock />
-  <OpenSourceBlock />
+<BaseLayout title={SHARE.home.title} description={SHARE.home.description} compact>
+  <div class="experience" data-experience>
+    <section class="stage" aria-label="Uma escada para conhecer o projeto">
+      <div class="stage-intro">
+        <p class="eyebrow">UM PROJETO PARA RECOMEÇAR</p>
+        <h1>Uma vida nova<br />começa <em>junto.</em></h1>
+        <p>Comida, cuidado e trabalho, com IA por voz.<br class="desktop-break" /> Tudo num livro público.</p>
+      </div>
+      <Stairway />
+      <div class="stage-foot"><span><Icon name="arrow-right" /> Escolha um degrau. Descubra o próximo passo.</span><small>Use ← → no teclado</small></div>
+    </section>
+    <section class="chapter-shell" aria-label="Conheça cada parte do projeto">
+      <div class="chapter-top"><p><span id="chapter-count">01</span> / 05 <b id="chapter-label">A ideia</b></p><ListenButton target="chapter-0" /></div>
+      <div class="chapter-content">
+        <div class="chapter-panel" id="chapter-0" role="tabpanel" aria-labelledby="chapter-tab-0" tabindex="0" data-speech={`O ${PROJECT_NAME} ajuda quem quer recomeçar. Dinheiro sozinho não resolve. O plano é dar o básico, conectar com trabalho e acompanhar com IA. Toda ação aparece num livro público. A operação ainda não começou.`}>
+          <MaracatuArt kind="flower" class="welcome-flower" />
+          <p class="eyebrow">O PRIMEIRO PASSO PRECISA DE APOIO</p>
+          <h2>Recomeçar pede<br />um caminho inteiro.</h2>
+          <p class="card-lead">Dinheiro sozinho não resolve. A proposta é dar o básico a quem quer mudar de vida e ajudar a chegar num trabalho.</p>
+          <div class="three-supports"><span><Icon name="plate" />O básico</span><span><Icon name="briefcase" />Trabalho</span><span><Icon name="voice-ai" />IA junto</span></div>
+          <p class="soft-note">Sem fins lucrativos. Com código aberto em construção.<br />A operação ainda não começou.</p>
+        </div>
+        <div class="chapter-panel" id="chapter-1" role="tabpanel" aria-labelledby="chapter-tab-1" tabindex="0" hidden data-speech={STEPS.map((s,i)=>`${i+1}. ${s.title}. ${s.text}`).join(' ')}>
+          <p class="eyebrow">DA PRIMEIRA CONVERSA AO TRABALHO</p><h2>Um passo<br />puxa o outro.</h2>
+          <div class="mini-tabs" role="tablist" aria-label="Sete passos da jornada" data-journey-tabs>{STEPS.map((s,i)=><button type="button" role="tab" id={`journey-tab-${i}`} aria-controls={`journey-panel-${i}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-journey-index={i} aria-label={`Passo ${i+1}: ${s.shortName}`}>{i+1}</button>)}</div>
+          {STEPS.map((s,i)=> <div class="journey-card" id={`journey-panel-${i}`} role="tabpanel" aria-labelledby={`journey-tab-${i}`} hidden={i!==0}>
+            <div class="journey-heading"><Icon name={s.icon} /><h3>{s.title}</h3></div><p>{s.text}</p><p class="who">Quem faz: {s.who.join(', ')}.</p>
+            <button class="module-link" data-open={`detail-${s.module}`} type="button"><span>{MODULES.find(m=>m.id===s.module)?.name}</span><Badge status={MODULES.find(m=>m.id===s.module)!.status} /><Icon name="arrow-right" /></button>
+          </div>)}
+          <p class="soft-note">Caminho planejado. Entrevista e atendimento ainda não abriram.</p>
+        </div>
+        <div class="chapter-panel" id="chapter-2" role="tabpanel" aria-labelledby="chapter-tab-2" tabindex="0" hidden data-speech={MODULES.map(m=>`${m.name}. ${withName(m.summary)}`).join(' ')}>
+          <p class="eyebrow">O PROJETO É FEITO DE PARTES</p><h2>Cada parte,<br />um passo adiante.</h2>
+          <p class="card-caption">Toque para ver como funciona e o que falta.</p>
+          <div class="module-tiles">{MODULES.map(m=><button class="module-tile" data-open={`detail-${m.id}`} type="button"><span class="module-code">{m.id}</span><strong>{m.name}</strong><Badge status={m.status} /></button>)}</div>
+        </div>
+        <div class="chapter-panel" id="chapter-3" role="tabpanel" aria-labelledby="chapter-tab-3" tabindex="0" hidden data-speech={`O livro tem ${ledger.events.length} ações reais. Entrou ${formatCents(money.inCents)} e saiu ${formatCents(money.outCents)}. A doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não. O livro pode ser conferido no seu aparelho.`}>
+          <p class="eyebrow">CONFIANÇA SE CONSTRÓI À VISTA</p><h2>Livro aberto.<br />De verdade.</h2>
+          <p class="card-lead">Cada ação fica presa na anterior. Qualquer pessoa pode conferir se algo foi mudado ou apagado.</p>
+          <div class="mini-totals"><div><small>Entrou</small><strong>{formatCents(money.inCents)}</strong></div><div><small>Saiu</small><strong>{formatCents(money.outCents)}</strong></div><div><small>Ações reais</small><strong>{ledger.events.length}</strong></div></div>
+          <a class="btn btn--primary open-book" href="/transparencia">Abrir e conferir o livro <Icon name="arrow-right" /></a>
+          <p class="soft-note">A doação ainda não abriu. Toda ação aparece.<br />Quem é a pessoa, não.</p>
+        </div>
+        <div class="chapter-panel" id="chapter-4" role="tabpanel" aria-labelledby="chapter-tab-4" tabindex="0" hidden data-speech={`Tem lugar para ajudar. ${CONTRIBUTIONS.length} contribuições estão listadas. Doação, voluntariado e vagas ainda não abriram. Os gargalos e as tarefas podem ser consultados aqui. Não guardamos contato por enquanto.`}>
+          <p class="eyebrow">TEM LUGAR PRA VOCÊ AQUI</p><h2>O próximo passo<br />pode ter você.</h2>
+          <p class="card-lead">Código, design, pesquisa, campo ou uma primeira oportunidade. Toda ajuda conta.</p>
+          <div class="participation-options">
+            <button type="button" data-open="gaps-dialog"><span><Icon name="wrench" /><strong>O que falta resolver</strong></span><small>{BOTTLENECKS.length} gargalos abertos</small><Icon name="arrow-right" /></button>
+            <button type="button" data-open="contributions-dialog"><span><Icon name="code" /><strong>Contribuições abertas</strong></span><small>{CONTRIBUTIONS.length} tarefas para conhecer</small><Icon name="arrow-right" /></button>
+            <button type="button" data-open="help-dialog"><span><Icon name="people" /><strong>Como posso ajudar?</strong></span><small>Doar, ser voluntário, oferecer vaga</small><Icon name="arrow-right" /></button>
+          </div><p class="soft-note">Os canais de participação ainda estão sendo preparados.</p>
+        </div>
+      </div>
+      <div class="chapter-nav"><button class="round-button" type="button" data-chapter-shift="-1" aria-label="Degrau anterior" disabled><Icon name="arrow-left" /></button><div class="chapter-dots" aria-hidden="true">{titles.map((_,i)=><i class:list={{active:i===0}}></i>)}</div><button class="next-chapter" type="button" data-chapter-shift="1"><span>Próximo degrau</span><Icon name="arrow-right" /></button></div>
+    </section>
+  </div>
+  <ModuleDetails />
+  <dialog id="gaps-dialog" class="pop-dialog" aria-labelledby="gaps-title"><div class="pop-dialog-head"><p class="eyebrow">FALAR DO QUE FALTA TAMBÉM É TRANSPARÊNCIA</p><button class="small-control" data-close aria-label="Fechar" type="button">×</button></div><h2 id="gaps-title">O que falta resolver.</h2>{BOTTLENECKS.map(b=><details class="pop-detail"><summary>{b.title}</summary><p>{b.why}</p><h3>O que está andando</h3><p>{b.progress}</p><h3>Quem pode ajudar</h3><p>{b.helpers}</p></details>)}</dialog>
+  <dialog id="contributions-dialog" class="pop-dialog" aria-labelledby="contributions-title"><div class="pop-dialog-head"><p class="eyebrow">CADA CONTRIBUIÇÃO DÁ UM EMPURRÃO</p><button class="small-control" data-close aria-label="Fechar" type="button">×</button></div><h2 id="contributions-title">Escolha por onde começar.</h2><p>O repositório ainda está fechado. As tarefas já estão listadas; pegar uma abre junto com ele. Um admin revisa cada proposta.</p>{CONTRIBUTIONS.map(c=><details class="pop-detail"><summary>{c.title}</summary><p>{c.summary}</p><p>{CONTRIBUTION_TYPES[c.type].label} · {c.module}{c.goodFirst?' · Bom primeiro passo':''}</p>{REPOSITORY_OPEN ? <a href={issueUrl(c.issueNumber)}>Ver tarefa #{c.issueNumber}</a>:<p class="soft-note">Tarefa #{c.issueNumber} · disponível quando o repositório abrir.</p>}</details>)}</dialog>
+  <dialog id="help-dialog" class="pop-dialog" aria-labelledby="help-title"><div class="pop-dialog-head"><p class="eyebrow">QUATRO JEITOS DE SOMAR</p><button class="small-control" data-close aria-label="Fechar" type="button">×</button></div><h2 id="help-title">Vamos construir juntos.</h2><dl><div><dt>Doar</dt><dd>Comida, roupa e higiene. Abre quando existir a conta oficial.</dd></div><div><dt>Ser voluntário</dt><dd>Levar a conversa até a pessoa, com preparo da equipe. Abre com o piloto.</dd></div><div><dt>Oferecer vaga</dt><dd>Dar a primeira chance. Abre quando as primeiras pessoas forem escolhidas.</dd></div><div><dt>Contribuir</dt><dd>Código, design, pesquisa e muito mais. As tarefas já estão listadas.</dd></div></dl><p class="soft-note">A gente não guarda contato por enquanto. Formulários só quando existir um responsável legal pelos dados.</p></dialog>
 </BaseLayout>
-<script>import '../scripts/home';</script>
+<script>import '../scripts/maracatu';</script>

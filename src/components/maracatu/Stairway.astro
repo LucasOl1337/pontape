@@ -1,0 +1,33 @@
+---
+const chapters = [
+  { label: 'A ideia', short: 'Começar', color: '#6225dc' },
+  { label: 'O caminho', short: 'Caminhar', color: '#6225dc' },
+  { label: 'Os módulos', short: 'Construir', color: '#6225dc' },
+  { label: 'À vista', short: 'Conferir', color: '#6225dc' },
+  { label: 'Sua parte', short: 'Somar', color: '#6225dc' },
+];
+---
+<div class="stair-scene">
+  <svg class="stair-drawing" viewBox="0 0 700 410" fill="none" aria-hidden="true" focusable="false">
+    <circle cx="285" cy="155" r="111" fill="#ffb9d2" />
+    <path d="M310 36v-16m-99 51-12-12m-47 111h-17" stroke="#33124d" stroke-width="4" stroke-linecap="round" />
+    <path d="M25 330h130v-53h130v-53h130v-53h130v-53h130v275H25Z" fill="#6225dc" />
+    <path d="M155 330v63m130-116v116m130-169v169m130-222v222" stroke="#451597" stroke-width="2" />
+    <path d="M555 337a55 55 0 0 1 110 0v56H555Z" fill="#b8e66b" />
+    <path d="M570 355h79m-79 14h79m-79 14h79" stroke="#6225dc" stroke-width="3" />
+    <circle cx="350" cy="326" r="28" fill="#ffc72c" />
+    <path d="m337 326 10 10 18-21" stroke="#33124d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    <g class="stair-person" data-person>
+      <path d="m75 305-5 20m31-20 9 20" stroke="#33124d" stroke-width="13" stroke-linecap="round" />
+      <path d="M57 305v-31a31 31 0 0 1 62 0v31Z" fill="#f26643" />
+      <circle cx="88" cy="220" r="20" fill="#33124d" />
+      <path d="m60 271-20 19m76-20 19-26" stroke="#33124d" stroke-width="11" stroke-linecap="round" />
+      <path d="M74 268h27" stroke="#ffc72c" stroke-width="4" />
+    </g>
+    <path d="M22 393h656" stroke="#33124d" stroke-width="3" stroke-linecap="round" />
+  </svg>
+  <span class="together-sticker" aria-hidden="true">Ninguém<br />sobe só.</span>
+  <div class="stair-tabs" role="tablist" aria-label="Explore o projeto, degrau por degrau" data-chapters>
+    {chapters.map((s, i) => <button role="tab" type="button" id={`chapter-tab-${i}`} aria-controls={`chapter-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-chapter={i} style={`--step:${i}`}><span class="stair-number">{i + 1}</span><span>{s.label}</span></button>)}
+  </div>
+</div>

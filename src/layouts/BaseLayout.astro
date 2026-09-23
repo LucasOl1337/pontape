@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import '../styles/maracatu.css';
+import PopHeader from '../components/maracatu/Header.astro';
 import IconSprite from '../components/site/IconSprite.astro';
 import StatusStrip from '../components/site/StatusStrip.astro';
 import SiteHeader from '../components/site/SiteHeader.astro';
@@ -13,9 +15,10 @@ interface Props {
   current?: 'home' | 'transparencia';
   share?: keyof typeof SHARE;
   noindex?: boolean;
+  compact?: boolean;
 }
 
-const { title, description, current, share = 'home', noindex = false } = Astro.props;
+const { title, description, current, share = 'home', noindex = false, compact = false } = Astro.props;
 const card = SHARE[share];
 // Share previews need absolute URLs. `site` comes from SITE_URL at build (astro.config.mjs);
 // until the domain exists the paths stay relative.
@@ -53,13 +56,13 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
   </head>
-  <body>
+  <body class:list={{ "pop-layout": compact }}>
     <IconSprite />
     <a class="skip-link" href="#conteudo">Pular pro conteúdo</a>
     <StatusStrip />
-    <SiteHeader current={current} />
+    {compact ? <PopHeader current={current} /> : <SiteHeader current={current} />}
     <main id="conteudo" tabindex="-1"><slot /></main>
-    <SiteFooter />
+    {compact ? <footer class="pop-footer"><span>Sem fins lucrativos · Código aberto em construção</span><span>Toda ação aparece. Quem é a pessoa, não.</span></footer> : <SiteFooter />}
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script>import '../scripts/site';</script>
   </body>

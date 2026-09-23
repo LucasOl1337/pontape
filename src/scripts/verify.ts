@@ -60,25 +60,32 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
     bar.hidden = !events.length;
     bar.style.setProperty('--p', '0%');
     show({ state: 'running', icon: 'shield', title: 'Conferindo…', text: `Refazendo a conta de ${plural(events.length, 'ação', 'ações')}, uma por uma.` });
-    const { verifyLedger } = await import('../lib/ledger/index');
-    const result = await verifyLedger(events, checkpoint);
-    // Walk the marks down to the first break, so the check is visible line by line.
-    const brokenAt = result.valid ? Infinity : Number(result.sequence ?? 0);
-    const upTo = result.valid ? events.length : Math.max(0, brokenAt - 1);
-    const pause = reducedMotion.matches ? 0 : Math.max(18, Math.min(70, 1200 / Math.max(events.length, 1)));
-    for (let i = 0; i < upTo; i++) {
-      entry(events[i]!.sequence)?.classList.add('is-ok');
-      bar.style.setProperty('--p', `${((i + 1) / events.length) * 100}%`);
-      if (pause) await new Promise(res => setTimeout(res, pause));
+    panel.dispatchEvent(new CustomEvent('verify-busy', { detail: true }));
+    try {
+      const { verifyLedger } = await import('../lib/ledger/verify');
+      const result = await verifyLedger(events, checkpoint);
+      // Walk the marks down to the first break, so the check is visible line by line.
+      const brokenAt = result.valid ? Infinity : Number(result.sequence ?? 0);
+      const upTo = result.valid ? events.length : Math.max(0, brokenAt - 1);
+      const pause = reducedMotion.matches ? 0 : Math.max(18, Math.min(70, 1200 / Math.max(events.length, 1)));
+      for (let i = 0; i < upTo; i++) {
+        entry(events[i]!.sequence)?.classList.add('is-ok');
+        bar.style.setProperty('--p', `${((i + 1) / events.length) * 100}%`);
+        if (pause) await new Promise(res => setTimeout(res, pause));
+      }
+      if (!result.valid && result.sequence) {
+        const broken = entry(result.sequence);
+        broken?.classList.add('is-broken');
+        entries().filter(li => Number(li.dataset.seq) > brokenAt).forEach(li => li.classList.add('is-unchecked'));
+        broken?.scrollIntoView({ block: 'center', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+      }
+      show(describe(result, events.length));
+    } catch {
+      show({ state: 'idle', icon: 'alert', title: 'Não deu pra conferir.', text: 'Tente de novo. O verificador pode não ter carregado.' });
+    } finally {
+      btn.disabled = false;
+      panel.dispatchEvent(new CustomEvent('verify-busy', { detail: false }));
     }
-    if (!result.valid && result.sequence) {
-      const broken = entry(result.sequence);
-      broken?.classList.add('is-broken');
-      entries().filter(li => Number(li.dataset.seq) > brokenAt).forEach(li => li.classList.add('is-unchecked'));
-      broken?.scrollIntoView({ block: 'center', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
-    }
-    show(describe(result, events.length));
-    btn.disabled = false;
   });
   return { reset };
 }

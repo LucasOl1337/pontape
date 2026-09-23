@@ -1,0 +1,14 @@
+---
+import LogoMark from '../site/LogoMark.astro';
+import Icon from '../site/Icon.astro';
+import { PROJECT_NAME } from '../../data/site/project';
+interface Props { current?: 'home' | 'transparencia' }
+const { current = 'home' } = Astro.props;
+---
+<header class="pop-header">
+  <a href="/" class="logo" aria-label={`${PROJECT_NAME}, início`}><LogoMark />{PROJECT_NAME}</a>
+  <span class="brand-note">O primeiro passo é junto.</span>
+  <nav aria-label="Principal"><a href="/" aria-current={current === 'home' ? 'page' : undefined}>O projeto</a><a href="/transparencia" aria-current={current === 'transparencia' ? 'page' : undefined}>Livro público <Icon name="arrow-right" /></a></nav>
+  <button type="button" class="small-control" id="text-size-btn" aria-pressed="false" aria-label="Texto maior">A+</button>
+  <button type="button" class="small-control fullscreen-control" data-fullscreen aria-label="Entrar em tela cheia" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6" /></svg></button>
+</header>

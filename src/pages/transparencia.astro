@@ -1,27 +1,54 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LedgerHeroBlock from '../components/blocks/LedgerHeroBlock.astro';
-import LedgerVerifyBlock from '../components/blocks/LedgerVerifyBlock.astro';
-import LedgerActionsBlock from '../components/blocks/LedgerActionsBlock.astro';
-import LedgerMoneyBlock from '../components/blocks/LedgerMoneyBlock.astro';
-import LedgerHowToBlock from '../components/blocks/LedgerHowToBlock.astro';
-import LedgerTypesBlock from '../components/blocks/LedgerTypesBlock.astro';
-import { getExampleLedger, getPublicLedger } from '../lib/ledger-view/source';
+import Icon from '../components/site/Icon.astro';
+import MaracatuArt from '../components/site/MaracatuArt.astro';
+import ListenButton from '../components/site/ListenButton.astro';
+import VerifyPanel from '../components/ledger/VerifyPanel.astro';
+import LedgerData from '../components/ledger/LedgerData.astro';
+import ChainEntry from '../components/ledger/ChainEntry.astro';
+import { getPublicLedger, getExampleLedger } from '../lib/ledger-view/source';
+import { sumMoney, formatCents, correctionsOf } from '../lib/ledger-view/money';
+import { TYPES, TYPE_ORDER, phrase } from '../lib/ledger-view/phrases';
+import { ledgerTrust } from '../lib/ledger/published';
+import { formatDay } from '../data/site/project';
 import { SHARE } from '../data/site/share';
-
 const ledger = await getPublicLedger();
 const example = await getExampleLedger();
+const totals = sumMoney(ledger.events);
+const views = [{mode:'real',data:ledger},{mode:'example',data:example}];
+const last = ledger.events.at(-1);
 ---
-<BaseLayout
-  title={SHARE.transparencia.title}
-  description={SHARE.transparencia.description}
-  share="transparencia"
-  current="transparencia">
-  <LedgerHeroBlock ledger={ledger} />
-  <LedgerVerifyBlock />
-  <LedgerActionsBlock ledger={ledger} example={example} />
-  <LedgerMoneyBlock real={ledger.events} example={example.events} />
-  <LedgerHowToBlock />
-  <LedgerTypesBlock />
+<BaseLayout title={SHARE.transparencia.title} description={SHARE.transparencia.description} current="transparencia" share="transparencia" compact>
+  <div class="book-page">
+    <section class="book-top" aria-labelledby="book-title">
+      <div><p class="eyebrow">LIVRO PÚBLICO · AÇÕES REAIS</p><h1 id="book-title">Cada passo,<br /> <em>à vista.</em></h1></div>
+      <p class="book-intro">Cada real e cada ação ficam aqui.<br /> Qualquer pessoa confere.<br /><strong>Quem é a pessoa, não aparece.</strong></p>
+      <div class="book-totals"><div><small>Entrou</small><strong>{formatCents(totals.inCents)}</strong></div><div><small>Saiu</small><strong>{formatCents(totals.outCents)}</strong></div><div><small>Ações no livro</small><strong>{ledger.events.length}</strong></div></div>
+    </section>
+    <div class="book-workspace">
+      <section class="book-verifier" id="conferir" aria-labelledby="verify-heading">
+        <div class="verifier-title"><div><p class="eyebrow">PODE CONFERIR</p><h2 id="verify-heading">Confiança<br />se faz junto.</h2></div><MaracatuArt kind="book" /></div>
+        <p>O botão confere <strong>todas as ações</strong>, inclusive as que estão nas outras páginas da lista.</p>
+        <p class="checking-mode" id="checking-mode">Você vai conferir o livro de verdade.</p>
+        <VerifyPanel data="ledger-real" list="compact-chain-real" where="No seu aparelho. Nada é enviado pra gente." />
+        <button class="text-link" data-open="verification-help" type="button">O que essa conferência prova? <Icon name="arrow-right" /></button>
+        <div class="book-zero"><Icon name="coin" /><span><strong>Zero de verdade.</strong> A doação ainda não abriu. A conta oficial vem antes.</span></div>
+      </section>
+      <section class="book-entries" aria-labelledby="entries-title">
+        <div class="entries-title"><div><p class="eyebrow">DA MAIS NOVA PRA MAIS ANTIGA</p><h2 id="entries-title">As ações do livro.</h2></div><ListenButton speech="Este é o livro público. Você pode filtrar por tipo e avançar por três ações de cada vez. Cada linha abre os detalhes e sua marca. O exemplo tem apenas dados fictícios." /></div>
+        <div class="book-filters"><label>Mostrar<select data-book-mode><option value="real">Livro de verdade</option><option value="example">Exemplo fictício</option></select></label><label>Tipo de ação<select data-book-filter><option value="all">Todas</option>{TYPE_ORDER.map(type=><option value={type}>{TYPES[type].label}</option>)}</select></label></div>
+        <p class="example-notice" data-example-only hidden>EXEMPLO · Dados fictícios. Nada disso aconteceu.</p>
+        <div class="example-tools" data-example-only hidden><button type="button" class="text-link" data-tamper>Mudar uma linha escondido</button><button type="button" class="text-link" data-untamper hidden>Desfazer mudança</button></div>
+        {views.map(({mode,data})=> <ol class="compact-chain" id={`compact-chain-${mode}`} data-book-list={mode} hidden={mode!=='real'}>{data.events.toReversed().map((event,i)=><li class="chain-entry compact-entry" data-seq={event.sequence} data-type={event.payload.type} hidden={i>=3}>
+          <button class="entry-button" type="button" data-open={`event-${mode}-${event.sequence}`}><span class="entry-number">{event.sequence}</span><span class="entry-copy"><span class="entry-meta">{TYPES[event.payload.type].label} · {formatDay(event.payload.occurredOn)}</span><strong>{phrase(event.payload)}</strong>{event.payload.type === 'finance' && <span class="entry-value" data-row-amount>{formatCents(BigInt(event.payload.amountCents))}</span>}<span class="entry-hash">{event.hash.slice(0,8)} · Ver registro completo</span></span><Icon name="arrow-right" /></button>
+        </li>)}</ol>)}
+        <p class="empty-ledger" data-book-empty hidden>Nenhuma ação desse tipo. Quando acontecer, aparece aqui.</p>
+        <div class="book-pagination"><button class="round-button" data-book-page="-1" type="button" aria-label="Página anterior" disabled><Icon name="arrow-left" /></button><p data-book-page-label role="status" aria-live="polite">Página 1</p><button class="round-button" data-book-page="1" type="button" aria-label="Próxima página"><Icon name="arrow-right" /></button></div>
+        <p class="book-updated">Livro estático. {last ? `Último registro em ${new Date(last.recordedAt).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}.` : 'Aguardando o primeiro registro.'} Refeito quando entra uma ação.</p>
+      </section>
+    </div>
+  </div>
+  {views.map(({mode,data})=><><LedgerData id={`ledger-${mode}`} ledger={data} />{data.events.map(event=><dialog class="pop-dialog event-dialog" id={`event-${mode}-${event.sequence}`} aria-label={`Registro da ação ${event.sequence}`}><div class="pop-dialog-head"><p class="eyebrow">{mode==='example'?'EXEMPLO FICTÍCIO':'REGISTRO DO LIVRO'} · AÇÃO {event.sequence}</p><button class="small-control" data-close aria-label="Fechar" type="button">×</button></div><ol class="chain"><ChainEntry event={event} correctedBy={correctionsOf(data.events)[event.sequence]} /></ol></dialog>)}</>)}
+  <dialog class="pop-dialog" id="verification-help" aria-labelledby="verification-help-title"><div class="pop-dialog-head"><p class="eyebrow">NÃO PRECISA CONFIAR DE OLHO FECHADO</p><button class="small-control" data-close aria-label="Fechar" type="button">×</button></div><h2 id="verification-help-title">O que dá pra conferir.</h2><p>Cada ação vira um texto padrão. Uma conta pública chamada SHA-256 transforma esse texto numa marca. Cada nova ação guarda a marca da anterior.</p><h3>O que o livro não prova</h3><p>O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Isso pede conferência com extrato e auditoria externa.</p><dl><div><dt>Assinatura das marcas</dt><dd>{ledgerTrust.signature==='not_configured'?'Ainda não configurada.':'Ativa.'}</dd></div><div><dt>Carimbo de tempo público</dt><dd>{ledgerTrust.timestamp==='not_anchored'?'Ainda não feito.':'Feito.'}</dd></div><div><dt>Cópia fora do projeto</dt><dd>{ledgerTrust.mirror==='not_configured'?'Ainda não ativa.':'Ativa.'}</dd></div></dl><a class="btn btn--primary" href="/livro/ledger.json" download>Baixar o livro inteiro</a><a class="text-link" href="/livro/checkpoint.json" download>Baixar a marca de controle</a></dialog>
 </BaseLayout>
-<script>import '../scripts/ledger';</script>
+<script>import '../scripts/maracatu'; import '../scripts/maracatu-ledger';</script>
