@@ -1,0 +1,9 @@
+---
+import type { LedgerEvent } from '../../lib/ledger/schema';
+
+// Hands the published events to the browser as inert JSON (allowed by the CSP), so Conferir
+// checks exactly what the page shows.
+interface Props { id: string; events: LedgerEvent[] }
+const { id, events } = Astro.props;
+---
+<script type="application/json" id={id} set:html={JSON.stringify(events).replaceAll('<', '\\u003c')} />

@@ -1,0 +1,42 @@
+---
+import Icon from '../site/Icon.astro';
+import { CONTRIBUTIONS } from '../../data/site/contributions';
+
+const goodFirst = CONTRIBUTIONS.filter(c => c.goodFirst).length;
+import ListenButton from '../site/ListenButton.astro';
+---
+<!-- 09 · Código aberto -->
+<section class="block block--ink reveal" id="codigo-aberto" aria-labelledby="t-open"
+  data-speech="Tudo no projeto é aberto: o código, os documentos, cada decisão e o livro público. Qualquer pessoa pode propor uma melhoria. Um admin revisa antes de entrar. O repositório abre ao público quando o nome e a licença forem decididos.">
+  <div class="block-head">
+    <p class="tag"><b>09</b>Código aberto</p>
+    <ListenButton target="codigo-aberto" />
+  </div>
+  <h2 id="t-open">Aberto pra ver. Aberto pra ajudar.</h2>
+  <p class="lead">O código, os documentos, cada decisão e o livro público ficam num lugar aberto. Qualquer pessoa pode propor uma melhoria. Um admin revisa antes de entrar.</p>
+  <div class="open-grid">
+    <ol class="contribute-steps">
+      <li><span>1</span><p><strong>Olhe</strong> o código e os documentos.</p></li>
+      <li><span>2</span><p><strong>Escolha</strong> uma contribuição aberta ou proponha uma ideia.</p></li>
+      <li><span>3</span><p><strong>Um admin revisa</strong> e aprova antes de entrar.</p></li>
+    </ol>
+    <div class="repo">
+      <p class="repo-head"><span>Repositório do projeto</span><span class="badge badge--building"><Icon name="lock" />Fechado por enquanto</span></p>
+      <ul class="repo-files">
+        <li><Icon name="doc" /><code>docs/PRD.md</code><span>O que é o projeto e pra onde vai</span></li>
+        <li><Icon name="doc" /><code>docs/DECISOES.md</code><span>Cada decisão, com data e quem decidiu</span></li>
+        <li><Icon name="shield" /><code>livro público</code><span>Toda ação, presa na anterior</span></li>
+        <li><Icon name="folder" /><code>docs/design/</code><span>Esta cara que você está vendo</span></li>
+      </ul>
+      <dl class="repo-facts">
+        <dt>Licença</dt><dd>A definir</dd>
+        <dt>Quem aprova</dt><dd>Admins do projeto</dd>
+        <dt>Abre quando</dt><dd>Nome e licença decididos</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="open-contrib">
+    <p><strong>{CONTRIBUTIONS.length} contribuições abertas</strong>, {goodFirst} boas pra quem está começando.</p>
+    <a class="btn" href="#contribuicoes">Ver as contribuições</a>
+  </div>
+</section>

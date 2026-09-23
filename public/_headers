@@ -1,10 +1,11 @@
-# CSP limita origens; o hash autoriza o script atual do protótipo.
+# CSP limita origens: scripts, estilos e fontes só do próprio site (fontes locais desde a F07).
+# Os dados do livro vão em <script type="application/json">, que não executa.
 # Nosniff exige o tipo de conteúdo declarado.
 # Referrer não envia origem ou caminho ao sair do site.
 # Permissions nega recursos do aparelho ainda não usados, inclusive microfone.
 # X-Frame-Options cobre navegadores sem suporte a frame-ancestors.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-ooA2xiINZnk/ZkhpAxk8T+HeiOp7QXO+t067QKLAemY='; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Permissions-Policy: microphone=(), camera=(), geolocation=(), payment=()
@@ -13,3 +14,7 @@
 # Só os arquivos de /_astro/ têm nome com hash e podem ficar um ano no navegador.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Fontes mudam raramente; uma semana de cache sem imutável, porque o nome não tem hash.
+/fonts/*
+  Cache-Control: public, max-age=604800

@@ -1,0 +1,43 @@
+---
+import Icon from '../site/Icon.astro';
+import BlockHead from '../site/BlockHead.astro';
+import Badge from '../site/Badge.astro';
+import { STEPS } from '../../data/site/journey';
+import { MODULES } from '../../data/site/modules';
+
+const speech = `São ${STEPS.length} passos. ` + STEPS.map((s, i) => `${i + 1}: ${s.title}. ${s.text}`).join(' ');
+const moduleOf = (id: string) => MODULES.find(m => m.id === id)!;
+---
+<section class="block block--ink reveal" id="como-funciona" aria-labelledby="t-how" data-speech={speech}>
+  <BlockHead number="03" label="Como funciona" listen="como-funciona" />
+  <h2 id="t-how">Sete passos. Do primeiro encontro ao trabalho.</h2>
+  <p class="lead">Toque em cada passo pra ver quem faz o quê.</p>
+  <div class="journey-track" role="tablist" aria-label="Passos da jornada" data-journey>
+    {STEPS.map((s, i) => (
+      <button role="tab" type="button" id={`step-tab-${i}`} aria-controls={`step-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+        <span class="track-num">{i + 1}</span><span class="track-name">{s.shortName}</span>
+      </button>
+    ))}
+  </div>
+  {STEPS.map((s, i) => {
+    const m = moduleOf(s.module);
+    return (
+      <div class="step-panel" id={`step-panel-${i}`} role="tabpanel" aria-labelledby={`step-tab-${i}`} tabindex="0" hidden={i !== 0}>
+        <div class="step-icon"><Icon name={s.icon} /></div>
+        <div>
+          <p class="step-count">Passo {i + 1} de {STEPS.length}</p>
+          <h3 class="step-title">{s.title}</h3>
+          <p class="step-text">{s.text}</p>
+          <p class="step-meta"><span>Quem faz:</span> {s.who.map(w => <span class="chip">{w}</span>)}</p>
+          <button class="step-module" type="button" data-module={m.id} aria-haspopup="dialog">
+            <span class="module-id">{m.id}</span><span>{m.name}</span><Badge status={m.status} /><Icon name="arrow-right" class="arrow" />
+          </button>
+          <div class="step-nav">
+            <button class="btn btn--back" type="button" data-step="-1" disabled={i === 0}><Icon name="arrow-left" /><span>Anterior</span></button>
+            <button class="btn btn--primary" type="button" data-step="1" disabled={i === STEPS.length - 1}>Próximo<Icon name="arrow-right" /></button>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</section>

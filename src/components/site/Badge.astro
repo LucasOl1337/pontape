@@ -1,0 +1,9 @@
+---
+import Icon from './Icon.astro';
+import { STATUSES, type ModuleStatus } from '../../data/site/statuses';
+
+interface Props { status: ModuleStatus; text?: string }
+const { status, text } = Astro.props;
+const meta = STATUSES[status];
+---
+<span class:list={['badge', `badge--${status}`]}><Icon name={meta.icon} />{text ?? meta.label}</span>

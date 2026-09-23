@@ -1,0 +1,19 @@
+---
+import Icon from '../site/Icon.astro';
+
+// `data` is the id of the <script type="application/json"> holding the events to check;
+// `list` is the id of the <ol> whose entries get marked as the check walks the chain.
+interface Props { data: string; list: string; where?: string }
+const { data, list, where = 'Refaz as contas de todas as ações no seu aparelho. Nada é enviado pra gente.' } = Astro.props;
+---
+<div class="verify" data-verify-panel data-source={data} data-list={list}>
+  <div class="verify-head">
+    <button class="btn btn--primary" type="button" data-verify><Icon name="shield" />Conferir</button>
+    <p class="verify-where">{where} <slot /></p>
+  </div>
+  <div class="verify-progress" hidden><span></span></div>
+  <div class="verify-result" role="status" aria-live="polite" data-state="idle">
+    <Icon name="shield" />
+    <div><p class="verify-title">Ainda não conferido.</p><p>Aperte Conferir e o seu aparelho refaz as contas de cada ação.</p></div>
+  </div>
+</div>

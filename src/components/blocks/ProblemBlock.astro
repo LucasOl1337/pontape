@@ -1,0 +1,41 @@
+---
+import Icon from '../site/Icon.astro';
+import ListenButton from '../site/ListenButton.astro';
+---
+<!-- 02 · O problema -->
+<section class="block reveal" id="problema" aria-labelledby="t-problem"
+  data-speech="Dinheiro sozinho não resolve. Primeiro: falta o mínimo pro primeiro passo. Comer, roupa limpa, um banho e um trabalho. Segundo: ajuda solta não vira caminho. Um prato de comida ajuda hoje. Sem o resto, amanhã tudo volta. Terceiro: quem doa não vê pra onde vai o dinheiro. E desconfia, com razão. A raiz é acertar a pessoa e dar um caminho inteiro. Do prato de comida até o primeiro salário.">
+  <div class="block-head">
+    <p class="tag"><b>02</b>O problema</p>
+    <ListenButton target="problema" />
+  </div>
+  <h2 id="t-problem">Dinheiro sozinho não resolve.</h2>
+  <ol class="problems">
+    <li><span class="num" aria-hidden="true">1</span><h3>Falta o mínimo pro primeiro passo.</h3><p>Comer por alguns dias, roupa limpa, um banho, um trabalho. Sem isso, não dá nem pra começar.</p></li>
+    <li><span class="num" aria-hidden="true">2</span><h3>Ajuda solta não vira caminho.</h3><p>Um prato de comida ajuda hoje. Sem o resto, amanhã tudo volta.</p></li>
+    <li><span class="num" aria-hidden="true">3</span><h3>Quem doa não vê o dinheiro.</h3><p>E sem ver pra onde ele vai, desconfia. Com razão.</p></li>
+  </ol>
+  <div class="root-cause">
+    <div class="root-cause-text">
+      <p class="root-cause-label">A raiz</p>
+      <p class="root-cause-line">Acertar a pessoa e dar um caminho inteiro.</p>
+      <p>Achar quem quer mudar de vida de verdade. E andar junto, do prato de comida até o primeiro salário.</p>
+    </div>
+    <div class="compare">
+      <div class="segmented" role="group" aria-label="Comparar">
+        <button type="button" data-compare="loose" aria-pressed="true">Ajuda solta</button>
+        <button type="button" data-compare="full" aria-pressed="false">Caminho inteiro</button>
+      </div>
+      <div class="stairs-box">
+        <ol class="stairs stairs--mini" id="compare-stairs" data-mode="loose" aria-describedby="compare-caption">
+          <li style="--n:1"><span class="step"><Icon name="plate" />Comida</span></li>
+          <li style="--n:2"><span class="step"><Icon name="shirt" />Roupa</span></li>
+          <li style="--n:3"><span class="step"><Icon name="soap" />Higiene</span></li>
+          <li style="--n:4"><span class="step"><Icon name="briefcase" />Trabalho</span></li>
+          <li style="--n:5"><span class="step"><Icon name="voice-ai" />IA</span></li>
+        </ol>
+      </div>
+      <p class="compare-caption" id="compare-caption" aria-live="polite">Só o prato de comida. Ajuda hoje, mas amanhã tudo volta.</p>
+    </div>
+  </div>
+</section>
