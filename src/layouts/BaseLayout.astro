@@ -28,7 +28,7 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="" />
+    <meta name="theme-color" content="#F3EEE4" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
@@ -55,28 +55,30 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <title>{title}</title>
     <!-- A paleta entra antes da primeira pintura. O build inclui o hash na CSP. -->
     <script is:inline>
-      document.documentElement.classList.replace('no-js', 'js');
-      const valid = /^(jornal|mata|mar|ipe|sol|noite)$/;
-      let palette = null;
-      let fromUrl = false;
-      try {
-        const value = new URL(location.href).searchParams.get('cor');
-        if (value && valid.test(value)) { palette = value; fromUrl = true; }
-      } catch { /* URL indisponível */ }
-      if (!palette) {
+      (() => {
+        document.documentElement.classList.replace('no-js', 'js');
+        const valid = /^(jornal|mata|mar|ipe|sol|noite)$/;
+        let palette = null;
+        let fromUrl = false;
         try {
-          const value = localStorage.getItem('pontape-paleta');
-          if (value && valid.test(value)) palette = value;
-        } catch { /* armazenamento indisponível */ }
-      }
-      if (palette) {
-        document.documentElement.dataset.palette = palette;
-        if (fromUrl) try { localStorage.setItem('pontape-paleta', palette); } catch { /* só nesta página */ }
-      }
-      document.addEventListener('DOMContentLoaded', () => {
-        const paper = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim();
-        if (paper) document.querySelector('meta[name="theme-color"]')?.setAttribute('content', paper);
-      });
+          const value = new URL(location.href).searchParams.get('cor');
+          if (value && valid.test(value)) { palette = value; fromUrl = true; }
+        } catch { /* URL indisponível */ }
+        if (!palette) {
+          try {
+            const value = localStorage.getItem('pontape-paleta');
+            if (value && valid.test(value)) palette = value;
+          } catch { /* armazenamento indisponível */ }
+        }
+        if (palette) {
+          document.documentElement.dataset.palette = palette;
+          if (fromUrl) try { localStorage.setItem('pontape-paleta', palette); } catch { /* só nesta página */ }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+          const paper = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim();
+          if (paper) document.querySelector('meta[name="theme-color"]')?.setAttribute('content', paper);
+        });
+      })();
     </script>
   </head>
   <body>
