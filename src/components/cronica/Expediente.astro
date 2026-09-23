@@ -1,7 +1,8 @@
 ---
 import Icon from '../site/Icon.astro';
-import Sheet from './Sheet.astro';
-import { CONTRIBUTIONS } from '../../data/site/contributions';
+import Caderno from './Caderno.astro';
+import { CONTRIBUTIONS, REPO_URL } from '../../data/site/contributions';
+import { caderno } from '../../data/site/cadernos';
 
 const goodFirst = CONTRIBUTIONS.filter(c => c.goodFirst).length;
 const files = [
@@ -11,27 +12,27 @@ const files = [
   { icon: 'folder', path: 'docs/design/', text: 'Esta cara que você está vendo' },
 ] as const;
 ---
-<Sheet id="codigo-aberto" kicker="Expediente" title="Aberto pra ver." turn="Aberto pra ajudar.">
-    <div class="expediente">
-      <div class="expediente-col">
-        <p class="prose-p">O código, os documentos, cada decisão e o livro público ficam num lugar aberto. Qualquer pessoa pode propor uma melhoria. Um admin revisa antes de entrar.</p>
-        <ol class="how-steps">
-          <li><span><strong>Olhe</strong> o código e os documentos.</span></li>
-          <li><span><strong>Escolha</strong> um anúncio dos classificados ou proponha uma ideia.</span></li>
-          <li><span><strong>Um admin revisa</strong> e aprova antes de entrar.</span></li>
-        </ol>
-        <p class="prose-p"><strong>{CONTRIBUTIONS.length} tarefas abertas</strong>, {goodFirst} boas pra quem está começando. <a href="#contribuicoes">Ver os classificados</a></p>
-      </div>
-      <div class="expediente-box">
-        <p class="expediente-title">Repositório do projeto <span class="badge badge--live"><Icon name="check" />Aberto</span></p>
-        <ul class="repo-files">
-          {files.map(f => <li><Icon name={f.icon} /><code>{f.path}</code><span>{f.text}</span></li>)}
-        </ul>
-        <dl class="repo-facts">
-          <div><dt>Licença</dt><dd><a href="https://github.com/LucasOl1337/pontape/blob/main/LICENSE" rel="noopener">Apache 2.0</a></dd></div>
-          <div><dt>Quem aprova</dt><dd>Admins do projeto</dd></div>
-          <div><dt>Onde</dt><dd><a href="https://github.com/LucasOl1337/pontape" rel="noopener">github.com/LucasOl1337/pontape</a></dd></div>
-        </dl>
-      </div>
+<Caderno id="codigo-aberto" title="Aberto pra ver." turn="Aberto pra ajudar."
+  lead="O código, os documentos, cada decisão e o livro público ficam num lugar aberto. Qualquer pessoa pode propor uma melhoria.">
+  <div class="expediente">
+    <div class="expediente-col">
+      <ol class="how-steps">
+        <li><span><strong>Olhe</strong> o código e os documentos.</span></li>
+        <li><span><strong>Escolha</strong> uma tarefa aberta ou proponha uma ideia.</span></li>
+        <li><span><strong>Um admin revisa</strong> e aprova antes de entrar.</span></li>
+      </ol>
+      <p class="prose-p"><strong>{CONTRIBUTIONS.length} tarefas abertas</strong>, {goodFirst} boas pra quem está começando. <a href={caderno('tarefas').href}>Ver as tarefas</a></p>
     </div>
-</Sheet>
+    <div class="expediente-box">
+      <p class="expediente-title">Repositório do projeto <span class="badge badge--live"><Icon name="check" />Aberto</span></p>
+      <ul class="repo-files">
+        {files.map(f => <li><Icon name={f.icon} /><code>{f.path}</code><span>{f.text}</span></li>)}
+      </ul>
+      <dl class="repo-facts">
+        <div><dt>Licença</dt><dd><a href={`${REPO_URL}/blob/main/LICENSE`} rel="noopener">Apache 2.0</a></dd></div>
+        <div><dt>Quem aprova</dt><dd>Admins do projeto</dd></div>
+        <div><dt>Onde</dt><dd><a href={REPO_URL} rel="noopener">{REPO_URL.replace('https://', '')}</a></dd></div>
+      </dl>
+    </div>
+  </div>
+</Caderno>

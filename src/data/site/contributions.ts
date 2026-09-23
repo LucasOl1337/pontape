@@ -27,4 +27,7 @@ export const CONTRIBUTION_TYPES: Record<Contribution['type'], { label: string; i
   conteudo: { label: 'Conteúdo', icon: 'doc' },
 };
 
-export const issueUrl = (n: number) => `https://github.com/LucasOl1337/pontape/issues/${n}`;
+export const REPO_URL = 'https://github.com/LucasOl1337/pontape';
+export const issueUrl = (n: number) => `${REPO_URL}/issues/${n}`;
+// A new issue from the "Ideia para um gargalo" template (.github/ISSUE_TEMPLATE).
+export const IDEA_URL = `${REPO_URL}/issues/new?template=ideia-para-gargalo.md`;

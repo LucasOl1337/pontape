@@ -1,6 +1,7 @@
-// Home: the staircase (a tab list you climb with the arrows), the "cadernos" that open in place
-// over it, the module dialog and the classified-ad filters. Everything answers to the URL hash,
-// so the header links, /transparencia and shared links land on the right step or sheet.
+// Home: the staircase (a tab list you climb with the arrows) and the ficha of each piece.
+// Both answer to the URL hash, so the header links and shared links land on the right step.
+import { routeModule } from './modules';
+
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll<T>(s)];
 
@@ -61,71 +62,18 @@ escada.addEventListener('click', e => {
   (same ?? tabs[at]!).focus({ preventScroll: true });
 });
 
-/* ---------- Sheets (cadernos) and the module dialog ---------- */
+/* ---------- Links: steps and the ficha of a piece ---------- */
 
-const SHEETS = ['construir', 'modulos', 'gargalos', 'contribuicoes', 'codigo-aberto'];
 const STEP_HASH: Record<string, number> = { inicio: 0, 'como-funciona': 1, transparencia: tabs.length - 2, ajudar: tabs.length - 1 };
-let focusBefore: HTMLElement | null = null;
 
-function closeSheets() {
-  $$<HTMLDialogElement>('dialog.sheet[open]').forEach(d => d.close());
-}
-function openSheet(id: string) {
-  const sheet = document.getElementById(id);
-  if (!(sheet instanceof HTMLDialogElement)) return null;
-  if (!sheet.open) {
-    const opener = document.activeElement as HTMLElement | null;
-    closeSheets();
-    focusBefore = opener && !opener.closest('dialog') ? opener : focusBefore;
-    sheet.showModal();
-    sheet.scrollTop = 0;
-  }
-  return sheet;
-}
-$$<HTMLDialogElement>('dialog.sheet').forEach(sheet => sheet.addEventListener('close', () => {
-  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
-  if (!$('dialog.sheet[open]') && focusBefore?.isConnected) focusBefore.focus({ preventScroll: true });
-}));
-
-const moduleDialog = $<HTMLDialogElement>('#module-dialog');
-let moduleOrigin: HTMLElement | null = null;
-function openModule(id: string, origin?: HTMLElement | null) {
-  const tpl = document.getElementById(`module-${id}`) as HTMLTemplateElement | null;
-  if (!moduleDialog || !tpl) return;
-  $('#module-dialog-id')!.textContent = id;
-  $('#module-dialog-title')!.textContent = tpl.dataset.name ?? '';
-  $('#module-dialog-body')!.replaceChildren(tpl.content.cloneNode(true));
-  if (!moduleDialog.open) { moduleOrigin = origin ?? (document.activeElement as HTMLElement | null); moduleDialog.showModal(); }
-  moduleDialog.scrollTop = 0;
-  $('.close-btn', moduleDialog)?.focus();
-}
-moduleDialog?.addEventListener('close', () => {
-  if (/^#m[1-9]$/i.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
-  if (moduleOrigin?.isConnected) moduleOrigin.focus({ preventScroll: true });
-});
-document.addEventListener('click', e => {
-  const mod = (e.target as Element).closest<HTMLElement>('[data-module]');
-  if (mod) openModule(mod.dataset.module!, moduleDialog?.open ? null : mod);
-});
-
-// One router for every in-page link: steps, sheets, a single bottleneck, a module.
+// One router for every in-page link: a step or a piece. The old caderno links (#modulos,
+// #contribuicoes...) are sent to their pages by a script in the head of index.astro.
 function route(hash: string) {
-  const id = decodeURIComponent(hash.slice(1));
-  const moduleMatch = id.match(/^m([1-9])$/i);
-  if (moduleMatch) { openModule(`M${moduleMatch[1]}`); return true; }
-  if (id.startsWith('gargalo-')) {
-    const item = document.getElementById(id);
-    if (!(item instanceof HTMLDetailsElement)) return false;
-    openSheet('gargalos');
-    item.open = true;
-    item.scrollIntoView({ block: 'start' });
-    item.querySelector('summary')?.focus({ preventScroll: true });
-    return true;
-  }
-  if (SHEETS.includes(id)) { openSheet(id)?.querySelector<HTMLElement>('.close-btn')?.focus(); return true; }
+  if (routeModule(hash)) return true;
+  let id: string;
+  try { id = decodeURIComponent(hash.slice(1)); } catch { return false; }
   const step = id in STEP_HASH ? STEP_HASH[id]! : Number(id.match(/^degrau-(\d+)$/)?.[1] ?? NaN);
   if (Number.isInteger(step)) {
-    closeSheets();
     climb(step);
     escada.scrollIntoView({ block: 'start' });
     tabs[at]!.focus({ preventScroll: true });
@@ -140,43 +88,3 @@ document.addEventListener('click', e => {
 });
 addEventListener('hashchange', () => route(location.hash));
 if (location.hash) route(location.hash);
-
-/* ---------- Modules sheet: filters ---------- */
-
-const filters = $('[data-module-filters]');
-filters?.addEventListener('click', e => {
-  const btn = (e.target as Element).closest<HTMLButtonElement>('[data-filter]');
-  if (!btn) return;
-  const filter = btn.dataset.filter!;
-  $$('[data-filter]', filters).forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-  $$('[data-status-item]').forEach(li => { li.hidden = filter !== 'all' && li.dataset.statusItem !== filter; });
-  $$('[data-filter-note]').forEach(p => { p.hidden = p.dataset.filterNote !== filter; });
-  $$('[data-empty-for]', $('#modulos')!).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
-});
-
-/* ---------- Classified ads (open contributions) ---------- */
-
-const contribFilters = $('[data-contrib-filters]');
-const moreBtn = $<HTMLButtonElement>('[data-contrib-more]');
-let contribFilter = 'all';
-let expanded = false;
-const renderContributions = () => {
-  $$('[data-contrib-grid] .contrib-card').forEach(card => {
-    const match = contribFilter === 'all' || (contribFilter === 'first' ? card.dataset.first === 'true' : card.dataset.type === contribFilter);
-    card.hidden = !match || (contribFilter === 'all' && !expanded && card.dataset.extra === 'true');
-  });
-  if (moreBtn) moreBtn.hidden = contribFilter !== 'all' || expanded;
-};
-contribFilters?.addEventListener('click', e => {
-  const btn = (e.target as Element).closest<HTMLButtonElement>('[data-contrib]');
-  if (!btn) return;
-  contribFilter = btn.dataset.contrib!;
-  $$('[data-contrib]', contribFilters).forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-  renderContributions();
-});
-moreBtn?.addEventListener('click', () => {
-  const firstHidden = $<HTMLElement>('[data-contrib-grid] .contrib-card[data-extra="true"]');
-  expanded = true;
-  renderContributions();
-  firstHidden?.querySelector('a')?.focus();
-});

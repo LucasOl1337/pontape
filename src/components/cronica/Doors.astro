@@ -1,0 +1,17 @@
+---
+import Icon from '../site/Icon.astro';
+import type { Caderno } from '../../data/site/cadernos';
+
+// The doors to the builder cadernos: all four on /construir, the other three at the end of each one.
+interface Props { items: Caderno[]; compact?: boolean }
+const { items, compact = false } = Astro.props;
+---
+<ul class:list={['doors', { 'doors--compact': compact }]}>
+  {items.map(d => (
+    <li><a class="door" href={d.href}>
+      <Icon name={d.icon} class="door-icon" />
+      <span class="door-body"><span class="door-title">{d.name}</span>{!compact && <span class="door-text">{d.text}</span>}</span>
+      <Icon name="arrow-right" class="door-arrow" />
+    </a></li>
+  ))}
+</ul>

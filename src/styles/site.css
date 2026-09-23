@@ -38,7 +38,6 @@ main:focus{ outline:none }
 }
 .kicker-num{ color:var(--ink) }
 .deck{ font:400 var(--t-deck)/1.45 var(--font-serif); color:var(--ink) }
-.standfirst{ max-width:var(--measure); margin-top:var(--space-6); font-size:var(--t-deck); line-height:1.45; color:var(--ink-2) }
 .prose{ max-width:var(--measure) }
 .prose p + p, .prose-p + .prose-p{ margin-top:1em }
 .dropcap::first-letter{
@@ -99,7 +98,7 @@ main:focus{ outline:none }
 .logo-mark{ width:32px; height:27px; color:var(--ink) }
 .site-nav ul{ display:flex; gap:var(--space-6) }
 .site-nav a{ font:700 .875rem/1 var(--font-sans); letter-spacing:.04em; text-decoration:none; padding:.5rem 0; border-bottom:2px solid transparent }
-.site-nav a:hover, .site-nav a[aria-current="page"]{ border-bottom-color:var(--red); color:var(--ink) }
+.site-nav a:hover, .site-nav a[aria-current]{ border-bottom-color:var(--red); color:var(--ink) }
 .icon-btn{
   display:inline-flex; align-items:center; gap:.4rem; min-width:44px; min-height:44px; justify-content:center; padding:0 .6rem;
   border:1.5px solid var(--ink); background:transparent; cursor:pointer; font:700 .9375rem/1 var(--font-sans);
@@ -247,23 +246,29 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
 .door-text{ color:var(--ink-2); font-size:1.0625rem; line-height:1.45 }
 .door-arrow{ align-self:center; width:1.3rem; height:1.3rem }
 @media (min-width:760px){ .doors{ grid-template-columns:1fr 1fr; column-gap:var(--space-12) } }
+.doors--compact{ margin-top:var(--space-3) }
+.doors--compact .door{ align-items:center; padding-block:var(--space-3) }
+.doors--compact .door-icon{ margin-top:0 }
+@media (min-width:960px){ .doors--compact{ grid-template-columns:repeat(3, 1fr); column-gap:var(--space-8) } }
 
-/* ---------- Sheets (cadernos): detail that opens over the staircase ---------- */
-.sheet{
-  position:fixed; inset:0 0 0 auto; width:min(64rem, 100vw); max-width:100vw; height:100dvh; max-height:none; margin:0; padding:0;
-  border:0; border-left:3px double var(--ink); background:var(--paper); color:var(--ink); overflow:auto; overscroll-behavior:contain;
-}
-.sheet::backdrop{ background:color-mix(in srgb, var(--ink) 55%, transparent) }
-@media (prefers-reduced-motion:no-preference){ .sheet[open]{ animation:sheet-in .3s var(--ease) both } }
-@keyframes sheet-in{ from{ transform:translateX(40px); opacity:0 } }
-.sheet-head{ position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; padding:1.2rem var(--gutter) 1rem; background:var(--paper); border-bottom:3px double var(--ink) }
-.sheet-title{ margin-top:.3rem; font:500 clamp(1.9rem, 1.4rem + 2.2vw, 3.2rem)/1.02 var(--font-display); letter-spacing:-.02em; text-wrap:balance }
-.sheet-title em{ font-style:italic; color:var(--red) }
-.sheet-tools{ display:flex; align-items:center; gap:.5rem; flex-shrink:0 }
-.sheet-body{ padding:1.2rem var(--gutter) 3rem }
-.sheet .standfirst{ margin-top:0 }
-.no-js .sheet{ position:static; display:block; width:auto; height:auto; border:0; border-top:3px double var(--ink) }
-.no-js .sheet .close-btn{ display:none }
+/* ---------- Cadernos: pages of their own under /construir (F31) ---------- */
+/* Same grid as the header: the title, the list and the footer start where the logo starts. */
+.caderno{ max-width:var(--page); margin-inline:auto; padding:clamp(1.25rem, .8rem + 1.6vw, 2.25rem) var(--gutter) var(--space-16) }
+.caderno-head{ padding-bottom:var(--space-6); border-bottom:3px double var(--ink) }
+.crumbs ol{ display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .5rem; font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--red) }
+.crumbs li + li::before{ content:"›" / ""; margin-right:.5rem; color:var(--ink-2) }
+.crumbs a{ color:var(--ink) }
+.crumbs a:hover{ color:var(--red) }
+.caderno-title{ margin-top:.45rem; font:500 clamp(2.1rem, 1.55rem + 2.2vw, 3.5rem)/1.02 var(--font-display); letter-spacing:-.02em; text-wrap:balance }
+.caderno-title em{ font-style:italic; color:var(--red) }
+.caderno-lead{ max-width:40rem; margin-top:var(--space-3); font-size:clamp(1.125rem, 1.07rem + .25vw, 1.25rem); line-height:1.45; color:var(--ink-2) }
+.caderno-body{ padding-top:var(--space-6) }
+.caderno-body > :first-child{ margin-top:0 }
+/* The double rule above already opens the list. */
+.caderno-body > :is(.index, .questions, .doors):first-child{ border-top:0 }
+.caderno-more{ margin-top:var(--space-12); padding-top:var(--space-3); border-top:2px solid var(--ink) }
+.caderno-more-title{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2) }
+.caderno-more .doors{ border-top:0 }
 .no-js .front{ min-height:0 }
 
 /* ---------- Modules as an index ---------- */
@@ -276,7 +281,6 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
 .filter .count{ font-weight:400; color:var(--ink-2) }
 .filter[aria-pressed="true"]{ background:var(--ink); color:var(--paper) }
 .filter[aria-pressed="true"] .count{ color:var(--paper) }
-.filter-note{ display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-top:var(--space-3); font:400 var(--t-small)/1.5 var(--font-sans); color:var(--ink-2) }
 
 .index{ margin-top:var(--space-8); border-top:2px solid var(--ink); display:grid }
 .index li{ border-bottom:1px solid var(--rule) }
@@ -291,13 +295,19 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
 .index-name{ font:600 1.3rem/1.2 var(--font-serif) }
 .index-summary{ color:var(--ink-2); font-size:1.0625rem; line-height:1.45 }
 .index-item .badge{ grid-column:2; justify-self:start }
-.index-empty{ padding:var(--space-6) 0; border-bottom:1px solid var(--rule) }
-@media (min-width:760px){
-  .index{ grid-template-columns:1fr 1fr; column-gap:var(--space-12) }
+@media (min-width:760px){ .index{ grid-template-columns:1fr 1fr; column-gap:var(--space-12) } }
+/* The seal goes to the right only when the name still has room beside it. */
+@media (min-width:1200px){
   .index-item{ grid-template-columns:3.5rem 1fr auto; padding-right:var(--space-2) }
   .index-id{ grid-row:auto }
   .index-item .badge{ grid-column:3; align-self:start; margin-top:.2rem }
 }
+.legend{ margin-top:var(--space-6); font:400 var(--t-small)/1.5 var(--font-sans) }
+.legend summary{ display:inline-flex; align-items:center; min-height:44px; cursor:pointer; font-weight:700; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.18em }
+.legend summary:hover{ color:var(--red) }
+.legend dl{ display:grid; gap:var(--space-2); margin-top:var(--space-2) }
+.legend div{ display:flex; flex-wrap:wrap; align-items:center; gap:.3rem .8rem }
+.legend dd{ color:var(--ink-2) }
 
 .dialog{
   width:min(42rem, calc(100vw - 2 * var(--gutter))); max-height:min(90vh, 52rem); padding:0;
@@ -382,6 +392,7 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
 .question{ border-bottom:1px solid var(--rule) }
 .question summary{ display:grid; grid-template-columns:3rem 1fr auto; gap:var(--space-3); align-items:center; padding-block:var(--space-4); cursor:pointer; list-style:none }
 .question summary::-webkit-details-marker{ display:none }
+.question summary:focus-visible{ outline-offset:-3px }
 .question-num{ font:500 2.75rem/1 var(--font-display); color:var(--red) }
 .question-head{ display:grid; gap:.3rem }
 .question-title{ font:500 var(--t-h3)/1.15 var(--font-display) }
@@ -392,6 +403,12 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
 .question-body dl{ display:grid; gap:var(--space-4) }
 .question-body dt{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-2) }
 .question-body dd{ margin-top:.3rem }
+.question-help{ display:grid; gap:var(--space-4); margin-top:var(--space-6); padding-top:var(--space-4); border-top:1px solid var(--rule); font:400 var(--t-small)/1.5 var(--font-sans) }
+.question-help-title{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-2) }
+.question-help ul{ display:grid; gap:.3rem; margin-top:.35rem }
+.question-help a{ display:inline-flex; align-items:center; gap:.3rem; font-weight:700 }
+.question-help p:not(.question-help-title){ margin-top:.35rem }
+.question-help .icon{ width:1em; height:1em }
 .soon-note{ display:flex; flex-wrap:wrap; align-items:center; gap:.5rem .8rem; margin-top:var(--space-6); font:400 var(--t-small)/1.5 var(--font-sans); color:var(--ink-2) }
 .soon-note a{ font-weight:700; color:var(--ink) }
 @media (min-width:760px){
@@ -399,28 +416,46 @@ body:has(.palette-switcher){ --dock-h:4.5rem }
   .question-num{ font-size:3.5rem }
   .question-body{ padding-left:calc(4.5rem + var(--space-3)) }
   .question-body dl{ grid-template-columns:repeat(3, 1fr); gap:var(--space-8) }
+  .question-help{ grid-template-columns:2fr 1fr; gap:var(--space-8) }
 }
 
-/* ---------- Classified ads ---------- */
-.ads{ margin-top:var(--space-8); columns:1; column-gap:var(--space-8); column-rule:1px solid var(--rule) }
-.ad{ break-inside:avoid; margin-bottom:var(--space-6); padding-top:var(--space-3); border-top:3px solid var(--ink) }
-.ad-head{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:.3rem .8rem; font:700 .75rem/1.3 var(--font-sans); letter-spacing:.1em; text-transform:uppercase }
-.ad-head span{ display:inline-flex; align-items:center; gap:.3rem }
-.ad-head .icon{ width:1.1em; height:1.1em }
-.ad-first{ color:var(--status-live) }
-.ad h3{ margin-top:var(--space-2); font:600 1.3rem/1.2 var(--font-serif) }
-.ad-summary{ margin-top:var(--space-2); font-size:1.0625rem; line-height:1.5 }
-.ad-unlocks, .ad-foot{ display:flex; flex-wrap:wrap; align-items:center; gap:.3rem .8rem; margin-top:var(--space-3); font:400 .875rem/1.4 var(--font-sans); color:var(--ink-2) }
-.ad-unlocks a, .ad-foot a{ font-weight:700; color:var(--ink) }
-.ad-foot a{ display:inline-flex; align-items:center; gap:.25rem }
-.ad-foot .icon{ width:1em; height:1em }
-.ads-more{ margin-top:var(--space-4) }
-@media (min-width:640px){ .ads{ columns:2 } }
-@media (min-width:1080px){ .ads{ columns:3 } }
+/* ---------- Tasks: a title, one line and one action (F31) ---------- */
+.task-filters{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-3) var(--space-6) }
+.task-filters .segmented{ grid-template-columns:auto auto }
+.no-js .task-filters, .no-js .tasks-more{ display:none }
+.segmented .icon{ display:inline; width:1.05em; height:1.05em; margin-right:.35rem; vertical-align:-.15em }
+.segmented .count{ margin-left:.4rem; font-weight:400; color:var(--ink-2) }
+.segmented [aria-pressed="true"] .count{ color:var(--paper) }
+.select{ display:inline-flex; align-items:center; gap:.6rem; font:700 .9375rem/1.2 var(--font-sans) }
+.select-box{ position:relative; display:inline-flex; align-items:center }
+.select select{ appearance:none; min-height:44px; padding:.5rem 2.6rem .5rem .8rem; border:2px solid var(--ink); border-radius:0; background:var(--paper); color:var(--ink); font:inherit; cursor:pointer }
+.select .icon{ position:absolute; right:.75rem; width:1.1em; height:1.1em; pointer-events:none }
+.task-count{ margin-left:auto; font:400 var(--t-small)/1.4 var(--font-sans); color:var(--ink-2) }
+.tasks{ display:grid; gap:var(--space-6) var(--space-8); margin-top:var(--space-6) }
+.js .tasks:not([data-expanded]) > [data-extra]{ display:none }
+.task{ position:relative; display:flex; flex-direction:column; gap:var(--space-2); min-width:0; padding-top:var(--space-3); border-top:3px solid var(--ink) }
+.task-tags{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:.3rem .8rem; font:700 .75rem/1.3 var(--font-sans); letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2) }
+.task-tags span{ display:inline-flex; align-items:center; gap:.3rem }
+.task-tags .icon{ width:1.1em; height:1.1em }
+.task-first{ color:var(--status-live) }
+.task-title{ font:600 1.25rem/1.25 var(--font-serif) }
+.task-title a{ text-decoration:none }
+.task-title a::after{ content:""; position:absolute; inset:0 }
+.task-title a:focus-visible{ outline:none }
+.task:has(a:focus-visible){ outline:3px solid var(--red); outline-offset:6px }
+.task:hover .task-title a{ color:var(--ink); text-decoration:underline; text-decoration-thickness:1px }
+.task-line{ font-size:1.0625rem; line-height:1.45 }
+.task-go{ display:inline-flex; align-items:center; gap:.3rem; margin-top:auto; padding-top:var(--space-1); font:700 .9375rem/1.3 var(--font-sans) }
+.task-go .icon{ width:1em; height:1em }
+.task:hover .task-go{ color:var(--red) }
+.tasks-empty{ margin-top:var(--space-6); font:400 1.0625rem/1.5 var(--font-sans); color:var(--ink-2) }
+.tasks-more{ margin-top:var(--space-8) }
+@media (min-width:640px){ .tasks{ grid-template-columns:repeat(2, minmax(0, 1fr)); row-gap:var(--space-8) } }
+@media (min-width:1080px){ .tasks{ grid-template-columns:repeat(3, minmax(0, 1fr)) } }
 
 /* ---------- Expediente (open source) ---------- */
-.expediente{ display:grid; gap:var(--space-8); margin-top:var(--space-8) }
-.how-steps{ counter-reset:how; display:grid; gap:var(--space-2); margin-block:var(--space-6) }
+.expediente{ display:grid; gap:var(--space-8) }
+.how-steps{ counter-reset:how; display:grid; gap:var(--space-2); margin-bottom:var(--space-6) }
 .how-steps li{ counter-increment:how; display:grid; grid-template-columns:2rem 1fr; align-items:baseline }
 .how-steps li::before{ content:counter(how); font:italic 500 1.5rem/1 var(--font-display); color:var(--red) }
 .expediente-box{ padding:var(--space-6); border:3px double var(--ink); font-family:var(--font-sans); font-size:var(--t-small) }

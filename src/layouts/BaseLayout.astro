@@ -11,7 +11,7 @@ import { PROJECT_NAME } from '../data/site/project';
 interface Props {
   title: string;
   description: string;
-  current?: 'home' | 'transparencia' | 'not-found';
+  current?: 'home' | 'transparencia' | 'construir' | 'not-found';
   share?: keyof typeof SHARE;
   noindex?: boolean;
   /** The "em construção" strip. The home says it in its own first screen (F29). */
@@ -55,6 +55,7 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <link rel="preload" href="/fonts/newsreader-display-500.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/newsreader-text-400.woff2" as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
+    <slot name="head" />
     <!-- A paleta entra antes da primeira pintura. O build inclui o hash na CSP. -->
     <script is:inline>
       (() => {

@@ -1,15 +1,18 @@
 ---
 import Icon from '../site/Icon.astro';
-import NotOpenBadge from '../site/NotOpenBadge.astro';
-import Sheet from './Sheet.astro';
+import Caderno from './Caderno.astro';
 import { BOTTLENECKS } from '../../data/site/bottlenecks';
+import { CONTRIBUTIONS, IDEA_URL, issueUrl } from '../../data/site/contributions';
 
+// Five questions, all closed: the list fits the first screen. A link to one (#<id>) opens it.
 ---
-<Sheet id="gargalos" kicker="Os gargalos" title="O que a gente ainda" turn="não sabe resolver.">
-    <p class="standfirst">Falar disso também é transparência. São {BOTTLENECKS.length} perguntas em aberto. Se você entende de algum desses assuntos, sua ajuda vale muito.</p>
-    <div class="questions">
-      {BOTTLENECKS.map((b, i) => (
-        <details class="question" id={`gargalo-${b.id}`} open={i === 0}>
+<Caderno id="gargalos" title="O que a gente ainda" turn="não sabe resolver."
+  lead={`Falar disso também é transparência. São ${BOTTLENECKS.length} perguntas em aberto. Se você entende de algum desses assuntos, sua ajuda vale muito.`}>
+  <div class="questions">
+    {BOTTLENECKS.map((b, i) => {
+      const tasks = CONTRIBUTIONS.filter(c => c.bottleneck === b.id);
+      return (
+        <details class="question" id={b.id}>
           <summary>
             <span class="question-num" aria-hidden="true">{i + 1}</span>
             <span class="question-head"><span class="question-title">{b.title}</span><span class="module-id">{b.modules}</span></span>
@@ -21,9 +24,18 @@ import { BOTTLENECKS } from '../../data/site/bottlenecks';
               <div><dt>O que já está andando</dt><dd>{b.progress}</dd></div>
               <div><dt>Quem pode ajudar</dt><dd>{b.helpers}</dd></div>
             </dl>
-            <p class="soon-note"><NotOpenBadge /><span>Dar uma ideia abre junto com o repositório. As tarefas deste gargalo estão nos <a href="#contribuicoes">classificados</a>.</span></p>
+            <div class="question-help">
+              {tasks.length > 0 && (
+                <div><p class="question-help-title">Tarefas pra isso</p>
+                  <ul>{tasks.map(t => <li><a href={issueUrl(t.issueNumber)} rel="noopener">{t.title}</a></li>)}</ul></div>
+              )}
+              <div><p class="question-help-title">Tem uma ideia?</p>
+                <p><a href={IDEA_URL} rel="noopener">Conte no GitHub<Icon name="arrow-right" /></a></p></div>
+            </div>
           </div>
         </details>
-      ))}
-    </div>
-</Sheet>
+      );
+    })}
+  </div>
+</Caderno>
+<script>import '../../scripts/gargalos';</script>

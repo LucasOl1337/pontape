@@ -1,0 +1,57 @@
+---
+import Icon from '../site/Icon.astro';
+import Caderno from './Caderno.astro';
+import { CONTRIBUTIONS, CONTRIBUTION_TYPES, issueUrl } from '../../data/site/contributions';
+
+// Each task is a title, one line and one action (F31). The type and "boa pra começar" sit in one
+// small line on top; the rest is on the task's page on GitHub, one click away. Which bottleneck a
+// task unlocks now shows the other way round, under each question on /construir/gargalos.
+// The good first tasks come first; "Todas" shows the first LIMIT, the rest open with one button.
+const LIMIT = 6;
+const tasks = [...CONTRIBUTIONS].sort((a, b) => Number(b.goodFirst) - Number(a.goodFirst));
+const goodFirst = tasks.filter(c => c.goodFirst).length;
+const types = (Object.keys(CONTRIBUTION_TYPES) as (keyof typeof CONTRIBUTION_TYPES)[])
+  .map(t => ({ id: t, ...CONTRIBUTION_TYPES[t], count: tasks.filter(c => c.type === t).length }))
+  .filter(t => t.count > 0);
+const plural = (n: number) => (n === 1 ? '1 tarefa' : `${n} tarefas`);
+---
+<Caderno id="tarefas" title="Precisa-se." turn="Onde você pode ajudar agora."
+  lead="Cada tarefa é um pedaço do projeto que alguém pode fazer agora. Escolha uma e abra no GitHub pra ver o que precisa.">
+  <div data-tasks>
+    <div class="task-filters">
+      <div class="segmented" role="group" aria-label="Quais tarefas">
+        <button type="button" aria-pressed="true" data-first-filter="all">Todas<span class="count">{tasks.length}</span></button>
+        <button type="button" aria-pressed="false" data-first-filter="first"><Icon name="sprout" />Boas pra começar<span class="count">{goodFirst}</span></button>
+      </div>
+      <label class="select">
+        <span>Assunto</span>
+        <span class="select-box">
+          <select data-type-filter>
+            <option value="all">Todos</option>
+            {types.map(t => <option value={t.id}>{t.label} ({t.count})</option>)}
+          </select>
+          <Icon name="chevron-down" />
+        </span>
+      </label>
+      <p class="task-count" aria-live="polite" data-tasks-count>{plural(tasks.length)}</p>
+    </div>
+
+    <ul class="tasks" data-tasks-list>
+      {tasks.map((c, i) => (
+        <li class="task" data-type={c.type} data-first={String(c.goodFirst)} data-extra={i >= LIMIT ? 'true' : undefined}>
+          <p class="task-tags">
+            <span><Icon name={CONTRIBUTION_TYPES[c.type].icon} />{CONTRIBUTION_TYPES[c.type].label}</span>
+            {c.goodFirst && <span class="task-first"><Icon name="sprout" />Boa pra começar</span>}
+          </p>
+          <h3 class="task-title"><a href={issueUrl(c.issueNumber)} rel="noopener">{c.title}</a></h3>
+          <p class="task-line">{c.summary}</p>
+          <p class="task-go" aria-hidden="true">Ver a tarefa no GitHub<Icon name="arrow-right" /></p>
+        </li>
+      ))}
+    </ul>
+    <p class="tasks-empty" data-tasks-empty hidden>Nenhuma tarefa com esse filtro. Tente outro assunto.</p>
+    {tasks.length > LIMIT && <button class="btn tasks-more" type="button" data-tasks-more>Mostrar as outras {tasks.length - LIMIT}</button>}
+  </div>
+  <p class="soon-note"><span>Pra pegar uma tarefa, deixe um comentário na página dela no GitHub. Toda mudança passa pela revisão de um admin antes de entrar.</span></p>
+</Caderno>
+<script>import '../../scripts/tarefas';</script>
