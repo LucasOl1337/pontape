@@ -30,7 +30,7 @@ export const OPENING = 'A IA vai ajudar a escolher com cuidado quem mais quer mu
 // found and talks to the AI. The AI support comes before the job (D028), and the AI never stops.
 export const STEPS: JourneyStep[] = [
   { shortName: 'Sistema', title: 'Escolher com cuidado', icon: 'scale', module: 'M3', aiFrom: true,
-    text: 'Pra cada real render, a IA vai ajudar a escolher quem mais quer mudar de vida. E o jeito de escolher vai ficar à vista de qualquer pessoa.',
+    text: 'O dinheiro é pouco, então a IA vai ajudar a escolher quem mais quer mudar de vida. E o jeito de escolher vai ficar à vista.',
     now: 'Precisa de ajuda. A gente está pesquisando o jeito de escolher, pra ser justo com todo mundo.' },
   { shortName: 'Busca', title: 'Ir até a pessoa', icon: 'pin', module: 'M3',
     text: 'Um voluntário na rua, um panfleto, um ponto público ou este site. Vários jeitos de chegar até quem quer recomeçar.',

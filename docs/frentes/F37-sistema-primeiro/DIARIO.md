@@ -161,6 +161,12 @@ Commits `15e5ff7` e o seguinte, na branch `design/f37-sistema-primeiro`. A PR ai
 
 Prints em `prints/`: `antes-*` é a main em `9de590d`, `depois-*` é esta branch. 1920×914 e 360×780 no Início e com o passo 1 aberto, a 404 em 1440×900 e a imagem de compartilhar (`*-og.png`).
 
+**Ajuste da revisão do Regente.** "Pra cada real render" é conta de banco e o leigo trava. O texto do Sistema passa a usar o motivo do próprio Lucas, que o dinheiro não é infinito:
+
+> O dinheiro é pouco, então a IA vai ajudar a escolher quem mais quer mudar de vida. E o jeito de escolher vai ficar à vista.
+
+Medido na bancada com o passo 1 aberto: a sugestão do Regente com "de qualquer pessoa" tinha 142 letras e, com "de todo mundo", ganhava uma linha em 390. Terminando em "à vista" ficam 123 letras, com as mesmas linhas da frase velha ou menos nos seis tamanhos (2, 2, 2, 2, 3, 3 contra 2, 3, 3, 2, 3, 4). "O dinheiro é pouco" fala do projeto, não da pessoa: ninguém lê ali que ficou de fora. Prints do passo 1 refeitos.
+
 ### Onde parei
 
-Esperando o OK do Lucas pela voz do Regente. Se ele trocar um nome (Chegar junto, Primeiro contato, A base), é trocar a palavra no `journey.ts`, na 404 e nos docs, refazer os prints e abrir a PR `F37 · A escada começa pelo sistema` com rebase na `main`. Servidores e bancada parados; sobem de novo em um minuto.
+Esperando o OK do Lucas pela voz do Regente, que está confirmando a frase curta de abertura com ele. Se ele trocar um nome (Chegar junto, Primeiro contato, A base), é trocar a palavra no `journey.ts`, na 404 e nos docs, refazer os prints e abrir a PR `F37 · A escada começa pelo sistema` com rebase na `main`. Servidores e bancada parados; sobem de novo em um minuto.
