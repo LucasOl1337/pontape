@@ -577,9 +577,10 @@ body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
 .tab-lead{ max-width:var(--measure); margin-top:.6rem; font-size:var(--t-deck); line-height:1.4; color:var(--ink-2) }
 
 .proof-grid{ display:grid; gap:2rem; margin-top:1.6rem }
-.mini-stair{ display:grid; grid-template-columns:repeat(var(--n), minmax(0, 1fr)); align-items:end; min-height:22rem }
-/* Each step grows with its text: the first one used to spill under the box below (F32). */
-.mini-stair li{ min-height:max(9rem, calc((var(--k) + 1) / var(--n) * 22rem)); padding:.9rem .9rem .9rem 1rem; border-top:3px solid var(--ink); border-left:3px solid var(--ink); background:repeating-linear-gradient(-45deg, color-mix(in srgb, var(--ink) 7%, transparent) 0 1px, transparent 1px 9px) }
+.mini-stair{ display:grid; grid-template-columns:repeat(var(--n), minmax(0, 1fr)); align-items:stretch; min-height:22rem }
+/* Every step ends on the same floor and starts one rise above the one before, however long its text:
+   the first one used to spill under the box below (F32). */
+.mini-stair li{ margin-top:calc((var(--n) - 1 - var(--k)) * 3.5rem); min-height:9rem; padding:.9rem .9rem .9rem 1rem; border-top:3px solid var(--ink); border-left:3px solid var(--ink); background:repeating-linear-gradient(-45deg, color-mix(in srgb, var(--ink) 7%, transparent) 0 1px, transparent 1px 9px) }
 .mini-stair li:first-child{ border-left-color:transparent }
 .mini-stair h3{ margin-top:.3rem; font:500 clamp(1.2rem, 1rem + .7vw, 1.6rem)/1.1 var(--font-display) }
 .mini-stair p{ margin-top:.4rem; font:400 .9375rem/1.45 var(--font-sans); color:var(--ink-2) }
@@ -598,7 +599,7 @@ body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
 .proof-own{ font:700 .8125rem var(--font-mono); color:var(--red) }
 .proof-prev{ color:var(--ink-2); font-size:.75rem }
 .fine-print{ display:grid; gap:1.6rem; margin-top:2rem }
-.not-proven{ padding:1.2rem 1.4rem; border-left:4px solid var(--red); background:var(--paper-2) }
+.not-proven{ align-self:start; padding:1.2rem 1.4rem; border-left:4px solid var(--red); background:var(--paper-2) }
 .not-proven p:last-child{ margin-top:.5rem }
 .off-site-title{ font:500 var(--t-h3)/1.15 var(--font-display) }
 .fine-print .actions{ margin-top:.8rem }
@@ -618,7 +619,7 @@ body:has(.palette-switcher) .toast{ bottom:calc(var(--dock-h) + .5rem) }
 }
 @media (max-width:599px){
   .mini-stair{ grid-template-columns:1fr; min-height:0 }
-  .mini-stair li{ height:auto; min-height:0; margin-left:calc(var(--k) * 1.2rem); border-left-color:var(--ink) }
+  .mini-stair li{ min-height:0; margin-top:0; margin-left:calc(var(--k) * 1.2rem); border-left-color:var(--ink) }
 }
 
 .money{ margin-top:1.4rem }
