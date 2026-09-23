@@ -395,3 +395,13 @@ Depois: 25 das 27 combinações de página e tamanho sem nenhum alerta. As duas 
 - No `/transparencia` há dois links "Como funciona" com destinos diferentes (o do menu e o do Conferir) e "Parte técnica" duas vezes. É do texto da F32; baixa.
 
 `npm run check` passa. Prints `prints/foco-antes-*` e `prints/foco-depois-*`, com o foco posto de verdade pelo Tab na bancada.
+
+## 23/09/2026 · PR 10: alvo de 44 px no logo
+
+Branch `prumo/f31-logo`, empilhada em cima da `prumo/f31-foco` (as duas escrevem no fim deste diário).
+
+O link do logo tinha 27 px de altura: passava no mínimo AA (24 px), mas ficava abaixo dos 44 dos outros alvos. Agora tem `min-height:44px`, com a marca e o nome centralizados no mesmo lugar. Medido em 360, 960 e 1920: o logo passa de 132×27 pra 132×44, a marca não sai do lugar e o cabeçalho continua com a mesma altura. O anel de foco do logo agora tem a altura do botão Menu ao lado. `npm run check` passa. Prints `prints/logo-antes-360.png` e `prints/logo-depois-360.png`.
+
+### Onde parei
+
+PRs 9 e 10 abertas e reportadas. Sem defeito alto ou médio aberto na F31. Em espera.
