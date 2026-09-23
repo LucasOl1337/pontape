@@ -33,3 +33,11 @@
 - Corrigidos: número achatado no primeiro degrau, altura do cartão de módulos no desktop, espaços após quebras ocultadas no celular e data do último registro no fuso de São Paulo.
 - Texto ampliado pode crescer em altura para não encobrir controles. Nenhuma mudança no núcleo ou dados.
 - Próximo: commit, push, PR em rascunho F22 v4 · Maracatu e reporte pelo Maestri.
+
+## 22/09/2026 · Entregue
+
+- PR #49 aberta e confirmada em rascunho: https://github.com/LucasOl1337/VidaNova/pull/49.
+- Regente recebeu o reporte pelo Maestri e registrou a entrega. Orientação recebida: manter 4344 ativa e aguardar avaliação do Lucas.
+- Depois do último build, servidor reiniciado para servir a revisão final sem cache antigo de otimização. Conferir repetido no navegador: 36 ações, resultado Tudo certo. Home e livro respondem HTTP 200.
+- Bancada vidanova-maracatu encerrada após salvar capturas; nenhuma aba de teste pendente. Processo Astro permanece ativo no worktree da R2, porta 4344.
+- Estado final: entregue, sem merge ou deploy, aguardando avaliação. Próxima ação somente por pedido do Regente.
