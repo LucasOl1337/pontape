@@ -23,3 +23,9 @@
 - `npm run check` passou na primeira versão da rodada 2: 127 testes, livro válido, orçamento de 16,9 KB na home e 37,9 KB no livro com verificador sob demanda. Repetir depois do último ajuste de CSS.
 - Próximo passo: check final, commit, PR em rascunho e reporte ao Regente. Servidor Astro deve continuar na porta 4345.
 - Durante a revisão, `origin/main` recebeu mais uma ação do projeto. Fiz merge fast-forward do registro e refiz check e prints: agora são **37 ações reais**, Conferir passou, home 17,1 KB e livro 38,4 KB com carga sob demanda. As alturas continuaram 900 px e 1.155 px.
+
+## 22/09/2026 · entrega
+
+- Commits `e375aec` (interface) e `d3dfe34` (documentação e prints) na branch `variante/r2-v5-pluma`.
+- PR em rascunho para `main`: https://github.com/LucasOl1337/VidaNova/pull/48.
+- Site em http://127.0.0.1:4345 para comparação no seletor. Critérios da F22 cumpridos; Regente recebe o reporte.
