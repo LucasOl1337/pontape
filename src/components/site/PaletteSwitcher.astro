@@ -25,11 +25,11 @@ const palettes = [
 <script>import '../../scripts/palette';</script>
 <style>
   :global(body:has(.palette-switcher)){ padding-bottom:4.5rem }
-  .palette-switcher{ position:fixed; z-index:150; left:1rem; bottom:1rem; font:700 .875rem/1.2 var(--font-sans) }
+  .palette-switcher{ position:fixed; z-index:150; right:1rem; bottom:1rem; font:700 .875rem/1.2 var(--font-sans) }
   .palette-trigger{ min-height:44px; display:flex; align-items:center; gap:.55rem; padding:.55rem .75rem; border:2px solid var(--ink); background:var(--paper); color:var(--ink); box-shadow:3px 3px 0 var(--ink); cursor:pointer }
   .palette-trigger span{ font-size:.6875rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--red) }
   .palette-trigger:hover{ background:var(--paper-2) }
-  .palette-panel{ position:absolute; left:0; bottom:calc(100% + .75rem); width:min(20rem, calc(100vw - 2rem)); max-height:calc(100dvh - 6rem); overflow:auto; padding:1rem; border:2px solid var(--ink); background:var(--paper); color:var(--ink); box-shadow:5px 5px 0 var(--ink) }
+  .palette-panel{ position:absolute; right:0; bottom:calc(100% + .75rem); width:min(20rem, calc(100vw - 2rem)); max-height:calc(100dvh - 6rem); overflow:auto; padding:1rem; border:2px solid var(--ink); background:var(--paper); color:var(--ink); box-shadow:5px 5px 0 var(--ink) }
   fieldset{ margin:0; padding:0; border:0; min-width:0 }
   legend{ padding:0; font:500 1.3rem/1.2 var(--font-display) }
   p{ margin:.3rem 0 .8rem; color:var(--ink-2); font:400 .875rem/1.4 var(--font-sans) }
@@ -42,8 +42,8 @@ const palettes = [
   .palette-sample i{ width:50%; background:var(--ink) }
   .palette-sample b{ width:50%; background:var(--red) }
   @media (max-width:599px){
-    .palette-switcher{ left:0; right:0; bottom:0; padding:.5rem 1rem; background:var(--paper); border-top:1px solid var(--rule) }
-    .palette-panel{ left:1rem; bottom:calc(100% + .5rem) }
+    .palette-switcher{ left:0; right:0; bottom:0; display:flex; justify-content:flex-end; padding:.5rem 1rem; background:var(--paper); border-top:1px solid var(--rule) }
+    .palette-panel{ right:1rem; bottom:calc(100% + .5rem) }
   }
   @media print{ .palette-switcher{ display:none } :global(body:has(.palette-switcher)){ padding-bottom:0 } }
 </style>
