@@ -30,14 +30,14 @@ Não há dependência nova. Fontes Archivo e Atkinson servidas localmente. Nenhu
 
 ## Validação
 
-`npm run check` executado em 22/09/2026: lint, tipos, **127 testes**, livro real com **34 ações**, build e CSP aprovados. O comando termina com código 1 **somente na meta de tamanho da home**, exceção permitida pelo BRIEF da F19.
+`npm run check` aprovado integralmente em 22/09/2026, após integrar a PR #37 da main: lint, tipos, **127 testes**, livro real, build, CSP e orçamento de ambas as páginas.
 
 | Página | Ao abrir, gzip | Incluindo Conferir | Meta |
 |---|---:|---:|---:|
-| Home | 37,1 KB | 61,4 KB | 60 KB |
-| Livro | 34,9 KB | 59,3 KB | 60 KB |
+| Home | 37,1 KB | 45,7 KB | 60 KB |
+| Livro | 35,1 KB | 43,7 KB | 60 KB |
 
-A home excede a meta em 1,4 KB, cerca de 2,4%, depois do clique em Conferir. O mesmo verificador F08 com validação Zod soma 24,4 KB sob demanda. Mantive o contrato e a conferência real. O CSS específico do livro foi separado e declarações substituídas da base foram removidas. Fontes: 87,1 KB, abaixo da meta de 120 KB.
+O verificador F08 com Zod Mini, recebido da main na PR #37, soma 8,6 KB sob demanda. As duas páginas ficam abaixo da meta, inclusive depois de conferir. O CSS específico do livro foi separado e declarações substituídas da base foram removidas. Fontes: 87,1 KB, abaixo da meta de 120 KB.
 
 Validação no Chromium da bancada exclusiva `vidanova-maracatu`, workspace 6:
 
@@ -53,7 +53,7 @@ A execução simultânea de build e dev invalidou uma dependência otimizada do 
 
 ## Prints
 
-Capturas na bancada autorizada. Arquivos sem `-completa` mostram a primeira tela; os demais mostram a página inteira.
+Capturas na bancada autorizada, antes da atualização final do livro recebida da main, quando havia 34 ações. Arquivos sem `-completa` mostram a primeira tela; os demais mostram a página inteira.
 
 | Página | 360 px | 1440 px |
 |---|---|---|

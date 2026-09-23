@@ -36,3 +36,12 @@ Nenhuma alteração de escopo ou de dados.
 - Oito PNGs salvos: home/livro em 360 e 1440, primeira tela e página completa. README inclui conceito, escopo, validação, limites e budget exato (37,1/61,4 KB home; 34,9/59,3 KB livro).
 - Último `npm run check`: todos os passos aprovados exceto orçamento da home (1,4 KB além da meta após carregar F08). Exceção expressamente documentada, como permite o BRIEF.
 - Próximo: commit, push, PR em rascunho e reporte ao Regente.
+
+## 22/09/2026 · PR e encerramento
+
+- PR em rascunho: https://github.com/LucasOl1337/VidaNova/pull/39. Regente recebeu o reporte pelo Maestri e registrou a entrega.
+- Por retorno do Regente, integrei a main com a PR #37 (Zod Mini). O verificador sob demanda caiu para 8,6 KB.
+- `npm run check` agora **passa inteiro**, código 0, inclusive budget. Valores finais: home 37,1 KB inicial / 45,7 KB com Conferir; livro 35,1 / 43,7 KB. A ressalva anterior de orçamento está resolvida.
+- README e descrição da PR atualizados. Prints preservam a revisão visual com 34 ações, anterior à atualização final do livro da main.
+- Bancada exclusiva de testes encerrada após salvar os comprovantes. Nenhuma aba pendente. Servidor 4344 mantido ativo neste worktree.
+- Estado final: entregue, aguardando escolha do Lucas. Não integrar nem fazer novas mudanças visuais sem pedido do Regente.
