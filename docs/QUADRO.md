@@ -8,9 +8,7 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F16 | [Polimento pro lançamento](frentes/F16-polimento-lancamento/BRIEF.md) | design | `design/f16-polimento` | PR #33 em revisão | Favicon, prévia de compartilhamento, 404 com layout |
 | F18 | [Ensaio do lançamento](frentes/F18-ensaio-lancamento/BRIEF.md) | bruto | `bruto/f18-ensaio` | despachada | Checklist inteiro no build local, falhas viram issue |
-| F17 | [Livro ao vivo pras ações do projeto](frentes/F17-livro-ao-vivo/BRIEF.md) | fino | `fino/f17-ao-vivo` | despachada | PR integrada e decisão nova entram sozinhas no livro |
 | F19 | [Cinco variantes visuais](frentes/F19-variantes-visuais/BRIEF.md) | Prisma, Crônica, Ábaco (Opus 5.5), Maracatu (GPT-6-Astra), Pluma (GPT-6-Sol) | `variante/v1..v5` | despachada | Lucas escolhe a direção entre as cinco (portas 4341 a 4345) |
 
 ## Fila
@@ -28,7 +26,7 @@ Atualizado: 22/09/2026 · Ordem de execução do Lucas (D009): **plataforma e tr
 
 Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 
-1. **Nome e domínio.** Adiado pelo Lucas. Domínio grátis da Hostinger cobre `.com`. No dia: raiz via troca de nameserver ou só `www` via CNAME ([LANCAMENTO](operacao/LANCAMENTO.md))
+1. **Nome e domínio.** Lucas sugeriu **PontaPé**: `pontape.com` ocupado, `pontape.org` livre, `.com.br` vencido em liberação. Domínio grátis da Hostinger cobre `.com`. No dia: raiz via troca de nameserver ou só `www` via CNAME ([LANCAMENTO](operacao/LANCAMENTO.md))
 2. Trecho perdido do áudio sobre dinheiro e "igreja"
 3. Trecho perdido antes da parte do design
 4. Doação antes de existir CNPJ. F03 recomenda **só captar depois de associação, CNPJ e conta própria**; Asaas como primeiro teste ([ESTRUTURA-JURIDICA.md](pesquisa/ESTRUTURA-JURIDICA.md), [DOACOES-E-TRANSPARENCIA.md](pesquisa/DOACOES-E-TRANSPARENCIA.md))
@@ -44,6 +42,8 @@ Detalhe em [PRD §10](PRD.md#10-perguntas-pro-lucas).
 | ID | Frente | Resultado |
 |---|---|---|
 | F14b | CSP gerada no build | [PR #29](https://github.com/LucasOl1337/VidaNova/pull/29) integrada. Build calcula o hash de todo script embutido e falha se faltar algum ou se aparecer `unsafe-inline` |
+| F17 | Livro ao vivo | [PR #35](https://github.com/LucasOl1337/VidaNova/pull/35) integrada. Na primeira execução o bot registrou D015 e a #35 sozinho (33 fatos). Projeto entra automático; dinheiro, vida real e candidato seguem com o Regente |
+| F16 | Polimento pro lançamento | [PR #33](https://github.com/LucasOl1337/VidaNova/pull/33) integrada. Favicon, prévia de compartilhamento gerada no build, 404 com layout |
 | F07 livro real | Site ligado no livro oficial | [PR #34](https://github.com/LucasOl1337/VidaNova/pull/34) integrada. `/transparencia` mostra as ações reais e confere com o verificador da F08, carregado só no clique |
 | F15 | Conferidor independente em Python | [PR #31](https://github.com/LucasOl1337/VidaNova/pull/31) integrada. Sala limpa: escrito só pelo contrato, confere as 29 ações reais e pega adulteração |
 | F08 núcleo | Livro público real e verificador | [PR #30](https://github.com/LucasOl1337/VidaNova/pull/30) integrada. 26 fatos reais conferidos pelo Regente contra git e GitHub; Regente acrescentou #32 e #30 com `ledger:append` (28 fatos). Assinatura e OpenTimestamps prontos, aguardando custódia |
