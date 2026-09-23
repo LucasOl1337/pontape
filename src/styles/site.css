@@ -84,6 +84,7 @@ main:focus{ outline:none }
 
 /* ---------- Status strip and header ---------- */
 .status-strip{ background:var(--ink); color:var(--paper) }
+[data-strip="off"]{ --strip-h:0px }
 .status-strip-inner{
   max-width:var(--page); margin:auto; padding:.5rem var(--gutter);
   display:flex; flex-wrap:wrap; gap:.15rem .6rem; font:400 var(--t-small)/1.4 var(--font-sans);

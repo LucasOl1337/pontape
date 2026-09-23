@@ -14,7 +14,8 @@ const ledger = await getPublicLedger();
 <BaseLayout
   title={SHARE.home.title}
   description={SHARE.home.description}
-  share="home">
+  share="home"
+  strip={false}>
   <div class="front">
     <Escada ledger={ledger} />
   </div>
