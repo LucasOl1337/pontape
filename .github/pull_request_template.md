@@ -11,6 +11,6 @@ Liste os testes ou a revisão manual feita. Se uma parte não pôde ser conferid
 - [ ] Usei apenas dados fictícios identificados como fictícios; não incluí dado pessoal real, comprovante privado ou segredo.
 - [ ] Conferi textos, links e estado real das funções que esta PR descreve.
 - [ ] Indiquei abaixo se usei agente de IA e qual parte exige atenção humana.
-- [ ] Solicitei aprovação humana de Lucas ou de um admin antes da integração.
+- [ ] Se sou contribuidor de fora da equipe, solicitei aprovação humana de Lucas ou de um admin antes da integração.
 
 **Ajuda de agente de IA:** descreva a parte feita por agente ou escreva "não usei".
