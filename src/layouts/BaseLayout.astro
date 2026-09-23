@@ -4,7 +4,6 @@ import IconSprite from '../components/site/IconSprite.astro';
 import StatusStrip from '../components/site/StatusStrip.astro';
 import SiteHeader from '../components/site/SiteHeader.astro';
 import SiteFooter from '../components/site/SiteFooter.astro';
-import PaletteSwitcher from '../components/site/PaletteSwitcher.astro';
 import { SHARE } from '../data/site/share';
 import { PROJECT_NAME } from '../data/site/project';
 
@@ -30,7 +29,7 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#F3EEE4" />
+    <meta name="theme-color" content="#F4F1EA" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
@@ -56,33 +55,8 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <link rel="preload" href="/fonts/newsreader-text-400.woff2" as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
     <slot name="head" />
-    <!-- A paleta entra antes da primeira pintura. O build inclui o hash na CSP. -->
-    <script is:inline>
-      (() => {
-        document.documentElement.classList.replace('no-js', 'js');
-        const valid = /^(jornal|anil|pauta|envelope|pessego|carvao)$/;
-        let palette = null;
-        let fromUrl = false;
-        try {
-          const value = new URL(location.href).searchParams.get('cor');
-          if (value && valid.test(value)) { palette = value; fromUrl = true; }
-        } catch { /* URL indisponível */ }
-        if (!palette) {
-          try {
-            const value = localStorage.getItem('pontape-paleta');
-            if (value && valid.test(value)) palette = value;
-          } catch { /* armazenamento indisponível */ }
-        }
-        if (palette) {
-          document.documentElement.dataset.palette = palette;
-          if (fromUrl) try { localStorage.setItem('pontape-paleta', palette); } catch { /* só nesta página */ }
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-          const paper = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim();
-          if (paper) document.querySelector('meta[name="theme-color"]')?.setAttribute('content', paper);
-        });
-      })();
-    </script>
+    <!-- Marca que o JS carregou antes da primeira pintura. O build inclui o hash na CSP. -->
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
   </head>
   <body data-strip={strip ? undefined : 'off'}>
     <IconSprite />
@@ -91,7 +65,6 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <SiteHeader current={current} />
     <main id="conteudo" tabindex="-1"><slot /></main>
     <SiteFooter />
-    <PaletteSwitcher />
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script>import '../scripts/site';</script>
   </body>
