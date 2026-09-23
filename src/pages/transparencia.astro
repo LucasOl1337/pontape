@@ -1,50 +1,51 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/home.css';
 import '../styles/ledger.css';
-import Icon from '../components/site/Icon.astro';
-import LedgerHeroBlock from '../components/blocks/LedgerHeroBlock.astro';
-import LedgerVerifyBlock from '../components/blocks/LedgerVerifyBlock.astro';
-import LedgerChainBlock from '../components/blocks/LedgerChainBlock.astro';
-import LedgerActionsBlock from '../components/blocks/LedgerActionsBlock.astro';
-import MoneyBlock from '../components/blocks/MoneyBlock.astro';
-import TimelineBlock from '../components/blocks/TimelineBlock.astro';
-import LedgerHowToBlock from '../components/blocks/LedgerHowToBlock.astro';
-import LedgerTypesBlock from '../components/blocks/LedgerTypesBlock.astro';
+import StairNav from '../components/stairs/StairNav.astro';
+import type { Stair } from '../components/stairs/stair';
+import BookTop from '../components/book/BookTop.astro';
+import BookActionsStep from '../components/book/BookActionsStep.astro';
+import BookInspectorStep from '../components/book/BookInspectorStep.astro';
+import BookMoneyStep from '../components/book/BookMoneyStep.astro';
+import BookTimelineStep from '../components/book/BookTimelineStep.astro';
+import BookHowToStep from '../components/book/BookHowToStep.astro';
+import BookTypesStep from '../components/book/BookTypesStep.astro';
 import { getExampleLedger, getPublicLedger } from '../lib/ledger-view/source';
+import { formatCents, sumMoney } from '../lib/ledger-view/money';
+import { TYPE_ORDER } from '../lib/ledger-view/phrases';
 import { SHARE } from '../data/site/share';
+import { shortHash } from '../scripts/hashprint';
 
+// The ledger: its first screen has the essentials (numbers, Conferir, the chain); the rest is a
+// staircase of its own, one screen, with the full list paged.
 const ledger = await getPublicLedger();
 const example = await getExampleLedger();
+const { events } = ledger;
+const last = events.at(-1);
+const active = TYPE_ORDER.filter(t => events.some(e => e.payload.type === t)).length;
+const stairs: Stair[] = [
+  { id: 'acoes', hash: 'acoes', label: 'Todas as ações', value: String(events.length), caption: '6 por página', icon: 'doc' },
+  { id: 'acao', hash: 'acao', label: 'Uma ação por dentro', value: `nº ${last?.sequence ?? 0}`, caption: last ? `marca ${shortHash(last.hash)}` : 'nenhuma', icon: 'search' },
+  { id: 'dinheiro', hash: 'dinheiro', label: 'Dinheiro', value: formatCents(sumMoney(events).inCents), caption: 'entrou até hoje', icon: 'coin' },
+  { id: 'linha', hash: 'linha-do-tempo', label: 'Linha do tempo', value: `${active}/${TYPE_ORDER.length}`, caption: 'tipos com ação', icon: 'chart' },
+  { id: 'como-conferir', hash: 'como-conferir', label: 'Como conferir', value: 'SHA-256', caption: 'conta pública', icon: 'shield' },
+  { id: 'o-que-entra', hash: 'o-que-entra', label: 'O que entra', value: String(TYPE_ORDER.length), caption: 'tipos, sem dado pessoal', icon: 'lock' },
+];
+const total = stairs.length;
 ---
-<BaseLayout
-  title={SHARE.transparencia.title}
-  description={SHARE.transparencia.description}
-  share="transparencia"
-  current="transparencia">
-  <LedgerHeroBlock ledger={ledger} />
-  <div class="explorer-bar" id="explorador">
-    <div class="explorer-bar-inner">
-      <div class="segmented" role="group" aria-label="Qual livro mostrar">
-        <button type="button" data-mode="real" aria-pressed="true">Livro de verdade</button>
-        <button type="button" data-mode="example" aria-pressed="false">Exemplo fictício</button>
-      </div>
-      <form class="search search--bar" action="/transparencia" method="get" role="search" data-search>
-        <label class="sr-only" for="busca-livro">Procurar ação por número ou marca</label>
-        <div class="search-row">
-          <Icon name="search" />
-          <input id="busca-livro" name="acao" type="search" autocomplete="off" spellcheck="false" placeholder="nº ou marca" />
-          <button class="btn btn--small" type="submit">Procurar</button>
-        </div>
-      </form>
-      <p class="explorer-mode" data-mode-panel="example" hidden><Icon name="alert" />Mostrando o exemplo. Nada disso aconteceu.</p>
+<BaseLayout title={SHARE.transparencia.title} description={SHARE.transparencia.description} share="transparencia" current="transparencia">
+  <BookTop ledger={ledger} example={example} />
+  <div class="stage stage--book" id="explorador">
+    <div class="stage-panels">
+      <BookActionsStep n={1} total={total} ledger={ledger} example={example} />
+      <BookInspectorStep n={2} total={total} ledger={ledger} />
+      <BookMoneyStep n={3} total={total} real={events} example={example.events} />
+      <BookTimelineStep n={4} total={total} real={events} example={example.events} />
+      <BookHowToStep n={5} total={total} events={events} />
+      <BookTypesStep n={6} total={total} />
     </div>
+    <StairNav steps={stairs} label="Os degraus do livro" class="stairs--main" />
   </div>
-  <LedgerVerifyBlock />
-  <LedgerChainBlock ledger={ledger} example={example} />
-  <LedgerActionsBlock ledger={ledger} example={example} />
-  <MoneyBlock real={ledger.events} example={example.events} number="04" />
-  <TimelineBlock real={ledger.events} example={example.events} number="05" />
-  <LedgerHowToBlock events={ledger.events} />
-  <LedgerTypesBlock />
 </BaseLayout>
 <script>import '../scripts/ledger';</script>

@@ -1,0 +1,44 @@
+---
+import Icon from '../site/Icon.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import NotOpenBadge from '../site/NotOpenBadge.astro';
+import { BOTTLENECKS } from '../../data/site/bottlenecks';
+import { CONTRIBUTIONS } from '../../data/site/contributions';
+
+interface Props { n: number; total: number }
+const { n, total } = Astro.props;
+const tasks = (id: string) => CONTRIBUTIONS.filter(c => c.bottleneck === id).length;
+const speech = 'Estes são os problemas que a gente ainda não sabe resolver. '
+  + BOTTLENECKS.map((b, i) => `${i + 1}: ${b.title}.`).join(' ')
+  + ' Se você entende de algum desses assuntos, sua ajuda vale muito.';
+---
+<StepPanel id="gargalos" n={n} total={total} title="O que a gente ainda não sabe resolver" speech={speech}>
+  <Fragment slot="figure">
+    <p class="figure-value">{BOTTLENECKS.length}</p>
+    <p class="figure-label">problemas em aberto</p>
+    <p class="figure-text">Falar disso também é transparência. Se você entende de algum desses assuntos, sua ajuda vale muito.</p>
+  </Fragment>
+  <div class="issues">
+    <div class="issue-list" role="tablist" aria-label="Os gargalos" aria-orientation="vertical" data-stairs>
+      {BOTTLENECKS.map((b, i) => (
+        <button class="issue-tab" role="tab" type="button" id={`t-gargalo-${b.id}`} aria-controls={`p-gargalo-${b.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? '0' : '-1'} data-hash={`gargalo-${b.id}`}>
+          <Icon name="alert" /><span class="issue-num">#{String(i + 1).padStart(2, '0')}</span><span class="issue-title">{b.title}</span><span class="module-id">{b.modules}</span>
+        </button>
+      ))}
+    </div>
+    {BOTTLENECKS.map((b, i) => (
+      <div class:list={['issue-detail', { 'is-active': i === 0 }]} id={`p-gargalo-${b.id}`} role="tabpanel" aria-labelledby={`t-gargalo-${b.id}`}>
+        <dl>
+          <div><dt>Por que é difícil</dt><dd>{b.why}</dd></div>
+          <div><dt>O que já está andando</dt><dd>{b.progress}</dd></div>
+          <div><dt>Quem pode ajudar</dt><dd>{b.helpers}</dd></div>
+        </dl>
+        <p class="issue-foot">
+          <a class="panel-link" href="#ajudar" data-contrib-link={b.id}>{tasks(b.id)} {tasks(b.id) === 1 ? 'tarefa aberta' : 'tarefas abertas'} pra esse gargalo<Icon name="arrow-right" /></a>
+          <span class="soon-note"><NotOpenBadge /><span>Dar uma ideia abre junto com o repositório.</span></span>
+        </p>
+      </div>
+    ))}
+  </div>
+</StepPanel>

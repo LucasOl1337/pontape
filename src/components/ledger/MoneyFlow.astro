@@ -21,7 +21,7 @@ const rows: Row[] = [
 const scaleCents = totals.inCents > totals.outCents ? totals.inCents : totals.outCents;
 const empty = scaleCents <= 0n;
 
-const LABEL = 48; // minimum distance between two labels
+const LABEL = 44; // minimum distance between two labels
 const GAP = 6; // air between two bars on the right
 const H = rows.length * LABEL + 8;
 const W = 100; // viewBox width; the SVG stretches sideways, bars and labels stay in px

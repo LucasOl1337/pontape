@@ -1,0 +1,24 @@
+---
+import StepPanel from '../stairs/StepPanel.astro';
+import Abacus from '../ledger/Abacus.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
+
+interface Props { n: number; total: number; real: LedgerEvent[]; example: LedgerEvent[] }
+const { n, total, real, example } = Astro.props;
+const active = TYPE_ORDER.filter(t => real.some(e => e.payload.type === t)).length;
+const counts = TYPE_ORDER.map(t => `${TYPES[t].label}: ${real.filter(e => e.payload.type === t).length}`).join('. ');
+---
+<StepPanel id="linha" n={n} total={total} title="Tudo que já aconteceu, conta por conta"
+  speech={`Linha do tempo em forma de ábaco. Uma vareta pra cada tipo de ação, uma conta pra cada ação, na ordem em que entrou no livro. ${counts}. Vareta vazia é o que ainda não começou.`}>
+  <Fragment slot="figure">
+    <p class="figure-value">{active}<span>/{TYPE_ORDER.length}</span></p>
+    <p class="figure-label">tipos de ação com conta</p>
+    <p class="figure-text">Um ábaco: uma vareta pra cada tipo de ação, uma conta pra cada ação. Vareta vazia é o que ainda não começou. Toque numa conta pra abrir a ação.</p>
+  </Fragment>
+  {[{ mode: 'real', events: real }, { mode: 'example', events: example }].map(({ mode, events }) => (
+    <div data-mode-panel={mode} hidden={mode !== 'real'}>
+      <Abacus events={events} id={`abacus-${mode}`} label={mode === 'real' ? 'Ações do livro, por tipo e por ordem' : 'Ações do exemplo fictício, por tipo e por ordem'} />
+    </div>
+  ))}
+</StepPanel>

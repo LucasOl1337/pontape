@@ -1,38 +1,63 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/home.css';
-import HeroBlock from '../components/blocks/HeroBlock.astro';
-import ForYouBlock from '../components/blocks/ForYouBlock.astro';
-import MoneyBlock from '../components/blocks/MoneyBlock.astro';
-import TimelineBlock from '../components/blocks/TimelineBlock.astro';
-import ProblemBlock from '../components/blocks/ProblemBlock.astro';
-import JourneyBlock from '../components/blocks/JourneyBlock.astro';
-import ModulesBlock from '../components/blocks/ModulesBlock.astro';
-import BottlenecksBlock from '../components/blocks/BottlenecksBlock.astro';
-import ContributionsBlock from '../components/blocks/ContributionsBlock.astro';
-import HelpBlock from '../components/blocks/HelpBlock.astro';
-import OpenSourceBlock from '../components/blocks/OpenSourceBlock.astro';
+import ListenButton from '../components/site/ListenButton.astro';
+import StairNav from '../components/stairs/StairNav.astro';
+import type { Stair } from '../components/stairs/stair';
+import IdeaStep from '../components/steps/IdeaStep.astro';
+import JourneyStep from '../components/steps/JourneyStep.astro';
+import ModulesStep from '../components/steps/ModulesStep.astro';
+import LedgerStep from '../components/steps/LedgerStep.astro';
+import MoneyStep from '../components/steps/MoneyStep.astro';
+import BottlenecksStep from '../components/steps/BottlenecksStep.astro';
+import HelpStep from '../components/steps/HelpStep.astro';
 import { getExampleLedger, getPublicLedger } from '../lib/ledger-view/source';
+import { formatCents, sumMoney } from '../lib/ledger-view/money';
 import { SHARE } from '../data/site/share';
+import { PROJECT_NAME } from '../data/site/project';
+import { STEPS } from '../data/site/journey';
+import { MODULES } from '../data/site/modules';
+import { BOTTLENECKS } from '../data/site/bottlenecks';
+import { CONTRIBUTIONS } from '../data/site/contributions';
 
-// Ábaco (F19 v3): the page opens on the ledger and its numbers; the idea explains itself around it.
+// Ábaco, rodada 2 (F22): a staircase of numbers. Each step is one part of the project and shows
+// its live number; choosing a step opens it in place. The whole home fits one screen on desktop.
 const ledger = await getPublicLedger();
 const example = await getExampleLedger();
+const { events } = ledger;
+const money = sumMoney(events);
+const supported = String(events.reduce((n, { payload: p }) => p.type === 'candidate' && p.action === 'support_completed' ? n + BigInt(p.count) : n, 0n));
+const live = MODULES.filter(m => m.status === 'live').length;
+const goodFirst = CONTRIBUTIONS.filter(c => c.goodFirst).length;
+const stairs: Stair[] = [
+  { id: 'ideia', hash: 'o-que-e', label: 'O que é', value: supported, caption: 'pessoas apoiadas', icon: 'sprout' },
+  { id: 'jornada', hash: 'como-funciona', label: 'Como funciona', value: String(STEPS.length), caption: 'passos até o trabalho', icon: 'merge' },
+  { id: 'modulos', hash: 'modulos', label: 'Módulos', value: `${live}/${MODULES.length}`, caption: 'funcionando', icon: 'cone' },
+  { id: 'livro', hash: 'livro', label: 'Livro público', value: String(events.length), caption: 'ações à vista', icon: 'link' },
+  { id: 'dinheiro', hash: 'dinheiro', label: 'Dinheiro', value: formatCents(money.inCents), caption: 'entrou até hoje', icon: 'coin' },
+  { id: 'gargalos', hash: 'gargalos', label: 'Gargalos', value: String(BOTTLENECKS.length), caption: 'em aberto', icon: 'alert' },
+  { id: 'ajudar', hash: 'ajudar', label: 'Ajudar', value: String(CONTRIBUTIONS.length), caption: `tarefas, ${goodFirst} pra começar`, icon: 'people' },
+];
+const total = stairs.length;
+const speech = `Aqui é o ${PROJECT_NAME}. O pontapé inicial pra quem quer mudar de vida. A página é uma escada de ${total} degraus, e cada degrau mostra um número de verdade. Um: o que é. Dois: como funciona. Três: os módulos. Quatro: o livro público, com ${events.length} ações. Cinco: o dinheiro, que ainda está em zero. Seis: os gargalos. Sete: como ajudar. Use as setas pra subir e descer a escada.`;
 ---
-<BaseLayout
-  title={SHARE.home.title}
-  description={SHARE.home.description}
-  share="home">
-  <HeroBlock ledger={ledger} />
-  <ForYouBlock />
-  <MoneyBlock real={ledger.events} example={example.events} number="02" ownSwitch />
-  <TimelineBlock real={ledger.events} number="03" link />
-  <ProblemBlock />
-  <JourneyBlock events={ledger.events} />
-  <ModulesBlock />
-  <BottlenecksBlock />
-  <ContributionsBlock />
-  <HelpBlock />
-  <OpenSourceBlock />
+<BaseLayout title={SHARE.home.title} description={SHARE.home.description} share="home">
+  <div class="stage" id="escada" data-speech={speech}>
+    <div class="stage-top">
+      <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span>{PROJECT_NAME}<span aria-hidden="true">·</span>sem fins lucrativos<span aria-hidden="true">·</span>código aberto</p>
+      <h1>O pontapé inicial pra quem quer mudar de vida. <span class="h1-sub">Cada passo, à vista.</span></h1>
+      <ListenButton target="escada" />
+    </div>
+    <div class="stage-panels">
+      <IdeaStep n={1} total={total} supported={supported} />
+      <JourneyStep n={2} total={total} events={events} />
+      <ModulesStep n={3} total={total} />
+      <LedgerStep n={4} total={total} ledger={ledger} />
+      <MoneyStep n={5} total={total} real={events} example={example.events} />
+      <BottlenecksStep n={6} total={total} />
+      <HelpStep n={7} total={total} />
+    </div>
+    <StairNav steps={stairs} label={`Os ${total} degraus do ${PROJECT_NAME}`} class="stairs--main" />
+  </div>
 </BaseLayout>
 <script>import '../scripts/home';</script>

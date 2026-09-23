@@ -128,15 +128,15 @@ code,pre,kbd{ font-family:var(--font-mono); font-size:.92em }
 
 /* ============ Faixa de estado e topo ============ */
 .status-strip{ background:var(--bg-2); border-bottom:1px solid var(--line); font-size:var(--text-small); color:var(--text-2) }
-.status-strip-inner{ max-width:calc(var(--content-width) + 2 * var(--gutter)); margin:0 auto; padding:8px var(--gutter); display:flex; flex-wrap:wrap; align-items:center; gap:4px 14px }
+.status-strip-inner{ max-width:calc(var(--stage-width) + 2 * var(--gutter)); margin:0 auto; padding:5px var(--gutter); display:flex; flex-wrap:wrap; align-items:center; gap:4px 14px }
 .status-pill{ display:inline-flex; align-items:center; gap:8px; padding:2px 10px 2px 8px; border:1px solid color-mix(in srgb, var(--building) 60%, transparent); border-radius:999px; color:var(--building); font:600 var(--text-micro) var(--font-mono); text-transform:uppercase; letter-spacing:.04em }
 .status-pill .status-dot{ width:8px; height:8px; background:var(--building); animation:blink 2.4s ease-in-out infinite }
 @keyframes blink{ 50%{ opacity:.35 } }
-.status-strip a{ color:var(--text); font-weight:600; padding:6px 0 }
+.status-strip a{ color:var(--text); font-weight:600; padding:4px 0 }
 
 .site-header{ position:sticky; top:0; z-index:30; background:color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid transparent; transition:border-color .2s }
 .site-header.scrolled{ border-bottom-color:var(--line) }
-.site-header-inner{ max-width:calc(var(--content-width) + 2 * var(--gutter)); margin:0 auto; padding:6px var(--gutter); display:flex; align-items:center; gap:8px; min-height:64px }
+.site-header-inner{ max-width:calc(var(--stage-width) + 2 * var(--gutter)); margin:0 auto; padding:4px var(--gutter); display:flex; align-items:center; gap:8px; min-height:56px }
 .logo{ display:inline-flex; align-items:center; gap:10px; min-height:48px; margin-right:auto; text-decoration:none; font:600 1.1875rem var(--font-mono); letter-spacing:-.02em }
 .logo:hover{ color:var(--text) }
 .logo-mark{ width:30px; height:25px; flex:none }
@@ -439,7 +439,7 @@ main:focus{ outline:none }
 
 /* ============ Rodapé ============ */
 .site-footer{ border-top:1px solid var(--line); background:var(--bg-2); margin-top:0 }
-.site-footer-inner{ max-width:calc(var(--content-width) + 2 * var(--gutter)); margin:0 auto; padding:48px var(--gutter) 40px; display:flex; flex-direction:column; gap:22px }
+.site-footer-inner{ max-width:calc(var(--stage-width) + 2 * var(--gutter)); margin:0 auto; padding:28px var(--gutter) 28px; display:flex; flex-direction:column; gap:16px }
 .footer-top{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px }
 .footer-brand{ display:inline-flex; align-items:center; gap:10px; font:600 1.25rem var(--font-mono) }
 .footer-chain{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; font:500 var(--text-micro) var(--font-mono); color:var(--text-2) }
@@ -467,10 +467,10 @@ main:focus{ outline:none }
 .lost h1{ font-size:var(--text-display); letter-spacing:-.035em }
 .highlight{ color:var(--accent) }
 .stairs-box{ display:flex; flex-direction:column; gap:12px }
-.stairs{ list-style:none; margin:0; padding:0; display:flex; align-items:flex-end; gap:8px; height:220px }
-.stairs li{ flex:1; height:calc(var(--n) * 20%) }
-.stairs .step{ display:flex; flex-direction:column; justify-content:flex-start; gap:6px; height:100%; padding:10px; border:1px solid var(--line-2); border-radius:8px; background:var(--panel-2); font:600 var(--text-micro) var(--font-mono); color:var(--text-2) }
-.stairs .step--missing{ border-style:dashed; background:transparent; color:var(--building) }
+.stairs-box .stairs{ list-style:none; margin:0; padding:0; display:flex; align-items:flex-end; gap:8px; height:220px }
+.stairs-box .stairs li{ flex:1; height:calc(var(--n) * 20%) }
+.stairs-box .step{ display:flex; flex-direction:column; justify-content:flex-start; gap:6px; height:100%; padding:10px; border:1px solid var(--line-2); border-radius:8px; background:var(--panel-2); font:600 var(--text-micro) var(--font-mono); color:var(--text-2) }
+.stairs-box .step--missing{ border-style:dashed; background:transparent; color:var(--building) }
 .step-missing-mark{ font-size:1.5rem }
 .stairs-box figcaption{ color:var(--text-3); font-size:var(--text-small) }
 

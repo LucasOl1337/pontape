@@ -1,0 +1,36 @@
+---
+import StepPanel from '../stairs/StepPanel.astro';
+import MoneyFlow from '../ledger/MoneyFlow.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { formatCents, sumMoney } from '../../lib/ledger-view/money';
+
+interface Props { n: number; total: number; real: LedgerEvent[]; example: LedgerEvent[] }
+const { n, total, real, example } = Astro.props;
+const panels = [{ mode: 'real', events: real }, { mode: 'example', events: example }] as const;
+---
+<StepPanel id="dinheiro" n={n} total={total} title="Quanto entrou, quanto saiu, pra onde foi"
+  speech="Dinheiro. Hoje entrou zero real e saiu zero real. A doação só abre quando existir uma conta oficial do projeto. Aqui nunca vai ter número inventado. No exemplo fictício dá pra ver o fluxo cheio.">
+  <Fragment slot="figure">
+    {panels.map(({ mode, events }) => {
+      const t = sumMoney(events);
+      return (
+        <div class="figure-group" data-mode-panel={mode} hidden={mode !== 'real'}>
+          <p class="figure-value figure-value--money">{formatCents(t.inCents)}</p>
+          <p class="figure-label">entrou em doações</p>
+          <dl class="figure-pairs">
+            <div><dt>Saiu</dt><dd>{formatCents(t.outCents)}</dd></div>
+            <div><dt>Em caixa</dt><dd>{formatCents(t.balanceCents)}</dd></div>
+          </dl>
+          {mode === 'real' && t.inCents === 0n
+            ? <p class="figure-text">A doação só abre quando existir uma conta oficial do projeto. Assim todo real tem dono, nota e prestação de contas. <a href="/#gargalo-receber-doacao-do-jeito-certo">Ver esse gargalo</a></p>
+            : <p class="figure-text">Valores fictícios, só pra mostrar como fica. Até o custo de operação aparece.</p>}
+        </div>
+      );
+    })}
+  </Fragment>
+  {panels.map(({ mode, events }) => (
+    <div data-mode-panel={mode} hidden={mode !== 'real'}>
+      <MoneyFlow events={events} mode={mode} caption={mode === 'real' ? 'Tudo zerado, e é de verdade. As faixas se enchem quando o primeiro real entrar.' : 'A espessura de cada faixa é o valor. Em caixa é o que ainda não foi gasto.'} />
+    </div>
+  ))}
+</StepPanel>

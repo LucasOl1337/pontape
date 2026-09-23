@@ -1,0 +1,59 @@
+---
+import Icon from '../site/Icon.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import HashPrint from '../ledger/HashPrint.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { canonicalize } from '../../lib/ledger/canonical';
+import { ledgerTrust } from '../../lib/ledger/published';
+import { REPOSITORY_OPEN } from '../../data/site/project';
+import { shortHash } from '../../scripts/hashprint';
+
+// The three steps of the check, worked on the newest real action.
+interface Props { n: number; total: number; events: LedgerEvent[] }
+const { n, total, events } = Astro.props;
+const last = events.at(-1);
+// Everything but the mark itself: exactly what the SHA-256 receives.
+const unsigned = last && { schemaVersion: last.schemaVersion, sequence: last.sequence, previousHash: last.previousHash, recordedAt: last.recordedAt, payload: last.payload };
+const text = unsigned ? canonicalize(unsigned) : '';
+// F08 trust state (src/data/ledger/trust.json): say plainly what is not active yet.
+const TRUST = [
+  { label: 'Assinatura das marcas', value: ledgerTrust.signature === 'not_configured' ? 'ainda não configurada' : 'ativa' },
+  { label: 'Carimbo de tempo público', value: ledgerTrust.timestamp === 'not_anchored' ? 'ainda não feito' : 'feito' },
+  { label: 'Cópia fora do projeto', value: ledgerTrust.mirror === 'not_configured' ? 'ainda não ativa' : 'ativa' },
+];
+---
+<StepPanel id="como-conferir" n={n} total={total} title="Como qualquer pessoa confere"
+  speech="Como qualquer pessoa confere. Um: cada ação vira um texto, sempre no mesmo formato. Dois: esse texto passa por uma conta pública chamada SHA-256, que devolve uma marca. Mudou uma vírgula, a marca muda inteira. Três: cada ação guarda a marca da anterior. Mexer numa linha antiga quebra todas as marcas depois dela. O livro prova que ninguém mexeu no que foi registrado. Ele não prova que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e a auditoria de fora.">
+  <Fragment slot="figure">
+    <p class="figure-value figure-value--money">SHA-256</p>
+    <p class="figure-label">uma conta pública</p>
+    <p class="figure-text">Não precisa confiar na gente, nem no nosso botão. A conta dá pra refazer em qualquer computador, sem internet.</p>
+    <dl class="trust-list">
+      {TRUST.map(t => <div><dt>{t.label}</dt><dd><span class="status-dot" data-status="planned" aria-hidden="true"></span>{t.value}</dd></div>)}
+    </dl>
+  </Fragment>
+  <div class="howto">
+    <ol class="derivation">
+      <li>
+        <p class="step-num">1 · Texto padrão</p>
+        <h3>Cada ação vira um texto.</h3>
+        <p>Sempre os mesmos campos, na mesma ordem. Sem nome de ninguém.</p>
+        {last && <pre class="canon"><code>{text}</code></pre>}
+      </li>
+      <li>
+        <p class="step-num">2 · Marca</p>
+        <h3>O texto vira uma marca.</h3>
+        <p>Mudou uma vírgula, a marca muda inteira.</p>
+        {last && <p class="derived"><HashPrint hash={last.hash} class="hashprint--big" /><code>{shortHash(last.hash)}</code><span>marca da nº {last.sequence}</span></p>}
+      </li>
+      <li>
+        <p class="step-num">3 · Corrente</p>
+        <h3>Cada marca segura a anterior.</h3>
+        <p>Mexer numa linha antiga quebra todas as marcas depois dela.</p>
+        {last && events.length > 1 && <p class="derived"><code>"previousHash":"{last.previousHash.slice(0, 8)}…"</code><span>a nº {last.sequence} guarda a marca da nº {Number(last.sequence) - 1}</span></p>}
+      </li>
+    </ol>
+    <p class="not-proven"><strong>O que o livro não prova.</strong> Ele prova que ninguém mexeu no que foi registrado, não que tudo foi registrado. Pra isso existe a conferência com o extrato do banco e, quando der, auditoria de fora.</p>
+    <p class="verify-cli">No computador: <code>npm run ledger:verify</code>, passo a passo em <code>docs/transparencia/COMO-CONFERIR.md</code>.{!REPOSITORY_OPEN && ' O repositório ainda está fechado.'} <a href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="download" />Guardar a marca de controle</a></p>
+  </div>
+</StepPanel>

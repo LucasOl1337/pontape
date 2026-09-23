@@ -7,13 +7,14 @@ interface Props { current?: 'home' | 'transparencia' }
 const { current = 'home' } = Astro.props;
 const onHome = current === 'home';
 const at = (hash: string) => (onHome ? hash : `/${hash}`);
+// The home's sections are steps of the staircase: each link opens its step in place.
 const links = [
-  { href: '/transparencia', label: 'Livro', current: current === 'transparencia' },
-  { href: at('#dinheiro'), label: 'Dinheiro' },
   { href: at('#como-funciona'), label: 'Como funciona' },
   { href: at('#modulos'), label: 'Módulos' },
+  { href: '/transparencia', label: 'Livro público', current: current === 'transparencia' },
+  { href: at('#dinheiro'), label: 'Dinheiro' },
   { href: at('#gargalos'), label: 'Gargalos' },
-  { href: at('#contribuicoes'), label: 'Contribuir' },
+  { href: at('#ajudar'), label: 'Ajudar' },
 ];
 ---
 <header class="site-header">

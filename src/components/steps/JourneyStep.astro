@@ -1,0 +1,58 @@
+---
+import Icon from '../site/Icon.astro';
+import Badge from '../site/Badge.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { STEPS } from '../../data/site/journey';
+import { MODULES } from '../../data/site/modules';
+
+// The candidate's journey as a small staircase inside the step: each passo with its ledger count.
+interface Props { n: number; total: number; events: LedgerEvent[] }
+const { n, total, events } = Astro.props;
+const candidate = (action: string) => String(events.reduce((sum, { payload: p }) => p.type === 'candidate' && p.action === action ? sum + BigInt(p.count) : sum, 0n));
+const COUNTERS: (readonly [string, string] | null)[] = [
+  [candidate('contact_completed'), 'contatos feitos'],
+  [candidate('interview_completed'), 'entrevistas concluídas'],
+  null,
+  [candidate('support_completed'), 'apoios dos primeiros dias'],
+  [candidate('referral_completed'), 'encaminhamentos pra vaga'],
+  null,
+  [String(events.length), 'ações no livro'],
+];
+const moduleOf = (id: string) => MODULES.find(m => m.id === id)!;
+const speech = `São ${STEPS.length} passos, da rua ao trabalho. ` + STEPS.map((s, i) => `${i + 1}: ${s.title}. ${s.text}`).join(' ');
+---
+<StepPanel id="jornada" n={n} total={total} title="Como funciona" speech={speech}>
+  <Fragment slot="figure">
+    <p class="figure-value">{STEPS.length}</p>
+    <p class="figure-label">passos, da rua ao trabalho</p>
+    <p class="figure-text">Cada passo tem um contador no livro, só com número. Hoje estão em zero: a entrevista ainda não abriu.</p>
+  </Fragment>
+  <div class="path">
+    <div class="path-steps" role="tablist" aria-label="Os passos da jornada" data-stairs>
+      {STEPS.map((s, i) => (
+        <button class="path-step" role="tab" type="button" id={`t-passo-${i + 1}`} aria-controls={`p-passo-${i + 1}`}
+          aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? '0' : '-1'} style={`--i:${i}`}>
+          <Icon name={s.icon} /><span class="path-n">{i + 1}</span><span class="path-name">{s.shortName}</span>
+          {COUNTERS[i] && <span class="path-count">{COUNTERS[i]![0]}</span>}
+        </button>
+      ))}
+    </div>
+    {STEPS.map((s, i) => {
+      const m = moduleOf(s.module);
+      const c = COUNTERS[i];
+      return (
+        <div class:list={['path-panel', { 'is-active': i === 0 }]} id={`p-passo-${i + 1}`} role="tabpanel" aria-labelledby={`t-passo-${i + 1}`}>
+          <p class="path-kicker">Passo {i + 1} de {STEPS.length}</p>
+          <h3>{s.title}</h3>
+          <p class="path-text">{s.text}</p>
+          <div class="path-meta">
+            <p class="path-who"><span>Quem faz</span>{s.who.map(w => <span class="chip">{w}</span>)}</p>
+            <p class="path-module"><span class="module-id">{m.id}</span>{m.name}<Badge status={m.status} /></p>
+            <p class="path-counter">{c ? <><strong>{c[0]}</strong>{c[1]} no livro</> : 'Sem contador próprio'}</p>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</StepPanel>

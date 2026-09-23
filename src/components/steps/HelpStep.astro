@@ -1,0 +1,67 @@
+---
+import Icon from '../site/Icon.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import { CONTRIBUTIONS, CONTRIBUTION_TYPES, issueUrl } from '../../data/site/contributions';
+import { bottleneckTitle } from '../../data/site/bottlenecks';
+import { REPOSITORY_OPEN } from '../../data/site/project';
+
+// Top of the staircase: how to help. Four ways (with their honest state) and the open tasks,
+// filtered and paged so the panel never turns into a long list.
+interface Props { n: number; total: number }
+const { n, total } = Astro.props;
+const goodFirst = CONTRIBUTIONS.filter(c => c.goodFirst);
+const types = (Object.keys(CONTRIBUTION_TYPES) as (keyof typeof CONTRIBUTION_TYPES)[])
+  .map(t => ({ id: t, ...CONTRIBUTION_TYPES[t], count: CONTRIBUTIONS.filter(c => c.type === t).length }))
+  .filter(t => t.count > 0);
+const WAYS = [
+  { icon: 'coin', title: 'Doar', when: 'Abre quando a conta oficial existir.', open: false },
+  { icon: 'people', title: 'Ser voluntário', when: 'Abre com o piloto na primeira cidade.', open: false },
+  { icon: 'briefcase', title: 'Oferecer vaga', when: 'Abre quando as primeiras pessoas forem escolhidas.', open: false },
+  { icon: 'code', title: 'Contribuir', when: 'As tarefas já estão aqui do lado.', open: true },
+] as const;
+const joinList = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items.at(-1)}`;
+const speech = `Tem quatro jeitos de ajudar: doar, ser voluntário, oferecer uma vaga ou contribuir com o projeto. A doação, o voluntariado e as vagas ainda não abriram. Tem ${CONTRIBUTIONS.length} tarefas abertas. ${goodFirst.length} são boas pra quem está começando: ${joinList(goodFirst.map(c => c.title))}. Pegar uma tarefa abre junto com o repositório. A gente não guarda contato de ninguém por enquanto.`;
+---
+<StepPanel id="ajudar" n={n} total={total} title="Tem lugar pra você aqui" speech={speech}>
+  <Fragment slot="figure">
+    <p class="figure-value">{CONTRIBUTIONS.length}</p>
+    <p class="figure-label">tarefas abertas</p>
+    <p class="figure-text">{goodFirst.length} são boas pra quem está começando. Quatro jeitos de entrar:</p>
+    <ul class="ways">
+      {WAYS.map(w => <li data-open={String(w.open)}><Icon name={w.icon} /><span class="way-main"><span><strong>{w.title}</strong><em class="way-tag">{w.open ? 'em construção' : 'ainda não abriu'}</em></span><span class="way-when">{w.when}</span></span></li>)}
+    </ul>
+  </Fragment>
+  <div class="contribs" data-contribs>
+    <div class="filters" role="group" aria-label="Filtrar tarefas" data-contrib-filters>
+      <button class="filter" type="button" data-contrib="all" aria-pressed="true">Todas<span class="count">{CONTRIBUTIONS.length}</span></button>
+      <button class="filter" type="button" data-contrib="first" aria-pressed="false"><Icon name="sprout" />Bom primeiro passo<span class="count">{goodFirst.length}</span></button>
+      {types.map(t => <button class="filter" type="button" data-contrib={t.id} aria-pressed="false"><Icon name={t.icon} />{t.label}<span class="count">{t.count}</span></button>)}
+    </div>
+    <ul class="contrib-list" data-contrib-grid>
+      {CONTRIBUTIONS.map(c => {
+        const unlocks = bottleneckTitle(c.bottleneck);
+        return (
+          <li class="contrib-row" data-type={c.type} data-first={String(c.goodFirst)} data-bottleneck={c.bottleneck ?? ''}>
+            <a class="contrib-issue" href={issueUrl(c.issueNumber)} rel="noopener"><span class="sr-only">Issue </span>#{c.issueNumber}</a>
+            <div class="contrib-main">
+              <h3>{c.title}</h3>
+              <p class="contrib-summary">{c.summary}</p>
+              <p class="contrib-meta">
+                <span class="contrib-type"><Icon name={CONTRIBUTION_TYPES[c.type].icon} />{CONTRIBUTION_TYPES[c.type].label}</span>
+                <span class="module-id">{c.module}</span>
+                {c.goodFirst && <span class="good-first"><Icon name="sprout" />Bom primeiro passo</span>}
+                {unlocks && <span class="contrib-unlocks">Destrava: {unlocks}</span>}
+              </p>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+    <div class="pager" data-pager hidden>
+      <button class="icon-btn" type="button" data-page="-1"><Icon name="arrow-left" /><span class="sr-only">Tarefas anteriores</span></button>
+      <p class="pager-text" aria-live="polite" data-pager-text></p>
+      <button class="icon-btn" type="button" data-page="1"><Icon name="arrow-right" /><span class="sr-only">Próximas tarefas</span></button>
+    </div>
+    <p class="open-foot"><Icon name="lock" /><span>Código aberto, com aprovação de admin. {REPOSITORY_OPEN ? '' : 'O repositório ainda está fechado: abre quando nome e licença forem decididos. '}A gente não guarda contato de ninguém por enquanto.</span></p>
+  </div>
+</StepPanel>

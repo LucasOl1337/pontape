@@ -1,5 +1,5 @@
-// /transparencia: real or example ledger, the chain inspector, search, type filters, the
-// "edit a line in secret" demo and Conferir.
+// /transparencia (rodada 2): real or example ledger, the book's staircase, the open action, search,
+// type filters with pages, the "edit a line in secret" demo and Conferir.
 import type { LedgerEvent } from '../lib/ledger/schema';
 import type { LedgerView } from '../lib/ledger-view/source';
 import { canonicalize } from '../lib/ledger/canonical';
@@ -7,6 +7,7 @@ import { EVIDENCE, TYPES } from '../lib/ledger-view/phrases';
 import { toast } from './site';
 import { mountVerify, readLedger } from './verify';
 import { findAction, mountChainLinks, mountFlowHover, mountRoving } from './explorer';
+import { choose, mountStairs } from './stairs';
 import { hashPrintSvg, recordedText, shortHash } from './hashprint';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
@@ -23,6 +24,7 @@ let mode: Mode = params.has('exemplo') ? 'example' : 'real';
 let selected: string | null = null;
 let tampered: { seq: string; amount: string } | null = null;
 
+mountStairs();
 mountRoving();
 mountChainLinks();
 mountFlowHover();
@@ -38,7 +40,9 @@ const unsignedOf = (e: LedgerEvent) => ({ schemaVersion: e.schemaVersion, sequen
 const inspector = $('[data-inspector]')!;
 const body = $('[data-inspector-body]', inspector)!;
 const title = $('[data-inspector-title]', inspector)!;
-const stepBtns = $$<HTMLButtonElement>('[data-inspector-step]', inspector);
+const stepBtns = $$<HTMLButtonElement>('[data-inspector-step]');
+const figure = $('[data-inspector-figure]');
+const figureMark = $('[data-inspector-mark]');
 const repositoryOpen = inspector.dataset.repoOpen === 'true';
 
 // The sentences of an action (built at build time) live in its row of the actions table.
@@ -71,6 +75,8 @@ function render(e: LedgerEvent) {
     ...(l.source ? [['Fonte', `<a href="${esc(l.source)}" rel="noopener">Ver no GitHub${icon('arrow-right')}</a>${repositoryOpen ? '' : '<span class="muted">Repositório ainda fechado</span>'}`]] : []),
   ];
   title.textContent = `Ação nº ${e.sequence}`;
+  if (figure) figure.textContent = `nº ${e.sequence}`;
+  if (figureMark) figureMark.textContent = `marca ${shortHash(e.hash)}`;
   body.innerHTML = `<dl class="inspector-fields">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
     <div class="inspector-canon">
       <p class="canon-label">Texto exato que vira a marca</p>
@@ -95,11 +101,13 @@ function select(seq: string, { reveal = false, fromHash = false } = {}) {
   const block = $(`#chain-${mode} .chain-block[data-seq="${seq}"]`);
   const strip = block?.closest<HTMLElement>('.chain-strip');
   if (block && strip) strip.scrollTo({ left: block.offsetLeft - strip.clientWidth / 2 + block.offsetWidth / 2, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
-  if (!fromHash) history.replaceState(null, '', `${location.pathname}${location.search}#acao-${seq}`);
   if (reveal) {
-    inspector.scrollIntoView({ block: 'start', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    const tab = $('#t-acao');
+    if (tab) choose(tab, { hash: false });
+    $('#explorador')?.scrollIntoView({ block: 'start', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
     inspector.focus({ preventScroll: true });
   }
+  if (!fromHash) history.replaceState(null, '', `${location.pathname}${location.search}#acao-${seq}`);
 }
 
 stepBtns.forEach(b => b.addEventListener('click', () => {
@@ -123,12 +131,32 @@ body.addEventListener('click', async e => {
 
 /* ---------- Mode, filters, clicks ---------- */
 
-function applyFilter(filter: string) {
+// The table shows PAGE rows at a time, after the type filter.
+const PAGE = 6;
+let filter = 'all';
+let page = 0;
+const pagerText = $('[data-table-pager-text]');
+const pageBtns = $$<HTMLButtonElement>('[data-table-page]');
+function renderTable() {
   const list = $(`[data-ledger-list="${mode}"]`)!;
-  $$('[data-type-filter]', $(`[data-type-filters="${mode}"]`)!).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.typeFilter === filter)));
-  $$('tbody tr', list).forEach(tr => { tr.hidden = filter !== 'all' && tr.dataset.type !== filter; });
+  const rows = $$('tbody tr', list);
+  const shown = rows.filter(tr => filter === 'all' || tr.dataset.type === filter);
+  const pages = Math.max(1, Math.ceil(shown.length / PAGE));
+  page = Math.max(0, Math.min(page, pages - 1));
+  rows.forEach(tr => { tr.hidden = true; });
+  shown.slice(page * PAGE, page * PAGE + PAGE).forEach(tr => { tr.hidden = false; });
   $$('.empty-note[data-empty-for]:not([data-empty-for="all"])', list).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
+  const from = shown.length ? page * PAGE + 1 : 0;
+  if (pagerText) pagerText.textContent = shown.length ? `${from} a ${Math.min(shown.length, from + PAGE - 1)} de ${shown.length} ${shown.length === 1 ? 'ação' : 'ações'}` : 'Nenhuma ação';
+  pageBtns.forEach(b => { b.disabled = Number(b.dataset.tablePage) < 0 ? page === 0 : page >= pages - 1; });
 }
+function applyFilter(next: string) {
+  filter = next;
+  page = 0;
+  $$('[data-type-filter]', $(`[data-type-filters="${mode}"]`)!).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.typeFilter === filter)));
+  renderTable();
+}
+pageBtns.forEach(b => b.addEventListener('click', () => { page += Number(b.dataset.tablePage); renderTable(); }));
 
 function setMode(next: Mode) {
   mode = next;
@@ -149,8 +177,8 @@ document.addEventListener('click', e => {
   const filterBtn = target.closest<HTMLElement>('[data-type-filter]');
   if (filterBtn) { applyFilter(filterBtn.dataset.typeFilter!); return; }
   const pick = target.closest<HTMLElement>('[data-select]');
-  // From the strip the inspector is right below; from the table or the abacus, bring it into view.
-  if (pick) select(pick.dataset.select!, { reveal: !pick.closest('.chain-strip') });
+  // Any block, row or bead opens the action in the "Uma ação por dentro" step.
+  if (pick) select(pick.dataset.select!, { reveal: !pick.closest('.inspector') });
 });
 
 $$<HTMLFormElement>('[data-search]').forEach(form => form.addEventListener('submit', e => {

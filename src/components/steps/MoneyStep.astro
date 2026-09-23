@@ -1,0 +1,34 @@
+---
+import Icon from '../site/Icon.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import MoneyFlow from '../ledger/MoneyFlow.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import { formatCents, sumMoney } from '../../lib/ledger-view/money';
+
+// Money from the ledger sums: the real zero, with a switch to the fictional example so the flow
+// can be seen full.
+interface Props { n: number; total: number; real: LedgerEvent[]; example: LedgerEvent[] }
+const { n, total, real, example } = Astro.props;
+const money = sumMoney(real);
+---
+<StepPanel id="dinheiro" n={n} total={total} class="money-step"  title="Quanto entrou, quanto saiu, pra onde foi"
+  speech="Dinheiro. Hoje entrou zero real e saiu zero real. A doação só abre quando existir uma conta oficial do projeto. Assim todo real tem dono, nota e prestação de contas. Aqui nunca vai ter número inventado. Dá pra ver como fica com dinheiro num exemplo, com valores de mentira.">
+  <Fragment slot="figure">
+    <p class="figure-value figure-value--money">{formatCents(money.inCents)}</p>
+    <p class="figure-label">entrou em doações</p>
+    <dl class="figure-pairs">
+      <div><dt>Saiu</dt><dd>{formatCents(money.outCents)}</dd></div>
+      <div><dt>Em caixa</dt><dd>{formatCents(money.balanceCents)}</dd></div>
+    </dl>
+    <p class="figure-text">A doação só abre quando existir uma conta oficial do projeto. Aqui nunca vai ter número inventado. <a href="#gargalo-receber-doacao-do-jeito-certo">Ver esse gargalo</a></p>
+    <div class="segmented" role="group" aria-label="Qual dinheiro mostrar no fluxo">
+      <button type="button" data-mode-switch="real" aria-pressed="true">Livro de verdade</button>
+      <button type="button" data-mode-switch="example" aria-pressed="false">Exemplo fictício</button>
+    </div>
+  </Fragment>
+  <div class="money">
+    <p class="sample-banner" data-mode-panel="example" hidden><Icon name="alert" /><span><strong>Exemplo.</strong> Valores de mentira. Nada disso aconteceu.</span></p>
+    <div data-mode-panel="real"><MoneyFlow events={real} mode="real" caption="Tudo zerado, e é de verdade. As faixas se enchem quando o primeiro real entrar." /></div>
+    <div data-mode-panel="example" hidden><MoneyFlow events={example} mode="example" caption="A espessura de cada faixa é o valor. Em caixa é o que ainda não foi gasto." /></div>
+  </div>
+</StepPanel>

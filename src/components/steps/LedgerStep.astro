@@ -1,0 +1,29 @@
+---
+import Icon from '../site/Icon.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import ChainStrip from '../ledger/ChainStrip.astro';
+import Abacus from '../ledger/Abacus.astro';
+import VerifyPanel from '../ledger/VerifyPanel.astro';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
+
+// The ledger step: how many actions, Conferir right there, the newest blocks and the abacus.
+interface Props { n: number; total: number; ledger: LedgerView }
+const { n, total, ledger } = Astro.props;
+const { events } = ledger;
+const counts = TYPE_ORDER.map(t => `${TYPES[t].label}: ${events.filter(e => e.payload.type === t).length}`).join('. ');
+const speech = `Livro público. Hoje ele tem ${events.length} ações, cada uma presa na anterior por uma marca. ${counts}. Aperte Conferir e o seu aparelho refaz a conta de cada ação. Toda ação aparece. Quem é a pessoa, não.`;
+---
+<StepPanel id="livro" n={n} total={total} title="O livro público, conferível" speech={speech}>
+  <Fragment slot="figure">
+    <p class="figure-value">{events.length}</p>
+    <p class="figure-label">ações no livro</p>
+    <p class="figure-text">Cada uma presa na anterior. Mexeu numa, a corrente quebra. Toda ação aparece; quem é a pessoa, não.</p>
+    <VerifyPanel marks="#chain-home, #abacus-home" where="Roda no seu aparelho. Nada é enviado pra gente." />
+  </Fragment>
+  <a slot="tools" class="btn btn--small btn--primary" href="/transparencia">Abrir o livro<Icon name="arrow-right" /></a>
+  <div class="ledger-now">
+    <ChainStrip events={events} id="chain-home" label="As ações mais novas da corrente" head={5} link={seq => `/transparencia#acao-${seq}`} more="/transparencia#corrente" />
+    <Abacus events={events} id="abacus-home" label="Ações do livro, por tipo e por ordem" link={seq => `/transparencia#acao-${seq}`} />
+  </div>
+</StepPanel>

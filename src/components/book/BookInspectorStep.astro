@@ -1,0 +1,29 @@
+---
+import Icon from '../site/Icon.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { REPOSITORY_OPEN } from '../../data/site/project';
+import { shortHash } from '../../scripts/hashprint';
+
+// The open action, drawn in the browser from the same JSON that Conferir checks; its sentences
+// come from the matching row of the actions table.
+interface Props { n: number; total: number; ledger: LedgerView }
+const { n, total, ledger } = Astro.props;
+const last = ledger.events.at(-1);
+---
+<StepPanel id="acao" n={n} total={total} title="Uma ação por dentro"
+  speech="Uma ação por dentro: o que foi, o dia, a marca dela e a marca da anterior, e o texto exato que vira a marca. O botão Refazer a conta confere só essa linha, no seu aparelho.">
+  <Fragment slot="figure">
+    <p class="figure-value" data-inspector-figure>nº {last?.sequence ?? '0'}</p>
+    <p class="figure-label" data-inspector-mark>marca {last ? shortHash(last.hash) : 'nenhuma'}</p>
+    <p class="figure-text">Escolha um bloco na corrente, uma linha da tabela ou uma conta da linha do tempo. As setas passam pra anterior e pra seguinte.</p>
+    <div class="inspector-nav">
+      <button class="btn btn--small" type="button" data-inspector-step="-1"><Icon name="arrow-left" /><span>Anterior</span></button>
+      <button class="btn btn--small" type="button" data-inspector-step="1"><span>Seguinte</span><Icon name="arrow-right" /></button>
+    </div>
+  </Fragment>
+  <article class="inspector" id="inspetor" aria-labelledby="inspector-title" data-inspector data-repo-open={String(REPOSITORY_OPEN)} tabindex="-1">
+    <h3 class="sr-only" id="inspector-title" data-inspector-title>Ação aberta</h3>
+    <div class="inspector-body" data-inspector-body><p class="muted">Escolha uma ação.</p></div>
+  </article>
+</StepPanel>

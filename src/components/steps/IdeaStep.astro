@@ -1,0 +1,52 @@
+---
+import Icon from '../site/Icon.astro';
+import ListenButton from '../site/ListenButton.astro';
+import NotOpenBadge from '../site/NotOpenBadge.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import { PROJECT_NAME } from '../../data/site/project';
+
+interface Props { n: number; total: number; supported: string }
+const { n, total, supported } = Astro.props;
+const HELP = [
+  { icon: 'plate', label: 'Comida' }, { icon: 'shirt', label: 'Roupa' }, { icon: 'soap', label: 'Higiene' },
+  { icon: 'briefcase', label: 'Trabalho' }, { icon: 'voice-ai', label: 'IA' },
+] as const;
+const ROWS = [
+  { id: 'loose', name: 'Ajuda solta', covered: 1 },
+  { id: 'full', name: 'Caminho inteiro', covered: 5 },
+];
+const speech = `O ${PROJECT_NAME} encontra quem quer recomeçar. Garante comida, roupa e higiene nos primeiros dias. E ajuda a chegar num trabalho, com apoio de inteligência artificial. Dinheiro sozinho não resolve: a raiz é acertar a pessoa e dar um caminho inteiro, do prato de comida até o primeiro salário. Até agora, ${supported} pessoas apoiadas. O projeto ainda não atende ninguém, e o número começa do zero de verdade.`;
+---
+<StepPanel id="ideia" n={n} total={total} title="O que é o PontaPé" speech={speech}>
+  <Fragment slot="figure">
+    <p class="figure-value">{supported}</p>
+    <p class="figure-label">pessoas apoiadas até agora</p>
+    <p class="figure-text">Começa do zero, e é de verdade. Quando a primeira pessoa for apoiada, o número muda aqui e a ação entra no livro.</p>
+  </Fragment>
+  <div class="idea-grid">
+    <div class="idea-main">
+      <p class="big-lead">A gente encontra quem quer recomeçar, garante <strong>comida, roupa e higiene</strong> nos primeiros dias e ajuda a chegar num <strong>trabalho</strong>, com apoio de IA.</p>
+      <p class="idea-root"><strong>Dinheiro sozinho não resolve.</strong> A raiz é acertar a pessoa e dar um caminho inteiro, do prato de comida até o primeiro salário.</p>
+      <table class="compare">
+        <caption class="sr-only">Ajuda solta cobre 1 de 5 passos. Caminho inteiro cobre os 5.</caption>
+        <thead><tr><td></td>{HELP.map(h => <th scope="col"><Icon name={h.icon} /><span>{h.label}</span></th>)}</tr></thead>
+        <tbody>
+          {ROWS.map(r => (
+            <tr data-row={r.id}>
+              <th scope="row">{r.name} <span class="compare-count">{r.covered} de {HELP.length}</span></th>
+              {HELP.map((h, i) => <td class:list={['cell', { 'is-on': i < r.covered }]}><span class="sr-only">{h.label}: {i < r.covered ? 'sim' : 'não'}</span></td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <aside class="voice-card" id="pra-voce" aria-labelledby="t-for-you"
+      data-speech={`Oi. Que bom que você está aqui. O ${PROJECT_NAME} ajuda quem quer mudar de vida. A gente dá comida, roupa e higiene nos primeiros dias. E ajuda você a arrumar um trabalho. É de graça. Pra participar, você só precisa conversar com a gente. Não precisa ler nem escrever. A conversa ainda não abriu. Quando abrir, vai ser aqui no site, com um voluntário na rua, ou num ponto perto de você.`}>
+      <p class="voice-kicker">Pra você</p>
+      <h3 id="t-for-you">Você quer mudar de vida?</h3>
+      <p>Aperte e escute. Não precisa ler.</p>
+      <ListenButton target="pra-voce" big />
+      <p class="voice-soon"><NotOpenBadge /><span>A conversa por voz ainda não abriu. É de graça.</span></p>
+    </aside>
+  </div>
+</StepPanel>

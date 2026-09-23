@@ -1,0 +1,65 @@
+---
+import Icon from '../site/Icon.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import ActionTable from '../ledger/ActionTable.astro';
+import type { LedgerEvent } from '../../lib/ledger/schema';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { TYPES, TYPE_ORDER, type LedgerType } from '../../lib/ledger-view/phrases';
+import { REPOSITORY_OPEN } from '../../data/site/project';
+
+// Every action, newest first, 10 per page, filtered by type. The number opens the action.
+interface Props { n: number; total: number; ledger: LedgerView; example: LedgerView }
+const { n, total, ledger, example } = Astro.props;
+const lists = [{ mode: 'real', view: ledger }, { mode: 'example', view: example }] as const;
+const count = (events: LedgerEvent[], type: LedgerType) => events.filter(e => e.payload.type === type).length;
+const EMPTY: Record<LedgerType, [string, string]> = {
+  finance: ['Nenhum real entrou nem saiu ainda.', 'A doação abre quando existir a conta oficial do projeto. Aqui nunca vai ter número inventado.'],
+  field: ['Nenhuma entrega na rua ainda.', 'Começa com o piloto. Cada entrega vira uma linha, sem dizer quem recebeu nem onde.'],
+  candidate: ['Nenhum passo de candidato ainda.', 'Quando a entrevista abrir, aparece só a contagem. Sem nome, rosto, apelido nem lugar.'],
+  project: ['Nenhuma ação do projeto ainda.', 'Cada decisão e cada mudança integrada no código entra aqui sozinha.'],
+};
+---
+<StepPanel id="acoes" n={n} total={total} title="Todas as ações, da mais nova pra mais antiga"
+  speech="Todas as ações do livro, da mais nova pra mais antiga, seis por página. Cada linha mostra o número, o tipo, o que foi, o dia, o valor quando tem, e a marca. Toque no número pra abrir a ação.">
+  <Fragment slot="figure">
+    <p class="figure-value">{ledger.events.length}</p>
+    <p class="figure-label">ações, 6 por página</p>
+    <p class="figure-text">Filtre por tipo ou procure pelo número ou pelo começo da marca.</p>
+    <form class="search" action="/transparencia" method="get" role="search" data-search>
+      <label for="busca-livro">Procurar ação</label>
+      <div class="search-row">
+        <Icon name="search" />
+        <input id="busca-livro" name="acao" type="search" autocomplete="off" spellcheck="false" placeholder="nº ou marca" />
+        <button class="btn btn--small" type="submit">Ir</button>
+      </div>
+    </form>
+    <p class="figure-note">O título de cada decisão vem do <code>DECISOES.md</code> e fica fora da marca.{!REPOSITORY_OPEN && ' Os links pra fonte levam ao repositório, que ainda está fechado.'}</p>
+  </Fragment>
+  <div class="actions-box">
+    {lists.map(({ mode, view: { events } }) => (
+      <div class="filters" role="group" aria-label="Filtrar por tipo de ação" data-type-filters={mode} data-mode-panel={mode} hidden={mode !== 'real'}>
+        <button class="filter" type="button" data-type-filter="all" aria-pressed="true">Todas<span class="count">{events.length}</span></button>
+        {TYPE_ORDER.map(t => <button class="filter" type="button" data-type-filter={t} aria-pressed="false"><span class="type-dot" data-type={t} aria-hidden="true"></span>{TYPES[t].label}<span class="count">{count(events, t)}</span></button>)}
+      </div>
+    ))}
+    <div class="tamper" data-mode-panel="example" hidden>
+      <p>Teste a corrente: mude o valor de uma linha escondido, sem refazer a marca. Depois aperte Conferir lá em cima.</p>
+      <button class="btn btn--small" type="button" data-tamper><Icon name="pen" />Mudar uma linha escondido</button>
+      <button class="btn btn--small" type="button" data-untamper hidden><Icon name="undo" />Desfazer a mudança</button>
+    </div>
+    {lists.map(({ mode, view: { events } }) => (
+      <div class="ledger-list" data-mode-panel={mode} data-ledger-list={mode} hidden={mode !== 'real'}>
+        {events.length > 0 && <ActionTable events={events} id={`table-${mode}`} caption={mode === 'real' ? 'Todas as ações do livro' : 'Todas as ações do exemplo fictício'} />}
+        {!events.length && <div class="empty-note" data-empty-for="all"><Icon name="receipt" /><p><strong>O livro ainda não tem nenhuma ação.</strong></p></div>}
+        {TYPE_ORDER.filter(t => events.length && !count(events, t)).map(t => (
+          <div class="empty-note" data-empty-for={t} hidden><Icon name={TYPES[t].icon} /><p><strong>{EMPTY[t][0]}</strong> {EMPTY[t][1]}</p></div>
+        ))}
+      </div>
+    ))}
+    <div class="pager" data-table-pager>
+      <button class="icon-btn" type="button" data-table-page="-1"><Icon name="arrow-left" /><span class="sr-only">Página anterior</span></button>
+      <p class="pager-text" aria-live="polite" data-table-pager-text></p>
+      <button class="icon-btn" type="button" data-table-page="1"><Icon name="arrow-right" /><span class="sr-only">Próxima página</span></button>
+    </div>
+  </div>
+</StepPanel>

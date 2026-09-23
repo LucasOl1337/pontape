@@ -1,6 +1,6 @@
 ---
 import Icon from '../site/Icon.astro';
-import BlockHead from '../site/BlockHead.astro';
+import StepPanel from '../stairs/StepPanel.astro';
 import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
 
 const RULES = {
@@ -9,15 +9,17 @@ const RULES = {
   candidate: ['Só contagens: quantos contatos, entrevistas, encaminhamentos pra vaga e apoios dos primeiros dias.', 'Nome, rosto, apelido, lugar, história, o caminho de uma pessoa.'],
   project: ['Criação do repositório, decisões registradas, mudanças integradas no código. Com link pra fonte.', 'Texto solto, link qualquer, dado pessoal.'],
 } as const;
+interface Props { n: number; total: number }
+const { n, total } = Astro.props;
 const speech = 'O que entra no livro, e o que nunca entra. ' + TYPE_ORDER.map(t => `${TYPES[t].label}: entra ${RULES[t][0]} Nunca entra: ${RULES[t][1]}`).join(' ');
 ---
-<section class="block" id="o-que-entra" aria-labelledby="t-types" data-speech={speech}>
-  <BlockHead number="07" label="O que entra" listen="o-que-entra" />
-  <div class="block-intro">
-    <h2 id="t-types">O que entra no livro. E o que nunca entra.</h2>
-    <p class="lead">O formato é fechado: não tem campo de texto livre, então não tem onde escrever o nome de ninguém.</p>
-  </div>
-  <div class="panel schema">
+<StepPanel id="o-que-entra" n={n} total={total} title="O que entra no livro, e o que nunca entra" speech={speech}>
+  <Fragment slot="figure">
+    <p class="figure-value">{TYPE_ORDER.length}</p>
+    <p class="figure-label">tipos de ação</p>
+    <p class="figure-text">O formato é fechado: não tem campo de texto livre, então não tem onde escrever o nome de ninguém.</p>
+  </Fragment>
+  <div class="schema">
     <table>
       <caption class="sr-only">O que entra e o que nunca entra, por tipo de ação</caption>
       <thead><tr><th scope="col">Tipo</th><th scope="col">Entra</th><th scope="col">Nunca entra</th></tr></thead>
@@ -32,4 +34,4 @@ const speech = 'O que entra no livro, e o que nunca entra. ' + TYPE_ORDER.map(t 
       </tbody>
     </table>
   </div>
-</section>
+</StepPanel>

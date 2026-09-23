@@ -1,0 +1,56 @@
+---
+import Badge from '../site/Badge.astro';
+import ListenButton from '../site/ListenButton.astro';
+import StepPanel from '../stairs/StepPanel.astro';
+import { DETAIL_FIELDS, MODULES } from '../../data/site/modules';
+import { STATUSES, STATUS_ORDER } from '../../data/site/statuses';
+import { STATUS_DATE, STATUS_DATE_SPOKEN, formatDay, withName } from '../../data/site/project';
+
+// Modules as a status panel: the share of each state, a 3x3 grid, and the chosen module's fields.
+interface Props { n: number; total: number }
+const { n, total } = Astro.props;
+const byStatus = (s: string) => MODULES.filter(m => m.status === s);
+const live = byStatus('live').length;
+const joinList = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items.at(-1)}`;
+const speech = `O projeto tem ${MODULES.length} módulos. Estado em ${STATUS_DATE_SPOKEN}. ` + STATUS_ORDER.map(s => {
+  const names = byStatus(s).map(m => m.name);
+  return names.length ? `${STATUSES[s].label}: ${names.length}. ${joinList(names)}.` : `${STATUSES[s].label}: nenhum ainda.`;
+}).join(' ');
+---
+<StepPanel id="modulos" n={n} total={total} title="Módulos, com o estado de cada um" speech={speech}>
+  <Fragment slot="figure">
+    <p class="figure-value">{live}<span>/{MODULES.length}</span></p>
+    <p class="figure-label">módulos funcionando</p>
+    <div class="status-bar" aria-hidden="true">
+      {STATUS_ORDER.filter(s => byStatus(s).length).map(s => <span data-status={s} style={`flex:${byStatus(s).length}`}></span>)}
+    </div>
+    <ul class="status-legend">
+      {STATUS_ORDER.map(s => <li><span class="status-dot" data-status={s} aria-hidden="true"></span>{STATUSES[s].label}<strong>{byStatus(s).length}</strong></li>)}
+    </ul>
+    <p class="figure-note">Estado em <time datetime={STATUS_DATE}>{formatDay(STATUS_DATE)}</time>. É cedo: o projeto começou em setembro de 2026.</p>
+  </Fragment>
+  <div class="modules">
+    <div class="module-grid" role="tablist" aria-label="Os nove módulos" data-stairs data-grid="3">
+      {MODULES.map((m, i) => (
+        <button class="module-tile" role="tab" type="button" id={`t-${m.id.toLowerCase()}`} aria-controls={`p-${m.id.toLowerCase()}`}
+          aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? '0' : '-1'} data-status={m.status} data-hash={m.id.toLowerCase()}>
+          <span class="module-tile-top"><span class="module-id">{m.id}</span><span class="status-dot" data-status={m.status} aria-hidden="true"></span></span>
+          <span class="module-tile-name">{m.name}</span>
+          <span class="sr-only">{STATUSES[m.status].label}</span>
+        </button>
+      ))}
+    </div>
+    {MODULES.map((m, i) => (
+      <div class:list={['module-detail', { 'is-active': i === 0 }]} id={`p-${m.id.toLowerCase()}`} role="tabpanel" aria-labelledby={`t-${m.id.toLowerCase()}`}>
+        <div class="module-detail-head">
+          <h3><span class="module-id">{m.id}</span>{m.name}</h3>
+          <Badge status={m.status} />
+          <ListenButton target={`${m.id.toLowerCase()}-campos`} lead={`Módulo ${m.id.slice(1)}: ${m.name}. Estado: ${STATUSES[m.status].label}.`} />
+        </div>
+        <dl class="module-fields" id={`${m.id.toLowerCase()}-campos`}>
+          {DETAIL_FIELDS.map(f => <div class={f.tone ? `is-${f.tone}` : undefined}><dt>{f.label}</dt><dd>{withName(m[f.key])}</dd></div>)}
+        </dl>
+      </div>
+    ))}
+  </div>
+</StepPanel>

@@ -1,0 +1,76 @@
+---
+import Icon from '../site/Icon.astro';
+import ListenButton from '../site/ListenButton.astro';
+import HashPrint from '../ledger/HashPrint.astro';
+import ChainStrip from '../ledger/ChainStrip.astro';
+import VerifyPanel from '../ledger/VerifyPanel.astro';
+import LedgerData from '../ledger/LedgerData.astro';
+import type { LedgerView } from '../../lib/ledger-view/source';
+import { TYPES, TYPE_ORDER } from '../../lib/ledger-view/phrases';
+import { formatCents, sumMoney } from '../../lib/ledger-view/money';
+import { recordedText, shortHash } from '../../scripts/hashprint';
+
+// The ledger's first screen: the numbers, Conferir with its console, the control mark and the
+// whole chain (newest first). Real and example ledgers are both here; the switch picks one.
+interface Props { ledger: LedgerView; example: LedgerView }
+const { ledger, example } = Astro.props;
+const { events, checkpoint } = ledger;
+const money = sumMoney(events);
+const last = events.at(-1);
+const byType = TYPE_ORDER.map(type => ({ type, count: events.filter(e => e.payload.type === type).length }));
+const speech = `Livro público. Tudo que o projeto faz, à vista. Hoje o livro tem ${events.length} ações. Dinheiro: entrou zero real e saiu zero real, porque a doação ainda não abriu. Toda ação aparece. Quem é a pessoa, não. Aperte Conferir e o seu aparelho refaz a conta de cada linha.`;
+---
+<section class="book-top" id="livro" aria-labelledby="page-title" data-speech={speech}>
+  <div class="book-head">
+    <nav class="crumbs" aria-label="Você está em"><a href="/">Início</a><span aria-hidden="true">/</span><span aria-current="page">Livro público</span></nav>
+    <h1 id="page-title">Livro público. <span class="h1-sub">Tudo que o projeto faz, à vista.</span></h1>
+    <div class="book-tools">
+      <div class="segmented" role="group" aria-label="Qual livro mostrar">
+        <button type="button" data-mode="real" aria-pressed="true">Livro de verdade</button>
+        <button type="button" data-mode="example" aria-pressed="false">Exemplo fictício</button>
+      </div>
+      <ListenButton target="livro" />
+    </div>
+    <p class="sample-banner" data-mode-panel="example" hidden><Icon name="alert" /><span><strong>Exemplo.</strong> Dados fictícios do contrato do livro, pra mostrar como ele fica com dinheiro, entregas e candidatos. Nada disso aconteceu.</span></p>
+  </div>
+
+  <div class="book-grid">
+    <dl class="stats book-stats" aria-label="O livro hoje">
+      <div class="stat stat--wide">
+        <dt>Ações no livro</dt><dd class="stat-value">{events.length}</dd>
+        <dd class="type-counts">{byType.map(t => <span><span class="type-dot" data-type={t.type} aria-hidden="true"></span>{TYPES[t.type].label} {t.count}</span>)}</dd>
+      </div>
+      <div class="stat"><dt>Entrou</dt><dd class="stat-value">{formatCents(money.inCents)}</dd></div>
+      <div class="stat"><dt>Saiu</dt><dd class="stat-value">{formatCents(money.outCents)}</dd></div>
+      <div class="stat"><dt>Em caixa</dt><dd class="stat-value">{formatCents(money.balanceCents)}</dd></div>
+    </dl>
+    <div class="panel console" id="conferir">
+      <VerifyPanel data="ledger-real" marks="#chain-real, #table-real, #abacus-real" log where="Refaz a conta de cada ação no seu aparelho. Nada é enviado pra gente." />
+    </div>
+    <div class="panel checkpoint">
+      <p class="checkpoint-head"><span>Marca de controle</span><code>{checkpoint.ledger}</code></p>
+      <HashPrint hash={checkpoint.headHash} class="hashprint--big" />
+      <code class="hash-full">{checkpoint.headHash}</code>
+      <p class="checkpoint-line">Ponta: {last ? `ação nº ${last.sequence}, ${recordedText(last.recordedAt)}` : 'nenhuma ação ainda'}. Livro estático, refeito a cada ação nova.</p>
+      <div class="checkpoint-actions">
+        <a class="btn btn--small" href="/livro/ledger.json" download="livro.json"><Icon name="download" />Livro inteiro</a>
+        <a class="btn btn--small" href="/livro/checkpoint.json" download="marca-de-controle.json"><Icon name="download" />Marca de controle</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel book-chain">
+    <div class="panel-head">
+      <h2>A corrente</h2>
+      <p>Da mais nova pra mais antiga. A marca de cada bloco reaparece no seguinte como anterior. Toque num bloco pra abrir a ação; as setas andam.</p>
+      <p class="rule-strip"><Icon name="shield" /><strong>Toda ação aparece. Quem é a pessoa, não.</strong></p>
+    </div>
+    {[{ mode: 'real', view: ledger }, { mode: 'example', view: example }].map(({ mode, view }) => (
+      <div data-mode-panel={mode} hidden={mode !== 'real'}>
+        <ChainStrip events={view.events} id={`chain-${mode}`} label={mode === 'real' ? 'Corrente do livro, da ação mais nova pra mais antiga' : 'Corrente do exemplo fictício'} />
+        <LedgerData id={`ledger-${mode}`} ledger={view} />
+      </div>
+    ))}
+  </div>
+  <p class="stats-note"><Icon name="clock" /><span>Marca da ponta {shortHash(checkpoint.headHash)}. Nada aqui se chama ao vivo enquanto não for.</span></p>
+</section>

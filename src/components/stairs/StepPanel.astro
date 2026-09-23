@@ -1,0 +1,25 @@
+---
+import Icon from '../site/Icon.astro';
+import ListenButton from '../site/ListenButton.astro';
+
+// One step's content, shown in place when its stair is chosen. Left: the step's number, big.
+// Right: the detail. Without JavaScript every panel shows, one after the other.
+interface Props { id: string; n: number; total: number; title: string; speech?: string; class?: string }
+const { id, n, total, title, speech, class: className } = Astro.props;
+---
+<section class:list={['step-panel', className, { 'is-active': n === 1 }]} id={`p-${id}`} role="tabpanel" aria-labelledby={`h-${id}`} tabindex="-1" data-speech={speech}>
+  <header class="step-head">
+    <p class="step-kicker"><span class="tag-num">{String(n).padStart(2, '0')}</span><span>Degrau {n} de {total}</span></p>
+    <h2 id={`h-${id}`}>{title}</h2>
+    <div class="step-tools">
+      <slot name="tools" />
+      {speech && <ListenButton target={`p-${id}`} />}
+      <button class="icon-btn" type="button" data-step-go="-1" disabled={n === 1}><Icon name="arrow-left" /><span class="sr-only">Degrau anterior</span></button>
+      <button class="icon-btn" type="button" data-step-go="1" disabled={n === total}><Icon name="arrow-right" /><span class="sr-only">Próximo degrau</span></button>
+    </div>
+  </header>
+  <div class="step-body">
+    <div class="step-figure"><slot name="figure" /></div>
+    <div class="step-detail"><slot /></div>
+  </div>
+</section>

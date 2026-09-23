@@ -1,0 +1,20 @@
+---
+import Icon from '../site/Icon.astro';
+import type { Stair } from './stair';
+
+// The staircase that drives the page: one tab per step, each showing its live number. Tiles rise
+// from left to right; arrow keys move along them and the chosen step's panel opens in place.
+interface Props { steps: Stair[]; label: string; class?: string }
+const { steps, label, class: className } = Astro.props;
+---
+<div class:list={['stairs', className]} role="tablist" aria-label={label} data-stairs style={`--count:${steps.length}`}>
+  {steps.map((s, i) => (
+    <button class="stair" role="tab" type="button" id={`t-${s.id}`} aria-controls={`p-${s.id}`}
+      aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? '0' : '-1'} data-hash={s.hash} style={`--i:${i}`}>
+      <span class="stair-top"><span class="stair-n">{String(i + 1).padStart(2, '0')}</span><Icon name={s.icon} /></span>
+      <span class="stair-label">{s.label}</span>
+      <span class="stair-value">{s.value}</span>
+      <span class="stair-caption">{s.caption}</span>
+    </button>
+  ))}
+</div>
