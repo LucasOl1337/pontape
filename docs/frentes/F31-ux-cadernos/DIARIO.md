@@ -175,4 +175,39 @@ Existe uma lista do que foi verificado e uma issue que dá pra reproduzir pra ca
 
 ### Onde parei
 
-PR aberta e report mandado. Próximo: a varredura, começando pela home em 1920 (alta).
+PR #68 integrada; o Regente atualizou as issues #7 e #8 com o texto acima.
+
+## 23/09/2026 · PR 3: uma grade só em tela larga
+
+Branch `prumo/f31-home-grade`. Primeiro defeito da varredura, gravidade **alta** (é a tela do Lucas).
+
+### O que estava errado
+
+O cabeçalho, os cadernos, o rodapé e o 404 ficavam numa coluna central de 78rem. A home e o livro ocupavam a tela toda. Em 1920 o logo ficava em x=369 e o título da home e do livro em x=40; em 1440, 129 contra 40. Cada página tinha a própria margem.
+
+### O que testei na bancada (CSS injetado, antes de escrever)
+
+| Opção | Em 1920 | Veredito |
+|---|---|---|
+| A · escada presa na coluna de 78rem | Escada estreita e íngreme, "Comida e roupa" em duas linhas, título em três, e o degrau 3 **rolando por dentro** | Não |
+| B · a grade do site inteiro em 100rem, com a escada dentro | Título, escada e menu alinhados; escada ainda larga; nenhum degrau rola; tarefas em três colunas folgadas | **Sim** |
+| C · grade em 90rem | Meio-termo, sem ganho sobre a B | Não |
+
+### O que mudou
+
+- `--page` de 78rem pra **100rem** (1600 px), em `tokens.css`. Vale pra cabeçalho, faixa preta, cadernos, rodapé e 404.
+- A escada (`.stage`) e o livro (`.book`, `.book-more`) passam a respeitar `--page`.
+- Acima de 100rem, a escada também fica dentro da grade: o piso começa embaixo do logo e termina embaixo do último item do menu. Abaixo disso ela continua indo até a borda da tela, como antes.
+
+Medido em 1920: logo, título da home, título do livro, título das tarefas e do 404 em x=193; escada de 193 a 1713; menu termina em 1713. Em 1440: tudo em x=40 (o cabeçalho estava em 129). Home em 960 e 360: zero pixel diferente da main. Nenhum degrau rola por dentro em 1920, 1440 e 1280 (medido depois da animação). `npm run check` passa.
+
+### Anotado na varredura
+
+| Página | Tamanho | O que está errado | Gravidade |
+|---|---|---|---|
+| Home | 960×600 | Os degraus 7 e 8 rolam por dentro do painel (42 e 91 px), igual na main | média |
+| Todas | ≤1600 | O botão "Cores" cobre o começo da coluna de conteúdo ao rolar. Com a grade nova, as páginas de Construir junto em 1440 também começam em x=40, como a home e o livro já começavam, e o "Mostrar as outras 10" das tarefas cai embaixo dele na primeira tela | baixa, mas pede decisão |
+
+**Decisão proposta:** o botão "Cores" ir pro canto de baixo à **direita** enquanto durar o teste. O texto do site é todo alinhado à esquerda, então o canto direito quase nunca tem conteúdo. O brief manda ele ficar à esquerda; por isso não mexi.
+
+Prints `prints/grade-antes-*` (main em `534096f`) e `prints/grade-depois-*`.
