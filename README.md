@@ -69,3 +69,9 @@ A F08 terá contrato próprio para eventos públicos de projeto, finanças e aç
 - [Como contribuir, rascunho](CONTRIBUTING.md)
 
 Toda PR passa por aprovação de admin. Licença e abertura do repositório aguardam decisão do Lucas.
+
+## Livro público de ações
+
+O primeiro lote real, com fontes e datas, fica em `src/data/ledger/ledger.json`. Confira com `npm run ledger:verify`. Para propor um evento, `npm run ledger:append -- --event arquivo.json` simula sem gravar; `--apply` é explícito. O Regente opera o livro de produção.
+
+A mesma lógica pode ser importada no navegador por `src/lib/ledger/index.ts`. O build gera os downloads em `/livro/` e falha se a cadeia não conferir. [Como conferir](docs/transparencia/COMO-CONFERIR.md), [contrato para F07](docs/transparencia/CONTRATO.md) e [operação, assinatura e proposta OpenTimestamps](docs/transparencia/OPERACAO.md). Assinatura, ancoragem e espelho externos ainda não estão ativos.
