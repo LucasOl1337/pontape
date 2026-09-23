@@ -1,7 +1,8 @@
 import * as z from 'zod/mini';
 
 export const GENESIS_HASH = '0'.repeat(64);
-export const REPOSITORY_URL = 'https://github.com/LucasOl1337/VidaNova';
+// Renamed from LucasOl1337/VidaNova on 23/09/2026; GitHub redirects the old URL.
+export const REPOSITORY_URL = 'https://github.com/LucasOl1337/pontape';
 
 export const hashSchema = z.string().check(z.regex(/^[a-f0-9]{64}$/));
 export const sequenceSchema = z.string().check(z.regex(/^[1-9][0-9]{0,19}$/));
@@ -17,6 +18,7 @@ const projectPayloadSchema = z.discriminatedUnion('action', [
     ...common,
     type: z.literal('project'),
     action: z.literal('repository_created'),
+    // Historical, hashed fact: the repository was created with this name. Never update it.
     repository: z.literal('LucasOl1337/VidaNova'),
   }),
   z.strictObject({

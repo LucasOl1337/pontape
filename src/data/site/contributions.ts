@@ -27,4 +27,4 @@ export const CONTRIBUTION_TYPES: Record<Contribution['type'], { label: string; i
   conteudo: { label: 'Conteúdo', icon: 'doc' },
 };
 
-export const issueUrl = (n: number) => `https://github.com/LucasOl1337/VidaNova/issues/${n}`;
+export const issueUrl = (n: number) => `https://github.com/LucasOl1337/pontape/issues/${n}`;

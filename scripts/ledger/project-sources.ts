@@ -34,7 +34,7 @@ export function collectProjectFacts(): { head: string; facts: ProjectFact[] } {
   // No title/body/author from GitHub is ever copied to the ledger or a shell command.
   // --paginate avoids a silent 100-PR cutoff; --slurp wraps pages for unambiguous parsing.
   const response = execFileSync('gh', ['api', '--paginate', '--slurp',
-    'repos/LucasOl1337/VidaNova/pulls?state=all&base=main&sort=created&direction=asc&per_page=100'], options);
+    'repos/LucasOl1337/pontape/pulls?state=all&base=main&sort=created&direction=asc&per_page=100'], options);
   const pages: unknown = JSON.parse(response);
   if (!Array.isArray(pages) || !pages.every(Array.isArray)) throw new Error('Resposta de PRs inválida.');
   return { head: history.head, facts: [...history.decisions, ...pullFacts(pages.flat(), history.commitOrder)] };

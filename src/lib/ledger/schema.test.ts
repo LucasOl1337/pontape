@@ -32,7 +32,7 @@ describe('contrato público do livro', () => {
 
   it('deriva fontes apenas do repositório do projeto', () => {
     const payload = ledgerPayloadSchema.parse(fixture.payloads[0]);
-    expect(projectSourceUrl(payload)).toBe('https://github.com/LucasOl1337/VidaNova/blob/0000000000000000000000000000000000000000/docs/DECISOES.md');
+    expect(projectSourceUrl(payload)).toBe('https://github.com/LucasOl1337/pontape/blob/0000000000000000000000000000000000000000/docs/DECISOES.md');
     expect(projectSourceUrl(ledgerPayloadSchema.parse(fixture.payloads[3]))).toBeNull();
   });
 });

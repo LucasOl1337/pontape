@@ -1,6 +1,6 @@
 # PontaPé
 
-O pontapé inicial pra quem quer mudar de vida. Nome escolhido pelo Lucas em 22/09/2026 (D016); o repositório e a pasta ainda se chamam VidaNova.
+O pontapé inicial pra quem quer mudar de vida. Nome escolhido pelo Lucas em 22/09/2026 (D016); o repositório é `LucasOl1337/pontape` (antes VidaNova) e a pasta local ainda se chama VidaNova.
 
 Um projeto sem fins lucrativos e open source pra quem quer mudar de vida e não tem nem o primeiro passo.
 

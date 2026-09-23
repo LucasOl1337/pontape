@@ -1,6 +1,6 @@
 # PontaPé · guia dos agentes
 
-O projeto se chama **PontaPé** (D016). Repositório, pasta e alguns documentos antigos ainda dizem VidaNova: é o mesmo projeto. No site, o nome vem só de `src/data/site/project.ts`.
+O projeto se chama **PontaPé** (D016). O repositório agora é `LucasOl1337/pontape` (renomeado em 23/09/2026; o endereço antigo redireciona). A pasta local e alguns documentos antigos ainda dizem VidaNova: é o mesmo projeto. No site, o nome vem só de `src/data/site/project.ts`.
 
 Organização sem fins lucrativos e open source que acha pessoas em vulnerabilidade que querem mudar de vida, dá o básico, conecta com trabalho e IA, e mostra ao vivo cada real doado. O produto está em [`docs/PRD.md`](docs/PRD.md): leia antes de começar qualquer frente.
 

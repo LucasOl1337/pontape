@@ -218,3 +218,7 @@ const result = await verifyDocument(parseCanonicalJson(await response.text()));
 `verifyLedger` recebe array desconhecido e checkpoint separado opcional; `verifyDocument` recebe `{events, checkpoint}`. Ambos retornam uma união discriminada por `valid`. Falha: `{valid: false, code, sequence?}`; códigos `invalid_schema`, `sequence`, `previous_hash`, `hash`, `time`, `correction`, `duplicate_source`, `checkpoint`, `crypto_unavailable`. Sucesso: `{valid: true, eventCount, headHash, lastUpdatedAt, balanceCents, totalsByCategory, checkpointMatched}`. `checkpointMatched` indica correspondência ao checkpoint fornecido, não autoria nem prova externa.
 
 Web Crypto exige contexto seguro (HTTPS ou localhost); ausência retorna `crypto_unavailable`. Não transformar erro em selo de integridade. A data pública já é uma data brasileira: formatar `occurredOn` como dia/mês/ano sem convertê-la novamente como um instante UTC. `recordedAt`/`lastUpdatedAt` são instantes; podem ser apresentados em America/Sao_Paulo.
+
+## Nome do repositório
+
+O repositório foi renomeado de `LucasOl1337/VidaNova` pra `LucasOl1337/pontape` em 23/09/2026 (D022). O fato `repository_created` continua com `repository: "LucasOl1337/VidaNova"`, porque registra o nome que o repositório tinha quando foi criado e está protegido pelo hash. Links gerados (`projectSourceUrl`) usam o nome novo, e o GitHub redireciona o antigo.

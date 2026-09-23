@@ -36,7 +36,7 @@ export function decisionsFromMarkdown(markdown: string): { id: string; date: str
 export function pullFacts(input: unknown, commitOrder: ReadonlyMap<string, number>): ProjectFact[] {
   const pulls = z.array(apiPullSchema).parse(input);
   return pulls.flatMap(pull => {
-    if (pull.base.ref !== 'main' || pull.base.repo.full_name !== 'LucasOl1337/VidaNova' || !pull.merged_at) return [];
+    if (pull.base.ref !== 'main' || pull.base.repo.full_name !== 'LucasOl1337/pontape' || !pull.merged_at) return [];
     if (!pull.merge_commit_sha) throw new Error('PR integrada sem commit de merge.');
     const order = commitOrder.get(pull.merge_commit_sha);
     if (order === undefined) return []; // A newer merge can appear while the API is paginated.

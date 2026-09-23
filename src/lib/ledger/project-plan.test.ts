@@ -14,7 +14,7 @@ const pull: ProjectFact = { order: 1, payload: {
   pullRequest: '9', mergeCommit: b,
 } };
 const apiPull = { number: 9, merged_at: '2000-01-02T01:30:00Z', merge_commit_sha: b,
-  base: { ref: 'main', repo: { full_name: 'LucasOl1337/VidaNova' } } };
+  base: { ref: 'main', repo: { full_name: 'LucasOl1337/pontape' } } };
 
 describe('plano de reconciliação do projeto (dados fictícios, sem rede)', () => {
   it('acrescenta PR nova e decisão nova em ordem de histórico, não ordem da API', () => {
