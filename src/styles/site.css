@@ -650,14 +650,18 @@ main:focus{ outline:none }
 .lost .highlight{ font-style:italic; color:var(--red) }
 .lost .lead{ margin-top:var(--space-4); font-size:var(--t-deck) }
 .btn--primary{ background:var(--ink); color:var(--paper) }
-.stairs{ display:grid; grid-template-columns:repeat(5, 1fr); align-items:end; gap:0; height:16rem }
-.stairs li{ height:calc(var(--n) * 20%); border-top:2.5px solid var(--ink); border-left:2.5px solid var(--ink) }
+.stairs{ display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); align-items:end; gap:0; height:16rem }
+.stairs li{ min-width:0; height:calc(var(--n) * 20%); border-top:2.5px solid var(--ink); border-left:2.5px solid var(--ink) }
 .stairs .step{ display:flex; flex-direction:column; gap:.3rem; padding:.5rem; font:700 .8125rem/1.2 var(--font-sans) }
 .step--missing{ color:var(--red) }
 .lost-stairs li:nth-child(3){ border-style:dashed; border-color:var(--red) }
 .step-missing-mark{ font:italic 500 2rem/1 var(--font-display) }
 .lost-stairs figcaption{ margin-top:var(--space-3); font:italic 400 1rem var(--font-serif); color:var(--ink-2) }
 @media (min-width:960px){ .lost-grid{ grid-template-columns:3fr 2fr; align-items:center } }
+/* When the five words outgrow their treads (A+ text up to 399 px, or any text under 316 px),
+   keep the icons and the missing mark; the names go, like on the home staircase. */
+@media (max-width:315px){ .stairs .step-label{ display:none } }
+@media (max-width:399px){ html.large-text .stairs .step-label{ display:none } }
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important }
