@@ -1,5 +1,5 @@
 # CSP limita origens: scripts, estilos e fontes só do próprio site (fontes locais desde a F07).
-# Os dados do livro vão em <script type="application/json">, que não executa.
+# O build acrescenta hashes dos scripts embutidos; os dados do livro vão em <script type="application/json">.
 # Nosniff exige o tipo de conteúdo declarado.
 # Referrer não envia origem ou caminho ao sair do site.
 # Permissions nega recursos do aparelho ainda não usados, inclusive microfone.
