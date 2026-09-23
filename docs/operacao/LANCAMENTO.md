@@ -1,5 +1,7 @@
 # Lançamento do site estático
 
+> **Como foi publicado de verdade (23/09/2026, D019).** O Lucas comprou `pontape.org` direto no Cloudflare (Registrar), na conta pessoal. O site foi publicado como **Cloudflare Workers com assets estáticos** (projeto `pontape`), não como Pages: o wrangler 4.136 passou a delegar `pages` para Workers e, rodado na raiz, reescreveu `astro.config`, `package.json` e `tsconfig` (tudo revertido). Por isso a publicação roda de uma pasta temporária com [`scripts/deploy/publicar.sh`](../../scripts/deploy/publicar.sh): dry-run por padrão, `--apply` pra publicar, só a partir da `main` limpa. `_headers` e `404.html` seguem valendo nos assets estáticos. O roteiro abaixo, de Pages e Hostinger, fica como histórico.
+
 Este roteiro é **para o dia autorizado por Lucas**. Hoje não há conta, deploy ou DNS a alterar. Preencha `DOMINIO_ESCOLHIDO` e `PROJETO_PAGES` só depois da decisão de nome. O repositório pode continuar privado: Cloudflare Pages aceita repositórios privados via integração GitHub. A primeira publicação em Pages já cria um endereço acessível; não pressione **Save and Deploy** antes da autorização. [Cloudflare, integração Git, acesso em 22/09/2026](https://developers.cloudflare.com/pages/get-started/git-integration/).
 
 ## Antes de conectar

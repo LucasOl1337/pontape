@@ -1,0 +1,16 @@
+// Copiado pra uma pasta temporária por scripts/deploy/publicar.sh. Fica fora da raiz de propósito:
+// na raiz, o wrangler tenta "converter" o projeto Astro e reescreve astro.config, package.json e tsconfig.
+{
+  "name": "pontape",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "pontape.org", "custom_domain": true },
+    { "pattern": "www.pontape.org", "custom_domain": true }
+  ]
+}
