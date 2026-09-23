@@ -1,0 +1,9 @@
+{
+  "notice": "DADOS FICTÍCIOS PARA TESTE E MODO EXEMPLO. Não são ações realizadas.",
+  "payloads": [
+    { "type": "project", "action": "decision_recorded", "occurredOn": "2000-01-01", "correctionOf": null, "decisionId": "D999", "sourceCommit": "0000000000000000000000000000000000000000" },
+    { "type": "finance", "action": "movement_recorded", "occurredOn": "2000-01-01", "correctionOf": null, "currency": "BRL", "amountCents": "10000", "category": "donation", "evidence": "pending" },
+    { "type": "field", "action": "food_delivered", "occurredOn": "2000-01-01", "correctionOf": null, "quantity": "2" },
+    { "type": "candidate", "action": "referral_completed", "occurredOn": "2000-01-01", "correctionOf": null, "count": "1" }
+  ]
+}
