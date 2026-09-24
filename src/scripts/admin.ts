@@ -1,5 +1,7 @@
 type DayCount = { day: string; count: number };
 type NamedCount = { kind?: string; path?: string; count: number };
+const COUNTING_SINCE = '2026-09-24';
+
 type Stats = { from: string; through: string; visits: DayCount[]; people: DayCount[]; clicks: NamedCount[]; pages: NamedCount[]; conversations: number };
 type Chat = { id: string; started_at: string; model: string; first_question: string };
 type ChatPage = { page: number; total: number; chats: Chat[] };
@@ -88,10 +90,12 @@ function renderStats(stats: Stats) {
   const people = new Map(stats.people.map(row => [row.day, row.count]));
   const days = $('admin-days');
   days.replaceChildren();
-  for (let index = 29; index >= 0; index--) {
+  // Newest day first, and nothing before the counter started (24/09/2026).
+  for (let index = 0; index < 30; index++) {
     const day = new Date(`${stats.through}T12:00:00Z`);
     day.setUTCDate(day.getUTCDate() - index);
     const key = day.toISOString().slice(0, 10);
+    if (key < COUNTING_SINCE) break;
     appendRow(days, [date(key), number.format(visits.get(key) ?? 0), number.format(people.get(key) ?? 0)]);
   }
   chart(stats.visits, stats.people, stats.from);
