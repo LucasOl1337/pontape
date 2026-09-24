@@ -50,4 +50,25 @@ Mesmo jeito de conferir (bancada `f38-medidas`, build local servido à parte). P
 
 ### Onde parei
 
-Lote 2 pronto. `lint`, `typecheck`, `test` (145), `ledger:verify`, `build` e `budget` passam (home 23,7 KB, parte técnica 55,2 KB com o sob demanda, de 60). Próximo: lote 3, quando o Regente liberar.
+Lote 2 pronto. `lint`, `typecheck`, `test` (145), `ledger:verify`, `build` e `budget` passam (home 23,7 KB, parte técnica 55,2 KB com o sob demanda, de 60). Lote 2 aprovado pelo Regente.
+
+## 24/09 · Lote 3 (FDE) pronto
+
+Rebase na `origin/main` com a D033 (lema "caridade inteligente") e a #92 (versão na URL da og.png): nada delas foi revertido. Prints em `/tmp/claude-1000/f38-prints/lote3-*`.
+
+| Item | Causa | O que mudou | Commit |
+|---|---|---|---|
+| 1 · sitemap | Não havia sitemap e o robots.txt não apontava pra nenhum. | `/sitemap.xml` e `/robots.txt` gerados no build (`src/data/site/sitemap.ts`), com as 8 páginas no endereço do link canônico (com barra final), sem o 404. Teste confere que toda página `.astro` está no sitemap. Sem dependência nova. | `3ad2c5f` |
+| 2 · og.png | Cartão da primeira rodada: Archivo, logo de blocos, cinco barras; alt com "cinco degraus". | Newsreader (nome e título), virada em itálico anil, marca em linha com alguém, linha dupla e a escada de verdade (chão, 7 passos, topo, alguém no 1, números, IA junto). Transparência: quatro folhas presas e conferidas. Texto da D033 igual; alt novo, e com ele a versão da URL (#92). A marca vem de `logo.ts`, a mesma do favicon: o ícone da aba também virou a escada em linha. Archivo sai do repo; as Newsreader TTF são conversão dos woff2 do site. | `4c56c5a` |
+| 3 · #55 CSP e contador | A Cloudflare injeta o beacon do Web Analytics e a CSP bloqueava. | O gerador aceita uma única exceção: o arquivo exato `https://static.cloudflareinsights.com/beacon.min.js` (não a origem), e `connect-src` ganha `https://cloudflareinsights.com`. Qualquer outra origem continua recusada, com teste. Rodapé: "O site conta as visitas sem cookie e sem saber quem é você." | `c8af1b3` |
+| 4 · #57 rollback | O LANCAMENTO.md mandava voltar pelo painel do Pages, que não é o que está no ar. | `docs/operacao/VOLTAR-ATRAS.md`: parar o timer, achar a versão boa, `wrangler rollback`, conferir (nome do CSS com hash + rotas), revert na main, religar o timer; caminho sem rollback. `publicar.sh` passa a marcar cada versão do Worker com o commit (`--tag`/`--message`, conferido em dry-run). Nada executado. | `56552fa` |
+
+### Decisões propostas
+
+- #55: a documentação da Cloudflare diz que, com injeção automática, o envio vai pro próprio site (`connect-src 'self'`); `cloudflareinsights.com` só é preciso quando o script é colocado à mão. Deixei como o brief pediu, que cobre os dois casos. Se quiser o mínimo, dá pra tirar. Falta conferir no navegador real depois de publicado (console sem erro de CSP).
+- #57: a Cloudflare não diz com todas as letras que o rollback traz os arquivos daquela versão; por isso o roteiro manda conferir pelo nome do CSS.
+- A versão da og.png (#92) vem do texto do cartão, não do desenho. Uma mudança só de desenho, no futuro, não troca a URL; valeria incluir o hash da própria imagem.
+
+### Onde parei
+
+Lote 3 pronto. `lint`, `typecheck`, `test` (150), `ledger:verify`, `build` e `budget` passam. F38 completa do meu lado.
