@@ -288,6 +288,14 @@ main:focus{ outline:none }
   .panel-text{ font-size:1.125rem }
   .panel-ways{ grid-template-columns:1fr }
 }
+/* The treads are a ninth of the screen wide on a phone (34 to 46 px). The touch area grows the only
+   way it can without touching the drawing (F38): each tread answers in its whole column, from the
+   top of the staircase down through the rail band, and the first and last reach the screen edge. */
+@media (max-width:599px){
+  .tread::after{ content:""; position:absolute; top:calc(var(--label-h) + var(--k) * var(--u) - min(24 * var(--svh), 15rem)); right:0; bottom:calc(-1 * var(--rail-h)); left:0 }
+  .tread:first-child::after{ left:-.4rem }
+  .tread:last-of-type::after{ right:-.4rem }
+}
 /* Tablets and small laptops, under 1180 px: the text corner of the wide layout gets too narrow and
    the longer steps scrolled inside it (F31). Same flow as the phone, with the tread names back, a
    taller staircase and the text at a reading width. */
