@@ -10,6 +10,7 @@ Atualizado: 24/09/2026, tarde · Site sem crédito pessoal (D036), contador de v
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
+| F43 | [Contador público, painel do admin e histórico da Yumi](frentes/F43-metricas-admin/BRIEF.md) | tecla | `tecla/f43-metricas` | Em andamento (D042): D1 criado, secrets no Worker | Proposta do lugar do contador; PR pro Regente |
 | F41 | [Chat com AI: a Yumi](frentes/F41-chat-ai/BRIEF.md) | tecla | `tecla/f41-chat` | **No ar** (PRs #105 e #106, D039): Tirar dúvida em todas as páginas, `/api/chat` pelo 9Router, Secret no Worker | Acompanhar custo e respostas; Tecla em espera |
 | F42 | [Transparência que prova e recebe](frentes/F42-transparencia-que-recebe/BRIEF.md) | lastro | `lastro/f42-e2` | E1, E1b, E2 e **E2b integradas** (#100, #102, #108, #110): escrevente no Actions, carimbo diário no Rekor e freetsa, **selo verde no ar** (D040); corrente em cinco cenas sem Bitcoin (#103) e uma tela (#104); Regente destravou o selo e o contador (#111) | E2c integrada (#112): carimbo no mesmo push de cada ação nova. E3 em andamento no **Asaas sandbox** (D041): /doar atrás de flag, webhook, evento finance, reconciliação. Falta o Lucas criar a conta sandbox |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
