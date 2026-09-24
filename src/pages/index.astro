@@ -24,7 +24,7 @@ const gargalo = bottleneckHref('');
     const go = () => {
       let id;
       try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
-      const to = Object.hasOwn(moved, id) ? moved[id] : id.startsWith('gargalo-') ? gargalo + id.slice(8) : null;
+      const to = Object.prototype.hasOwnProperty.call(moved, id) ? moved[id] : id.startsWith('gargalo-') ? gargalo + id.slice(8) : null;
       if (!to) return;
       const [path, hash] = to.split('#');
       location.replace(path + location.search + (hash ? '#' + hash : ''));
