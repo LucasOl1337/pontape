@@ -28,8 +28,14 @@ O contexto gerado tem cerca de 20 mil caracteres, aproximadamente 5 mil tokens. 
 ## Decisões propostas e próximo passo
 
 - O Rate Limiting binding do Cloudflare aceita períodos de 10 ou 60 segundos, não 10 minutos ([documentação oficial](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/), acesso em 24/09/2026). Configurei **20 mensagens por IP por minuto**; é o limite que o binding suporta mais perto do pedido sem restringir uma conversa a duas mensagens por minuto. Se 20 por dez minutos for obrigatório, precisa de outro mecanismo de contagem. O IP vira hash antes de entrar no contador.
-- Regente: revisar a PR, adicionar o Secret `NINEROUTER_TOKEN` no Worker e publicar. Não fiz deploy nem criei Secret na nuvem.
+- A revisão, o Secret `NINEROUTER_TOKEN` e a publicação foram concluídos pelo Regente. Não fiz deploy nem criei Secret na nuvem.
 
 ## Entrega
 
 - [PR #105](https://github.com/LucasOl1337/pontape/pull/105) aberta para `main`, branch atualizada sobre a `main`. O CI “Lint, tipos, testes e build” passou. Link e pendências enviados ao Regente pelo Maestri.
+
+## 24/09/2026 · no ar
+
+- O Regente informou que revisou, integrou e publicou a [PR #105](https://github.com/LucasOl1337/pontape/pull/105). A Yumi está no ar em `pontape.org`, com `NINEROUTER_TOKEN` como Secret do Worker. Ele conferiu `GET /api/chat/health` com `configured: true` e uma resposta real. Essa verificação de produção foi feita por ele.
+- A [PR #106](https://github.com/LucasOl1337/pontape/pull/106) tirou `scripts/deploy/yumi-knowledge.js` do Git e o pôs no `.gitignore`, porque o arquivo é gerado a cada check.
+- Estado: em espera. Próximo passo: só um ajuste pedido pelo Regente.
