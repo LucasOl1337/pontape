@@ -36,6 +36,11 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 - Sem Bitcoin e sem criptomoeda (pedido do Lucas, 24/09/2026). OpenTimestamps sai. O carimbo do E2 é Sigstore Rekor mais RFC 3161, com snapshot no Internet Archive só se não atrasar. A camada leiga fica com o Regente.
 
+## 24/09/2026 · E2 começa
+
+- Desenho aprovado. Ponto 4: a chave nova nasce dentro do Worker, vai pra Secret, a rotação entra no livro e a chave antiga continua publicada. A privada não passa por arquivo nem pelo Regente.
+- Primeiro corte: o recibo aceita só envelope fechado e a mesma chave de fonte não entra duas vezes. Sem conta em serviço ainda.
+
 ## Próximo passo
 
-PR da E1b: https://github.com/LucasOl1337/pontape/pull/102. Em seguida o E2: worker, fila, escrevente, Rekor e carimbo RFC 3161. A chave nova nasce no Worker. Conta em serviço não crio.
+E1b integrada em https://github.com/LucasOl1337/pontape/pull/102. E2 segue: fila, escrevente, Rekor e carimbo RFC 3161. Conta em serviço não crio.
