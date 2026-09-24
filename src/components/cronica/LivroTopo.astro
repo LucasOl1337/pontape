@@ -9,6 +9,7 @@ import type { LedgerEvent } from '../../lib/ledger/schema';
 import type { LedgerView } from '../../lib/ledger-view/source';
 import { TYPES, TYPE_ORDER, type LedgerType } from '../../lib/ledger-view/phrases';
 import { correctionsOf } from '../../lib/ledger-view/money';
+import { createCheckpoint } from '../../lib/ledger/verify';
 import { REPOSITORY_URL } from '../../lib/ledger/schema';
 import { DECISION_TITLES } from '../../data/site/decisions';
 import { LIVRO } from '../../data/site/livro';
@@ -79,10 +80,15 @@ const EMPTY: Record<LedgerType, [string, string]> = {
     </div>
     {lists.map(({ mode, view }) => {
       const corrected = correctionsOf(view.events);
+      const listed = mode === 'real' ? tailEvents(view.events) : view.events;
+      // The full book stays out of the HTML. Conferir fetches /livro/ledger.json before walking it.
+      const embedded = mode === 'real' && listed.length < view.events.length
+        ? { events: listed, checkpoint: createCheckpoint(listed, listed.at(-1)!.recordedAt) }
+        : view;
       return (
         <div class:list={['ledger-list', { 'is-sample': mode === 'example' }]} data-ledger-list={mode} hidden={mode !== 'real'}>
           <ol class="chain" id={`ledger-chain-${mode}`}>
-            {(mode === 'real' ? tailEvents(view.events) : view.events).toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} example={mode === 'example'} />)}
+            {listed.toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} example={mode === 'example'} />)}
           </ol>
           {mode === 'real' && view.events.length > TECHNICAL_VISIBLE && (
             <>
@@ -101,7 +107,7 @@ const EMPTY: Record<LedgerType, [string, string]> = {
               <Icon name={TYPES[t].icon} /><p class="chain-empty-title">{EMPTY[t][0]}</p><p>{EMPTY[t][1]}</p>
             </div>
           ))}
-          <LedgerData id={`ledger-${mode}`} ledger={view} />
+          <LedgerData id={`ledger-${mode}`} ledger={embedded} />
           {mode === 'real' && <script type="application/json" id="decision-titles" set:html={JSON.stringify(DECISION_TITLES).replaceAll('<', '\\u003c')} />}
         </div>
       );

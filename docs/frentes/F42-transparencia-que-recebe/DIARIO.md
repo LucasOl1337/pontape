@@ -28,8 +28,9 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 - A parte técnica passava de 60 KB porque o HTML trazia cada ação. Agora entram só as últimas 30. "Ver as anteriores", a última página e o Conferir buscam `/livro/ledger.json` e montam o resto. O Conferir percorreu as 100, da nº 1 até a nº 100.
 - O exemplo fictício continua inteiro na página. A camada leiga não foi mexida.
-- `TECHNICAL_LIMIT` de 96 KB saiu. A página técnica ficou em 58,5 KB de 60.
-- Conferido na bancada: 34 páginas depois de carregar (janela estreita, 3 por página), selo "Tudo certo".
+- O HTML também não leva o livro inteiro, só as 30 últimas com um lacre próprio. O livro completo entra na hora de conferir ou de pedir as anteriores.
+- `TECHNICAL_LIMIT` de 96 KB saiu. A página técnica ficou em 52,1 KB de 60, com 103 ações no livro.
+- Conferido na bancada: "Ver as anteriores" monta o resto, e o Conferir fecha as 103, da nº 1 até a nº 103, batendo com a marca publicada.
 
 ## Decisões propostas
 
