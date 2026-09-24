@@ -36,4 +36,4 @@ Mil conversas de três trocas geram aproximadamente 16 mil gravações D1 inclui
 - Direção D043 recebida antes da PR: toda frase pública que esta frente escreveu agora chama o bot de Yume. O evento novo de abertura foi renomeado para `yume_open` no cliente, na API e no painel. Os nomes legados de arquivo, seletores do chat e cabeçalho `x-yumi-private` seguem por compatibilidade; nenhum deles aparece como nome do bot na tela. Nenhum texto desta frente exibido no site cita Lucas.
 - Depois que a D043 entrou na `main`, fiz `git fetch` e rebase em `origin/main`. Resolvi os conflitos do Worker, aviso do chat e evento de abertura preservando a coleta e os textos novos. `npm run check` passou de novo: **193 testes**, livro íntegro, CSP, build e orçamento. Transparência ficou em 52,4 KB com o chat sob demanda.
 - Migração de produção e Secrets ficam a cargo do Regente. O worktree tecla não aplicou migração remota nem publicou o Worker.
-- PR para `main`: a preencher após abrir.
+- PR para `main`: [#117](https://github.com/LucasOl1337/pontape/pull/117), aberta após fetch e rebase na D043.
