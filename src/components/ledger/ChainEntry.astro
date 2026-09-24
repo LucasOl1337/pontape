@@ -5,6 +5,7 @@ import { projectSourceUrl } from '../../lib/ledger/schema';
 import { EVIDENCE, PROJECT_KIND, TYPES, phrase } from '../../lib/ledger-view/phrases';
 import { formatCents } from '../../lib/ledger-view/money';
 import { DECISION_TITLES } from '../../data/site/decisions';
+import { PLAIN } from '../../data/site/livro';
 import { REPOSITORY_OPEN, formatDay } from '../../data/site/project';
 
 interface Props { event: LedgerEvent; correctedBy?: string; hidden?: boolean; example?: boolean }
@@ -54,5 +55,6 @@ const recordedText = `${recorded.toLocaleDateString('pt-BR', { timeZone: 'Americ
         <dl><dt>Marca desta ação</dt><dd>{e.hash}</dd><dt>Marca da anterior</dt><dd>{e.previousHash}</dd><dt>Registrada em</dt><dd>{recordedText}</dd></dl>
       </details>
     </div>
+    {!example && <button class="conferir-esta" type="button" data-goto={e.sequence}>{PLAIN.thisOne}</button>}
   </div>
 </li>

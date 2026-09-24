@@ -70,7 +70,7 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
     bar.hidden = !events.length;
     bar.style.setProperty('--p', '0%');
     show({ state: 'running', icon: 'shield', title: 'Conferindo…', text: `Refazendo a conta de ${plural(events.length, 'ação', 'ações')}, uma por uma.` });
-    const { verifyLedger } = await import('../lib/ledger/index');
+    const verifyLedger = await loadVerifier();
     const result = await verifyLedger(events, checkpoint);
     // Walk the marks down to the first break, so the check is visible line by line.
     const brokenAt = result.valid ? Infinity : Number(result.sequence ?? 0);
@@ -93,4 +93,14 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
     panel.dispatchEvent(new CustomEvent('verified', { bubbles: true, detail: { sequence: result.valid ? null : result.sequence ?? null } }));
   });
   return { reset };
+}
+
+const loadVerifier = async () => {
+  const { verifyLedger } = await import('../lib/ledger/index');
+  return verifyLedger;
+};
+
+// The lay page calls this so it does not open a second import of the ledger barrel.
+export async function verifyEvents(events: unknown, checkpoint?: unknown) {
+  return (await loadVerifier())(events, checkpoint);
 }
