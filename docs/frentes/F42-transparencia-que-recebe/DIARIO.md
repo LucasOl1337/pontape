@@ -63,4 +63,4 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 ## Próximo passo
 
-PR do E2b. E3 depois que o Regente integrar e disparar o carimbo.
+PR aberta: https://github.com/LucasOl1337/pontape/pull/110. E3 depois que o Regente integrar e disparar o carimbo.
