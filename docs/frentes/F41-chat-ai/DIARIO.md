@@ -29,3 +29,7 @@ O contexto gerado tem cerca de 20 mil caracteres, aproximadamente 5 mil tokens. 
 
 - O Rate Limiting binding do Cloudflare aceita períodos de 10 ou 60 segundos, não 10 minutos ([documentação oficial](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/), acesso em 24/09/2026). Configurei **20 mensagens por IP por minuto**; é o limite que o binding suporta mais perto do pedido sem restringir uma conversa a duas mensagens por minuto. Se 20 por dez minutos for obrigatório, precisa de outro mecanismo de contagem. O IP vira hash antes de entrar no contador.
 - Regente: revisar a PR, adicionar o Secret `NINEROUTER_TOKEN` no Worker e publicar. Não fiz deploy nem criei Secret na nuvem.
+
+## Entrega
+
+- [PR #105](https://github.com/LucasOl1337/pontape/pull/105) aberta para `main`, branch atualizada sobre a `main`. O CI “Lint, tipos, testes e build” passou. Link e pendências enviados ao Regente pelo Maestri.
