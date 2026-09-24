@@ -18,11 +18,13 @@
     "ledger:append": "node scripts/ledger/append.ts",
     "ledger:verify": "node scripts/ledger/verify.ts",
     "ledger:sign": "node scripts/ledger/sign.ts",
+    "ledger:drain": "node scripts/ledger/drain.ts",
     "budget": "node scripts/check-budget.mjs",
     "ledger:sync-project": "node scripts/ledger/sync-project.ts"
   },
   "dependencies": {
     "@astrojs/react": "7.0.0",
+    "@noble/curves": "2.4.0",
     "astro": "7.3.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",

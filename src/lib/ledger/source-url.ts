@@ -11,6 +11,7 @@ export function projectSourceUrl(payload: ProjectLink): string | null {
     case 'repository_created': return REPOSITORY_URL;
     case 'decision_recorded': return `${REPOSITORY_URL}/blob/${payload.sourceCommit}/docs/DECISOES.md`;
     case 'pull_request_merged': return `${REPOSITORY_URL}/pull/${payload.pullRequest}`;
+    case 'signing_key_rotated': return `${REPOSITORY_URL}/blob/main/src/data/ledger/signing-public.pem`;
     default: return null;
   }
 }

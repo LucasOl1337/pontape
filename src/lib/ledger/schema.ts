@@ -34,6 +34,13 @@ const projectPayloadSchema = z.discriminatedUnion('action', [
     pullRequest: sequenceSchema,
     mergeCommit: commitSchema,
   }),
+  z.strictObject({
+    ...common,
+    type: z.literal('project'),
+    action: z.literal('signing_key_rotated'),
+    publicKey: hashSchema,
+    previousPublicKey: hashSchema,
+  }),
 ]);
 
 const financePayloadSchema = z.strictObject({

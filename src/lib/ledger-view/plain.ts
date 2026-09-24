@@ -15,6 +15,7 @@ function lineOf(p: LedgerPayload, decisionPlain: (id: string) => string): Omit<P
   switch (p.type) {
     case 'project':
       if (p.action === 'decision_recorded') return { lead: 'Decisão.', text: sentence(decisionPlain(p.decisionId)) };
+      if (p.action === 'signing_key_rotated') return { text: 'A chave pública de assinatura foi trocada.' };
       return { text: 'O projeto nasce e começa a anotar tudo aqui.' };
     case 'finance': {
       const cents = BigInt(p.amountCents);

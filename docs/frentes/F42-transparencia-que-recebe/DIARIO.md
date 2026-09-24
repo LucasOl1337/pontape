@@ -38,9 +38,22 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 ## 24/09/2026 · E2 começa
 
-- Desenho aprovado. Ponto 4: a chave nova nasce dentro do Worker, vai pra Secret, a rotação entra no livro e a chave antiga continua publicada. A privada não passa por arquivo nem pelo Regente.
-- Primeiro corte: o recibo aceita só envelope fechado e a mesma chave de fonte não entra duas vezes. Sem conta em serviço ainda.
+- Desenho aprovado. Ponto 4 mudou no mesmo dia: o escrevente roda no GitHub Actions e assina com o secret `LEDGER_SIGNING_PKCS8`, criado pelo Regente às 18:19 UTC. A privada não está em disco nem no repo.
+- Primeiro corte: o recibo aceita só envelope fechado e a mesma chave de fonte não entra duas vezes.
+
+## 24/09/2026 · E2, fila e carimbo
+
+- Chave pública nova `e332cae4d252fca11d48f183027c134e565b908a099e94a1a112a5ed41ecb0b6`, em `signing-public.pem` e no `trust.json`. A antiga `ab8b5cfb6bf0f218e2514fe47fa9a014827376ec9f0c556bcb1df3a3c3d81dc6` continua publicada. A troca entrou no livro como ação 107 (`signing_key_rotated`).
+- O `trust.json` desta entrega continua `not_configured` / `not_anchored`. O selo só fica verde quando um carimbo de verdade gravar registro, id, data e link.
+- Fila em memória mais `intake.json` com as chaves já gravadas. O commit do escrevente é o que torna o evento durável. A mesma fonte não entra duas vezes. Doação fictícia não vai pro livro real: o teste usa livro temporário.
+- Workflow `.github/workflows/ledger-ingest.yml`, identidade do ledger-bot, lê o secret e commita na main. Sem dry-run.
+- O Rekor recusa Ed25519 puro. A entrada `hashedrekord` exige Ed25519ph e o SHA-512 do checkpoint. O carimbo RFC 3161 segue em SHA-256, na `https://freetsa.org/tsr`. Conferido com chave descartável: o registro público devolveu 201. A chave de produção não foi lida.
+- Internet Archive fica de fora desta entrega.
+
+## Decisões propostas
+
+- Atualizar o BRIEF e o Quadro: a chave não nasce no Worker. Nasce no secret do repositório, e o escrevente é o GitHub Actions.
 
 ## Próximo passo
 
-E1b integrada em https://github.com/LucasOl1337/pontape/pull/102. E2 segue: fila, escrevente, Rekor e carimbo RFC 3161. Conta em serviço não crio.
+Abrir a PR desta branch pra main. O aparecimento ao vivo de um evento de teste espera o merge e um dispatch. Sem doação fictícia no livro publicado. E3 não começou.

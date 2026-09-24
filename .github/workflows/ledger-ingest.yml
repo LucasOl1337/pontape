@@ -1,0 +1,68 @@
+name: Escrevente do livro
+
+on:
+  workflow_dispatch:
+    inputs:
+      event:
+        description: 'Envelope JSON (source, eventId, payload). Sem nome e sem CPF.'
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: ledger-ingest
+  cancel-in-progress: false
+
+jobs:
+  write:
+    if: github.repository == 'LucasOl1337/pontape' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Gravar, assinar e carimbar
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEDGER_SIGNING_PKCS8: ${{ secrets.LEDGER_SIGNING_PKCS8 }}
+          INGEST_EVENT: ${{ inputs.event }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git switch -C ledger-ingest origin/main
+            npm ci
+            npm run ledger:drain -- --event-json "$INGEST_EVENT" --apply
+            if git diff --quiet -- src/data/ledger/ledger.json src/data/ledger/intake.json src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json; then
+              echo 'Nada novo. Sem commit.'
+              exit 0
+            fi
+            npm run ledger:verify
+            npm run check
+            git add -- src/data/ledger/ledger.json src/data/ledger/intake.json src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json
+            git diff --cached --name-only | while IFS= read -r path; do
+              case "$path" in
+                src/data/ledger/ledger.json|src/data/ledger/intake.json|src/data/ledger/trust.json|src/data/ledger/checkpoint-signed.json) ;;
+                *) echo "Arquivo inesperado: $path" >&2; exit 1 ;;
+              esac
+            done
+            git commit -m 'Registra evento no livro [ledger-bot]'
+            if git push origin HEAD:refs/heads/main; then
+              exit 0
+            fi
+            echo "Push recusado na tentativa $attempt; tentando de novo sem force."
+          done
+          echo 'Não foi possível gravar. A main foi preservada.' >&2
+          exit 1

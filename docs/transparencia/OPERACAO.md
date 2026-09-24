@@ -70,6 +70,8 @@ Rotação ou comprometimento exigem anúncio pelo custodiante, preservação das
 
 ## Proposta de ancoragem OpenTimestamps
 
+Aposentada em 24/09/2026 (D038). O escrevente carimba no Sigstore Rekor e pede RFC 3161 em `https://freetsa.org`. O texto abaixo fica só como histórico.
+
 Proposta para o Regente executar depois da revisão, sem conta nem pagamento. O [cliente oficial OpenTimestamps, consultado em 22/09/2026](https://github.com/opentimestamps/opentimestamps-client) cria uma prova `.ots`; ela começa pendente e pode ser completada depois. O serviço recebe um digest, não o conteúdo do livro. A verificação independente pelo cliente requer Bitcoin Core local; conferir por um site implica confiar também nesse verificador.
 
 Com o cliente `ots` instalado pelo operador num ambiente separado, copie os bytes exatos de `/livro/checkpoint.json` para uma pasta durável, fora do build, e rode:
