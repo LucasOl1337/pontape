@@ -9,6 +9,7 @@ import { LIVRO, PLAIN } from './livro';
 import { TECHNICAL_WORDS, recentLines } from '../../lib/ledger-view/plain';
 import { getPublicLedger } from '../../lib/ledger-view/source';
 import { CADERNOS, CONSTRUIR, MOVED } from './cadernos';
+import { FAQ, QUEM_FAZ } from './perguntas';
 import { ICON_NAMES } from '../../components/site/icon-names';
 
 describe('dados do site', () => {
@@ -57,12 +58,12 @@ describe('dados do site', () => {
   });
 
   it('texto público diz AI, nunca IA', () => {
-    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS]);
+    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS, FAQ, QUEM_FAZ]);
     expect(text).not.toMatch(/(?<![\p{L}])IAs?(?![\p{L}])|intelig[êe]ncia artificial/iu);
   });
 
   it('texto público não tem travessão', () => {
-    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS]);
+    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS, FAQ, QUEM_FAZ]);
     expect(text).not.toContain('—');
   });
 

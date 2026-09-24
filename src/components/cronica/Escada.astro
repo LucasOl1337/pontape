@@ -5,6 +5,7 @@ import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
 import type { LedgerView } from '../../lib/ledger-view/source';
 import { NOW_LEAD, OPENING, STEPS } from '../../data/site/journey';
+import { PERGUNTAS } from '../../data/site/perguntas';
 import { MODULES } from '../../data/site/modules';
 import { STATUSES } from '../../data/site/statuses';
 import type { IconName } from '../site/icon-names';
@@ -102,7 +103,7 @@ const LATER = 'Doar, ser voluntário e oferecer vaga ainda não abriram. Abrem q
         ))}
       </ul>
       <p class="now now--planned panel-later"><Icon name={STATUSES.planned.icon} /><span>{LATER}</span></p>
-      <p class="panel-note"><Icon name="lock" />A gente não guarda contato de ninguém por enquanto.</p>
+      <p class="panel-note"><Icon name="lock" /><span>A gente não guarda contato de ninguém. Dúvida ou ideia? <a href={`${PERGUNTAS.href}#${PERGUNTAS.contactHash}`}>Fala com o Lucas</a>.</span></p>
       <div class="panel-nav">
         <button class="btn" type="button" data-go={LAST - 1}><Icon name="arrow-left" /><span>{treads[LAST - 1]!.name}</span></button>
         <button class="btn" type="button" data-go="0"><Icon name="undo" /><span>Voltar ao início</span></button>

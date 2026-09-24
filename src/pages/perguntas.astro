@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Perguntas from '../components/cronica/Perguntas.astro';
+import { PROJECT_NAME } from '../data/site/project';
+---
+<BaseLayout title={`Perguntas e respostas · ${PROJECT_NAME}`} description={`O que todo mundo pergunta sobre o ${PROJECT_NAME}: o que é, se já funciona, se dá pra doar, por que AI, quem faz e como falar com ele.`} current="perguntas">
+  <Perguntas />
+</BaseLayout>
