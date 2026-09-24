@@ -10,7 +10,9 @@ import type { LedgerView } from '../../lib/ledger-view/source';
 import { TYPES, TYPE_ORDER, type LedgerType } from '../../lib/ledger-view/phrases';
 import { correctionsOf } from '../../lib/ledger-view/money';
 import { REPOSITORY_URL } from '../../lib/ledger/schema';
+import { DECISION_TITLES } from '../../data/site/decisions';
 import { LIVRO } from '../../data/site/livro';
+import { TECHNICAL_VISIBLE, tailEvents } from '../../lib/ledger-view/window';
 
 // The first screen of the technical page (F32): the numbers with the latest mark and Conferir on the
 // left, every action on the right, a page at a time, so the book never becomes an endless roll.
@@ -80,8 +82,14 @@ const EMPTY: Record<LedgerType, [string, string]> = {
       return (
         <div class:list={['ledger-list', { 'is-sample': mode === 'example' }]} data-ledger-list={mode} hidden={mode !== 'real'}>
           <ol class="chain" id={`ledger-chain-${mode}`}>
-            {view.events.toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} example={mode === 'example'} />)}
+            {(mode === 'real' ? tailEvents(view.events) : view.events).toReversed().map(e => <ChainEntry event={e} correctedBy={corrected[e.sequence]} example={mode === 'example'} />)}
           </ol>
+          {mode === 'real' && view.events.length > TECHNICAL_VISIBLE && (
+            <>
+              <p class="book-note" data-older-note>As mais novas estão aqui. As anteriores entram quando você pede.</p>
+              <button class="btn" type="button" data-load-older>Ver as anteriores</button>
+            </>
+          )}
           {!view.events.length && (
             <div class="chain-empty" data-empty-for="all">
               <p class="chain-empty-title">O livro oficial ainda não foi publicado.</p>
@@ -94,6 +102,7 @@ const EMPTY: Record<LedgerType, [string, string]> = {
             </div>
           ))}
           <LedgerData id={`ledger-${mode}`} ledger={view} />
+          {mode === 'real' && <script type="application/json" id="decision-titles" set:html={JSON.stringify(DECISION_TITLES).replaceAll('<', '\\u003c')} />}
         </div>
       );
     })}

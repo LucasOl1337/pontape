@@ -1,8 +1,7 @@
 import * as z from 'zod/mini';
 
 export const GENESIS_HASH = '0'.repeat(64);
-// Renamed from LucasOl1337/VidaNova on 23/09/2026; GitHub redirects the old URL.
-export const REPOSITORY_URL = 'https://github.com/LucasOl1337/pontape';
+export { REPOSITORY_URL, projectSourceUrl } from './source-url.ts';
 
 export const hashSchema = z.string().check(z.regex(/^[a-f0-9]{64}$/));
 export const sequenceSchema = z.string().check(z.regex(/^[1-9][0-9]{0,19}$/));
@@ -93,16 +92,6 @@ export type LedgerPayload = z.infer<typeof ledgerPayloadSchema>;
 export type LedgerEvent = z.infer<typeof ledgerEventSchema>;
 export type LedgerCheckpoint = z.infer<typeof ledgerCheckpointSchema>;
 export type LedgerEventType = LedgerPayload['type'];
-
-/** Links are derived from restricted references, never accepted as arbitrary input. */
-export function projectSourceUrl(payload: LedgerPayload): string | null {
-  if (payload.type !== 'project') return null;
-  switch (payload.action) {
-    case 'repository_created': return REPOSITORY_URL;
-    case 'decision_recorded': return `${REPOSITORY_URL}/blob/${payload.sourceCommit}/docs/DECISOES.md`;
-    case 'pull_request_merged': return `${REPOSITORY_URL}/pull/${payload.pullRequest}`;
-  }
-}
 
 /** One file is replaced atomically, keeping the current checkpoint and events together. */
 export const ledgerDocumentSchema = z.strictObject({

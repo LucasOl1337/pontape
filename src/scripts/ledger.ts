@@ -1,6 +1,9 @@
 // /transparencia islands: real or example ledger, type filters, pages of the list, the
 // "edit a line in secret" demo, Conferir, and the tabs under the first screen.
 import type { LedgerView } from '../lib/ledger-view/source';
+import { correctionsOf } from '../lib/ledger-view/money';
+import { TECHNICAL_VISIBLE } from '../lib/ledger-view/window';
+import { chainEntry } from './chain-card';
 import { toast } from './site';
 import { mountVerify, readLedger } from './verify';
 
@@ -10,10 +13,58 @@ type Mode = 'real' | 'example';
 
 const ledgers: Record<Mode, LedgerView> = { real: readLedger('ledger-real'), example: readLedger('ledger-example') };
 const panel = $('#conferir [data-verify-panel]')!;
-const verify = mountVerify(panel, () => ledgers[mode]);
-const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+let olderLoaded = !document.querySelector('[data-load-older]');
+let loadingOlder: Promise<void> | null = null;
+
+function titles(): Record<string, string> {
+  try { return JSON.parse(document.getElementById('decision-titles')?.textContent || '{}') as Record<string, string>; }
+  catch { return {}; }
+}
+
+// The first screen is the newest actions. The rest of the real book comes from the public file.
+function loadOlder(): Promise<void> {
+  if (olderLoaded) return Promise.resolve();
+  if (loadingOlder) return loadingOlder;
+  const button = $<HTMLButtonElement>('[data-load-older]');
+  loadingOlder = (async () => {
+    if (button) button.disabled = true;
+    try {
+      const response = await fetch('/livro/ledger.json');
+      if (!response.ok) throw new Error('status');
+      const book = await response.json() as LedgerView;
+      if (!Array.isArray(book.events) || !book.checkpoint) throw new Error('shape');
+      const list = $('#ledger-chain-real')!;
+      const have = new Set($$('.chain-entry', list).map(li => li.dataset.seq));
+      const corrected = correctionsOf(book.events);
+      const names = titles();
+      const missing = book.events.filter(event => !have.has(event.sequence))
+        .sort((a, b) => Number(b.sequence) - Number(a.sequence));
+      for (const event of missing) list.append(chainEntry(event, corrected[event.sequence], names));
+      const ordered = $$('.chain-entry', list).sort((a, b) => Number(b.dataset.seq) - Number(a.dataset.seq));
+      for (const item of ordered) list.append(item);
+      ledgers.real = book;
+      olderLoaded = true;
+      $('[data-older-note]')?.setAttribute('hidden', '');
+      if (button) button.hidden = true;
+    } catch (error) {
+      if (button) button.disabled = false;
+      throw error;
+    }
+  })().finally(() => { loadingOlder = null; });
+  return loadingOlder;
+}
+
 const params = new URLSearchParams(location.search);
 let mode: Mode = params.has('exemplo') ? 'example' : 'real';
+
+async function ensureOlder() {
+  if (mode !== 'real' || olderLoaded) return;
+  try { await loadOlder(); }
+  catch { toast('Não deu pra buscar as anteriores. A conta segue com o livro desta página.'); }
+}
+
+const verify = mountVerify(panel, () => ledgers[mode], ensureOlder);
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 let filter = 'all';
 let page = 0;
 let tampered: { seq: string; amount: string } | null = null;
@@ -33,24 +84,33 @@ function render() {
   page = Math.max(0, Math.min(pages - 1, page));
   entries.forEach(li => { li.hidden = true; });
   shown.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE).forEach(li => { li.hidden = false; });
-  pager.hidden = pages < 2;
+  pager.hidden = pages < 2 && !(mode === 'real' && !olderLoaded);
   $('[data-pager-where]', pager)!.textContent = `Página ${page + 1} de ${pages}`;
   $<HTMLButtonElement>('[data-page="-1"]', pager)!.disabled = page === 0;
-  $<HTMLButtonElement>('[data-page="1"]', pager)!.disabled = page >= pages - 1;
+  $<HTMLButtonElement>('[data-page="1"]', pager)!.disabled = page >= pages - 1 && olderLoaded;
 }
-pager.addEventListener('click', e => {
+pager.addEventListener('click', async e => {
   const btn = (e.target as Element).closest<HTMLButtonElement>('[data-page]');
-  if (!btn) return;
-  page += Number(btn.dataset.page);
+  if (!btn || btn.disabled) return;
+  const dir = Number(btn.dataset.page);
+  if (dir > 0 && page >= Math.ceil(matching().length / PAGE_SIZE) - 1 && !olderLoaded) {
+    try { await loadOlder(); }
+    catch { toast('Não deu pra buscar as anteriores.'); return; }
+  }
+  page += dir;
   render();
   if (btn.disabled) $<HTMLButtonElement>(`[data-page="${-Number(btn.dataset.page)}"]`, pager)?.focus();
 });
 
-function applyFilter(next: string) {
+async function applyFilter(next: string) {
   filter = next;
   page = 0;
   $$('[data-type-filter]', $(`[data-type-filters="${mode}"]`)!).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.typeFilter === filter)));
   $$('.chain-empty[data-empty-for]:not([data-empty-for="all"])', listOf()).forEach(d => { d.hidden = d.dataset.emptyFor !== filter; });
+  if (mode === 'real' && next !== 'all' && !olderLoaded) {
+    try { await loadOlder(); }
+    catch { toast('Não deu pra buscar as anteriores.'); }
+  }
   render();
   verify.reset();
 }
@@ -71,6 +131,13 @@ document.addEventListener('click', e => {
   const go = target.closest<HTMLButtonElement>('[data-goto]');
   if (go?.dataset.goto && /^[1-9][0-9]*$/.test(go.dataset.goto)) {
     location.assign(`/transparencia?ate=${go.dataset.goto}#conferir`);
+    return;
+  }
+  if (target.closest('[data-load-older]')) {
+    void loadOlder().then(() => {
+      page = Math.floor(TECHNICAL_VISIBLE / PAGE_SIZE);
+      render();
+    }).catch(() => toast('Não deu pra buscar as anteriores.'));
     return;
   }
   const modeBtn = target.closest<HTMLElement>('[data-mode]');

@@ -47,7 +47,7 @@ export const readLedger = (id: string): LedgerView => JSON.parse(document.getEle
 
 // Wires one Conferir panel. `getLedger` lets a page swap which ledger is checked (real or example).
 // The F08 verifier (with zod) loads only on the first click, so it never weighs on the page load.
-export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
+export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView, prepare?: () => Promise<void>) {
   const btn = panel.querySelector<HTMLButtonElement>('[data-verify]')!;
   const bar = panel.querySelector<HTMLElement>('.verify-progress')!;
   const out = panel.querySelector<HTMLElement>('.verify-result')!;
@@ -64,6 +64,8 @@ export function mountVerify(panel: HTMLElement, getLedger: () => LedgerView) {
   const reset = () => { clearMarks(); bar.hidden = true; show(IDLE); };
 
   btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (prepare) await prepare();
     const { events, checkpoint } = getLedger();
     clearMarks();
     btn.disabled = true;
