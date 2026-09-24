@@ -1,7 +1,7 @@
 import * as z from 'zod/mini';
 
 export const GENESIS_HASH = '0'.repeat(64);
-export { REPOSITORY_URL, projectSourceUrl } from './source-url.ts';
+// REPOSITORY_URL and projectSourceUrl live in ledger-view/source-url.ts, out of the verifier chunk.
 
 export const hashSchema = z.string().check(z.regex(/^[a-f0-9]{64}$/));
 export const sequenceSchema = z.string().check(z.regex(/^[1-9][0-9]{0,19}$/));

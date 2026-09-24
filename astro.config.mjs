@@ -17,6 +17,17 @@ export default defineConfig({
     build: {
       target: ['chrome83', 'edge88', 'firefox78', 'safari14'],
       cssTarget: ['chrome83', 'edge88', 'firefox78', 'safari14'],
+      rollupOptions: {
+        output: {
+          // The verifier the seal loads on demand must be a chunk of its own. Left to Rollup, it
+          // landed inside the technical page's entry, whose top-level code throws on any other page,
+          // and the seal hung on "Recalculando" (24/09/2026).
+          manualChunks(id) {
+            if (id.includes('/src/lib/ledger/')) return 'ledger-core';
+            return undefined;
+          },
+        },
+      },
     },
   },
 });

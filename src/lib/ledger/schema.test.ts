@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import fixture from '../../data/ledger/example.fixture.json';
-import { ledgerPayloadSchema, projectSourceUrl } from './schema';
+import { ledgerPayloadSchema } from './schema';
+import { projectSourceUrl } from '../ledger-view/source-url';
 
 describe('contrato público do livro', () => {
   it('aceita as quatro famílias fictícias', () => {
