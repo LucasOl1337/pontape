@@ -5,6 +5,7 @@ import StatusStrip from '../components/site/StatusStrip.astro';
 import SiteHeader from '../components/site/SiteHeader.astro';
 import SiteFooter from '../components/site/SiteFooter.astro';
 import { SHARE } from '../data/site/share';
+import { createHash } from 'node:crypto';
 import { PROJECT_NAME } from '../data/site/project';
 
 interface Props {
@@ -22,6 +23,9 @@ const card = SHARE[share];
 // Share previews need absolute URLs. `site` comes from SITE_URL at build (astro.config.mjs);
 // until the domain exists the paths stay relative.
 const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
+// WhatsApp and the like cache the preview image by URL; a version drawn from the card makes a new card a new URL.
+const cardVersion = createHash('sha256').update(JSON.stringify(card)).digest('hex').slice(0, 8);
+const cardImage = `${absolute(card.image)}?v=${cardVersion}`;
 ---
 <!doctype html>
 <html lang="pt-BR" class="no-js">
@@ -39,7 +43,7 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <meta property="og:site_name" content={PROJECT_NAME} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={absolute(card.image)} />
+    <meta property="og:image" content={cardImage} />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -49,7 +53,7 @@ const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={absolute(card.image)} />
+    <meta name="twitter:image" content={cardImage} />
     <meta name="twitter:image:alt" content={card.alt} />
     <link rel="preload" href="/fonts/newsreader-display-500.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/newsreader-text-400.woff2" as="font" type="font/woff2" crossorigin />
