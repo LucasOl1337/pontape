@@ -834,20 +834,6 @@ main:focus{ outline:none }
 .trust-text p + p{ margin-top:.55rem }
 .trust-text .trust-soon{ display:flex; gap:.45rem; font:400 .9375rem/1.45 var(--font-sans); color:var(--ink-2) }
 .trust-soon .icon{ width:1.05em; height:1.05em; margin-top:.15rem }
-.corrente{ display:grid; gap:var(--space-3); align-content:start }
-.corrente-art{ width:100%; max-width:22rem; height:auto }
-.corrente-label{ margin-top:.3rem; font:700 .875rem/1.35 var(--font-sans); color:var(--ink-2) }
-.is-broken .corrente-label{ color:var(--status-bottleneck) }
-.c-sheet{ fill:var(--paper); stroke:var(--ink); stroke-width:2 }
-.c-lines{ fill:none; stroke:var(--ink-2); stroke-width:2; stroke-linecap:round }
-.c-link rect{ fill:none; stroke:var(--ink); stroke-width:2.2 }
-.c-link.is-bad rect{ stroke:var(--status-bottleneck); stroke-dasharray:3 2 }
-.c-seal.is-ok{ fill:var(--status-live) }
-.c-seal.is-bad{ fill:var(--status-bottleneck) }
-.c-mark{ fill:none; stroke:var(--paper); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round }
-.c-bitcoin circle:first-child{ fill:var(--accent) }
-.c-bitcoin circle:last-child{ fill:none; stroke:var(--paper); stroke-width:1.6 }
-.c-scribble{ fill:none; stroke:var(--status-bottleneck); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round }
 .recent{ margin-top:var(--space-2) }
 .recent li{ display:grid; grid-template-columns:3.1rem minmax(0, 1fr); gap:.35rem .75rem; padding-top:.55rem; padding-bottom:.35rem; border-bottom:1px solid var(--rule) }
 .recent .conferir-esta{ grid-column:2 }
@@ -862,7 +848,7 @@ main:focus{ outline:none }
   .kind{ padding-right:1.5rem }
   .kind + .kind{ padding-left:1.5rem; border-left:1px solid var(--rule) }
   .trust-body{ grid-template-columns:minmax(0, 1fr) minmax(16rem, 21rem); column-gap:var(--space-8) }
-  .ask-grid{ grid-template-columns:minmax(0, 1.3fr) minmax(16rem, 22rem); column-gap:var(--space-8) }
+  .ask-grid{ grid-template-columns:minmax(0, 1fr); column-gap:var(--space-8) }
 }
 @media (min-width:960px){
   .plain{ padding-top:var(--space-6) }
@@ -930,3 +916,91 @@ main:focus{ outline:none }
 .contato-note{ display:flex; align-items:center; gap:.5rem; margin-top:var(--space-4); color:var(--ink-2) }
 .contato-note .icon{ width:1em; height:1em; flex:none }
 @media (max-width: 40rem){ .contato-ways li{ grid-template-columns:1.4rem 1fr } .contato-ways span{ grid-column:2 } }
+
+/* ---------- A corrente em cinco cenas (/transparencia, D038) ---------- */
+.corrente{ display:grid; gap:var(--space-3); align-content:start; max-width:40rem; --c-t:.55s }
+.corrente-art{ width:100%; height:auto; overflow:visible; font-family:var(--font-sans) }
+/* The scenes take the whole width under the three questions: the drawing needs room to be read. */
+.ask-grid .corrente{ grid-column:1 / -1; padding-top:var(--space-4); border-top:1px solid var(--rule) }
+.corrente-caption{ display:grid; gap:var(--space-2) }
+.corrente-text{ display:none; grid-template-columns:1.6rem minmax(0, 1fr); gap:.5rem; align-items:start; min-height:3.2em; font:400 1rem/1.45 var(--font-sans); color:var(--ink) }
+.corrente-all{ display:grid; gap:.35rem; font:400 .9375rem/1.4 var(--font-sans); color:var(--ink-2) }
+.corrente-all li{ display:grid; grid-template-columns:1.6rem minmax(0, 1fr); gap:.5rem }
+.corrente-num{ display:inline-grid; place-items:center; width:1.5rem; height:1.5rem; border-radius:50%; background:var(--accent); color:var(--paper); font:700 .8rem/1 var(--font-sans) }
+.corrente.is-live .corrente-text{ display:grid }
+.corrente.is-live .corrente-all{ display:none }
+.corrente-controls{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.5rem 1rem }
+.corrente-dots{ display:flex; gap:.35rem }
+.corrente-dots button{ width:44px; height:44px; padding:0; border:0; background:transparent; cursor:pointer; display:grid; place-items:center }
+.corrente-dots button::before{ content:""; width:.7rem; height:.7rem; border-radius:50%; border:2px solid var(--ink); background:transparent; transition:background var(--c-t), transform var(--c-t) }
+.corrente-dots button[aria-selected="true"]::before{ background:var(--accent); border-color:var(--accent); transform:scale(1.25) }
+.corrente-play{ display:inline-flex; align-items:center; gap:.4rem; min-height:44px; padding:0 .6rem; border:0; background:transparent; color:var(--ink-2); font:700 .875rem/1 var(--font-sans); cursor:pointer }
+.corrente-play:hover{ color:var(--accent) }
+.corrente-play .icon{ width:1.1rem; height:1.1rem }
+
+/* Parts: what each scene shows. Everything starts hidden and the scene number turns it on. */
+.c-sheet{ fill:var(--paper); stroke:var(--ink); stroke-width:2 }
+.c-title{ font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; fill:var(--ink-2) }
+.c-prev{ font-size:9.5px; fill:var(--accent); font-weight:700 }
+.c-body{ font-size:11px; fill:var(--ink) }
+.c-amount{ font-size:13px; font-weight:700; fill:var(--ink) }
+.c-amount-bad{ fill:var(--status-bottleneck) }
+.c-strike{ fill:none; stroke:var(--status-bottleneck); stroke-width:2; stroke-linecap:round }
+.c-mark-box{ fill:var(--accent); stroke:none }
+.c-mark{ font-size:10.5px; font-weight:700; fill:var(--paper); letter-spacing:.04em }
+.c-link rect{ fill:none; stroke:var(--ink); stroke-width:2.2 }
+.c-link-x{ fill:none; stroke:var(--status-bottleneck); stroke-width:2.4; stroke-linecap:round }
+.c-stamp rect{ fill:var(--ink) }
+.c-stamp path{ fill:none; stroke:var(--ink); stroke-width:3; stroke-linejoin:round }
+.c-pencil{ fill:var(--status-bottleneck) }
+.c-registry rect{ fill:var(--paper-2); stroke:var(--ink); stroke-width:2; stroke-dasharray:4 3 }
+.c-registry path{ fill:none; stroke:var(--ink); stroke-width:1.5 }
+.c-registry-title{ font-size:9px; font-weight:700; letter-spacing:.1em; fill:var(--ink-2) }
+.c-registry-line{ font-size:10.5px; fill:var(--ink) }
+.c-registry-date{ font-size:10.5px; font-weight:700; fill:var(--ink) }
+.c-registry-check{ stroke:var(--status-live) !important; stroke-width:2.4 !important; stroke-linecap:round; stroke-linejoin:round }
+
+.c-sheet-g, .c-link, .c-mark-g, .c-stamp, .c-pencil, .c-registry, .c-travel, .c-amount-bad, .c-strike, .c-link-x, .c-mark-bad, .c-registry-date, .c-registry-check{
+  opacity:0; transition:opacity var(--c-t) ease, transform var(--c-t) ease;
+}
+.c-sheet-g{ transform:translateX(-18px) }
+.c-mark-g{ transform:translateY(8px) }
+.c-travel{ transform:translate(324px, 141px) }
+
+/* Scene 1: the first action slides in. */
+[data-scene] .c-sheet-1{ opacity:1; transform:none }
+/* Scene 2: the stamp presses and the mark appears. */
+[data-scene="2"] .c-stamp, [data-scene="3"] .c-stamp{ opacity:1 }
+[data-scene="2"] .c-stamp{ animation:c-press var(--c-t) ease both }
+[data-scene="2"] .c-sheet-1 .c-mark-g, [data-scene="3"] .c-sheet-1 .c-mark-g, [data-scene="4"] .c-sheet-1 .c-mark-g, [data-scene="5"] .c-sheet-1 .c-mark-g{ opacity:1; transform:none }
+/* Scene 3: the chain. */
+[data-scene="3"] .c-sheet-g, [data-scene="4"] .c-sheet-g, [data-scene="5"] .c-sheet-g{ opacity:1; transform:none }
+[data-scene="3"] .c-mark-g, [data-scene="4"] .c-mark-g, [data-scene="5"] .c-mark-g{ opacity:1; transform:none }
+[data-scene="3"] .c-link, [data-scene="4"] .c-link, [data-scene="5"] .c-link{ opacity:1 }
+[data-scene="3"] .c-sheet-2{ transition-delay:.15s }
+[data-scene="3"] .c-sheet-3{ transition-delay:.35s }
+[data-scene="3"] .c-link-1{ transition-delay:.3s }
+[data-scene="3"] .c-link-2{ transition-delay:.5s }
+/* Scene 4: someone changes R$ 480 and the chain breaks from there. */
+[data-scene="4"] .c-pencil{ opacity:1; animation:c-write .9s ease both }
+[data-scene="4"] .c-amount-ok{ opacity:.35 }
+[data-scene="4"] .c-strike, [data-scene="4"] .c-amount-bad{ opacity:1; transition-delay:.5s }
+[data-scene="4"] .c-sheet-1 .c-mark-ok{ opacity:0; transition-delay:.9s }
+[data-scene="4"] .c-sheet-1 .c-mark-bad{ opacity:1; transition-delay:.9s }
+[data-scene="4"] .c-sheet-1 .c-mark-box{ fill:var(--status-bottleneck); transition:fill var(--c-t) .9s }
+[data-scene="4"] .c-link rect{ stroke:var(--status-bottleneck); stroke-dasharray:3 2; transition:stroke var(--c-t) 1.3s }
+[data-scene="4"] .c-link-x{ opacity:1; transition-delay:1.3s }
+[data-scene="4"] .c-sheet-2 .c-mark-box, [data-scene="4"] .c-sheet-3 .c-mark-box{ fill:var(--status-bottleneck); transition:fill var(--c-t) 1.6s }
+[data-scene="4"] .c-sheet-2 .c-mark, [data-scene="4"] .c-sheet-3 .c-mark{ text-decoration:line-through }
+/* Scene 5: the last mark travels to the public registry and gets its date. */
+[data-scene="5"] .c-registry{ opacity:1 }
+[data-scene="5"] .c-travel{ opacity:1; transform:translate(268px, 208px); transition-delay:.2s; transition-duration:1.1s }
+[data-scene="5"] .c-registry-date, [data-scene="5"] .c-registry-check{ opacity:1; transition-delay:1.4s }
+[data-scene="5"] .c-sheet-3 .c-mark-g{ opacity:.35; transition-delay:.2s }
+
+@keyframes c-press{ 0%{ transform:translateY(-14px) } 70%{ transform:translateY(4px) } 100%{ transform:none } }
+@keyframes c-write{ 0%{ transform:translate(-6px, 8px) } 50%{ transform:translate(2px, -2px) } 100%{ transform:none } }
+@media (prefers-reduced-motion:reduce){
+  .corrente{ --c-t:0s }
+  .c-sheet-g, .c-link, .c-mark-g, .c-stamp, .c-pencil, .c-registry, .c-travel, .c-amount-bad, .c-strike, .c-link-x, .c-mark-bad, .c-registry-date, .c-registry-check{ transition:none; animation:none !important }
+}

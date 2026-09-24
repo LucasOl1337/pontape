@@ -4,7 +4,8 @@ import { phrase } from './phrases';
 
 // The first layer of /transparencia (F32, D029) speaks to someone who never heard of GitHub.
 // None of these words may show up there; the technical page keeps them.
-export const TECHNICAL_WORDS = /\b(github|pr|pull request|commits?|merge|hash|json|sha-?256|jcs|ed25519|checkpoint|reposit[oó]rio|marcas?)\b|#\d/i;
+// "marca" is the plain word for hash since F42 (the seal and the chain scenes say it), so it stays out of this list.
+export const TECHNICAL_WORDS = /\b(github|pr|pull request|commits?|merge|hash|json|sha-?256|jcs|ed25519|checkpoint|reposit[oó]rio)\b|#\d/i;
 
 export interface PlainLine { day: string; lead?: string; text: string; through: string }
 
