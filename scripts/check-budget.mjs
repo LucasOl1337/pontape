@@ -7,6 +7,10 @@ import { gzipSync } from 'node:zlib';
 
 const DIST = 'dist';
 const PAGE_LIMIT = 60 * 1024;
+// The technical page embeds every action of the book and grows with each one (the ledger-bot adds
+// events at every merge). Until the list loads on demand (F42 E1b), it gets its own ceiling, so
+// the budget does not silently stop the publication.
+const TECHNICAL_LIMIT = 96 * 1024;
 const FONT_LIMIT = 120 * 1024;
 const PAGES = [
   'index.html', 'transparencia/index.html',
@@ -45,9 +49,10 @@ for (const page of PAGES) {
   const lazyRows = lazy.map(p => [p, gz(readFileSync(join(DIST, p)))]);
   const total = rows.reduce((sum, [, size]) => sum + size, 0);
   const withLazy = total + lazyRows.reduce((sum, [, size]) => sum + size, 0);
-  const ok = withLazy <= PAGE_LIMIT;
+  const limit = page === 'transparencia/tecnico/index.html' ? TECHNICAL_LIMIT : PAGE_LIMIT;
+  const ok = withLazy <= limit;
   failed ||= !ok;
-  console.log(`${ok ? 'ok ' : 'NÃO'} ${page}: ${kb(total)} ao abrir, ${kb(withLazy)} com o que carrega sob demanda, de ${kb(PAGE_LIMIT)}`);
+  console.log(`${ok ? 'ok ' : 'NÃO'} ${page}: ${kb(total)} ao abrir, ${kb(withLazy)} com o que carrega sob demanda, de ${kb(limit)}`);
   for (const [name, size] of rows) console.log(`      ${kb(size).padStart(8)}  ${name}`);
   for (const [name, size] of lazyRows) console.log(`      ${kb(size).padStart(8)}  ${name} (sob demanda)`);
 }
