@@ -5,12 +5,12 @@ import type { ShareCard } from '../../lib/share/render';
 export const SHARE: Record<'home' | 'transparencia', ShareCard & { title: string; description: string; image: string; alt: string }> = {
   home: {
     title: `${PROJECT_NAME} · caridade inteligente`,
-    description: 'Plataforma de caridade inteligente, sem fins lucrativos e aberta: a IA ajuda a decidir como a ajuda chega e faz de graça tudo que pode por quem quer mudar de vida. Toda ação fica num livro público que qualquer um confere.',
+    description: 'Plataforma de caridade inteligente, sem fins lucrativos e aberta: a AI ajuda a levar cada doação a quem tem mais chance de mudar de vida e acompanha essa pessoa de graça. Toda ação fica num livro público que qualquer um confere.',
     image: '/og.png',
-    alt: `${PROJECT_NAME}: Uma plataforma de caridade inteligente. Desenho da escada do site, com sete passos, alguém no primeiro e a IA junto.`,
+    alt: `${PROJECT_NAME}: Uma plataforma de caridade inteligente. Desenho da escada do site, com sete passos, alguém no primeiro e a AI junto.`,
     name: PROJECT_NAME,
-    lead: 'Uma plataforma de caridade',
-    highlight: 'inteligente.',
+    lead: 'Plataforma de',
+    highlight: 'caridade inteligente.',
     footer: 'Sem fins lucrativos · Código aberto · Tudo à vista',
     art: 'stairs',
   },
