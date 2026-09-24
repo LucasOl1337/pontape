@@ -47,7 +47,7 @@ describe('paleta Anil', () => {
   });
 
   it('a tinta em canais (--ink-rgb) é a mesma tinta, também no ::backdrop', () => {
-    const channels = colors['--ink']!.slice(1).match(/../g)!.map(channel => parseInt(channel, 16)).join(',');
+    const channels = colors['--ink']!.slice(1).match(/../g)!.map((channel: string) => parseInt(channel, 16)).join(',');
     const copies = Array.from(css.matchAll(/--ink-rgb:\s*([\d,\s]+)/g), match => match[1]!.replace(/\s/g, ''));
     expect(copies).toHaveLength(2);
     for (const copy of copies) expect(copy).toBe(channels);
