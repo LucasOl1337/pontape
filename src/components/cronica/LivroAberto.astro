@@ -10,9 +10,8 @@ import { recentLines } from '../../lib/ledger-view/plain';
 import { decisionPlain } from '../../data/site/decisions';
 import { LIVRO, PLAIN } from '../../data/site/livro';
 
-// The first layer of /transparencia (F32, D029): what the ledger is, what goes in, why it can be
-// trusted, what already happened and the Conferir button, in plain words. Marks, sources and the
-// full list live on the technical page.
+// First layer of /transparencia (F42 E1): three short questions, one chain drawing,
+// and the seal that redoes the sums in the browser.
 interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
 const events = ledger.events;
@@ -28,7 +27,6 @@ const numbers = [
   { label: 'entrou', value: brl.format(snapshot.receivedCents / 100) },
   { label: 'saiu', value: brl.format(snapshot.spentCents / 100) },
 ];
-const kinds = PLAIN.kinds.map(k => ({ ...k, started: events.some(e => (k.types as readonly string[]).includes(e.payload.type)) }));
 const lines = recentLines(events, decisionPlain);
 const shortDay = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
 ---
@@ -43,57 +41,43 @@ const shortDay = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
     <p class="plain-lead">{PLAIN.lead}</p>
   </header>
 
-  <div class="plain-side">
-    <div class="plain-numbers">
-      <dl class="plain-count">
-        {numbers.map(n => <div><dt>{n.label}</dt><dd>{n.value}</dd></div>)}
-      </dl>
-      <p class="plain-note">{note}</p>
-    </div>
-    <section class="conferir" id="conferir" aria-labelledby="t-verify">
-      <h2 id="t-verify" class="conferir-title">Confira você mesmo.</h2>
-      <VerifyPanel data="ledger-real" where={PLAIN.verify} plain>
-        <a href="#confiar">Como funciona</a>
-      </VerifyPanel>
-      <LedgerData id="ledger-real" ledger={ledger} />
-    </section>
-  </div>
-
-  <section class="plain-kinds" aria-labelledby="t-kinds">
-    <h2 id="t-kinds" class="plain-h2">O que entra no livro</h2>
-    <ul class="kinds">
-      {kinds.map(k => (
-        <li class="kind">
-          <Icon name={k.icon} />
-          <h3 class="kind-title">{k.title}</h3>
-          <p class="kind-text">{k.text}</p>
-          <p class:list={['kind-state', { 'is-live': k.started && k.live }]}>
-            {k.started && k.live ? <span class="live-dot" aria-hidden="true"></span> : <Icon name="clock" />}
-            {k.started ? k.running : k.waiting}
-          </p>
+  <div class="ask-grid">
+    <ol class="perguntas">
+      {PLAIN.questions.map((item, i) => (
+        <li>
+          <h2><span class="pergunta-num">{i + 1}.</span> {item.q}</h2>
+          <p>{item.a}</p>
+          {item.id === 'when' && <p>{PLAIN.stampWaiting}</p>}
         </li>
       ))}
-    </ul>
-    <p class="plain-rule"><Icon name="shield" /><span>{PLAIN.rule}</span></p>
+    </ol>
+    <Corrente />
+  </div>
+
+  <section class="conferir" id="conferir" aria-labelledby="t-verify">
+    <h2 id="t-verify" class="conferir-title">Confira você mesmo.</h2>
+    <VerifyPanel data="ledger-real" where={PLAIN.verify} plain seal details={LIVRO.tecnico} />
+    <LedgerData id="ledger-real" ledger={ledger} />
   </section>
 
-  <section class="plain-trust" id="confiar" aria-labelledby="t-trust">
-    <h2 id="t-trust" class="plain-h2">Por que dá pra confiar</h2>
-    <div class="trust-body">
-      <div class="trust-text">
-        {PLAIN.trust.map(p => <p>{p}</p>)}
-        <p>{PLAIN.correction}</p>
-        <p class="trust-soon"><Icon name="clock" /><span>{PLAIN.soon}</span></p>
-      </div>
-      <Corrente />
-    </div>
-  </section>
+  <div class="plain-numbers">
+    <dl class="plain-count">
+      {numbers.map(n => <div><dt>{n.label}</dt><dd>{n.value}</dd></div>)}
+    </dl>
+    <p class="plain-note">{note}</p>
+  </div>
 
   <section class="plain-recent" aria-labelledby="t-recent">
     <h2 id="t-recent" class="plain-h2">O que já aconteceu</h2>
     {lines.length
       ? <ol class="recent">
-          {lines.map(l => <li><time datetime={l.day}>{shortDay(l.day)}</time><p>{l.lead && <strong>{l.lead}</strong>} {l.text}</p></li>)}
+          {lines.map(l => (
+            <li>
+              <time datetime={l.day}>{shortDay(l.day)}</time>
+              <p>{l.lead && <strong>{l.lead}</strong>} {l.text}</p>
+              <button class="conferir-esta" type="button" data-verify-until={l.through}>{PLAIN.thisOne}</button>
+            </li>
+          ))}
         </ol>
       : <p class="plain-note">{PLAIN.empty}</p>}
     <a class="more-link" href={`${LIVRO.tecnico}#acoes`}>Ver todas, na parte técnica<Icon name="arrow-right" /></a>
@@ -104,3 +88,35 @@ const shortDay = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
     <a class="btn btn--ink" href={LIVRO.tecnico}><Icon name="code" />Parte técnica</a>
   </footer>
 </article>
+<style is:global>
+  .seal{
+    display:inline-flex; align-items:center; gap:.7rem; min-height:56px; padding:.3rem 1.15rem .3rem .3rem;
+    border:2px solid var(--ink); border-radius:999px; background:var(--paper); color:var(--ink);
+    font:700 1rem/1.2 var(--font-sans); cursor:pointer;
+  }
+  .seal:hover{ border-color:var(--accent); color:var(--accent) }
+  .seal:disabled{ opacity:.55; cursor:progress }
+  .seal-mark{
+    display:grid; place-items:center; width:2.6rem; height:2.6rem; border-radius:50%;
+    background:var(--accent); color:var(--paper);
+  }
+  .seal-mark .icon{ width:1.25rem; height:1.25rem }
+  .proof-summary{ margin-top:var(--space-4); font:600 1.2rem/1.35 var(--font-serif) }
+  .proof-steps{ display:grid; gap:.85rem; margin-top:var(--space-3) }
+  .proof-step{ display:grid; grid-template-columns:1.7rem minmax(0, 1fr); gap:.7rem; align-items:start }
+  .proof-mark{ width:1.7rem; height:1.7rem; margin-top:.1rem; border:2px solid var(--ink); border-radius:50% }
+  .proof-step[data-mark="ok"] .proof-mark{ border-color:var(--status-ok-icon); background:var(--status-ok-icon); box-shadow:inset 0 0 0 3px var(--paper), inset 0 0 0 6px var(--status-ok-icon) }
+  .proof-step[data-mark="bad"] .proof-mark{ border-color:var(--status-broken-icon); background:var(--status-broken-icon) }
+  .proof-step[data-mark="later"] .proof-mark{ border-style:dashed; border-color:var(--ink-2) }
+  .proof-step[data-mark="run"] .proof-mark{ border-color:var(--accent) }
+  .proof-step-title{ font:600 1.05rem/1.3 var(--font-serif) }
+  .proof-step p + p{ margin-top:.15rem; font:400 .95rem/1.4 var(--font-sans); color:var(--ink-2) }
+  .proof-step a{ display:inline-flex; align-items:center; min-height:44px; font:700 .95rem/1.2 var(--font-sans); color:var(--accent) }
+  .seal-extra{ display:flex; flex-wrap:wrap; gap:.25rem 1.2rem; align-items:center; margin-top:var(--space-3) }
+  .seal-file{
+    position:relative; display:inline-flex; align-items:center; min-height:44px;
+    font:700 .9375rem/1.2 var(--font-sans); text-decoration:underline; text-underline-offset:.18em; cursor:pointer;
+  }
+  .seal-file input{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0) }
+  .seal-file:focus-within{ outline:3px solid var(--accent); outline-offset:3px }
+</style>

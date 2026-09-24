@@ -1,9 +1,9 @@
-// /transparencia, first layer (F32): Conferir checks the real ledger in plain words.
-// The list, the example and the tabs are on /transparencia/tecnico (scripts/ledger.ts).
-import { mountVerify, readLedger } from './verify';
+// /transparencia, first layer (F42): the seal checks the real ledger in plain words.
+import { mountSeal, readLedger } from './seal';
 
 const panel = document.querySelector<HTMLElement>('#conferir [data-verify-panel]');
 if (panel) {
-  const ledger = readLedger('ledger-real');
-  mountVerify(panel, () => ledger);
+  const seal = mountSeal(panel, () => readLedger('ledger-real'));
+  const until = new URLSearchParams(location.search).get('ate');
+  if (until && /^[1-9][0-9]*$/.test(until)) void seal.run(until);
 }

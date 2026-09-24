@@ -68,6 +68,11 @@ function setMode(next: Mode) {
 
 document.addEventListener('click', e => {
   const target = e.target as Element;
+  const go = target.closest<HTMLButtonElement>('[data-goto]');
+  if (go?.dataset.goto && /^[1-9][0-9]*$/.test(go.dataset.goto)) {
+    location.assign(`/transparencia?ate=${go.dataset.goto}#conferir`);
+    return;
+  }
   const modeBtn = target.closest<HTMLElement>('[data-mode]');
   if (modeBtn) { setMode(modeBtn.dataset.mode as Mode); return; }
   const filterBtn = target.closest<HTMLElement>('[data-type-filter]');

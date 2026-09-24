@@ -6,11 +6,11 @@ import { phrase } from './phrases';
 // None of these words may show up there; the technical page keeps them.
 export const TECHNICAL_WORDS = /\b(github|pr|pull request|commits?|merge|hash|json|sha-?256|jcs|ed25519|checkpoint|reposit[oó]rio|marcas?)\b|#\d/i;
 
-export interface PlainLine { day: string; lead?: string; text: string }
+export interface PlainLine { day: string; lead?: string; text: string; through: string }
 
 const sentence = (text: string) => (/[.!?]$/.test(text) ? text : `${text}.`);
 
-function lineOf(p: LedgerPayload, decisionPlain: (id: string) => string): Omit<PlainLine, 'day'> {
+function lineOf(p: LedgerPayload, decisionPlain: (id: string) => string): Omit<PlainLine, 'day' | 'through'> {
   switch (p.type) {
     case 'project':
       if (p.action === 'decision_recorded') return { lead: 'Decisão.', text: sentence(decisionPlain(p.decisionId)) };
@@ -29,17 +29,18 @@ function lineOf(p: LedgerPayload, decisionPlain: (id: string) => string): Omit<P
 export function recentLines(events: LedgerEvent[], decisionPlain: (id: string) => string, limit = 5): PlainLine[] {
   const lines: PlainLine[] = [];
   for (let i = events.length - 1; i >= 0 && lines.length < limit; i--) {
-    const p = events[i]!.payload;
+    const event = events[i]!;
+    const p = event.payload;
     if (p.type === 'project' && p.action === 'pull_request_merged') {
       let count = 1;
       for (let q = events[i - 1]?.payload; q?.type === 'project' && q.action === 'pull_request_merged' && q.occurredOn === p.occurredOn; q = events[i - 1]?.payload) {
         count++;
         i--;
       }
-      lines.push({ day: p.occurredOn, text: count === 1 ? 'Uma mudança aprovada no projeto.' : `${count} mudanças aprovadas no projeto.` });
+      lines.push({ day: p.occurredOn, through: event.sequence, text: count === 1 ? 'Uma mudança aprovada no projeto.' : `${count} mudanças aprovadas no projeto.` });
       continue;
     }
-    lines.push({ day: p.occurredOn, ...lineOf(p, decisionPlain) });
+    lines.push({ day: p.occurredOn, ...lineOf(p, decisionPlain), through: event.sequence });
   }
   return lines;
 }

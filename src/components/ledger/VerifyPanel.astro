@@ -1,20 +1,39 @@
 ---
 import Icon from '../site/Icon.astro';
+import { PLAIN } from '../../data/site/livro';
+import { ledgerTrust } from '../../lib/ledger/published';
+import { proofFromTrust } from '../../lib/ledger-view/proof';
 
-// `data` is the id of the <script type="application/json"> holding the events to check;
-// `list` is the id of the <ol> whose entries get marked as the check walks the chain, if the page has one.
-// `plain` keeps the result in plain words, without marks (first layer of /transparencia, F32).
-interface Props { data: string; list?: string; where?: string; plain?: boolean }
-const { data, list, where = 'Refaz as contas de todas as ações no seu aparelho. Nada é enviado pra gente.', plain = false } = Astro.props;
+// `data` is the id of the <script type="application/json"> holding the events to check.
+// `list` is the id of the <ol> whose entries get marked as the check walks the chain.
+// `plain` is the first layer of /transparencia. `details` opens the technical page after a check.
+interface Props { data: string; list?: string; where?: string; plain?: boolean; seal?: boolean; details?: string }
+const { data, list, where = 'Refaz as contas de todas as ações no seu aparelho. Nada é enviado pra gente.', plain = false, seal = false, details } = Astro.props;
+const proof = JSON.stringify(proofFromTrust(ledgerTrust)).replaceAll('<', '\\u003c');
 ---
-<div class="verify" data-verify-panel data-source={data} data-list={list} data-plain={plain ? '' : undefined}>
+<div class:list={['verify', { 'verify--seal': seal }]} data-verify-panel data-source={data} data-list={list} data-plain={plain ? '' : undefined} data-seal={seal ? '' : undefined}>
   <div class="verify-head">
-    <button class="btn btn--primary" type="button" data-verify><Icon name="shield" />Conferir</button>
+    {seal
+      ? <button class="seal" type="button" data-verify><span class="seal-mark" aria-hidden="true"><Icon name="shield" /></span><span>{PLAIN.seal}</span></button>
+      : <button class="btn" type="button" data-verify><Icon name="shield" />Conferir</button>}
     <p class="verify-where">{where} <slot /></p>
   </div>
-  <div class="verify-progress" hidden><span></span></div>
-  <div class="verify-result" role="status" aria-live="polite" data-state="idle">
-    <Icon name="shield" />
-    <div><p class="verify-title">Ainda não conferido.</p><p>Aperte Conferir e o seu aparelho refaz as contas de cada ação.</p></div>
-  </div>
+  {seal
+    ? <>
+        <p class="proof-summary" data-proof-summary role="status" aria-live="polite" hidden></p>
+        <ol class="proof-steps" data-proof-steps aria-label="Passo a passo da conferência" hidden></ol>
+        <div class="seal-extra">
+          <a class="more-link" href="/livro/ledger.json" download="livro.json"><Icon name="download" />{PLAIN.download}</a>
+          <label class="seal-file">{PLAIN.openFile}<input type="file" accept="application/json,.json" data-verify-file /></label>
+          {details && <a class="more-link" data-proof-more href={details} hidden>{PLAIN.details}<Icon name="arrow-right" /></a>}
+        </div>
+        <script type="application/json" id="ledger-proof" set:html={proof} />
+      </>
+    : <>
+        <div class="verify-progress" hidden><span></span></div>
+        <div class="verify-result" role="status" aria-live="polite" data-state="idle">
+          <Icon name="shield" />
+          <div><p class="verify-title">Ainda não conferido.</p><p>Aperte Conferir e o seu aparelho refaz as contas de cada ação.</p></div>
+        </div>
+      </>}
 </div>
