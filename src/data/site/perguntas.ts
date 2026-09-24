@@ -20,22 +20,22 @@ export const FAQ: Pergunta[] = [
   { id: 'e-seguro', q: 'É seguro? Quem vê os dados?',
     a: 'Hoje o site não guarda nada de ninguém: nem nome, nem e-mail, nem cookie. Quando o atendimento começar, quem é a pessoa nunca vai aparecer no livro público. Aparece a ação e o número, nunca o nome.' },
   { id: 'quem-faz', q: 'Quem está por trás?',
-    a: 'O Lucas Oliveira, engenheiro de AI em São Paulo. Por enquanto é ele, com agentes de AI ajudando a construir. Sem empresa, sem patrocínio, sem dinheiro de ninguém.' },
+    a: 'Por enquanto, uma pessoa em São Paulo, com agentes de AI ajudando a construir. Sem empresa, sem patrocínio, sem dinheiro de ninguém. O projeto não existe pra dar nome a ninguém: o crédito é de quem ajuda, e o que importa fica no livro público.' },
   { id: 'como-ajudar', q: 'Como posso ajudar hoje?',
-    a: 'Contar pra alguém, ler o site e apontar o que ficou confuso, pegar uma tarefa no GitHub, ou falar com o Lucas com uma ideia ou uma crítica. Voluntário na rua e vaga de trabalho abrem quando o projeto começar na primeira cidade.' },
+    a: 'Contar pra alguém, ler o site e apontar o que ficou confuso, pegar uma tarefa no GitHub, ou mandar uma ideia ou uma crítica pra quem cuida do projeto. Voluntário na rua e vaga de trabalho abrem quando o projeto começar na primeira cidade.' },
   { id: 'onde-codigo', q: 'Onde está o código?',
     a: 'No GitHub, aberto pra qualquer pessoa ver, usar e propor melhoria. Licença Apache 2.0. Cada decisão do projeto está escrita lá, com data e quem decidiu.' },
 ];
 
-export const QUEM_FAZ = {
-  name: 'Lucas Oliveira',
-  role: 'Engenheiro de AI',
-  city: 'São Paulo',
-  text: 'Constrói produtos e ferramentas com agentes de AI. O PontaPé é a tentativa dele de usar isso pra quem mais precisa, com cada real e cada passo à vista.',
+// No personal credit on the site (D036): the project is not here to give anyone a name. The
+// links lead to whoever takes care of it today, so people can reach, hire or question them.
+export const CONTATO_TEXTO = {
+  title: 'Quem cuida do projeto',
+  text: 'Hoje é uma pessoa, com agentes de AI ajudando a construir. Ela responde por conta própria, sem empresa no meio. Dúvida, crítica, ideia, proposta de trabalho ou parceria: é por aqui.',
 } as const;
 
 export const CONTATO = [
-  { icon: 'people', label: 'LinkedIn', text: 'Mensagem direta ou comentário.', href: 'https://www.linkedin.com/in/lucasoliveiradevai/' },
-  { icon: 'link', label: 'X', text: '@Lucas_Ol1337. Resposta ou mensagem.', href: 'https://x.com/Lucas_Ol1337' },
+  { icon: 'people', label: 'LinkedIn', text: 'Mensagem direta.', href: 'https://www.linkedin.com/in/lucasoliveiradevai/' },
+  { icon: 'link', label: 'X', text: 'Resposta ou mensagem.', href: 'https://x.com/Lucas_Ol1337' },
   { icon: 'code', label: 'GitHub', text: 'Ideia, dúvida ou problema, em aberto.', href: `${REPO_URL}/issues/new` },
 ] as const;

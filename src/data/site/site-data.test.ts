@@ -9,7 +9,7 @@ import { LIVRO, PLAIN } from './livro';
 import { TECHNICAL_WORDS, recentLines } from '../../lib/ledger-view/plain';
 import { getPublicLedger } from '../../lib/ledger-view/source';
 import { CADERNOS, CONSTRUIR, MOVED } from './cadernos';
-import { FAQ, QUEM_FAZ } from './perguntas';
+import { CONTATO_TEXTO, FAQ } from './perguntas';
 import { ICON_NAMES } from '../../components/site/icon-names';
 
 describe('dados do site', () => {
@@ -57,13 +57,18 @@ describe('dados do site', () => {
     }
   });
 
+  it('o site não dá crédito pessoal a ninguém (D036)', () => {
+    const text = JSON.stringify([OPENING, STEPS, FAQ, CONTATO_TEXTO]);
+    expect(text).not.toMatch(/Lucas|Oliveira|Herreiro/);
+  });
+
   it('texto público diz AI, nunca IA', () => {
-    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS, FAQ, QUEM_FAZ]);
+    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS, FAQ, CONTATO_TEXTO]);
     expect(text).not.toMatch(/(?<![\p{L}])IAs?(?![\p{L}])|intelig[êe]ncia artificial/iu);
   });
 
   it('texto público não tem travessão', () => {
-    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS, FAQ, QUEM_FAZ]);
+    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS, FAQ, CONTATO_TEXTO]);
     expect(text).not.toContain('—');
   });
 
