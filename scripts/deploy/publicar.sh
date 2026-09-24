@@ -17,6 +17,7 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 cp -r dist "$tmp/public"
 cp scripts/deploy/worker.js "$tmp/worker.js"
+cp scripts/deploy/yumi.js scripts/deploy/yumi-knowledge.js "$tmp/"
 grep -v '^//' scripts/deploy/wrangler.template.jsonc > "$tmp/wrangler.jsonc"
 
 cd "$tmp"

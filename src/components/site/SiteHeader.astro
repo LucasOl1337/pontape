@@ -31,6 +31,21 @@ const links = [
         {links.map(l => <li><a href={l.href} aria-current={l.current}>{l.label}</a></li>)}
       </ul>
     </nav>
+    <button class="icon-btn chat-open-btn" id="yumi-open" type="button" aria-haspopup="dialog" aria-controls="yumi-dialog">Tirar dúvida</button>
   </div>
   <div class="read-progress" aria-hidden="true"></div>
 </header>
+<dialog class="yumi-dialog" id="yumi-dialog" aria-labelledby="yumi-title">
+  <div class="yumi-head">
+    <div><p class="yumi-kicker">PontaPé</p><h2 id="yumi-title">Converse com a Yumi</h2></div>
+    <button class="icon-btn" type="button" data-close aria-label="Fechar conversa"><Icon name="close" /></button>
+  </div>
+  <div class="yumi-messages" id="yumi-messages" role="log" aria-live="polite" aria-relevant="additions text">
+    <p class="yumi-message yumi-message--assistant">Sou a Yumi, AI do PontaPé. Esta conversa não é guardada. Ela fica só nesta aba enquanto você a usa.</p>
+  </div>
+  <form class="yumi-form" id="yumi-form">
+    <label for="yumi-input">Sua dúvida</label>
+    <textarea id="yumi-input" name="message" rows="2" maxlength="600" required placeholder="Escreva aqui. Enter envia."></textarea>
+    <div class="yumi-form-bottom"><p id="yumi-status" role="status" aria-live="polite"></p><button class="btn btn--ink" type="submit">Enviar</button></div>
+  </form>
+</dialog>

@@ -33,6 +33,10 @@ Leia tudo isso antes de escrever uma linha. Depois leia `docs/frentes/F08-livro-
 - **Sem Bitcoin nem criptomoeda (D038).** O carimbo de data é em registro público sem moeda: Sigstore Rekor e RFC 3161. No site, "registro público"; a palavra Bitcoin não aparece. Pode dizer "no estilo do blockchain, sem moeda nenhuma".
 - Commit pequeno, mensagem em PT-BR; PR por etapa; `npm run check` verde.
 
+## Custódia da chave (decidido 24/09, 18:19 UTC)
+
+O escrevente roda no GitHub Actions, commita como o ledger-bot com o `GITHUB_TOKEN` e assina o checkpoint com o secret do repositório `LEDGER_SIGNING_PKCS8` (Ed25519, PKCS8 PEM). O Regente gerou a chave com `openssl genpkey` direto pro `gh secret set` e destruiu o arquivo; ela não existe em disco nem no repo. A chave pública (SPKI, base64) fica publicada no repo e no `trust.json`; a rotação entra no livro e a chave antiga da F25 continua publicada. Doação fictícia nunca entra no livro real: o teste do caminho usa livro temporário no repositório.
+
 ## Etapas
 
 ### E1 · Explicar e provar (primeira PR, 1 a 2 dias)
