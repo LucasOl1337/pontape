@@ -28,9 +28,10 @@ jobs:
         with:
           node-version-file: .node-version
           cache: npm
-      - name: Reconciliar projeto e publicar somente o livro
+      - name: Reconciliar o projeto e carimbar a cabeça
         env:
           GH_TOKEN: ${{ github.token }}
+          LEDGER_SIGNING_PKCS8: ${{ secrets.LEDGER_SIGNING_PKCS8 }}
         shell: bash
         run: |
           set -euo pipefail
@@ -44,17 +45,45 @@ jobs:
             npm ci
             npm run ledger:sync-project -- --apply
             npm run ledger:verify
-            if git diff --quiet -- src/data/ledger/ledger.json; then
-              echo 'Nenhum fato novo. Sem commit.'
+            ledger_changed=no
+            if ! git diff --quiet -- src/data/ledger/ledger.json; then
+              ledger_changed=yes
+            fi
+            behind=$(node --input-type=module -e '
+              import { readFileSync } from "node:fs";
+              const trust = JSON.parse(readFileSync("src/data/ledger/trust.json", "utf8"));
+              const ledger = JSON.parse(readFileSync("src/data/ledger/ledger.json", "utf8"));
+              const through = trust.signedThrough ? Number(trust.signedThrough) : 0;
+              console.log(through < Number(ledger.checkpoint.sequence) ? "yes" : "no");
+            ')
+            if [ "$ledger_changed" = no ] && [ "$behind" = no ]; then
+              echo 'Cabeça já carimbada. Sem commit.'
               exit 0
             fi
-            # Token pushes do not trigger CI either, so validate before writing main.
+            # Same push as the new actions, so the seal does not wait for the next day.
+            npm run ledger:stamp -- --apply
+            if ! git diff --quiet -- src/data/ledger/intake.json; then
+              echo 'O carimbo alterou a fila. A main foi preservada.' >&2
+              exit 1
+            fi
             npm run check
-            git add -- src/data/ledger/ledger.json
+            git add -- src/data/ledger/ledger.json src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json
+            if git diff --cached --quiet; then
+              echo 'Nada novo. Sem commit.'
+              exit 0
+            fi
             git diff --cached --name-only | while IFS= read -r path; do
-              test "$path" = 'src/data/ledger/ledger.json'
+              case "$path" in
+                src/data/ledger/ledger.json|src/data/ledger/trust.json|src/data/ledger/checkpoint-signed.json) ;;
+                *) echo "Arquivo inesperado: $path" >&2; exit 1 ;;
+              esac
             done
-            git commit -m 'Registra ações do projeto no livro [ledger-bot]'
+            if [ "$ledger_changed" = yes ]; then
+              commit_message='Registra ações do projeto e carimba a cabeça [ledger-bot]'
+            else
+              commit_message='Carimba a cabeça do livro [ledger-bot]'
+            fi
+            git commit -m "$commit_message"
             if git push origin HEAD:refs/heads/main; then
               exit 0
             fi
