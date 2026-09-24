@@ -6,6 +6,11 @@ import process from 'node:process';
 
 const HASH_TOKEN = /^'sha256-[A-Za-z0-9+/]+={0,2}'$/;
 const CSP_LINE = /^[ \t]+Content-Security-Policy:[ \t]*([^\r\n]+)$/gm;
+// The only outside script allowed: the Cloudflare Web Analytics beacon, which the host injects
+// (#55). The exact file, not the whole origin. It counts visits without cookies or personal data:
+// https://www.cloudflare.com/web-analytics/ and https://developers.cloudflare.com/web-analytics/faq/
+// (acesso em 24/09/2026).
+const ALLOWED_SCRIPTS = ['https://static.cloudflareinsights.com/beacon.min.js'];
 
 async function htmlPaths(directory) {
   const paths = [];
@@ -52,7 +57,7 @@ function policyIn(headers) {
   const tokens = directives[index].split(/\s+/).slice(1);
   if (!tokens.includes("'self'")) throw new Error("script-src deve conter 'self'.");
   for (const token of tokens) {
-    if (token !== "'self'" && !HASH_TOKEN.test(token)) {
+    if (token !== "'self'" && !ALLOWED_SCRIPTS.includes(token) && !HASH_TOKEN.test(token)) {
       throw new Error(`Fonte não permitida em script-src: ${token}`);
     }
   }
@@ -61,7 +66,7 @@ function policyIn(headers) {
 
 function verify(headers, expected) {
   const { tokens } = policyIn(headers);
-  const actual = tokens.filter((token) => token !== "'self'");
+  const actual = tokens.filter((token) => token !== "'self'" && !ALLOWED_SCRIPTS.includes(token));
   if (actual.length !== expected.length || actual.some((token, index) => token !== expected[index])) {
     throw new Error('script-src não corresponde aos scripts embutidos do build. Rode a geração da CSP.');
   }
@@ -78,7 +83,7 @@ async function main() {
   let headers = await readFile(headersPath, 'utf8');
   if (action === 'generate') {
     const { line, directives, index } = policyIn(headers);
-    directives[index] = ["script-src 'self'", ...hashes].join(' ');
+    directives[index] = ["script-src 'self'", ...ALLOWED_SCRIPTS, ...hashes].join(' ');
     const replacement = line.replace(/Content-Security-Policy:[ \t]*[^\r\n]+$/, `Content-Security-Policy: ${directives.join('; ')}`);
     if (replacement.length > 2000) throw new Error('Linha CSP excede 2.000 caracteres do _headers. Externalize scripts.');
     headers = headers.replace(line, replacement);
