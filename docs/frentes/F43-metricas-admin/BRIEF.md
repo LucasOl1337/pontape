@@ -13,7 +13,7 @@
 - Worker do site com `/api/chat` (F41) e Rate Limiting binding; `scripts/deploy/worker.js`, `yumi.js`, `wrangler.template.jsonc`, `publicar.sh`.
 - Cloudflare Web Analytics (beacon) já conta visitas na conta do Lucas, mas só no painel da Cloudflare. Pode continuar; o contador público não depende dele.
 - **Banco D1 `pontape` criado pelo Regente** na conta do site: `database_id` `4a0e6b60-9273-4c40-a3f6-31a10f5f5da5`, binding `DB` (você acrescenta no `wrangler.template.jsonc`). Migrações em `scripts/deploy/migrations/*.sql`, aplicadas pelo Regente com `wrangler d1 migrations apply pontape --remote` antes do deploy.
-- Secrets no Worker, postos pelo Regente: `ADMIN_EMAIL`, `ADMIN_PASSWORD` (compara em tempo constante), `SESSION_SECRET` (HMAC do cookie de sessão). Local: `.env` e `.dev.vars` pelo `dev-chat.sh`.
+- Secrets no Worker, postos pelo Regente: `ADMIN_USER` (nome de usuário, não e-mail; decisão do Lucas em 24/09), `ADMIN_PASSWORD` (compara em tempo constante), `SESSION_SECRET` (HMAC do cookie de sessão). O formulário pede **usuário** e senha. Local: `.env` e `.dev.vars` pelo `dev-chat.sh`.
 
 ## Regras
 
@@ -41,7 +41,7 @@
 
 ### 3. Painel do admin
 
-- `pontape.org/admin`: página estática mínima (`src/pages/admin.astro`, `noindex`, fora do sitemap) com formulário de e-mail e senha → `POST /api/admin/login` → cookie `HttpOnly; Secure; SameSite=Strict`, 12 h, assinado com `SESSION_SECRET`. 5 tentativas por 15 min por IP. Logout.
+- `pontape.org/admin`: página estática mínima (`src/pages/admin.astro`, `noindex`, fora do sitemap) com formulário de usuário e senha → `POST /api/admin/login` → cookie `HttpOnly; Secure; SameSite=Strict`, 12 h, assinado com `SESSION_SECRET`. 5 tentativas por 15 min por IP. Logout.
 - Com sessão: `GET /api/admin/stats` (por dia, 30 dias: visitas, pessoas, cliques por tipo, páginas mais vistas) e `GET /api/admin/chats?page=` (lista com data, modelo, primeira pergunta) e `GET /api/admin/chats/:id` (transcrição). O painel desenha isso: tabela e gráfico simples em SVG inline, sem biblioteca. Estilo do site.
 - Sem sessão, tudo em `/api/admin/*` responde 401 sem detalhe. `/admin` sem sessão mostra só o formulário.
 
