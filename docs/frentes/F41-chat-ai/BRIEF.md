@@ -4,6 +4,8 @@
 
 ## O que o Lucas pediu (24/09, [fonte](../../fontes/2026-09-24-feedback-divulgar-hoje.md))
 
+Segunda vez, à tarde: "ainda não tem um chat inteligente com AI integrada no 9Router, que a gente já tem em outros projetos, e precisamos ter aqui também: um bot treinado, pode usar a Yumi, que já tá na nuvem no Hostinger, pra ter uma persona especialista em tudo sobre o PontaPé".
+
 Um chat ao vivo no canto de cima do site, com a página como está. Um bot de AI com o conhecimento do projeto, que responde dúvida de um jeito simples e fácil. O público principal é a população geral.
 
 ## Regras que não mudam
@@ -17,7 +19,8 @@ Um chat ao vivo no canto de cima do site, com a página como está. Um bot de AI
 
 - Um Worker pequeno ao lado do site (a hospedagem já é Workers, D019), rota `/api/chat`, streaming, sem estado.
 - Conhecimento: `docs/PRD.md`, `docs/DECISOES.md` (coluna "em palavras simples"), os textos de `src/data/site/*.ts` e `perguntas.ts`. Montar no build, não em runtime.
-- Modelo: o Regente confirma a conta com o Lucas antes de publicar (Anthropic direto ou 9Router).
+- **Gateway: 9Router** (skill `9router`), como nos outros projetos do Lucas; o Worker fala com o 9Router, nunca com o provedor direto. Chave do 9Router em Secret do Worker.
+- **Persona: a Yumi**, projeto do Lucas que já roda na nuvem (Hostinger). A ideia dele é treinar a Yumi como especialista no PontaPé. O Regente pede ao Lucas o repositório ou o endereço da Yumi antes de começar; até lá, o conhecimento vai como contexto montado no build.
 - Limite por IP e por minuto, sem identificar ninguém além do necessário pra barrar abuso.
 - Botão "Tirar dúvida" no cabeçalho, ao lado do menu; abre um painel por cima, fecha com Esc. Celular primeiro.
 
