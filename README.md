@@ -2,9 +2,9 @@
 
 Caridade inteligente. Nome escolhido pelo Lucas em 22/09/2026 (D016); o repositório é `LucasOl1337/pontape` (antes VidaNova) e a pasta local ainda se chama VidaNova.
 
-Uma plataforma de caridade inteligente, sem fins lucrativos e open source: a IA ajuda a decidir como os recursos chegam a quem quer mudar de vida e faz de graça tudo que uma IA pode fazer pra melhorar a vida dessa pessoa.
+Uma plataforma de caridade inteligente, sem fins lucrativos e open source: a AI ajuda a decidir como os recursos chegam a quem quer mudar de vida e faz de graça tudo que uma AI pode fazer pra melhorar a vida dessa pessoa.
 
-A base é um sistema com IA e tudo à vista: a IA ajuda a escolher com cuidado quem mais quer mudar de vida, e toda ação do projeto, cada real e cada passo, fica num livro público que qualquer um pode conferir. Depois a gente vai até a pessoa, conversa com ela por voz (ela não precisa saber ler), garante comida, roupa e higiene pros primeiros dias e conecta com trabalho.
+A base é um sistema com AI e tudo à vista: a AI ajuda a escolher com cuidado quem mais quer mudar de vida, e toda ação do projeto, cada real e cada passo, fica num livro público que qualquer um pode conferir. Depois a gente vai até a pessoa, conversa com ela por voz (ela não precisa saber ler), garante comida, roupa e higiene pros primeiros dias e conecta com trabalho.
 
 Estado: fundação. Esta base entrega uma página provisória e um painel estático com zero e data de referência. Atendimento e doações ainda não estão habilitados. A interface completa vem da F07; o livro público de ações vem da F08.
 

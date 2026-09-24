@@ -21,18 +21,18 @@ describe('dados do site', () => {
     for (const step of STEPS) expect(MODULES.some(m => m.id === step.module)).toBe(true);
   });
 
-  it('o apoio da IA vem antes do trabalho (D028)', () => {
+  it('o apoio da AI vem antes do trabalho (D028)', () => {
     const at = (module: string) => STEPS.findIndex(s => s.module === module);
     expect(at('M7')).toBeGreaterThan(at('M5'));
     expect(at('M7')).toBeLessThan(at('M6'));
   });
 
-  it('a escada começa pelo sistema de escolha, e a IA vai junto desde ali (D032)', () => {
+  it('a escada começa pelo sistema de escolha, e a AI vai junto desde ali (D032)', () => {
     expect(STEPS.filter(s => s.aiFrom)).toEqual([STEPS[0]]);
     expect(STEPS[0]!.module).toBe('M3');
     const at = (module: string) => STEPS.findIndex(s => s.module === module);
     expect(at('M5'), 'a comida vem depois da conversa').toBeGreaterThan(at('M4'));
-    expect(OPENING.indexOf('IA'), 'a home abre pela IA, não pela comida').toBeLessThan(OPENING.indexOf('comida'));
+    expect(OPENING.indexOf('AI'), 'a home abre pela AI, não pela comida').toBeLessThan(OPENING.indexOf('comida'));
   });
 
   it('o "já funciona?" de cada passo bate com o estado da peça', () => {
@@ -53,6 +53,11 @@ describe('dados do site', () => {
     for (const c of CONTRIBUTIONS) {
       if (c.bottleneck) expect(BOTTLENECKS.some(b => b.id === c.bottleneck)).toBe(true);
     }
+  });
+
+  it('texto público diz AI, nunca IA', () => {
+    const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS]);
+    expect(text).not.toMatch(/(?<![\p{L}])IAs?(?![\p{L}])|intelig[êe]ncia artificial/iu);
   });
 
   it('texto público não tem travessão', () => {

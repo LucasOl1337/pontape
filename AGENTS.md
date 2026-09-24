@@ -49,6 +49,6 @@ O contexto de qualquer agente compacta; o arquivo sobrevive. Cada frente segue e
 - **Reservado ao Regente, com OK do Lucas:** publicar, deploy, comprar domínio, criar conta em serviço, configurar pagamento, contatar pessoa ou empresa, abrir o repositório ao público.
 - **Dado real de candidato nunca entra no repositório.** Exemplo e seed usam dado fictício marcado como fictício.
 - **Segredo** só em `.env` local (ignorado pelo git); `.env.example` documenta as chaves.
-- **Idioma:** docs e texto de interface em PT-BR; código e identificadores em inglês.
+- **Idioma:** docs e texto de interface em PT-BR; código e identificadores em inglês. O termo é sempre **AI**, nunca "IA" nem "inteligência artificial".
 - **Texto público** (site, panfleto, roteiro de entrevista): frase curta e direta, que quem lê pouco entende ouvindo em voz alta. Sem travessão, sem jargão, sem rebaixar ninguém.
 - **Pesquisa:** toda afirmação factual leva link e data de acesso.
