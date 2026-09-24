@@ -2,7 +2,7 @@ import { canonicalize } from './canonical.ts';
 import { acceptIngest } from './ingest.ts';
 import { signCheckpoint } from './keys.ts';
 import { ack, head, push, type Intake, type QueueState } from './queue.ts';
-import type { LedgerDocument } from './schema.ts';
+import type { LedgerCheckpoint, LedgerDocument } from './schema.ts';
 import { appendEvent, createCheckpoint } from './verify.ts';
 import { stampCheckpoint } from './stamp.ts';
 import { liveTrust, type LiveTrust } from './trust-doc.ts';
@@ -45,6 +45,23 @@ export async function drainOne(input: {
     document: { events, checkpoint },
     intake: { keys: done.done },
     trust: liveTrust(input.publicKeyHex, input.previousPublicKey, checkpoint.sequence, witness),
+    signed,
+  };
+}
+
+/** Signs and stamps the checkpoint already in the book. Does not append an event. */
+export async function stampHead(input: {
+  checkpoint: LedgerCheckpoint;
+  privateKey: CryptoKey;
+  seed: Uint8Array;
+  publicKeyHex: string;
+  previousPublicKey: string;
+  stamp?: typeof stampCheckpoint;
+}): Promise<{ trust: LiveTrust; signed: SignedCheckpoint }> {
+  const signed = await signCheckpoint(input.checkpoint, input.privateKey, input.publicKeyHex);
+  const witness = await (input.stamp ?? stampCheckpoint)(canonicalize(input.checkpoint), input.seed, input.publicKeyHex);
+  return {
+    trust: liveTrust(input.publicKeyHex, input.previousPublicKey, input.checkpoint.sequence, witness),
     signed,
   };
 }

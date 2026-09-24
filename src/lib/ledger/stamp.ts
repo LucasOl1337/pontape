@@ -76,6 +76,19 @@ export function rekorHashedRekord(hashHex: string, signature: Uint8Array, public
   };
 }
 
+export async function readRekorResponse(response: Response, fetchImpl: typeof fetch): Promise<{ id: string; seenAt: string; url: string } | null> {
+  if (response.ok) return parseRekor(await response.json());
+  if (response.status !== 409) return null;
+  const location = response.headers.get('location');
+  if (!location) return null;
+  let url: URL;
+  try { url = new URL(location, REKOR_URL); } catch { return null; }
+  if (url.protocol !== 'https:' || url.host !== new URL(REKOR_URL).host) return null;
+  const found = await fetchImpl(url);
+  if (!found.ok) return null;
+  return parseRekor(await found.json());
+}
+
 export function parseRekor(body: unknown): { id: string; seenAt: string; url: string } | null {
   if (!body || typeof body !== 'object') return null;
   const entries = Object.entries(body as Record<string, unknown>);
@@ -121,9 +134,8 @@ export async function stampCheckpoint(canonical: string, seed: Uint8Array, publi
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify(rekorHashedRekord(await sha512Hex(canonical), signature, publicKeyHex)),
   });
-  if (!rekor.ok) throw new Error('O registro público recusou o checkpoint.');
-  const entry = parseRekor(await rekor.json());
-  if (!entry) throw new Error('O registro público respondeu fora do formato.');
+  const entry = await readRekorResponse(rekor, fetchImpl);
+  if (!entry) throw new Error('O registro público recusou o checkpoint.');
   const sha256 = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical)));
   const query = timestampQuery(sha256);
   const tsa = await fetchImpl(TSA_URL, {

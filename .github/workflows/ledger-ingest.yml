@@ -1,11 +1,14 @@
 name: Escrevente do livro
 
 on:
+  schedule:
+    # 12:15 em São Paulo. Sem evento: só carimba o checkpoint que já está no livro.
+    - cron: '15 15 * * *'
   workflow_dispatch:
     inputs:
       event:
-        description: 'Envelope JSON (source, eventId, payload). Sem nome e sem CPF.'
-        required: true
+        description: 'Envelope JSON (source, eventId, payload). Vazio carimba o checkpoint atual, sem ação nova.'
+        required: false
         type: string
 
 permissions: {}
@@ -30,7 +33,7 @@ jobs:
         with:
           node-version-file: .node-version
           cache: npm
-      - name: Gravar, assinar e carimbar
+      - name: Gravar ou carimbar
         env:
           GH_TOKEN: ${{ github.token }}
           LEDGER_SIGNING_PKCS8: ${{ secrets.LEDGER_SIGNING_PKCS8 }}
@@ -44,21 +47,40 @@ jobs:
             git fetch origin main
             git switch -C ledger-ingest origin/main
             npm ci
-            npm run ledger:drain -- --event-json "$INGEST_EVENT" --apply
-            if git diff --quiet -- src/data/ledger/ledger.json src/data/ledger/intake.json src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json; then
+            if [ -z "${INGEST_EVENT//[[:space:]]/}" ]; then
+              npm run ledger:stamp -- --apply
+              git add -- src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json
+              if [ -n "$(git status --porcelain -- src/data/ledger/ledger.json src/data/ledger/intake.json)" ]; then
+                echo 'O carimbo alterou o livro. A main foi preservada.' >&2
+                exit 1
+              fi
+              commit_message='Carimba o checkpoint do livro [ledger-bot]'
+            else
+              npm run ledger:drain -- --event-json "$INGEST_EVENT" --apply
+              git add -- src/data/ledger/ledger.json src/data/ledger/intake.json src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json
+              commit_message='Registra evento no livro [ledger-bot]'
+            fi
+            if git diff --cached --quiet; then
               echo 'Nada novo. Sem commit.'
               exit 0
             fi
-            npm run ledger:verify
-            npm run check
-            git add -- src/data/ledger/ledger.json src/data/ledger/intake.json src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json
             git diff --cached --name-only | while IFS= read -r path; do
               case "$path" in
                 src/data/ledger/ledger.json|src/data/ledger/intake.json|src/data/ledger/trust.json|src/data/ledger/checkpoint-signed.json) ;;
                 *) echo "Arquivo inesperado: $path" >&2; exit 1 ;;
               esac
             done
-            git commit -m 'Registra evento no livro [ledger-bot]'
+            if [ -z "${INGEST_EVENT//[[:space:]]/}" ]; then
+              git diff --cached --name-only | while IFS= read -r path; do
+                case "$path" in
+                  src/data/ledger/trust.json|src/data/ledger/checkpoint-signed.json) ;;
+                  *) echo "O carimbo só pode gravar confiança e assinatura: $path" >&2; exit 1 ;;
+                esac
+              done
+            fi
+            npm run ledger:verify
+            npm run check
+            git commit -m "$commit_message"
             if git push origin HEAD:refs/heads/main; then
               exit 0
             fi

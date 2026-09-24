@@ -1,8 +1,10 @@
+import { spawnSync } from 'node:child_process';
 import { describe, expect, it } from 'vitest';
-import { createCheckpoint } from './verify';
-import { drainOne } from './pipeline';
+import { proofFromTrust, proofReport } from '../ledger-view/proof';
+import { appendEvent, createCheckpoint, verifyLedger } from './verify';
+import { drainOne, stampHead } from './pipeline';
 import { ed25519Seed, publicKeyMatches } from './keys';
-import { parseRekor, publicKeyHexFromSeed, rekorHashedRekord, signForRekor, timeFromTimestampReply, timestampQuery } from './stamp';
+import { REKOR_URL, parseRekor, publicKeyHexFromSeed, readRekorResponse, rekorHashedRekord, signForRekor, timeFromTimestampReply, timestampQuery } from './stamp';
 import type { StampWitness } from './stamp';
 
 const now = '2000-01-02T00:00:00.000Z';
@@ -73,6 +75,51 @@ describe('escrevente do livro (F42 E2)', () => {
     der.set(seed, prefix.length);
     expect(ed25519Seed(der)).toEqual(seed);
     expect(rekorHashedRekord('ab'.repeat(64), signature, publicKeyHexFromSeed(seed)).spec.data.hash.algorithm).toBe('sha512');
+  });
+
+  it('carimba o checkpoint atual e o selo fica verde, sem ação nova', async () => {
+    const key = await keyPair();
+    const events = await appendEvent([], donation, now);
+    const checkpoint = createCheckpoint(events, now);
+    const result = await stampHead({
+      checkpoint, ...key, previousPublicKey: 'ab'.repeat(32), stamp: async () => witness,
+    });
+    expect(events).toHaveLength(1);
+    expect(result.signed.checkpoint).toEqual(checkpoint);
+    expect(result.trust).toMatchObject({ signature: 'configured', timestamp: 'anchored', signedThrough: '1' });
+    const proof = proofFromTrust(result.trust);
+    const out = proofReport({
+      source: 'download', total: 1, through: 1, proof, result: await verifyLedger(events, checkpoint),
+    });
+    expect(out.steps.find((step) => step.id === 'signature')?.mark).toBe('ok');
+    expect(out.steps.find((step) => step.id === 'stamp')?.mark).toBe('ok');
+    expect(out.summary.state).toBe('ok');
+  });
+
+  it('reaproveita a entrada quando o registro já tem o mesmo checkpoint', async () => {
+    const seen = Date.parse('2026-09-24T18:19:00.000Z') / 1000;
+    const id = 'ab'.repeat(40);
+    const fetchImpl = async (url: string | URL | Request) => {
+      if (String(url) === REKOR_URL) {
+        return new Response('conflito', { status: 409, headers: { location: `${REKOR_URL}/${id}` } });
+      }
+      return new Response(JSON.stringify({ [id]: { integratedTime: seen } }), { status: 200 });
+    };
+    const again = await readRekorResponse(await fetchImpl(REKOR_URL), fetchImpl);
+    expect(again).toMatchObject({ id, seenAt: '2026-09-24T18:19:00.000Z' });
+    const elsewhere = new Response('conflito', { status: 409, headers: { location: 'https://evil.example/x' } });
+    expect(await readRekorResponse(elsewhere, fetchImpl)).toBeNull();
+  });
+
+  it('não lê o secret no dry-run do carimbo', () => {
+    const env = { ...process.env };
+    delete env.LEDGER_SIGNING_PKCS8;
+    const dry = spawnSync(process.execPath, ['scripts/ledger/stamp-head.ts'], { encoding: 'utf8', env });
+    expect(dry.status).toBe(0);
+    expect(dry.stdout).toContain('DRY-RUN');
+    const apply = spawnSync(process.execPath, ['scripts/ledger/stamp-head.ts', '--apply'], { encoding: 'utf8', env });
+    expect(apply.status).not.toBe(0);
+    expect(apply.stderr).toContain('LEDGER_SIGNING_PKCS8');
   });
 
   it('lê a data de um carimbo RFC 3161 e o id do Rekor', () => {
