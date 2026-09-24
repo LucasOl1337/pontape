@@ -129,7 +129,21 @@ function selectTab(i: number, focus = false) {
     document.getElementById(tab.getAttribute('aria-controls')!)?.classList.toggle('is-active', k === next);
   });
   if (focus) tabs[next]!.focus();
+  // On a phone with large text the row scrolls sideways: the chosen tab comes into view.
+  if (tablist && tablist.scrollWidth > tablist.clientWidth) {
+    const tab = tabs[next]!;
+    tablist.scrollLeft = Math.max(0, Math.min(tab.offsetLeft - tablist.offsetLeft, tablist.scrollWidth - tablist.clientWidth));
+  }
 }
+// When the tabs do not fit, each side that still hides a tab fades out, as a hint to swipe.
+function markMore() {
+  if (!tablist) return;
+  tablist.toggleAttribute('data-more', tablist.scrollWidth - tablist.clientWidth - tablist.scrollLeft > 2);
+  tablist.toggleAttribute('data-less', tablist.scrollLeft > 2);
+}
+tablist?.addEventListener('scroll', markMore, { passive: true });
+// The tabs change size with the screen, the fonts arriving and the browser's text size.
+if (tablist) { const sizes = new ResizeObserver(markMore); [tablist, ...tabs].forEach(el => sizes.observe(el)); }
 tablist?.addEventListener('click', e => {
   const tab = (e.target as Element).closest<HTMLButtonElement>('[role="tab"]');
   if (tab) selectTab(tabs.indexOf(tab));

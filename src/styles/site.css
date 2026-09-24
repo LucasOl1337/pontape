@@ -629,6 +629,23 @@ main:focus{ outline:none }
 .tabs button{ min-height:48px; padding:.6rem 0; border:0; border-bottom:4px solid transparent; margin-bottom:-3px; background:none; cursor:pointer; font:500 clamp(1.25rem, 1rem + .8vw, 1.75rem)/1.1 var(--font-display) }
 .tabs button[aria-selected="true"]{ border-bottom-color:var(--accent); color:var(--accent) }
 .tabs button:hover{ color:var(--accent) }
+/* On a phone the three tabs keep one line (F38): smaller type and a shorter gap. The double rule
+   is drawn as a background, so that with very large text the row can scroll sideways without
+   cutting it; the side with more tabs then fades out. */
+@media (max-width:599px){
+  .tabs{
+    flex-wrap:nowrap; gap:0 clamp(.75rem, 3.6vw, 1.25rem); overflow-x:auto; scrollbar-width:none; border-bottom:0;
+    background:linear-gradient(var(--ink), var(--ink)) left bottom / 100% 1px no-repeat, linear-gradient(var(--ink), var(--ink)) left calc(100% - 2px) / 100% 1px no-repeat;
+  }
+  .tabs::-webkit-scrollbar{ display:none }
+  .tabs button{ flex-shrink:0; margin-bottom:0; white-space:nowrap; font-size:clamp(1rem, 5vw, 1.375rem) }
+  .tabs[data-more]{ --fade-r:3rem }
+  .tabs[data-less]{ --fade-l:3rem }
+  .tabs[data-more], .tabs[data-less]{
+    -webkit-mask-image:linear-gradient(to right, transparent, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent);
+    mask-image:linear-gradient(to right, transparent, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent);
+  }
+}
 .tab-panel{ padding-top:1.6rem; outline:none }
 .tab-panel:focus-visible{ outline:3px solid var(--accent); outline-offset:4px }
 .js .tab-panel:not(.is-active){ display:none }
