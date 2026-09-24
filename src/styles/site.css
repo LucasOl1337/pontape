@@ -313,6 +313,20 @@ main:focus{ outline:none }
   .panel-ways{ grid-template-columns:1fr 1fr }
 }
 
+/* The end of the home (F38): one line on what the staircase is, and what to do from here. */
+.fecho{ max-width:var(--page); margin-left:auto; margin-right:auto; padding:0 var(--gutter) var(--space-12) }
+.fecho-inner{ display:grid; gap:var(--space-4); padding-top:var(--space-4); border-top:3px double var(--ink) }
+.fecho-line{ max-width:40rem; font:400 clamp(1.125rem, 1.05rem + .35vw, 1.375rem)/1.45 var(--font-serif) }
+.fecho-line em{ color:var(--ink-2) }
+.fecho-actions{ display:flex; flex-wrap:wrap; gap:var(--space-3) }
+/* On a phone: the share button on its own line, the two doors side by side under it. */
+@media (max-width:599px){
+  .fecho-actions{ display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)) }
+  .fecho-actions [data-share]{ grid-column:1 / -1; justify-self:start }
+  .fecho-actions .btn{ padding:.6rem .7rem; font-size:.9375rem }
+}
+@media (min-width:960px){ .fecho-inner{ grid-template-columns:minmax(0, 1fr) auto; align-items:center; column-gap:var(--space-8) } }
+
 /* ---------- Construir junto: the door to the builder cadernos (F29) ---------- */
 .doors{ display:grid; margin-top:var(--space-8); border-top:2px solid var(--ink) }
 .doors li{ border-bottom:1px solid var(--rule) }
@@ -884,7 +898,7 @@ main:focus{ outline:none }
 @supports not (color:revert){
   .btn .icon{ margin-left:.3rem; margin-right:.3rem }
   .icon-btn .icon, .now .icon, .more-link .icon, .panel-note .icon{ margin-right:.5rem }
-  .panel-nav > *, .actions > *, .filters > *{ margin:0 .6rem .6rem 0 }
+  .panel-nav > *, .actions > *, .filters > *, .fecho-actions > *{ margin:0 .6rem .6rem 0 }
 }
 @media (max-width:1179.98px), (max-height:559.98px){
   @supports not (color:revert){ .stage > * + *{ margin-top:.8rem } }
