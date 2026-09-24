@@ -1,0 +1,48 @@
+---
+import Icon from '../site/Icon.astro';
+import Caderno from './Caderno.astro';
+import { CONTATO, FAQ, PERGUNTAS, QUEM_FAZ } from '../../data/site/perguntas';
+import { REPO_URL } from '../../data/site/contributions';
+
+// The questions everyone asks, all closed so the list fits the first screen; a link to one (#<id>)
+// opens it, like the gargalos. Then who is behind the project and how to reach him.
+---
+<Caderno kicker={PERGUNTAS.name} title="Perguntas" turn="e respostas."
+  lead="O que todo mundo pergunta quando chega aqui. Se faltou alguma, fala com o Lucas: o contato está no fim da página.">
+  <div class="questions">
+    {FAQ.map((p, i) => (
+      <details class="question" id={p.id}>
+        <summary>
+          <span class="question-num" aria-hidden="true">{i + 1}</span>
+          <span class="question-head"><span class="question-title">{p.q}</span></span>
+          <Icon name="chevron-down" class="chevron" />
+        </summary>
+        <div class="question-body">
+          <p class="prose-p">{p.a}</p>
+          {p.id === 'onde-codigo' && <p class="prose-p"><a href={REPO_URL} rel="noopener">{REPO_URL.replace('https://', '')}<Icon name="arrow-right" /></a></p>}
+        </div>
+      </details>
+    ))}
+  </div>
+
+  <section class="contato" id={PERGUNTAS.contactHash} aria-labelledby="contato-title">
+    <div class="expediente">
+      <div class="expediente-col">
+        <p class="kicker">Quem faz</p>
+        <h2 id="contato-title" class="contato-title">{QUEM_FAZ.name}</h2>
+        <p class="contato-role">{QUEM_FAZ.role} · {QUEM_FAZ.city}</p>
+        <p class="prose-p">{QUEM_FAZ.text}</p>
+      </div>
+      <div class="expediente-box">
+        <p class="expediente-title">Falar com o Lucas</p>
+        <ul class="contato-ways">
+          {CONTATO.map(c => (
+            <li><Icon name={c.icon} /><a href={c.href} rel="noopener me">{c.label}</a><span>{c.text}</span></li>
+          ))}
+        </ul>
+        <p class="contato-note"><Icon name="lock" />Este site não guarda contato de ninguém. Quem responde é ele mesmo.</p>
+      </div>
+    </div>
+  </section>
+</Caderno>
+<script>import '../../scripts/gargalos';</script>

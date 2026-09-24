@@ -1,6 +1,7 @@
 ---
 import LogoMark from './LogoMark.astro';
 import { PROJECT_NAME, STATUS_DATE, formatDay } from '../../data/site/project';
+import { PERGUNTAS, QUEM_FAZ } from '../../data/site/perguntas';
 ---
 <footer class="site-footer">
   <div class="footer-inner">
@@ -8,9 +9,9 @@ import { PROJECT_NAME, STATUS_DATE, formatDay } from '../../data/site/project';
     <p class="footer-motto">Um degrau de cada vez. Tudo à vista.</p>
     <div class="footer-columns">
       <div><h2>Transparência</h2><p><a href="/transparencia">Livro público de todas as ações</a>. Qualquer pessoa confere.</p></div>
-      <div><h2>Organização</h2><p>Projeto sem fins lucrativos, ainda sem registro formal. Quando tiver registro oficial, o número aparece aqui. Ainda não tem canal oficial de contato.</p></div>
+      <div><h2>Organização</h2><p>Projeto sem fins lucrativos, ainda sem registro formal. Quando tiver, o número aparece aqui. Feito por {QUEM_FAZ.name}, em {QUEM_FAZ.city}. <a href={`${PERGUNTAS.href}#${PERGUNTAS.contactHash}`}>Falar com ele</a>.</p></div>
       <div><h2>Privacidade</h2><p>Nada de foto, nome ou história de ninguém sem autorização por escrito. Nenhum dado pessoal é coletado por enquanto. O site conta as visitas sem cookie e sem saber quem é você.</p></div>
     </div>
-    <p class="footer-note">Atualizado em <time datetime={STATUS_DATE}>{formatDay(STATUS_DATE)}</time>. <a href="/construir">Pra quem quer construir junto</a>.</p>
+    <p class="footer-note">Atualizado em <time datetime={STATUS_DATE}>{formatDay(STATUS_DATE)}</time>. <a href={PERGUNTAS.href}>Perguntas e respostas</a>. <a href="/construir">Pra quem quer construir junto</a>.</p>
   </div>
 </footer>
