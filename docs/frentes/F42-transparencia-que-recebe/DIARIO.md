@@ -26,4 +26,4 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 ## Próximo passo
 
-Regente revisa a PR. E2 só depois do merge: worker que recebe evento, fila e um livro só.
+PR aberta: https://github.com/LucasOl1337/pontape/pull/100. Regente revisa. E2 só depois do merge: worker que recebe evento, fila e um livro só.
