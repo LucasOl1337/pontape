@@ -61,7 +61,16 @@ jobs:
               exit 0
             fi
             # Same push as the new actions, so the seal does not wait for the next day.
-            npm run ledger:stamp -- --apply
+            # A dead public stamp must not stop the book. The daily stamp retries.
+            stamp_ok=yes
+            if ! npm run ledger:stamp -- --apply; then
+              stamp_ok=no
+              echo 'AVISO: o carimbo público falhou. A ação entra no livro e o carimbo fica pra próxima tentativa.' >&2
+              git restore --worktree --source=HEAD -- src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json 2>/dev/null || true
+              if ! git cat-file -e "HEAD:src/data/ledger/checkpoint-signed.json" 2>/dev/null; then
+                rm -f src/data/ledger/checkpoint-signed.json
+              fi
+            fi
             if ! git diff --quiet -- src/data/ledger/intake.json; then
               echo 'O carimbo alterou a fila. A main foi preservada.' >&2
               exit 1
@@ -78,8 +87,10 @@ jobs:
                 *) echo "Arquivo inesperado: $path" >&2; exit 1 ;;
               esac
             done
-            if [ "$ledger_changed" = yes ]; then
+            if [ "$ledger_changed" = yes ] && [ "$stamp_ok" = yes ]; then
               commit_message='Registra ações do projeto e carimba a cabeça [ledger-bot]'
+            elif [ "$ledger_changed" = yes ]; then
+              commit_message='Registra ações do projeto no livro [ledger-bot]'
             else
               commit_message='Carimba a cabeça do livro [ledger-bot]'
             fi

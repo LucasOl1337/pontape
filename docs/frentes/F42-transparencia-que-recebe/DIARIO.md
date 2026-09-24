@@ -65,8 +65,46 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 - Depois do fetch, o livro está na ação 116 e o carimbo em 114. Cada merge novo espera o schedule do dia seguinte, e o selo não cobre a cabeça.
 - O `ledger-project.yml` agora, no mesmo push, roda `ledger:stamp` quando entrou ação nova ou quando o carimbo está atrás da cabeça. Grava `trust.json` e `checkpoint-signed.json` junto do livro. Não dispara um segundo workflow: o push do token não abriria outro job, e um segundo commit deixaria a cabeça descoberta por um tempo.
-- Se o carimbo falha, o push não sai. A tentativa seguinte relê a main. A chave de produção não foi lida daqui.
+- A PR #112 entrou. Se o carimbo cair, a ação entra mesmo assim e o carimbo fica pra próxima tentativa.
+
+## 24/09/2026 · E3, escolha do pagamento
+
+Consulta às páginas públicas em 24/09/2026. Conta de verdade continua fora: sem CNPJ, sem dinheiro real. Números abaixo são a conta da tarifa publicada em cima de R$ 20,00, não um orçamento fechado.
+
+| | Pix em R$ 20 | Cartão à vista em R$ 20 | Webhook | Extrato | Associação |
+|---|---|---|---|---|---|
+| Asaas | R$ 1,99 (promoção de 3 meses: R$ 0,99). Líquido R$ 18,01, ou R$ 19,01 na promoção. [preços](https://www.asaas.com/precos-e-taxas) | Padrão: 2,99% + R$ 0,49 = R$ 1,088. Líquido R$ 18,91. Promoção: 1,99% + R$ 0,49 = R$ 0,888. | POST com `id` do evento, entrega pelo menos uma vez, token no header `asaas-access-token`. [webhooks](https://docs.asaas.com/docs/sobre-os-webhooks) | `GET /v3/financialTransactions`. Recebimento e tarifa são lançamentos separados (`PAYMENT_RECEIVED` e `PAYMENT_FEE`). [extrato](https://docs.asaas.com/reference/recuperar-extrato) | Pede estatuto ou ata registrada e documento da diretoria. [documentos](https://central.ajuda.asaas.com/hc/pt-br/articles/32091607871387-Quais-documentos-s%C3%A3o-necess%C3%A1rios-para-validar-minha-conta) |
+| Mercado Pago, Checkout | 0,99% = R$ 0,198. Líquido R$ 19,80, na hora. A página avisa que a taxa da conta pode ser outra. [checkout](https://www.mercadopago.com.br/ajuda/33399) | Na hora: 4,98% = R$ 0,996. Em 30 dias: 3,98% = R$ 0,796. | A pesquisa de 22/09 achou notificação de pagamento. Não reabri essa página hoje. | Não reabri a API de relatórios hoje. | Não reabri o material de abertura de ONG hoje. |
+| Stripe | 1,19% = R$ 0,238. Conta no Brasil: Pix avulso só por convite, e a lista do Pix veta entidade sem fins lucrativos e caridade. [Pix](https://docs.stripe.com/payments/pix), [preços](https://stripe.com/br/pricing) | Cartão nacional: 3,99% + R$ 0,39 = R$ 1,188. Internacional soma 2%. | Checkout e webhook existem na mesma página de preços. | Não reabri a API de balance transactions hoje. | O veto do Pix a nonprofit basta pra tirar a Stripe deste caminho. |
+
+Sandbox do Asaas, sem valor real: [docs](https://docs.asaas.com/docs/sandbox), cadastro em [sandbox.asaas.com](https://sandbox.asaas.com/). A conta de teste é separada da de produção. API em `https://api-sandbox.asaas.com/v3`.
+
+## Decisões propostas
+
+- Escolher **Asaas sandbox** pro fluxo de teste. Pix e cartão estão publicados, sem convite. O extrato separa recebimento e tarifa, que é o que o livro precisa pra não somar webhook como se fosse saldo. Associação tem lista de documento. O custo do Pix em R$ 20 é o ponto fraco: R$ 1,99 fixo, quase 10%. Na promoção de três meses, R$ 0,99.
+- Não escolher a Stripe pra doação em Pix no Brasil. O próprio manual veta nonprofit e caridade, e o Pix da conta brasileira é por convite.
+- Mercado Pago é mais barato no Pix de R$ 20 (R$ 0,20 contra R$ 1,99). A taxa publicada pode não ser a da conta. Se o critério for só o preço do Pix pequeno, ele ganha. Eu não escolho ele agora porque o extrato do Asaas encaixa no livro e a tarifa pública não vem com a ressalva de "pode ser outra".
+- Conta que falta pedir ao Lucas: sandbox do Asaas, nada de produção. A chave de API fica em secret, fora do repositório. Sem nome, CPF ou e-mail de pessoa real no teste.
+
+## 24/09/2026 · E3, fluxo fechado
+
+- D041 cravou Asaas sandbox. Mercado Pago continua anotado acima como o Pix mais barato, se um dia o critério for só o preço.
+- Se o Rekor ou a freetsa caem, o `ledger-project` grava a ação mesmo assim e avisa no log. O carimbo fica pra próxima tentativa, inclusive o schedule diário.
+- `/doar` existe, sem entrada no menu e fora do sitemap, com `noindex`. O texto diz que está fechada. O botão só aparece com `PUBLIC_DONATIONS_OPEN=1`, e o Worker ainda exige `DONATIONS_OPEN=1`. No ar os dois ficam desligados.
+- O checkout é o hospedado do Asaas, sem dados de pessoa. O webhook exige `asaas-access-token` e manda só bruto, tarifa, líquido, id e data pro escrevente. Nome, CPF e e-mail não entram no livro.
+- O painel de `/doar` soma o livro: recebido, tarifas, gasto e saldo. Comprovante segue pendente.
+- A reconciliação diária lê `/v3/financialTransactions`. Sem `ASAAS_SANDBOX_KEY`, não grava nada. Linha do extrato que falta no livro vira evento. Linha do livro que o extrato não mostra continua no livro, com aviso.
+- Conta sandbox ainda não existe. Os testes usam pagamento fictício. A chave, quando o Lucas criar a conta, vai no secret `ASAAS_SANDBOX_KEY`.
+
+## Checklist do E4
+
+- Associação criada e CNPJ no nome dela.
+- Conta bancária da associação, não de pessoa.
+- OK do Lucas pra dinheiro real.
+- Trocar o sandbox pela API de produção e abrir as duas flags.
+- Conferir uma doação real no livro, com tarifa separada e sem nome.
 
 ## Próximo passo
 
-PR aberta: https://github.com/LucasOl1337/pontape/pull/112. E3 em seguida: comparação no diário e proposta antes de codar.
+PR aberta: https://github.com/LucasOl1337/pontape/pull/113. A conta sandbox continua com o Lucas.
+>>>>>>> a3df63c (Registra a comparação de pagamento do E3)

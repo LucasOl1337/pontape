@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { describe, expect, it } from 'vitest';
 import { proofFromTrust, proofReport } from '../ledger-view/proof';
 import { appendEvent, createCheckpoint, verifyLedger } from './verify';
-import { drainOne, stampHead } from './pipeline';
+import { drainAll, drainOne, stampHead } from './pipeline';
 import { ed25519Seed, publicKeyMatches } from './keys';
 import { REKOR_URL, parseRekor, publicKeyHexFromSeed, readRekorResponse, rekorHashedRekord, signForRekor, timeFromTimestampReply, timestampQuery } from './stamp';
 import type { StampWitness } from './stamp';
@@ -109,6 +109,21 @@ describe('escrevente do livro (F42 E2)', () => {
     expect(again).toMatchObject({ id, seenAt: '2026-09-24T18:19:00.000Z' });
     const elsewhere = new Response('conflito', { status: 409, headers: { location: 'https://evil.example/x' } });
     expect(await readRekorResponse(elsewhere, fetchImpl)).toBeNull();
+  });
+
+  it('grava a ação mesmo quando o carimbo falha', async () => {
+    const key = await keyPair();
+    const result = await drainAll({
+      document: { events: [], checkpoint: createCheckpoint([], now) }, intake: { keys: [] },
+      envelopes: [envelope], ...key, previousPublicKey: 'ab'.repeat(32), now,
+      stamp: async () => { throw new Error('registro fora'); },
+    });
+    expect(result.rejected).toBe(false);
+    if (result.rejected) return;
+    expect(result.appended).toBe(1);
+    expect(result.stampFailed).toBe(true);
+    expect(result.trust).toBeUndefined();
+    expect(result.document.events).toHaveLength(1);
   });
 
   it('não lê o secret no dry-run do carimbo', () => {
