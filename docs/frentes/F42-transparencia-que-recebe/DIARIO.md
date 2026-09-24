@@ -56,4 +56,4 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 ## Próximo passo
 
-Abrir a PR desta branch pra main. O aparecimento ao vivo de um evento de teste espera o merge e um dispatch. Sem doação fictícia no livro publicado. E3 não começou.
+PR aberta: https://github.com/LucasOl1337/pontape/pull/108. O aparecimento ao vivo de um evento de teste espera o merge e um dispatch. Sem doação fictícia no livro publicado. E3 não começou.
