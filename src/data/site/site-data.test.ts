@@ -32,7 +32,8 @@ describe('dados do site', () => {
     expect(STEPS[0]!.module).toBe('M3');
     const at = (module: string) => STEPS.findIndex(s => s.module === module);
     expect(at('M5'), 'a comida vem depois da conversa').toBeGreaterThan(at('M4'));
-    expect(OPENING.indexOf('AI'), 'a home abre pela AI, não pela comida').toBeLessThan(OPENING.indexOf('comida'));
+    expect(OPENING.indexOf('AI'), 'a home abre pela AI, não pelo básico ou pelo trabalho').toBeLessThan(OPENING.indexOf('trabalho'));
+    expect(OPENING).not.toContain('comida');
   });
 
   it('o "já funciona?" de cada passo bate com o estado da peça', () => {

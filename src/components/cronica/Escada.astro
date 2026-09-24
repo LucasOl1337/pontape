@@ -36,7 +36,7 @@ const ways: { icon: IconName; title: string; when: string; share?: boolean; href
 const LATER = 'Doar, ser voluntário e oferecer vaga ainda não abriram. Abrem quando tiver conta oficial e o projeto começar na primeira cidade.';
 ---
 <section class="stage" id="inicio" aria-labelledby="stage-title" data-escada data-at="0" style={`--n:${treads.length}`}>
-  <h1 id="stage-title" class="stage-title">Uma plataforma de <em>caridade inteligente.</em></h1>
+  <h1 id="stage-title" class="stage-title">Caridade inteligente.</h1>
 
   <div class="stair" id="como-funciona" role="tablist" aria-label="Os degraus do projeto. Use as setas pra subir e descer." data-stair>
     {treads.map((t, k) => (
@@ -51,7 +51,7 @@ const LATER = 'Doar, ser voluntário e oferecer vaga ainda não abriram. Abrem q
       </button>
     ))}
     <span class="walker" aria-hidden="true"><span class="walker-label">alguém</span></span>
-    <span class="rail" aria-hidden="true" style={`--rail-from:${RAIL_FROM}`}><Icon name="voice-ai" /><span class="rail-label">a AI vai junto, sempre e de graça</span></span>
+    <span class="rail" aria-hidden="true" style={`--rail-from:${RAIL_FROM}`}><Icon name="voice-ai" /><span class="rail-label">a AI acompanha, sempre e de graça</span></span>
   </div>
   <p class="sr-only">Desde o passo {RAIL_FROM}, {treads[RAIL_FROM]!.name}, a AI vai junto da pessoa em todos os passos e continua depois do trabalho, sem prazo e de graça.</p>
 
