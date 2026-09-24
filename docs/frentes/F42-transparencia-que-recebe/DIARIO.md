@@ -86,7 +86,25 @@ Sandbox do Asaas, sem valor real: [docs](https://docs.asaas.com/docs/sandbox), c
 - Mercado Pago é mais barato no Pix de R$ 20 (R$ 0,20 contra R$ 1,99). A taxa publicada pode não ser a da conta. Se o critério for só o preço do Pix pequeno, ele ganha. Eu não escolho ele agora porque o extrato do Asaas encaixa no livro e a tarifa pública não vem com a ressalva de "pode ser outra".
 - Conta que falta pedir ao Lucas: sandbox do Asaas, nada de produção. A chave de API fica em secret, fora do repositório. Sem nome, CPF ou e-mail de pessoa real no teste.
 
+## 24/09/2026 · E3, fluxo fechado
+
+- D041 cravou Asaas sandbox. Mercado Pago continua anotado acima como o Pix mais barato, se um dia o critério for só o preço.
+- Se o Rekor ou a freetsa caem, o `ledger-project` grava a ação mesmo assim e avisa no log. O carimbo fica pra próxima tentativa, inclusive o schedule diário.
+- `/doar` existe, sem entrada no menu e fora do sitemap, com `noindex`. O texto diz que está fechada. O botão só aparece com `PUBLIC_DONATIONS_OPEN=1`, e o Worker ainda exige `DONATIONS_OPEN=1`. No ar os dois ficam desligados.
+- O checkout é o hospedado do Asaas, sem dados de pessoa. O webhook exige `asaas-access-token` e manda só bruto, tarifa, líquido, id e data pro escrevente. Nome, CPF e e-mail não entram no livro.
+- O painel de `/doar` soma o livro: recebido, tarifas, gasto e saldo. Comprovante segue pendente.
+- A reconciliação diária lê `/v3/financialTransactions`. Sem `ASAAS_SANDBOX_KEY`, não grava nada. Linha do extrato que falta no livro vira evento. Linha do livro que o extrato não mostra continua no livro, com aviso.
+- Conta sandbox ainda não existe. Os testes usam pagamento fictício. A chave, quando o Lucas criar a conta, vai no secret `ASAAS_SANDBOX_KEY`.
+
+## Checklist do E4
+
+- Associação criada e CNPJ no nome dela.
+- Conta bancária da associação, não de pessoa.
+- OK do Lucas pra dinheiro real.
+- Trocar o sandbox pela API de produção e abrir as duas flags.
+- Conferir uma doação real no livro, com tarifa separada e sem nome.
+
 ## Próximo passo
 
-Esperar o Regente cravar Asaas, Mercado Pago ou Stripe. Sem fluxo de `/doar` antes disso. O E2c está na PR https://github.com/LucasOl1337/pontape/pull/112.
+PR do fluxo. A conta sandbox continua com o Lucas.
 >>>>>>> a3df63c (Registra a comparação de pagamento do E3)

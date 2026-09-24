@@ -11,7 +11,7 @@ const routeOf = (file: string) => `/${relative(PAGES, file).replace(/\.astro$/, 
 
 describe('sitemap', () => {
   it('lista toda página do site, menos o 404', () => {
-    const routes = astroPages(PAGES).map(routeOf).filter(r => r !== '/404').sort();
+    const routes = astroPages(PAGES).map(routeOf).filter(r => r !== '/404' && r !== '/doar').sort();
     expect([...SITEMAP_PATHS].sort()).toEqual(routes);
   });
 

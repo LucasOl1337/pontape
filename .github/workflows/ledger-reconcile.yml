@@ -1,0 +1,56 @@
+name: Reconciliação do livro
+
+on:
+  schedule:
+    # 13:15 em São Paulo. Sem a conta sandbox, o script sai sem gravar.
+    - cron: '15 16 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ledger-reconcile
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    if: github.repository == 'LucasOl1337/pontape' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Comparar o extrato com o livro
+        env:
+          ASAAS_SANDBOX_KEY: ${{ secrets.ASAAS_SANDBOX_KEY }}
+          ASAAS_API_URL: ${{ vars.ASAAS_API_URL }}
+          LEDGER_SIGNING_PKCS8: ${{ secrets.LEDGER_SIGNING_PKCS8 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          output=$(npm run ledger:reconcile -- --apply)
+          echo "$output"
+          if ! echo "$output" | grep -q '^{"source":"asaas"'; then
+            exit 0
+          fi
+          echo 'AVISO: o extrato tem linhas que o livro não tem. O escrevente precisa gravá-las.' >&2
+          echo "$output" | grep '^{"source":"asaas"' > /tmp/asaas-gap.json
+          npm run ledger:drain -- --event-json "$(cat /tmp/asaas-gap.json)" --apply || true
+          if git diff --quiet -- src/data/ledger/ledger.json src/data/ledger/intake.json src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json; then
+            echo 'Nada novo. Sem commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- src/data/ledger/ledger.json src/data/ledger/intake.json src/data/ledger/trust.json src/data/ledger/checkpoint-signed.json
+          git commit -m 'Reconcilia o extrato com o livro [ledger-bot]'
+          git push origin HEAD:refs/heads/main

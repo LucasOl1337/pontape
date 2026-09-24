@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Caderno from '../components/cronica/Caderno.astro';
+import { publishedLedger } from '../lib/ledger/published';
+import { verifyLedger } from '../lib/ledger/verify';
+import { formatCents, sumMoney } from '../lib/ledger-view/money';
+import { PROJECT_NAME } from '../data/site/project';
+
+const document = await publishedLedger();
+const verified = await verifyLedger(document.events, document.checkpoint);
+if (!verified.valid) throw new Error('Livro inválido.');
+const money = sumMoney(document.events);
+const spent = (money.outByCategory.food ?? 0n) + (money.outByCategory.clothing ?? 0n)
+  + (money.outByCategory.hygiene ?? 0n) + (money.outByCategory.operations ?? 0n);
+const updated = verified.lastUpdatedAt
+  ? new Date(verified.lastUpdatedAt).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric' })
+  : '';
+const open = import.meta.env.PUBLIC_DONATIONS_OPEN === '1';
+---
+<BaseLayout title={`Doar · ${PROJECT_NAME}`} description="A doação ainda não está aberta. O dinheiro, quando entrar, aparece no livro." noindex strip={false}>
+  <Caderno kicker="Doação" title="Doar" turn="ainda não."
+    lead="A página de pagamento fica fechada. Quando abrir, você paga no Asaas e o livro mostra o valor, a tarifa e o que sobra. Sem nome.">
+    <section class="doar-money" aria-label="Dinheiro do livro">
+      <ul>
+        <li><span>Recebido</span><strong>{formatCents(money.inCents)}</strong></li>
+        <li><span>Tarifas</span><strong>{formatCents(money.outByCategory.fee ?? 0n)}</strong></li>
+        <li><span>Gasto</span><strong>{formatCents(spent)}</strong></li>
+        <li><span>Saldo</span><strong>{formatCents(money.balanceCents)}</strong></li>
+      </ul>
+      <p class="prose-p">{updated ? `O livro foi atualizado em ${updated}.` : 'O livro ainda não tem ação.'}</p>
+      <p class="prose-p">Comprovante ainda não publicado.</p>
+    </section>
+    {open && (
+      <form class="doar-form" method="post" action="/api/doar">
+        <button name="amountCents" value="2000" type="submit">Doar R$ 20</button>
+      </form>
+    )}
+  </Caderno>
+</BaseLayout>
+
+<style>
+  .doar-money ul { list-style: none; padding: 0; display: grid; gap: .7rem; max-width: 22rem; margin: 1.5rem 0; }
+  .doar-money li { display: flex; justify-content: space-between; gap: 1rem; font-size: 1.125rem; }
+  .doar-money strong { font-family: var(--font-display); font-weight: 500; }
+  .doar-form { margin-top: 1rem; }
+</style>

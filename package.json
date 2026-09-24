@@ -22,6 +22,7 @@
     "ledger:sign": "node scripts/ledger/sign.ts",
     "ledger:drain": "node scripts/ledger/drain.ts",
     "ledger:stamp": "node scripts/ledger/stamp-head.ts",
+    "ledger:reconcile": "node scripts/ledger/reconcile.ts",
     "budget": "node scripts/check-budget.mjs",
     "ledger:sync-project": "node scripts/ledger/sync-project.ts"
   },

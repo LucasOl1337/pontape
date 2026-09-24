@@ -49,6 +49,63 @@ export async function drainOne(input: {
   };
 }
 
+export type DrainBatch = {
+  rejected: false;
+  appended: number;
+  document: LedgerDocument;
+  intake: Intake;
+  trust?: LiveTrust;
+  signed?: SignedCheckpoint;
+  stampFailed: boolean;
+};
+
+/** Appends every valid envelope, then stamps once. A failed stamp still keeps the new actions. */
+export async function drainAll(input: {
+  document: LedgerDocument;
+  intake: Intake;
+  envelopes: unknown[];
+  privateKey: CryptoKey;
+  seed: Uint8Array;
+  publicKeyHex: string;
+  previousPublicKey: string;
+  now: string;
+  stamp?: typeof stampCheckpoint;
+}): Promise<{ rejected: true } | DrainBatch> {
+  const receipts = [];
+  for (const envelope of input.envelopes) {
+    const accepted = acceptIngest(envelope);
+    if (!accepted.ok) return { rejected: true };
+    receipts.push(accepted.receipt);
+  }
+  let state: QueueState = { pending: [], done: input.intake.keys };
+  let events = input.document.events;
+  let appended = 0;
+  for (const receipt of receipts) {
+    const queued = push(state, { ...receipt, receivedAt: input.now });
+    if (queued.duplicate) continue;
+    const item = head(queued.state);
+    if (!item) return { rejected: true };
+    events = await appendEvent(events, item.payload, input.now);
+    state = ack(queued.state, item.key);
+    appended += 1;
+  }
+  const intake = { keys: state.done };
+  if (appended === 0) return { rejected: false, appended, document: input.document, intake: input.intake, stampFailed: false };
+  const checkpoint = createCheckpoint(events, input.now);
+  const next = { events, checkpoint };
+  try {
+    const signed = await signCheckpoint(checkpoint, input.privateKey, input.publicKeyHex);
+    const witness = await (input.stamp ?? stampCheckpoint)(canonicalize(checkpoint), input.seed, input.publicKeyHex);
+    return {
+      rejected: false, appended, document: next, intake,
+      trust: liveTrust(input.publicKeyHex, input.previousPublicKey, checkpoint.sequence, witness),
+      signed, stampFailed: false,
+    };
+  } catch {
+    return { rejected: false, appended, document: next, intake, stampFailed: true };
+  }
+}
+
 /** Signs and stamps the checkpoint already in the book. Does not append an event. */
 export async function stampHead(input: {
   checkpoint: LedgerCheckpoint;

@@ -52,6 +52,8 @@ const financePayloadSchema = z.strictObject({
   amountCents: z.string().check(z.regex(/^-?[1-9][0-9]{0,19}$/)),
   category: z.enum(['donation', 'food', 'clothing', 'hygiene', 'operations', 'fee', 'refund']),
   evidence: z.enum(['pending', 'not_published']),
+  // Processor id, such as pay_ficticio_1. Never a name, CPF or email.
+  externalId: z.optional(z.string().check(z.regex(/^[A-Za-z0-9:_-]{1,80}$/))),
 }).check(z.refine((event) => event.action === 'reversal'
   ? event.correctionOf !== null : event.correctionOf === null, {
   message: 'Estorno exige referência; movimento novo não corrige outro evento.',

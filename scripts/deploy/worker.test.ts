@@ -60,6 +60,30 @@ describe('Yumi no Worker', () => {
     expect(sent[0]?.messages[0].role).toBe('system');
   });
 
+  it('mantém a doação fechada e não copia pessoa do aviso', async () => {
+    const closed = await worker.fetch(new Request('http://localhost/api/doar', { method: 'POST' }), env());
+    expect(closed.status).toBe(403);
+    const upstream = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal('fetch', upstream);
+    const webhook = await worker.fetch(new Request('http://localhost/api/asaas/webhook', {
+      method: 'POST',
+      headers: { 'asaas-access-token': 'token-ficticio', 'content-type': 'application/json' },
+      body: JSON.stringify({
+        event: 'PAYMENT_RECEIVED',
+        payment: {
+          id: 'pay_ficticio_1', value: 20, netValue: 18.01, paymentDate: '2000-01-01',
+          name: 'Pessoa Fictícia', email: 'pessoa.ficticia@example.com', cpfCnpj: '00000000000',
+        },
+      }),
+    }), { ...env(), ASAAS_WEBHOOK_TOKEN: 'token-ficticio', LEDGER_DISPATCH_TOKEN: 'dispatch-ficticio' });
+    expect(webhook.status).toBe(200);
+    const sent = String(upstream.mock.calls[0]?.[1]?.body);
+    expect(sent).toContain('pay_ficticio_1');
+    expect(sent).not.toContain('Pessoa');
+    expect(sent).not.toContain('pessoa.ficticia@example.com');
+    expect(sent).not.toContain('00000000000');
+  });
+
   it('gera conhecimento público sem nomes pessoais nem termos vetados', () => {
     expect(FAQ).toHaveLength(9);
     for (const item of FAQ) expect(YUMI_KNOWLEDGE).toContain(item.q);
