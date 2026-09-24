@@ -95,7 +95,7 @@ function renderStats(stats: Stats) {
     appendRow(days, [date(key), number.format(visits.get(key) ?? 0), number.format(people.get(key) ?? 0)]);
   }
   chart(stats.visits, stats.people, stats.from);
-  const clickNames: Record<string, string> = { step: 'Passos da escada', seal: 'Conferências do selo', yumi_open: 'Yumi aberta', share: 'Compartilhar', link: 'Links' };
+  const clickNames: Record<string, string> = { step: 'Passos da escada', seal: 'Conferências do selo', yume_open: 'Yume aberta', share: 'Compartilhar', link: 'Links' };
   const clicks = $('admin-clicks'); clicks.replaceChildren();
   stats.clicks.forEach(row => appendRow(clicks, [clickNames[row.kind ?? ''] ?? row.kind ?? '', number.format(row.count)]));
   const pages = $('admin-pages'); pages.replaceChildren();
@@ -121,7 +121,7 @@ async function openChat(id: string) {
     const item = document.createElement('li');
     item.dataset.role = message.role;
     const role = document.createElement('strong');
-    role.textContent = message.role === 'user' ? 'Pessoa' : 'Yumi';
+    role.textContent = message.role === 'user' ? 'Pessoa' : 'Yume';
     item.append(role, document.createTextNode(message.content));
     list.append(item);
   }

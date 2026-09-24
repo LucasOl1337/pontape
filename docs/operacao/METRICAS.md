@@ -1,4 +1,4 @@
-# Métricas e histórico da Yumi
+# Métricas e histórico da Yume
 
 ## O que fica guardado
 

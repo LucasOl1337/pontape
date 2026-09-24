@@ -1,4 +1,4 @@
-type HitKind = 'step' | 'seal' | 'yumi_open' | 'share' | 'link';
+type HitKind = 'step' | 'seal' | 'yume_open' | 'share' | 'link';
 
 export function sendHit(kind: HitKind, target?: string) {
   const body = JSON.stringify({ kind, path: location.pathname, ...(target ? { target } : {}) });

@@ -1,7 +1,7 @@
 /* global crypto, TextEncoder, TextDecoder, Response */
 
 const START_DAY = '2026-09-24';
-const KINDS = new Set(['view', 'step', 'seal', 'yumi_open', 'share', 'link']);
+const KINDS = new Set(['view', 'step', 'seal', 'yume_open', 'share', 'link']);
 const PATHS = new Set([
   '/', '/transparencia', '/transparencia/tecnico', '/perguntas', '/construir',
   '/construir/pecas', '/construir/gargalos', '/construir/tarefas', '/construir/codigo-aberto',

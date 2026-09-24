@@ -15,7 +15,7 @@
 2. Rode `scripts/deploy/dev-chat.sh`. O script cria a pasta temporária do Worker, aplica `scripts/deploy/migrations/*.sql` no D1 **local** persistido em `.wrangler/f43` e abre `http://localhost:8794`.
 3. Abra `/` duas vezes. `GET /api/stats/public` deve ter `visits` acima de zero e só seis números. A linha na home e em `/transparencia` deve refletir o valor após até 60 segundos. Com JS desligado, deve aparecer o valor conhecido no build ou, antes da primeira publicação, aviso explícito de contagem indisponível.
 4. Abra `/admin`, entre com o usuário e a senha locais e confira visitas por dia, eventos, páginas e a lista de conversas. Saia; `/api/admin/stats` deve responder 401. Tente cookie adulterado e senha errada. A sexta tentativa na mesma janela retorna 429.
-5. Na Yumi, mande uma dúvida sem dados pessoais. Ao terminar, ela aparece no painel com pergunta e resposta. Mande uma pergunta com CPF ou e-mail; ela não pode aparecer no banco nem ir ao 9Router.
+5. Na Yume, mande uma dúvida sem dados pessoais. Ao terminar, ela aparece no painel com pergunta e resposta. Mande uma pergunta com CPF ou e-mail; ela não pode aparecer no banco nem ir ao 9Router.
 6. Rode `npm run check`. Para ensaiar o cron local, use `curl -X GET http://localhost:8794/cdn-cgi/local/scheduled` e confira o D1 local. **Não** aplique migração remota nem publique pelo worktree tecla.
 
 ## Custo estimado
@@ -25,7 +25,7 @@ Mil conversas de três trocas geram aproximadamente 16 mil gravações D1 inclui
 ## Ensaios concluídos
 
 - `wrangler dev` aplicou `0001_metrics.sql` no D1 local. Servir `/` e `/transparencia/` contou duas visitas e uma pessoa no mesmo dia; `/api/stats/public` devolveu só os seis números previstos. Revalidação de HTML com 304 também conta visita. Evento desconhecido deu 400; `step` válido deu 204. Login errado deu 401, cookie forjado deu 401, e seis tentativas erradas no mesmo IP deram `401,401,401,401,401,429`.
-- Login real no Chromium da bancada isolada `pontape-f43-ui` abriu o painel com tabela, gráfico e lista de conversas. O cookie veio com `HttpOnly; Secure; SameSite=Strict; Max-Age=43200`. Pergunta real à Yumi terminou em SSE e apareceu no painel com as duas falas. Pergunta com CPF ficou fora: `x-yumi-private: 1` e total de conversas inalterado.
+- Login real no Chromium da bancada isolada `pontape-f43-ui` abriu o painel com tabela, gráfico e lista de conversas. O cookie veio com `HttpOnly; Secure; SameSite=Strict; Max-Age=43200`. Pergunta real à Yume terminou em SSE e apareceu no painel com as duas falas. Pergunta com CPF ficou fora: `x-yumi-private: 1` e total de conversas inalterado.
 - O 9Router real encerra o SSE com `finish_reason: stop`, sem `[DONE]`; ajustei a gravação depois de ver que a primeira tentativa local não apareceu no histórico. O teste automatizado cobre esse formato.
 - Medida via CDP da bancada, sem tocar na sessão do Lucas: em **1602×769**, cabeçalho terminou em y=65, escada e linha azul em y=729, contador de y=740,75 a 757, e a próxima seção começa em y=769. O contador ocupa o `--air` já reservado e não reduz a altura de 664 px da escada. Ajustei o 1 px da borda do cabeçalho na conta da frente. Em **390×844**, a escada termina em y=665,86; contador de y=667,45 a 699,95; a próxima seção começa em y=715,95. Nos dois, o contador fica na primeira tela sem cortar a escada. Em uma simulação adicional de 1349×647, a altura mínima de 664 px da escada F36 já excede a área disponível mesmo sem o contador; ela não foi reduzida pra mascarar esse limite anterior.
 - `sqlite3` no banco local confirmou hashes com 32 caracteres e zero mensagens contendo o CPF usado no ensaio.
@@ -33,5 +33,6 @@ Mil conversas de três trocas geram aproximadamente 16 mil gravações D1 inclui
 
 ## Entrega
 
+- Direção D043 recebida antes da PR: toda frase pública que esta frente escreveu agora chama o bot de Yume. O evento novo de abertura foi renomeado para `yume_open` no cliente, na API e no painel. Os nomes legados de arquivo, seletores do chat e cabeçalho `x-yumi-private` seguem até a mudança central do Regente; nenhum deles aparece como nome do bot na tela. Nenhum texto desta frente exibido no site cita Lucas.
 - Migração de produção e Secrets ficam a cargo do Regente. O worktree tecla não aplicou migração remota nem publicou o Worker.
 - PR para `main`: a preencher após abrir.

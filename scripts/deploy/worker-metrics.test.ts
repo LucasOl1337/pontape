@@ -22,6 +22,19 @@ describe('coleta e privacidade', () => {
     expect(db.prepare).not.toHaveBeenCalled();
   });
 
+  it('registra a abertura da Yume com o identificador novo', async () => {
+    const run = vi.fn().mockResolvedValue({});
+    const bind = vi.fn().mockReturnValue({ run });
+    const db = { prepare: vi.fn().mockReturnValue({ bind }) };
+    const env = { DB: db, SESSION_SECRET: 'local-test', HIT_RATE_LIMITER: { limit: vi.fn().mockResolvedValue({ success: true }) } };
+    const accepted = await handleHit(request('/api/hit', { kind: 'yume_open', path: '/' }), env);
+    const oldName = await handleHit(request('/api/hit', { kind: 'yumi_open', path: '/' }), env);
+    expect(accepted.status).toBe(204);
+    expect(bind).toHaveBeenCalledWith(expect.any(String), 'yume_open', '/', '');
+    expect(oldName.status).toBe(400);
+    expect(run).toHaveBeenCalledOnce();
+  });
+
   it('só conta view ao servir HTML, nunca pelo beacon do cliente', async () => {
     const db = { prepare: vi.fn() };
     const result = await handleHit(request('/api/hit', { kind: 'view', path: '/' }), {
