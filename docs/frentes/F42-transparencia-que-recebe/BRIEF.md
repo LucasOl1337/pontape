@@ -50,9 +50,9 @@ O escrevente roda no GitHub Actions, commita como o ledger-bot com o `GITHUB_TOK
 
 Hoje um evento entra por script e commit. Pagamento exige caminho automático e seguro:
 
-1. **Worker `ledger-ingest`** ao lado do site: recebe evento de fonte autorizada (webhook do processador), valida contra o schema da F08, rejeita campo fora da lista, assina o recibo e enfileira (Queue ou KV).
-2. **Escrevente**: job que pega a fila, acrescenta ao livro e commita no repositório com a identidade do ledger-bot (GitHub App ou token com escopo mínimo). O site republica sozinho (D021). Um livro só.
-3. **Checkpoint e carimbo automáticos**: assinatura do checkpoint com chave em Secret do Worker; o checkpoint assinado vai pro Sigstore Rekor e recebe carimbo RFC 3161 por cron (D038). O `trust.json` publica registro, id da entrada, data e link de conferência. A custódia da chave hoje é do Regente, fora do repo: proponha no DIARIO como migrar (chave nova do Worker + rotação registrada no livro) e espere o OK.
+1. **Entrada**: um envelope (`source`, `eventId`, `payload`) validado contra o schema da F08; campo fora da lista é recusado. Hoje entra por `workflow_dispatch`; no E3, um Worker recebe o webhook do processador e dispara o workflow com token de escopo mínimo.
+2. **Escrevente no GitHub Actions** (`.github/workflows/ledger-ingest.yml`, feito no E2): pega o envelope, acrescenta ao livro, assina o checkpoint com o secret `LEDGER_SIGNING_PKCS8`, carimba e commita na `main` como ledger-bot. O site republica sozinho (D021). Um livro só; `intake.json` guarda as chaves já gravadas, então o mesmo evento não entra duas vezes.
+3. **Checkpoint e carimbo automáticos** (E2 e E2b): o checkpoint assinado vai pro Sigstore Rekor (Ed25519ph sobre o SHA-512, porque o Rekor recusa Ed25519 puro) e recebe carimbo RFC 3161 da freetsa (D038). O `trust.json` publica registro, id da entrada, data e link. O E2b acrescenta o modo **carimbar**: sem evento novo, diário e por dispatch, assina e carimba a cabeça atual, pra o selo ficar verde de verdade. A custódia da chave hoje é do Regente, fora do repo: proponha no DIARIO como migrar (chave nova do Worker + rotação registrada no livro) e espere o OK.
 4. **Idempotência e ordem**: mesmo webhook duas vezes não gera dois eventos; falha no meio não perde nem duplica.
 5. **Critério:** evento fictício entra por webhook de teste e aparece no site publicado em menos de 10 minutos, verificável pelo E1.
 
