@@ -28,6 +28,11 @@ const menuBtn = $('#menu-btn');
 const closeMenu = () => { header?.classList.remove('menu-open'); menuBtn?.setAttribute('aria-expanded', 'false'); };
 menuBtn?.addEventListener('click', () => menuBtn.setAttribute('aria-expanded', String(header?.classList.toggle('menu-open'))));
 document.querySelectorAll('.site-nav a').forEach(a => a.addEventListener('click', closeMenu));
+$('#yumi-open')?.addEventListener('click', async () => {
+  closeMenu();
+  const { openYumiChat } = await import('./yumi-chat');
+  openYumiChat();
+});
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && header?.classList.contains('menu-open')) { closeMenu(); menuBtn?.focus(); }
 });
