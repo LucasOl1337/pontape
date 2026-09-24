@@ -11,6 +11,9 @@
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
   },
+  "ratelimits": [
+    { "name": "CHAT_RATE_LIMITER", "namespace_id": "4101", "simple": { "limit": 20, "period": 60 } }
+  ],
   "workers_dev": false,
   "routes": [
     { "pattern": "pontape.org", "custom_domain": true },
