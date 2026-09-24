@@ -18,7 +18,7 @@ export const FAQ: Pergunta[] = [
   { id: 'como-escolhe', q: 'Como a pessoa é escolhida?',
     a: 'Por uma conversa curta por voz com a AI, sem precisar ler nem escrever. O critério ainda está em pesquisa, pra ser justo com todo mundo, e vai ficar público quando estiver pronto.' },
   { id: 'e-seguro', q: 'É seguro? Quem vê os dados?',
-    a: 'Hoje o site não guarda nada de ninguém: nem nome, nem e-mail, nem cookie. Quando o atendimento começar, quem é a pessoa nunca vai aparecer no livro público. Aparece a ação e o número, nunca o nome.' },
+    a: 'O site conta visitas sem guardar IP. A conversa com a Yumi fica guardada por até 180 dias pra melhorar o site. Não mande nome, telefone, CPF ou e-mail. Quando o atendimento começar, quem é a pessoa nunca vai aparecer no livro público. Aparece a ação e o número, nunca o nome.' },
   { id: 'quem-faz', q: 'Quem está por trás?',
     a: 'Por enquanto, uma pessoa em São Paulo, com agentes de AI ajudando a construir. Sem empresa, sem patrocínio, sem dinheiro de ninguém. O projeto não existe pra dar nome a ninguém: o crédito é de quem ajuda, e o que importa fica no livro público.' },
   { id: 'como-ajudar', q: 'Como posso ajudar hoje?',

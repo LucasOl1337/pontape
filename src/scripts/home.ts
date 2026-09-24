@@ -1,6 +1,7 @@
 // Home: the staircase (a tab list you climb with the arrows) and the ficha of each piece.
 // Both answer to the URL hash, so the header links and shared links land on the right step.
 import { routeModule } from './modules';
+import { sendHit } from './metrics';
 
 const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll<T>(s)];
@@ -15,6 +16,7 @@ let at = 0;
 
 function climb(k: number, { focusTab = false } = {}) {
   const next = Math.max(0, Math.min(tabs.length - 1, k));
+  if (next !== at) sendHit('step', String(next));
   at = next;
   tabs.forEach((tab, i) => {
     tab.setAttribute('aria-selected', String(i === at));

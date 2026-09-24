@@ -1,4 +1,5 @@
 // Shared by every page: header menu, toast, dialog close, "Mandar pra alguém".
+import { sendHit } from './metrics';
 const root = document.documentElement;
 root.classList.replace('no-js', 'js');
 
@@ -30,6 +31,7 @@ menuBtn?.addEventListener('click', () => menuBtn.setAttribute('aria-expanded', S
 document.querySelectorAll('.site-nav a').forEach(a => a.addEventListener('click', closeMenu));
 $('#yumi-open')?.addEventListener('click', async () => {
   closeMenu();
+  sendHit('yume_open');
   const { openYumeChat } = await import('./yumi-chat');
   openYumeChat();
 });
@@ -55,6 +57,7 @@ addEventListener('scroll', () => {
 document.addEventListener('click', async e => {
   const button = (e.target as Element).closest<HTMLElement>('[data-share]');
   if (!button) return;
+  sendHit('share');
   const url = new URL('/', location.href).href;
   const data = { title: button.dataset.shareTitle ?? document.title, text: button.dataset.shareText ?? '', url };
   if (navigator.share) {
@@ -69,4 +72,23 @@ document.addEventListener('click', async e => {
   } catch {
     toast(`Mande este endereço: ${location.host}`);
   }
+});
+
+document.addEventListener('click', event => {
+  const link = (event.target as Element).closest<HTMLAnchorElement>('a[href]');
+  if (!link) return;
+  let target = link.dataset.hitLink;
+  if (!target) {
+    if (link.hostname === 'github.com') target = 'github';
+    else if (link.hostname === 'www.linkedin.com') target = 'linkedin';
+    else if (link.hostname === 'x.com') target = 'x';
+    else if (link.origin === location.origin) {
+      if (link.hash === '#contato') target = 'contato';
+      else if (link.pathname.startsWith('/transparencia/tecnico')) target = 'tecnico';
+      else if (link.pathname.startsWith('/transparencia')) target = 'transparencia';
+      else if (link.pathname.startsWith('/construir')) target = 'construir';
+      else if (link.pathname.startsWith('/perguntas')) target = 'perguntas';
+    }
+  }
+  if (target) sendHit('link', target);
 });
