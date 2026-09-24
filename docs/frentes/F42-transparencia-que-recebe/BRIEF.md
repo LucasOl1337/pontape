@@ -58,6 +58,8 @@ Hoje um evento entra por script e commit. Pagamento exige caminho automático e 
 
 ### E3 · Pagamento em modo teste (terceira PR, 2 a 3 dias)
 
+**Decidido em 24/09 (D041): Asaas, em sandbox.** Comparação do Lastro no DIARIO: Pix R$ 1,99 (promo R$ 0,99) e cartão 2,99% + R$ 0,49; em R$ 20 o Pix deixa R$ 18,01. Stripe fora (veta caridade no Brasil e o Pix é por convite); Mercado Pago é mais barato no Pix (0,99%) e fica anotado como alternativa. A conta sandbox é o Lucas quem cria (pede dados pessoais dele); chave em secret `ASAAS_SANDBOX_KEY`. Regra nova: se o carimbo público falhar, a ação entra no livro mesmo assim e o carimbo fica pra próxima tentativa.
+
 1. **Escolha com prova.** Comparar Stripe (Checkout hospedado, cartão, Pix no Brasil; conta BR ao vivo exige CNPJ), Asaas (Pix e cartão, aceita associação, extrato por API; recomendado pela F03) e Mercado Pago. Critério: Pix e cartão, webhook confiável, extrato por API pra reconciliar, tarifa pública, aceita associação, custo por doação de R$ 20. Tabela com link e data de acesso no DIARIO; proposta de decisão pro Regente.
 2. **Fluxo em modo teste** com o escolhido: página `/doar` atrás de flag (fechada no ar), checkout hospedado, webhook → evento `finance` (bruto, tarifa, líquido, id, hora) → E2 → site. Estorno e transferência também viram evento.
 3. **Painel de dinheiro** só a partir do livro: recebido, tarifas, saldo, gasto, e a hora da última atualização.
