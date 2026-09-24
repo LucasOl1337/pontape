@@ -10,7 +10,7 @@ Atualizado: 24/09/2026, tarde · Site sem crédito pessoal (D036, PR #98), conta
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F42 | [Transparência que prova e recebe](frentes/F42-transparencia-que-recebe/BRIEF.md) | lastro | `lastro/f42-e1` | E1 em andamento (explicar e provar, Conferir novo) | PR do E1 pro Regente revisar; depois E2 (livro que recebe evento) e E3 (pagamento em modo teste) |
+| F42 | [Transparência que prova e recebe](frentes/F42-transparencia-que-recebe/BRIEF.md) | lastro | `lastro/f42-e1` | **E1 integrada** (PR #100): três perguntas, selo Conferir agora, Conferir esta | E1b: lista técnica sob demanda (página cresce a cada evento, teto provisório de 96 KB na PR #101); depois E2 (livro que recebe evento) e E3 (pagamento em modo teste) |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
