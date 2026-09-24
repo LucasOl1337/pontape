@@ -801,6 +801,10 @@ main:focus{ outline:none }
 .step-missing-mark{ font:italic 500 2rem/1 var(--font-display) }
 .lost-stairs figcaption{ margin-top:var(--space-3); font:italic 400 1rem var(--font-serif); color:var(--ink-2) }
 @media (min-width:960px){ .lost-grid{ grid-template-columns:3fr 2fr; align-items:center } }
+/* A narrow phone (320 px, or 640 px at 200% zoom): each of the five columns is under 60 px, so the
+   names get a smaller size and less side padding. "Trabalho", in the last column, stays inside the
+   screen even with the browser's text set larger (#54). */
+@media (max-width:399px){ .stairs .step{ padding:.45rem .3rem; font-size:.6875rem } }
 /* Below 316 px, keep the icons and the missing mark; the names go, like on the home staircase. */
 @media (max-width:315px){ .stairs .step-label{ display:none } }
 
