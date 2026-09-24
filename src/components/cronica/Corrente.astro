@@ -10,10 +10,12 @@ const SCENES = PLAIN.scenes;
 const sheet = (i: number) => ({ x: 14 + i * 132, y: 34 });
 const marks = ['a7f3 · 9c1e', '5e21 · 04bd', 'f08a · 77c2'];
 const tampered = 'c09d · 2b71';
+// One real's path (the example the Lucas asked for, 24/09): the donation comes in, turns into
+// kits, the kits are handed out. Scene 4 is someone hiding part of the donation.
 const lines = [
-  { title: 'Ação 1', body: ['Comprou 20 kits', 'de higiene'], amount: 'R$ 480' },
-  { title: 'Ação 2', body: ['Entregou 20 kits', 'no ponto da praça'], amount: '20 kits' },
-  { title: 'Ação 3', body: ['Decisão registrada:', 'critério público'], amount: 'D032' },
+  { title: 'Ação 1', body: ['Entrou uma doação', 'pelo site'], amount: 'R$ 50' },
+  { title: 'Ação 2', body: ['Comprou 5 kits', 'de higiene'], amount: 'R$ 48' },
+  { title: 'Ação 3', body: ['Entregou 5 kits', 'no ponto da praça'], amount: '5 kits' },
 ];
 ---
 <figure class="corrente" data-corrente data-scene="3" aria-labelledby="corrente-caption">
@@ -34,8 +36,8 @@ const lines = [
           {i === 0
             ? <g class="c-amount-g">
                 <text class="c-amount c-amount-ok" x={s.x + 10} y={s.y + 80}>{l.amount}</text>
-                <text class="c-amount c-amount-bad" x={s.x + 10} y={s.y + 80}>R$ 180</text>
-                <path class="c-strike" d={`M${s.x + 9} ${s.y + 76}h44`} />
+                <text class="c-amount c-amount-bad" x={s.x + 10} y={s.y + 80}>R$ 20</text>
+                <path class="c-strike" d={`M${s.x + 9} ${s.y + 76}h38`} />
               </g>
             : <text class="c-amount" x={s.x + 10} y={s.y + 88}>{l.amount}</text>}
           <g class="c-mark-g">

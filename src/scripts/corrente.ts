@@ -12,7 +12,8 @@ if (figure) {
   const captions = [...figure.querySelectorAll<HTMLElement>('.corrente-all li')].map(li => li.lastChild?.textContent ?? '');
   const total = dots.length;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const STEP_MS = 4600;
+  // The first scene is a single sheet: it goes by fast. The busy ones (the break, the stamp) get more time.
+  const STEP_MS = [1700, 3400, 3800, 4800, 4800];
 
   let scene = 1;
   let timer = 0;
@@ -36,7 +37,7 @@ if (figure) {
   const tick = () => {
     clearTimeout(timer);
     if (!playing || held || document.hidden) return;
-    timer = window.setTimeout(() => { show(scene + 1); tick(); }, STEP_MS);
+    timer = window.setTimeout(() => { show(scene + 1); tick(); }, STEP_MS[scene - 1] ?? 3800);
   };
 
   controls.hidden = false;
