@@ -54,6 +54,13 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 - Atualizar o BRIEF e o Quadro: a chave não nasce no Worker. Nasce no secret do repositório, e o escrevente é o GitHub Actions.
 
+## 24/09/2026 · E2 integrada, E2b
+
+- A PR #108 entrou. O Regente juntou a main na branch: o livro já tinha 110 ações, e a rotação foi escrita de novo como ação 111, com `ledger:append`. Este worktree voltou pra `origin/main` antes do E2b. O livro não é reescrito.
+- Sem doação fictícia não havia o que disparar, e o selo ficava cinza. O modo carimbar (`npm run ledger:stamp -- --apply`, ou o workflow sem envelope) assina o checkpoint que já está no livro, manda pro Rekor e pra freetsa, e grava só `trust.json` e `checkpoint-signed.json`.
+- O dispatch sem evento e o schedule das 12:15 em São Paulo usam esse modo. O mesmo checkpoint de novo reaproveita a entrada que o Rekor já tem (409). O livro não é tocado.
+- O selo fica verde quando esse `trust.json` real entra no site. Quem dispara depois do merge é o Regente. A chave de produção não foi lida daqui.
+
 ## Próximo passo
 
-PR aberta: https://github.com/LucasOl1337/pontape/pull/108. O aparecimento ao vivo de um evento de teste espera o merge e um dispatch. Sem doação fictícia no livro publicado. E3 não começou.
+PR do E2b. E3 depois que o Regente integrar e disparar o carimbo.
