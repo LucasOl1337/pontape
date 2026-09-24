@@ -10,4 +10,5 @@ export const ANIL = {
   accentLight: '#9CBEFC',
   building: '#825C00',
   buildingBg: '#F7EBC6',
+  live: '#1D6A3A',
 } as const;

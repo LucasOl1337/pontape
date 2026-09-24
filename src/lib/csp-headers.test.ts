@@ -63,4 +63,24 @@ describe('CSP dos HTML gerados', () => {
       rmSync(directory, { recursive: true, force: true });
     }
   });
+
+  it('libera só o arquivo do contador da Cloudflare, e nenhuma outra origem (#55)', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'vidanova-csp-'));
+    try {
+      writeFileSync(join(directory, 'index.html'), '<script>window.a = 1;</script>');
+      writeFileSync(join(directory, '_headers'), template);
+      expect(run('generate', directory).status).toBe(0);
+      const headers = readFileSync(join(directory, '_headers'), 'utf8');
+      expect(headers).toContain("script-src 'self' https://static.cloudflareinsights.com/beacon.min.js 'sha256-");
+      expect(headers).toContain("connect-src 'self' https://cloudflareinsights.com;");
+      expect(run('verify', directory).status).toBe(0);
+
+      writeFileSync(join(directory, '_headers'), template.replace("script-src 'self'", "script-src 'self' https://static.cloudflareinsights.com"));
+      expect(run('generate', directory).status).not.toBe(0);
+      writeFileSync(join(directory, '_headers'), template.replace("script-src 'self'", "script-src 'self' https://exemplo.com/x.js"));
+      expect(run('generate', directory).status).not.toBe(0);
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
 });

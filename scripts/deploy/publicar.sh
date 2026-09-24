@@ -20,9 +20,11 @@ cp scripts/deploy/worker.js "$tmp/worker.js"
 grep -v '^//' scripts/deploy/wrangler.template.jsonc > "$tmp/wrangler.jsonc"
 
 cd "$tmp"
+commit="$(git -C "$root" rev-parse HEAD)"
 if [ "${1:-}" = --apply ]; then
-  npx -y wrangler@4 deploy
-  echo "Publicado o commit $(git -C "$root" rev-parse --short HEAD) em https://pontape.org"
+  # A versão leva o commit, pra achar a boa na hora de voltar atrás (docs/operacao/VOLTAR-ATRAS.md).
+  npx -y wrangler@4 deploy --tag "${commit:0:7}" --message "commit $commit"
+  echo "Publicado o commit ${commit:0:7} em https://pontape.org"
 else
   npx -y wrangler@4 deploy --dry-run
   echo "DRY-RUN: nada publicado. Rode com --apply."

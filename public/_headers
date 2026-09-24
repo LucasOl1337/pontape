@@ -1,4 +1,6 @@
 # CSP limita origens: scripts, estilos e fontes só do próprio site (fontes locais desde a F07).
+# Única exceção (#55): o contador de visitas da Cloudflare (Web Analytics), que a hospedagem injeta.
+# Libera só o arquivo dele em script-src e o envio da contagem em connect-src. Sem cookie, sem dado pessoal.
 # O build acrescenta hashes dos scripts embutidos; os dados do livro vão em <script type="application/json">.
 # Nosniff exige o tipo de conteúdo declarado.
 # Referrer não envia origem ou caminho ao sair do site.
@@ -6,7 +8,7 @@
 # X-Frame-Options cobre navegadores sem suporte a frame-ancestors.
 # HSTS: depois da primeira visita, o navegador só usa HTTPS em pontape.org e www.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://cloudflareinsights.com; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Permissions-Policy: microphone=(), camera=(), geolocation=(), payment=()
