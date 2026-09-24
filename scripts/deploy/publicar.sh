@@ -16,10 +16,13 @@ SITE_URL=https://pontape.org npm run check
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 cp -r dist "$tmp/public"
-cp scripts/deploy/worker.js scripts/deploy/worker-metrics.js scripts/deploy/worker-admin.js "$tmp/"
-cp scripts/deploy/yumi.js scripts/deploy/yumi-knowledge.js "$tmp/"
+# O Worker fica no mesmo caminho do repositório (scripts/deploy) porque importa ../../src/lib/ledger/asaas.ts (E3).
+mkdir -p "$tmp/scripts/deploy" "$tmp/src/lib/ledger"
+cp scripts/deploy/worker.js scripts/deploy/worker-metrics.js scripts/deploy/worker-admin.js "$tmp/scripts/deploy/"
+cp scripts/deploy/yumi.js scripts/deploy/yumi-knowledge.js "$tmp/scripts/deploy/"
+cp src/lib/ledger/asaas.ts "$tmp/src/lib/ledger/"
 cp -r scripts/deploy/migrations "$tmp/"
-grep -v '^//' scripts/deploy/wrangler.template.jsonc > "$tmp/wrangler.jsonc"
+grep -v '^//' scripts/deploy/wrangler.template.jsonc | sed 's#"main": "./worker.js"#"main": "./scripts/deploy/worker.js"#' > "$tmp/wrangler.jsonc"
 
 cd "$tmp"
 commit="$(git -C "$root" rev-parse HEAD)"
