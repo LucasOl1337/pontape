@@ -46,7 +46,7 @@ async function readAnswer(response: Response, target: HTMLElement) {
     }
     if (done) break;
   }
-  if (!answer.trim()) throw new Error('A Yumi não conseguiu responder agora.');
+  if (!answer.trim()) throw new Error('A Yume não conseguiu responder agora.');
   return answer.trim();
 }
 
@@ -59,7 +59,7 @@ form?.addEventListener('submit', async event => {
   input.value = '';
   input.disabled = true;
   form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = true;
-  status.textContent = 'Yumi está respondendo...';
+  status.textContent = 'Yume está respondendo...';
   addMessage(content, 'user');
   const reply = addMessage('', 'assistant');
   const messages = [...history, { role: 'user' as const, content }].slice(-12);
@@ -72,7 +72,7 @@ form?.addEventListener('submit', async event => {
     });
     if (!response.ok) {
       const body = await response.json().catch(() => ({})) as { error?: string };
-      throw new Error(body.error || 'A Yumi não conseguiu responder agora.');
+      throw new Error(body.error || 'A Yume não conseguiu responder agora.');
     }
     const answer = await readAnswer(response, reply);
     if (response.headers.get('x-yumi-private') !== '1') {
@@ -81,7 +81,7 @@ form?.addEventListener('submit', async event => {
     }
     status.textContent = '';
   } catch (cause) {
-    reply.textContent = cause instanceof Error ? cause.message : 'A Yumi não conseguiu responder agora.';
+    reply.textContent = cause instanceof Error ? cause.message : 'A Yume não conseguiu responder agora.';
     status.textContent = 'Tente de novo daqui a pouco.';
   } finally {
     busy = false;
@@ -108,7 +108,7 @@ dialog?.addEventListener('keydown', event => {
   if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
 });
 
-export function openYumiChat() {
+export function openYumeChat() {
   if (!dialog?.open) dialog?.showModal();
   input?.focus();
 }
