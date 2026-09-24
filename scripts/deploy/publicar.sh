@@ -16,8 +16,9 @@ SITE_URL=https://pontape.org npm run check
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 cp -r dist "$tmp/public"
-cp scripts/deploy/worker.js "$tmp/worker.js"
+cp scripts/deploy/worker.js scripts/deploy/worker-metrics.js scripts/deploy/worker-admin.js "$tmp/"
 cp scripts/deploy/yumi.js scripts/deploy/yumi-knowledge.js "$tmp/"
+cp -r scripts/deploy/migrations "$tmp/"
 grep -v '^//' scripts/deploy/wrangler.template.jsonc > "$tmp/wrangler.jsonc"
 
 cd "$tmp"
