@@ -2,6 +2,7 @@ import type { LedgerCheckpoint, LedgerEvent } from '../lib/ledger/schema';
 import type { LedgerView } from '../lib/ledger-view/source';
 import type { BookProof, ProofReport, ProofSource, ProofStep } from '../lib/ledger-view/proof';
 import { verifyEvents } from './verify';
+import { sendHit } from './metrics';
 
 // Lay page only (F42). The technical page does not import this, so its weight stays put.
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -82,6 +83,7 @@ export function mountSeal(panel: HTMLElement, getLedger: () => LedgerView) {
 
   async function run(until?: string) {
     if (btn.disabled) return;
+    sendHit('seal');
     btn.disabled = true;
     const fromFile = Boolean(fileOverride);
     interim({ id: 'book', mark: 'run', title: fromFile ? 'Abrindo o arquivo.' : 'Baixando o livro.', text: '' });

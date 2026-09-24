@@ -8,9 +8,9 @@ import { PERGUNTAS } from '../../data/site/perguntas';
     <p class="footer-brand"><LogoMark /><span>{PROJECT_NAME}</span></p>
     <p class="footer-motto">Um degrau de cada vez. Tudo à vista.</p>
     <div class="footer-columns">
-      <div><h2>Transparência</h2><p><a href="/transparencia">Livro público de todas as ações</a>. Qualquer pessoa confere.</p></div>
+      <div><h2>Transparência</h2><p><a href="/transparencia" data-hit-link="transparencia">Livro público de todas as ações</a>. Qualquer pessoa confere.</p></div>
       <div><h2>Organização</h2><p>Projeto sem fins lucrativos, ainda sem registro formal. Quando tiver, o número aparece aqui. <a href={`${PERGUNTAS.href}#${PERGUNTAS.contactHash}`}>Falar com quem cuida do projeto</a>.</p></div>
-      <div><h2>Privacidade</h2><p>Nada de foto, nome ou história de ninguém sem autorização por escrito. Nenhum dado pessoal é coletado por enquanto. O site conta as visitas sem cookie e sem saber quem é você.</p></div>
+      <div><h2>Privacidade</h2><p>Contamos visitas sem guardar IP. A conversa com a Yume fica guardada por até 180 dias pra melhorar o site. Não mande nome nem contato. <a href="/perguntas" data-hit-link="perguntas">Entenda melhor</a>.</p></div>
     </div>
     <p class="footer-note">Atualizado em <time datetime={STATUS_DATE}>{formatDay(STATUS_DATE)}</time>. <a href={PERGUNTAS.href}>Perguntas e respostas</a>. <a href="/construir">Pra quem quer construir junto</a>.</p>
   </div>

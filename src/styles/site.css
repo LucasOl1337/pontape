@@ -129,15 +129,25 @@ main:focus{ outline:none }
 }
 
 /* ---------- The front: one screen, the staircase is the page ---------- */
-.front{ display:grid; grid-template-rows:1fr auto; grid-template-columns:minmax(0, 1fr) }
+.front{ position:relative; display:grid; grid-template-rows:1fr auto; grid-template-columns:minmax(0, 1fr) }
+.public-metrics{ font:500 .8125rem/1.25 var(--font-sans); color:var(--ink-2); text-wrap:balance }
+.public-metrics small{ font:inherit; opacity:.8 }
+.front > .public-metrics{ padding:0 var(--gutter); text-align:center }
+@media (min-width:1180px) and (min-height:560px){
+  .front > .public-metrics{ position:absolute; left:0; right:0; bottom:calc(var(--air) / 2 - .5rem) }
+}
+@media (max-width:1179.98px), (max-height:559.98px){
+  .front > .public-metrics{ margin:.1rem 0 1rem }
+}
+.plain-numbers > .public-metrics{ margin-top:.5rem }
 /* The staircase follows the page grid (F31): on a wide screen the title starts where the logo starts. */
 .stage{ width:100%; max-width:var(--page); margin-left:auto; margin-right:auto }
 .stage, .panels, .panel{ min-width:0 }
 /* One screen on a 1440 x 900 desk, with air under the staircase (4.5rem, down to 2.5rem on a short
    screen), and never so short that a step has to scroll inside itself (F36). */
 @media (min-width:1180px) and (min-height:560px){
-  .front{ --air:clamp(2.5rem, 100 * var(--svh) - var(--header-h) - var(--strip-h) - 41.5rem, 4.5rem); padding-bottom:var(--air);
-    min-height:max(calc(100 * var(--svh) - var(--header-h) - var(--strip-h)), calc(41.5rem + var(--air))) }
+  .front{ --air:clamp(2.5rem, 100 * var(--svh) - var(--header-h) - 1px - var(--strip-h) - 41.5rem, 4.5rem); padding-bottom:var(--air);
+    min-height:max(calc(100 * var(--svh) - var(--header-h) - 1px - var(--strip-h)), calc(41.5rem + var(--air))) }
 }
 .stage{ position:relative; --num-size:clamp(1.2rem, 3.2 * var(--cqh), 1.9rem); --name-size:clamp(.72rem, 1.7 * var(--cqh), .95rem); --label-pad:.5rem;
   --label-h:calc(var(--label-pad) + var(--num-size) + .1rem + 1.1 * var(--name-size) + .5rem); --rail-h:clamp(1.8rem, 4 * var(--cqh), 2.6rem); --head:max(31 * var(--cqh), 12.5rem); --u:calc((100 * var(--cqh) - var(--label-h) - var(--rail-h) - var(--head)) / (var(--n) - 1)) }

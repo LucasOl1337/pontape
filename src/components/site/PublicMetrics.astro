@@ -1,0 +1,27 @@
+---
+import { buildMetricsSnapshot } from '../../lib/public-metrics';
+
+const snapshot = await buildMetricsSnapshot();
+const number = new Intl.NumberFormat('pt-BR');
+const line = snapshot
+  ? `Desde 24/09: ${number.format(snapshot.visits)} visitas · ${number.format(snapshot.peopleToday)} pessoas hoje · ${number.format(snapshot.conversations)} conversas com a Yume`
+  : 'Desde 24/09: contagem ainda não publicada.';
+---
+<p class="public-metrics" data-public-metrics aria-live="polite">
+  <span data-metrics-line>{line}</span>{snapshot && <small data-metrics-age> · Última contagem conhecida no build</small>}
+</p>
+<script>
+  import { isPublicMetrics } from '../../lib/public-metrics';
+
+  void fetch('/api/stats/public', { cache: 'no-store' }).then(async response => {
+    if (!response.ok) return;
+    const stats: unknown = await response.json();
+    if (!isPublicMetrics(stats)) return;
+    const number = new Intl.NumberFormat('pt-BR');
+    document.querySelectorAll<HTMLElement>('[data-public-metrics]').forEach(element => {
+      const line = element.querySelector<HTMLElement>('[data-metrics-line]');
+      if (line) line.textContent = `Desde 24/09: ${number.format(stats.visits)} visitas · ${number.format(stats.peopleToday)} pessoas hoje · ${number.format(stats.conversations)} conversas com a Yume`;
+      element.querySelector('[data-metrics-age]')?.remove();
+    });
+  }).catch(() => { /* The known build count remains visible. */ });
+</script>

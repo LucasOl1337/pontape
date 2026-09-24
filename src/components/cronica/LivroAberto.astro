@@ -1,5 +1,6 @@
 ---
 import Icon from '../site/Icon.astro';
+import PublicMetrics from '../site/PublicMetrics.astro';
 import Corrente from './Corrente.astro';
 import LedgerData from '../ledger/LedgerData.astro';
 import VerifyPanel from '../ledger/VerifyPanel.astro';
@@ -54,6 +55,7 @@ const shortDay = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
           {numbers.map(n => <div><dt>{n.label}</dt><dd>{n.value}</dd></div>)}
         </dl>
         <p class="plain-note">{note}</p>
+        <PublicMetrics />
       </div>
     </div>
   </div>

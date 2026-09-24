@@ -1,0 +1,97 @@
+---
+import '../styles/global.css';
+import LogoMark from '../components/site/LogoMark.astro';
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Painel · PontaPé</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="admin-page">
+    <header class="admin-head">
+      <a class="admin-brand" href="/"><LogoMark />PontaPé</a>
+      <span>Painel privado</span>
+    </header>
+    <main class="admin-main">
+      <section class="admin-login" id="admin-login" aria-labelledby="admin-login-title">
+        <p class="kicker">Acesso</p>
+        <h1 id="admin-login-title">Entrar no painel</h1>
+        <form id="admin-form">
+          <label for="admin-user">Usuário</label>
+          <input id="admin-user" name="user" type="text" autocomplete="username" required />
+          <label for="admin-password">Senha</label>
+          <input id="admin-password" name="password" type="password" autocomplete="current-password" required />
+          <button class="btn btn--ink" type="submit">Entrar</button>
+          <p id="admin-login-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="admin-dashboard" id="admin-dashboard" aria-labelledby="admin-title" hidden>
+        <div class="admin-title-row"><div><p class="kicker">PontaPé</p><h1 id="admin-title">O que aconteceu no site</h1></div><button class="btn" id="admin-logout" type="button">Sair</button></div>
+        <p class="admin-muted">Últimos 30 dias. Visitas contam páginas abertas; pessoas são estimadas por dia, sem guardar IP.</p>
+        <p id="admin-status" role="status" aria-live="polite"></p>
+        <div class="admin-overview">
+          <section class="admin-card"><h2>Visitas e pessoas por dia</h2><svg id="admin-chart" viewBox="0 0 720 220" role="img" aria-label="Gráfico diário de visitas e pessoas"></svg><div class="admin-table-wrap"><table><caption class="sr-only">Visitas e pessoas por dia</caption><thead><tr><th>Dia</th><th>Visitas</th><th>Pessoas</th></tr></thead><tbody id="admin-days"></tbody></table></div></section>
+          <div class="admin-stack">
+            <section class="admin-card"><h2>Cliques por tipo</h2><div class="admin-table-wrap"><table><thead><tr><th>Tipo</th><th>Total</th></tr></thead><tbody id="admin-clicks"></tbody></table></div></section>
+            <section class="admin-card"><h2>Páginas mais vistas</h2><div class="admin-table-wrap"><table><thead><tr><th>Página</th><th>Visitas</th></tr></thead><tbody id="admin-pages"></tbody></table></div></section>
+          </div>
+        </div>
+        <section class="admin-card admin-chats" aria-labelledby="admin-chats-title">
+          <div class="admin-title-row"><div><h2 id="admin-chats-title">Conversas com a Yume</h2><p id="admin-chat-total" class="admin-muted"></p></div><div class="admin-pagination"><button class="btn" id="admin-prev" type="button">Anterior</button><span id="admin-page"></span><button class="btn" id="admin-next" type="button">Próxima</button></div></div>
+          <div class="admin-table-wrap"><table><thead><tr><th>Quando</th><th>Modelo</th><th>Primeira pergunta</th></tr></thead><tbody id="admin-chat-list"></tbody></table></div>
+        </section>
+        <section class="admin-card admin-transcript" id="admin-transcript" aria-labelledby="admin-transcript-title" hidden>
+          <div class="admin-title-row"><h2 id="admin-transcript-title">Conversa</h2><button class="btn" id="admin-close-chat" type="button">Fechar</button></div>
+          <p id="admin-transcript-meta" class="admin-muted"></p>
+          <ol id="admin-messages"></ol>
+        </section>
+      </section>
+    </main>
+    <script>import '../scripts/admin';</script>
+  </body>
+</html>
+<style>
+  .admin-page{ min-height:100svh; background:var(--paper); color:var(--ink) }
+  .admin-head{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem var(--gutter); border-bottom:2px solid var(--ink); font:700 .8rem/1.2 var(--font-sans); letter-spacing:.08em; text-transform:uppercase }
+  .admin-brand{ display:inline-flex; align-items:center; gap:.55rem; font:500 1.8rem/1 var(--font-display); text-decoration:none; letter-spacing:0; text-transform:none }
+  .admin-brand :global(.logo-mark){ width:2rem; height:2rem }
+  .admin-main{ max-width:var(--page); margin:auto; padding:2.5rem var(--gutter) 5rem }
+  .admin-login{ max-width:28rem; padding:2rem; border:2px solid var(--ink); background:var(--paper-2) }
+  .admin-login h1,.admin-dashboard h1{ margin:.5rem 0 1.5rem; font:500 clamp(2rem, 4vw, 3rem)/1.05 var(--font-display) }
+  .admin-login form{ display:grid; gap:.65rem }
+  .admin-login label{ margin-top:.5rem; font:700 .9rem/1.2 var(--font-sans) }
+  .admin-login input{ width:100%; min-height:2.9rem; padding:.6rem; border:1px solid var(--ink); background:white; color:var(--ink); font:1rem var(--font-sans) }
+  .admin-login button{ justify-self:start; margin-top:.8rem }
+  #admin-login-status{ min-height:1.5rem; color:var(--status-bottleneck) }
+  .admin-title-row{ display:flex; align-items:start; justify-content:space-between; flex-wrap:wrap; gap:1rem }
+  .admin-title-row h1{ margin-bottom:.2rem }
+  .admin-muted{ color:var(--ink-2); font:.9rem/1.45 var(--font-sans) }
+  #admin-status{ min-height:1.5rem; margin:.8rem 0 }
+  .admin-overview{ display:grid; grid-template-columns:minmax(0, 1.5fr) minmax(17rem, 1fr); gap:1rem; align-items:start }
+  .admin-stack{ display:grid; gap:1rem }
+  .admin-card{ min-width:0; padding:1.2rem; border:1px solid var(--ink); background:var(--paper-2) }
+  .admin-card h2{ margin-bottom:.8rem; font:600 1.3rem/1.2 var(--font-serif) }
+  .admin-card svg{ display:block; width:100%; height:auto; margin:.5rem 0 1rem; border-bottom:1px solid var(--rule) }
+  .admin-table-wrap{ overflow:auto; max-height:25rem }
+  .admin-card table{ width:100%; border-collapse:collapse; font:.88rem/1.4 var(--font-sans); text-align:left }
+  .admin-card th,.admin-card td{ padding:.5rem .4rem; border-bottom:1px solid var(--rule); vertical-align:top }
+  .admin-card th:last-child,.admin-card td:last-child{ text-align:right }
+  .admin-chats{ margin-top:1rem }
+  .admin-chats td:last-child{ text-align:left; min-width:16rem }
+  .admin-chats td button{ border:0; padding:0; background:none; color:var(--accent); font:inherit; text-align:left; text-decoration:underline; cursor:pointer }
+  .admin-pagination{ display:flex; align-items:center; gap:.5rem; font:.85rem var(--font-sans) }
+  .admin-pagination .btn{ min-height:2.5rem; padding:.4rem .65rem }
+  .admin-transcript{ margin-top:1rem }
+  .admin-transcript ol{ display:grid; gap:.7rem; margin-top:1rem; padding:0; list-style:none }
+  .admin-transcript li{ max-width:48rem; padding:.8rem 1rem; border-left:3px solid var(--accent); background:var(--paper); white-space:pre-wrap; overflow-wrap:anywhere; font:1rem/1.5 var(--font-sans) }
+  .admin-transcript li[data-role="user"]{ border-left-color:var(--ink) }
+  .admin-transcript li strong{ display:block; margin-bottom:.2rem; font-size:.75rem; text-transform:uppercase; letter-spacing:.08em }
+  @media (max-width:850px){ .admin-overview{ grid-template-columns:1fr } }
+  @media (max-width:600px){ .admin-main{ padding-top:1.5rem } .admin-login{ padding:1.3rem } .admin-card{ padding:.9rem } .admin-head{ font-size:.7rem } }
+</style>

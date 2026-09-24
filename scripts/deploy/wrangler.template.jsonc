@@ -11,9 +11,14 @@
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
   },
-  "ratelimits": [
-    { "name": "CHAT_RATE_LIMITER", "namespace_id": "4101", "simple": { "limit": 20, "period": 60 } }
+  "d1_databases": [
+    { "binding": "DB", "database_name": "pontape", "database_id": "4a0e6b60-9273-4c40-a3f6-31a10f5f5da5", "migrations_dir": "migrations" }
   ],
+  "ratelimits": [
+    { "name": "CHAT_RATE_LIMITER", "namespace_id": "4101", "simple": { "limit": 20, "period": 60 } },
+    { "name": "HIT_RATE_LIMITER", "namespace_id": "4301", "simple": { "limit": 60, "period": 60 } }
+  ],
+  "triggers": { "crons": ["17 3 * * *"] },
   "workers_dev": false,
   "routes": [
     { "pattern": "pontape.org", "custom_domain": true },

@@ -1,5 +1,7 @@
 import { checkoutRequest, checkoutUrl, envelopesFromWebhook, ASAAS_SANDBOX_API } from '../../src/lib/ledger/asaas.ts';
 import { CHAT_MODELS, YUMI_SYSTEM } from './yumi.js';
+import { canonicalPath, handleHit, publicStats, recordView, readAnswer, saveChat, purgeOldData } from './worker-metrics.js';
+import { adminRoute } from './worker-admin.js';
 /* global Response, URL, crypto, TextEncoder, fetch */
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
@@ -22,7 +24,7 @@ function validMessages(value) {
     message.content.length <= 600);
 }
 
-async function chat(request, env) {
+async function chat(request, env, ctx) {
   if (!env.NINEROUTER_TOKEN) return error('Yume está indisponível agora.', 503);
   if (!env.CHAT_RATE_LIMITER) return error('Yume está indisponível agora.', 503);
   if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) {
@@ -39,6 +41,9 @@ async function chat(request, env) {
     return error('Não consegui ler a mensagem.', 400);
   }
   if (!validMessages(body?.messages)) return error('Envie até 12 falas de 600 caracteres.', 400);
+  if (body.chatId !== undefined && !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(body.chatId)) {
+    return error('Conversa inválida.', 400);
+  }
 
   const ip = request.headers.get('CF-Connecting-IP') ?? 'desconhecido';
   const key = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip)))]
@@ -74,7 +79,16 @@ async function chat(request, env) {
       continue;
     }
     if (upstream.ok && upstream.body) {
-      return new Response(upstream.body, {
+      const [client, archive] = upstream.body.tee();
+      if (env.DB && body.chatId) {
+        ctx?.waitUntil(readAnswer(archive).then(answer => {
+          if (!answer || containsPersonalData(answer)) return;
+          return saveChat(env.DB, body.chatId, model, body.messages.at(-1).content, answer);
+        }).catch(() => { /* Recording must never interrupt the answer. */ }));
+      } else {
+        ctx?.waitUntil(archive.cancel());
+      }
+      return new Response(client, {
         headers: {
           'content-type': 'text/event-stream; charset=utf-8',
           'cache-control': 'no-store, no-transform',
@@ -150,13 +164,13 @@ async function asaasWebhook(request, env) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === '/api/chat/health') {
       return request.method === 'GET' ? json({ ok: true, configured: Boolean(env.NINEROUTER_TOKEN) }) : error('Método não permitido.', 405);
     }
     if (url.pathname === '/api/chat') {
-      return request.method === 'POST' ? chat(request, env) : error('Método não permitido.', 405);
+      return request.method === 'POST' ? chat(request, env, ctx) : error('Método não permitido.', 405);
     }
     if (url.pathname === '/api/doar') {
       return request.method === 'POST' ? startDonation(request, env) : error('Método não permitido.', 405);
@@ -164,12 +178,24 @@ export default {
     if (url.pathname === '/api/asaas/webhook') {
       return request.method === 'POST' ? asaasWebhook(request, env) : error('Método não permitido.', 405);
     }
+    if (url.pathname === '/api/hit') return request.method === 'POST' ? handleHit(request, env) : error('Método não permitido.', 405);
+    if (url.pathname === '/api/stats/public') return request.method === 'GET' ? publicStats(env) : error('Método não permitido.', 405);
+    if (url.pathname.startsWith('/api/admin/')) return adminRoute(request, env, url.pathname, url.searchParams);
     const local = /^localhost(?::\d+)?$/.test(request.headers.get('host') ?? '');
     if (!local && (url.hostname === 'www.pontape.org' || (url.hostname === 'pontape.org' && url.protocol === 'http:'))) {
       url.protocol = 'https:';
       url.hostname = 'pontape.org';
       return Response.redirect(url.toString(), 301);
     }
-    return env.ASSETS.fetch(request);
+    const response = await env.ASSETS.fetch(request);
+    const path = canonicalPath(url.pathname);
+    if (request.method === 'GET' && path &&
+      ((response.status === 200 && response.headers.get('content-type')?.includes('text/html')) || response.status === 304)) {
+      ctx?.waitUntil(recordView(request, env, path).catch(() => { /* Analytics cannot break the page. */ }));
+    }
+    return response;
+  },
+  async scheduled(_event, env) {
+    if (env.DB) await purgeOldData(env.DB);
   },
 };

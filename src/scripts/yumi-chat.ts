@@ -7,6 +7,7 @@ const input = document.querySelector<HTMLTextAreaElement>('#yumi-input');
 const log = document.querySelector<HTMLElement>('#yumi-messages');
 const status = document.querySelector<HTMLElement>('#yumi-status');
 const history: Message[] = [];
+const chatId = crypto.randomUUID();
 let busy = false;
 
 function addMessage(content: string, role: Message['role']) {
@@ -67,7 +68,7 @@ form?.addEventListener('submit', async event => {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ chatId, messages }),
       cache: 'no-store',
     });
     if (!response.ok) {

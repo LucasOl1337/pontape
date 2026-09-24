@@ -10,8 +10,8 @@ const astroPages = (dir: string): string[] => readdirSync(dir, { withFileTypes: 
 const routeOf = (file: string) => `/${relative(PAGES, file).replace(/\.astro$/, '').replace(/(^|\/)index$/, '')}`.replace(/\/$/, '') || '/';
 
 describe('sitemap', () => {
-  it('lista toda página do site, menos o 404', () => {
-    const routes = astroPages(PAGES).map(routeOf).filter(r => r !== '/404' && r !== '/doar').sort();
+  it('lista as páginas públicas, sem o 404, a doação em teste e o painel privado', () => {
+    const routes = astroPages(PAGES).map(routeOf).filter(r => !['/404', '/doar', '/admin'].includes(r)).sort();
     expect([...SITEMAP_PATHS].sort()).toEqual(routes);
   });
 
