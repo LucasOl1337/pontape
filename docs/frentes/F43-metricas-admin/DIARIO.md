@@ -29,7 +29,7 @@ Mil conversas de três trocas geram aproximadamente 16 mil gravações D1 inclui
 - O 9Router real encerra o SSE com `finish_reason: stop`, sem `[DONE]`; ajustei a gravação depois de ver que a primeira tentativa local não apareceu no histórico. O teste automatizado cobre esse formato.
 - Medida via CDP da bancada, sem tocar na sessão do Lucas: em **1602×769**, cabeçalho terminou em y=65, escada e linha azul em y=729, contador de y=740,75 a 757, e a próxima seção começa em y=769. O contador ocupa o `--air` já reservado e não reduz a altura de 664 px da escada. Ajustei o 1 px da borda do cabeçalho na conta da frente. Em **390×844**, a escada termina em y=665,86; contador de y=667,45 a 699,95; a próxima seção começa em y=715,95. Nos dois, o contador fica na primeira tela sem cortar a escada. Em uma simulação adicional de 1349×647, a altura mínima de 664 px da escada F36 já excede a área disponível mesmo sem o contador; ela não foi reduzida pra mascarar esse limite anterior.
 - `sqlite3` no banco local confirmou hashes com 32 caracteres e zero mensagens contendo o CPF usado no ensaio.
-- `npm run check` inicial passou: lint, tipos, **186 testes**, livro íntegro, CSP e build. Home 29,1 KB incluindo o chat sob demanda; transparência 51,7 KB, ambos abaixo de 60 KB. `/admin` está fora do sitemap e do orçamento público. O Worker local e a bancada serão encerrados após a PR.
+- `npm run check` inicial passou: lint, tipos, **186 testes**, livro íntegro, CSP e build. Home 29,1 KB incluindo o chat sob demanda; transparência 51,7 KB, ambos abaixo de 60 KB. `/admin` está fora do sitemap e do orçamento público.
 
 ## Entrega
 
@@ -37,3 +37,4 @@ Mil conversas de três trocas geram aproximadamente 16 mil gravações D1 inclui
 - Depois que a D043 entrou na `main`, fiz `git fetch` e rebase em `origin/main`. Resolvi os conflitos do Worker, aviso do chat e evento de abertura preservando a coleta e os textos novos. `npm run check` passou de novo: **193 testes**, livro íntegro, CSP, build e orçamento. Transparência ficou em 52,4 KB com o chat sob demanda.
 - Migração de produção e Secrets ficam a cargo do Regente. O worktree tecla não aplicou migração remota nem publicou o Worker.
 - PR para `main`: [#117](https://github.com/LucasOl1337/pontape/pull/117), aberta após fetch e rebase na D043.
+- O Worker local na porta 8794 foi encerrado após a PR. A bancada `pontape-f43-ui` já não aparece na lista de bancadas ativas. `maestri list` mostra só Lastro conectado; o resumo e o link da PR foram entregues ao Regente nesta conversa.
