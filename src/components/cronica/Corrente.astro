@@ -1,26 +1,103 @@
 ---
+import Icon from '../site/Icon.astro';
 import { PLAIN } from '../../data/site/livro';
 
-// One drawing (F42 E1): four actions, each link holding the one before, the last one
-// ready for the Bitcoin stamp. The caption says what the picture means.
-const SHEETS = [0, 1, 2, 3];
-const x = (i: number) => 2 + i * 92;
+// The chain, told in five scenes (D038, no coin anywhere): an action enters, gets its mark, the next
+// one carries that mark, someone tampers and every link after it breaks, the last mark goes to a
+// public registry with a date. CSS moves the parts; scripts/corrente.ts only changes data-scene.
+// Without JS or with reduced motion the figure rests on the full chain and the captions are listed.
+const SCENES = PLAIN.scenes;
+const sheet = (i: number) => ({ x: 14 + i * 132, y: 34 });
+const marks = ['a7f3 · 9c1e', '5e21 · 04bd', 'f08a · 77c2'];
+const tampered = 'c09d · 2b71';
+const lines = [
+  { title: 'Ação 1', body: ['Comprou 20 kits', 'de higiene'], amount: 'R$ 480' },
+  { title: 'Ação 2', body: ['Entregou 20 kits', 'no ponto da praça'], amount: '20 kits' },
+  { title: 'Ação 3', body: ['Decisão registrada:', 'critério público'], amount: 'D032' },
+];
 ---
-<figure class="corrente">
-  <svg class="corrente-art" viewBox="0 0 372 58" aria-hidden="true" focusable="false">
-    {SHEETS.map(i => (
-      <g>
-        {i > 0 && <g class="c-link"><rect x={x(i) - 29} y="25" width="16" height="9" rx="4.5" /><rect x={x(i) - 18} y="25" width="16" height="9" rx="4.5" /></g>}
-        <rect class="c-sheet" x={x(i)} y="8" width="64" height="44" rx="2" />
-        <path class="c-lines" d={`M${x(i) + 8} 20h36M${x(i) + 8} 28h40M${x(i) + 8} 36h28`} />
-        {i === SHEETS.length - 1 && (
-          <g class="c-bitcoin">
-            <circle cx={x(i) + 58} cy="16" r="11" />
-            <circle cx={x(i) + 58} cy="16" r="6.5" />
+<figure class="corrente" data-corrente data-scene="3" aria-labelledby="corrente-caption">
+  <svg class="corrente-art" viewBox="0 0 400 246" aria-hidden="true" focusable="false">
+    <defs>
+      <clipPath id="c-clip-1"><rect x={sheet(0).x - 4} y="0" width="120" height="246" /></clipPath>
+    </defs>
+
+    {lines.map((l, i) => {
+      const s = sheet(i);
+      return (
+        <g class={`c-sheet-g c-sheet-${i + 1}`} style={`--sx:${s.x}px`}>
+          <rect class="c-sheet" x={s.x} y={s.y} width="112" height="122" rx="3" />
+          <text class="c-title" x={s.x + 10} y={s.y + 20}>{l.title}</text>
+          {i > 0 && <text class="c-prev" x={s.x + 10} y={s.y + 34}>anterior: {marks[i - 1]!.slice(0, 4)}…</text>}
+          <text class="c-body" x={s.x + 10} y={s.y + (i > 0 ? 54 : 46)}>{l.body[0]}</text>
+          <text class="c-body" x={s.x + 10} y={s.y + (i > 0 ? 68 : 60)}>{l.body[1]}</text>
+          {i === 0
+            ? <g class="c-amount-g">
+                <text class="c-amount c-amount-ok" x={s.x + 10} y={s.y + 80}>{l.amount}</text>
+                <text class="c-amount c-amount-bad" x={s.x + 10} y={s.y + 80}>R$ 180</text>
+                <path class="c-strike" d={`M${s.x + 9} ${s.y + 76}h44`} />
+              </g>
+            : <text class="c-amount" x={s.x + 10} y={s.y + 88}>{l.amount}</text>}
+          <g class="c-mark-g">
+            <rect class="c-mark-box" x={s.x + 8} y={s.y + 94} width="96" height="20" rx="10" />
+            <text class="c-mark c-mark-ok" x={s.x + 56} y={s.y + 108} text-anchor="middle">{marks[i]}</text>
+            {i === 0 && <text class="c-mark c-mark-bad" x={s.x + 56} y={s.y + 108} text-anchor="middle">{tampered}</text>}
           </g>
-        )}
-      </g>
-    ))}
+        </g>
+      );
+    })}
+
+    {[1, 2].map(i => {
+      const x = sheet(i).x - 20;
+      return (
+        <g class={`c-link c-link-${i}`}>
+          <rect x={x - 6} y="90" width="17" height="10" rx="5" />
+          <rect x={x + 5} y="90" width="17" height="10" rx="5" />
+          <path class="c-link-x" d={`M${x + 2} 86l12 18M${x + 14} 86l-12 18`} />
+        </g>
+      );
+    })}
+
+    <!-- The stamp that gives sheet 1 its mark (scene 2). -->
+    <g class="c-stamp">
+      <rect x={sheet(0).x + 28} y="8" width="56" height="18" rx="4" />
+      <path d={`M${sheet(0).x + 44} 26v14h24V26`} />
+    </g>
+
+    <!-- The pencil that changes R$ 480 (scene 4). -->
+    <path class="c-pencil" d={`M${sheet(0).x + 70} ${sheet(0).y + 62}l14 -14 6 6 -14 14 -8 2z`} />
+
+    <!-- The public registry and its dated receipt (scene 5). -->
+    <g class="c-registry">
+      <rect x="150" y="170" width="236" height="70" rx="4" />
+      <path d="M150 184h236" />
+      <text class="c-registry-title" x="162" y="181">REGISTRO PÚBLICO · fora da gente</text>
+      <text class="c-registry-line" x="162" y="207">marca do fim:</text>
+      <text class="c-registry-date" x="162" y="229">carimbado em 24/09/2026, 14:18</text>
+      <path class="c-registry-check" d="M356 226l5 5 9 -11" />
+    </g>
+    <g class="c-travel">
+      <rect class="c-mark-box" x="-48" y="-10" width="96" height="20" rx="10" />
+      <text class="c-mark c-mark-ok" x="0" y="4" text-anchor="middle">{marks[2]}</text>
+    </g>
   </svg>
-  <figcaption class="corrente-label">{PLAIN.chain}</figcaption>
+
+  <figcaption class="corrente-caption">
+    <p id="corrente-caption" class="corrente-text" aria-live="polite">
+      <span class="corrente-num" data-scene-num>3</span>
+      <span data-scene-text>{SCENES[2]!.text}</span>
+    </p>
+    <ol class="corrente-all">
+      {SCENES.map((s, i) => <li><span class="corrente-num">{i + 1}</span>{s.text}</li>)}
+    </ol>
+    <div class="corrente-controls" data-controls hidden>
+      <div class="corrente-dots" role="tablist" aria-label="Cenas">
+        {SCENES.map((s, i) => (
+          <button type="button" role="tab" data-scene-go={i + 1} aria-selected={i === 2 ? 'true' : 'false'} aria-label={`Cena ${i + 1}: ${s.short}`}></button>
+        ))}
+      </div>
+      <button class="corrente-play" type="button" data-play aria-pressed="true"><Icon name="pause" /><span>Pausar</span></button>
+    </div>
+  </figcaption>
 </figure>
+<script>import '../../scripts/corrente';</script>

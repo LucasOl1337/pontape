@@ -62,6 +62,10 @@ describe('dados do site', () => {
     expect(text).not.toMatch(/Lucas|Oliveira|Herreiro/);
   });
 
+  it('o site não fala em Bitcoin nem criptomoeda (D038)', () => {
+    expect(JSON.stringify([PLAIN, FAQ, STEPS])).not.toMatch(/bitcoin|criptomoeda|blockchain do/i);
+  });
+
   it('texto público diz AI, nunca IA', () => {
     const text = JSON.stringify([OPENING, MODULES, STEPS, BOTTLENECKS, CADERNOS, FAQ, CONTATO_TEXTO]);
     expect(text).not.toMatch(/(?<![\p{L}])IAs?(?![\p{L}])|intelig[êe]ncia artificial/iu);

@@ -57,7 +57,7 @@ export function mountSeal(panel: HTMLElement, getLedger: () => LedgerView) {
         link.href = step.href;
         link.rel = 'noopener';
         link.target = '_blank';
-        link.textContent = step.hrefLabel ?? 'Ver o bloco';
+        link.textContent = step.hrefLabel ?? 'Ver no registro';
         body.append(link);
       }
       li.append(mark, body);
