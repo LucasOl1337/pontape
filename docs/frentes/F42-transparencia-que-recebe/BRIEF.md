@@ -13,7 +13,7 @@ Ele sabe que é grande, gasta token e demora. Por isso é uma frente só, com et
 ## O que já existe (não refazer)
 
 - **Livro público** (F08): eventos imutáveis em JSON canônico (JCS), SHA-256 encadeado, lista fechada de campos, verificador que roda na CLI (`npm run ledger:verify`) e no navegador. Código em `src/lib/ledger/` e `src/lib/ledger-view/`.
-- **Assinatura e âncora** (F25): checkpoints assinados com Ed25519, chave pública publicada, chave privada fora do repo com o Regente; hash da cabeça carimbado no Bitcoin via OpenTimestamps (checkpoint 43 ancorado; `ots upgrade` pendente).
+- **Assinatura e âncora** (F25): checkpoints assinados com Ed25519, chave pública publicada, chave privada fora do repo com o Regente. A âncora OpenTimestamps da F25 **sai** (D038): sem Bitcoin.
 - **Página** `/transparencia` em duas camadas (D029): leiga primeiro, "Parte técnica" em `/transparencia/tecnico`. Botão "Conferir" preto: é o que o Lucas quer trocar.
 - **ledger-bot**: registra no livro cada PR integrada e cada decisão, e a publicação é automática (D021).
 - **Pesquisa** da F03: [DOACOES-E-TRANSPARENCIA.md](../../pesquisa/DOACOES-E-TRANSPARENCIA.md) (Asaas como primeira opção pra Pix e cartão de associação; Stripe e PayPal pro exterior, PayPal exige CNPJ) e [ESTRUTURA-JURIDICA.md](../../pesquisa/ESTRUTURA-JURIDICA.md).
@@ -29,15 +29,16 @@ Leia tudo isso antes de escrever uma linha. Depois leia `docs/frentes/F08-livro-
 - **Dinheiro de verdade só com associação, CNPJ, conta própria e OK do Lucas** (PRD §10, pergunta 4). Esta frente entrega tudo em modo teste, com a chave de produção fora.
 - **Conta em serviço (Stripe, Asaas, o que for) é o Regente quem cria**, com OK do Lucas. Você pede por `maestri ask`, com o que precisa e por quê. Enquanto não vem, trabalha com os payloads documentados e fixtures marcadas como fictícias.
 - Segredo só em `.env` local e em Secret do Worker; `.env.example` documenta.
-- Texto público: PT-BR, frase curta, sem jargão, sem travessão. O termo é **AI**, nunca "IA". "Blockchain" pode aparecer só como "carimbado no Bitcoin", que é o que de fato acontece.
+- Texto público: PT-BR, frase curta, sem jargão, sem travessão. O termo é **AI**, nunca "IA".
+- **Sem Bitcoin nem criptomoeda (D038).** O carimbo de data é em registro público sem moeda: Sigstore Rekor e RFC 3161. No site, "registro público"; a palavra Bitcoin não aparece. Pode dizer "no estilo do blockchain, sem moeda nenhuma".
 - Commit pequeno, mensagem em PT-BR; PR por etapa; `npm run check` verde.
 
 ## Etapas
 
 ### E1 · Explicar e provar (primeira PR, 1 a 2 dias)
 
-1. **Camada leiga de `/transparencia` reescrita.** Três perguntas, três respostas curtas: "O que fica no livro?", "Como eu sei que ninguém mexeu?", "Quem garante a data?". Um desenho só: a corrente de eventos, cada elo preso no anterior, o último carimbado no Bitcoin.
-2. **"Conferir agora" novo.** Sai o botão preto. Entra um selo (estilo do site: creme, tinta, azul-anil) que, ao apertar, mostra passo a passo com marca verde: baixou o livro (N ações), recalculou N marcas e todas batem, assinatura confere com a chave pública, carimbo no Bitcoin no bloco X em tal data (link pro bloco). Resultado em palavra de gente; "ver detalhes" abre o técnico. Roda inteiro no navegador, sem servidor, e funciona com o JSON baixado.
+1. **Camada leiga de `/transparencia` reescrita.** Três perguntas, três respostas curtas: "O que fica no livro?", "Como eu sei que ninguém mexeu?", "Quem garante a data?". Um desenho só: a corrente de eventos, cada elo preso no anterior, o último carimbado no registro público.
+2. **"Conferir agora" novo.** Sai o botão preto. Entra um selo (estilo do site: creme, tinta, azul-anil) que, ao apertar, mostra passo a passo com marca verde: baixou o livro (N ações), recalculou N marcas e todas batem, assinatura confere com a chave pública, carimbo no registro público, com data e link de conferência. Resultado em palavra de gente; "ver detalhes" abre o técnico. Roda inteiro no navegador, sem servidor, e funciona com o JSON baixado.
 3. **Cada ação com "conferir esta"**: abre o mesmo passo a passo até aquele evento.
 4. **Critério:** uma pessoa leiga lê e entende em 20 segundos; o verificador acusa adulteração nos casos de teste da F08; Lighthouse acessibilidade sem regressão; celular primeiro.
 
@@ -47,7 +48,7 @@ Hoje um evento entra por script e commit. Pagamento exige caminho automático e 
 
 1. **Worker `ledger-ingest`** ao lado do site: recebe evento de fonte autorizada (webhook do processador), valida contra o schema da F08, rejeita campo fora da lista, assina o recibo e enfileira (Queue ou KV).
 2. **Escrevente**: job que pega a fila, acrescenta ao livro e commita no repositório com a identidade do ledger-bot (GitHub App ou token com escopo mínimo). O site republica sozinho (D021). Um livro só.
-3. **Checkpoint e âncora automáticos**: assinatura do checkpoint com chave em Secret do Worker e `ots stamp`/`upgrade` por cron. A custódia da chave hoje é do Regente, fora do repo: proponha no DIARIO como migrar (chave nova do Worker + rotação registrada no livro) e espere o OK.
+3. **Checkpoint e carimbo automáticos**: assinatura do checkpoint com chave em Secret do Worker; o checkpoint assinado vai pro Sigstore Rekor e recebe carimbo RFC 3161 por cron (D038). O `trust.json` publica registro, id da entrada, data e link de conferência. A custódia da chave hoje é do Regente, fora do repo: proponha no DIARIO como migrar (chave nova do Worker + rotação registrada no livro) e espere o OK.
 4. **Idempotência e ordem**: mesmo webhook duas vezes não gera dois eventos; falha no meio não perde nem duplica.
 5. **Critério:** evento fictício entra por webhook de teste e aparece no site publicado em menos de 10 minutos, verificável pelo E1.
 
