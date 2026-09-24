@@ -1,0 +1,14 @@
+---
+import Icon from './Icon.astro';
+import { SHARE } from '../../data/site/share';
+import { PROJECT_NAME } from '../../data/site/project';
+
+// Something anyone can do today (F38): send the site to someone. The phone's own share sheet
+// where there is one; elsewhere the link is copied (scripts/site.ts). No data leaves the page.
+interface Props { ink?: boolean }
+const { ink = false } = Astro.props;
+---
+<button class:list={['btn', { 'btn--ink': ink }]} type="button" data-share data-share-title={SHARE.home.title}
+  data-share-text={`${PROJECT_NAME}: o primeiro passo pra quem quer mudar de vida. Tudo à vista.`}>
+  <Icon name="link" /><span>Mandar pra alguém</span>
+</button>

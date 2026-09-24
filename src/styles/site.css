@@ -61,6 +61,8 @@ main:focus{ outline:none }
 .btn--ink{ background:var(--ink); color:var(--paper) }
 .btn--ink:hover{ background:var(--accent); border-color:var(--accent); color:var(--paper) }
 .btn:disabled{ opacity:.55; cursor:progress }
+/* Without JS the share button has nothing to do. */
+.no-js [data-share]{ display:none }
 .actions{ display:flex; flex-wrap:wrap; gap:var(--space-3); margin-top:var(--space-8) }
 .link-btn{
   display:inline; padding:0; border:0; background:none; cursor:pointer;
@@ -158,7 +160,6 @@ main:focus{ outline:none }
 .tread.is-ahead .tread-block{ border-top-style:dotted; border-top-color:var(--ink-2) }
 .tread.is-ahead .tread-block::before{ background:repeating-linear-gradient(to bottom, var(--ink-2) 0 3px, transparent 3px 7px) }
 .tread:hover .tread-block{ background:rgba(var(--ink-rgb), .045) }
-.tread[aria-selected="true"] .tread-block{ background:repeating-linear-gradient(-45deg, rgba(var(--ink-rgb), .13) 0 1px, transparent 1px 8px) }
 /* The ring goes around the whole tread, name included: the ground tread has no block to draw it on. */
 .tread:focus-visible{ outline:3px solid var(--accent); outline-offset:-3px }
 /* The icon sits clear of the dot of "alguém" standing on its tread (22 px plus the ring), and never
@@ -226,11 +227,15 @@ main:focus{ outline:none }
 .panel-more{ display:inline-flex; align-items:center; min-height:44px; margin-left:.4rem; padding-left:.2rem; padding-right:.2rem; font-size:1.0625rem }
 .panel-ways{ display:grid; grid-template-columns:1fr 1fr; gap:0 1.6rem; margin-top:clamp(.7rem, 2.2 * var(--cqh), 1.4rem); border-top:1px solid var(--ink) }
 .panel-ways li{ display:grid; grid-template-columns:2rem minmax(0, 1fr); align-items:start; align-content:start; gap:.2rem .7rem; padding-top:clamp(.45rem, 1.4 * var(--cqh), .8rem); padding-bottom:clamp(.45rem, 1.4 * var(--cqh), .8rem); border-bottom:1px solid var(--rule) }
-.panel-ways .way-icon{ grid-row:span 2; width:1.8rem; height:1.8rem; margin-top:.1rem; color:var(--accent); stroke-width:1.7 }
+.panel-ways .way-icon{ grid-row:span 3; width:1.8rem; height:1.8rem; margin-top:.1rem; color:var(--accent); stroke-width:1.7 }
 .way-title{ font:500 clamp(1.2rem, 2.9 * var(--cqh), 1.6rem)/1.1 var(--font-display) }
 .way-when{ font:400 .9375rem/1.4 var(--font-sans); color:var(--ink-2) }
 .way-when strong{ font-weight:700; color:var(--now) }
 .way-when a{ font-weight:700; color:var(--ink) }
+/* The action of each way sits under its text, in the same column (F38). */
+.way-do{ grid-column:2; margin-top:.45rem }
+.way-do .btn{ min-height:44px; padding:.5rem .9rem; font-size:.9375rem }
+.panel-later{ border-top:0; padding-top:0 }
 .panel-note{ display:flex; align-items:center; gap:.5rem; margin-top:.8rem; font:400 .9375rem/1.4 var(--font-sans); color:var(--ink-2) }
 
 /* Wide and tall enough: everything on one screen. The title and the step share the corner the low
@@ -282,7 +287,8 @@ main:focus{ outline:none }
   .tread-label{ padding-top:calc(var(--label-pad) + var(--icon) + .3rem) }
   .tread:first-child .tread-label, .tread:last-of-type .tread-label{ padding-top:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .1rem) }
   .walker{ width:16px; height:16px; margin:0 0 -9.5px -8px; box-shadow:0 0 0 3px var(--paper) }
-  .walker-label{ display:none }
+  /* On the first step "alguém" names the dot, as on a computer: above it, clear of the next riser. */
+  .walker-label{ right:-.3rem; bottom:calc(100% + .3rem); font-size:1rem }
   .tread-ball{ width:clamp(24px, 7vw, 40px) }
   .panel-title{ font-size:clamp(1.9rem, 8.4vw, 2.8rem) }
   .panel-text{ font-size:1.125rem }
@@ -306,6 +312,20 @@ main:focus{ outline:none }
   .panels{ max-width:46rem }
   .panel-ways{ grid-template-columns:1fr 1fr }
 }
+
+/* The end of the home (F38): one line on what the staircase is, and what to do from here. */
+.fecho{ max-width:var(--page); margin-left:auto; margin-right:auto; padding:0 var(--gutter) var(--space-12) }
+.fecho-inner{ display:grid; gap:var(--space-4); padding-top:var(--space-4); border-top:3px double var(--ink) }
+.fecho-line{ max-width:40rem; font:400 clamp(1.125rem, 1.05rem + .35vw, 1.375rem)/1.45 var(--font-serif) }
+.fecho-line em{ color:var(--ink-2) }
+.fecho-actions{ display:flex; flex-wrap:wrap; gap:var(--space-3) }
+/* On a phone: the share button on its own line, the two doors side by side under it. */
+@media (max-width:599px){
+  .fecho-actions{ display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)) }
+  .fecho-actions [data-share]{ grid-column:1 / -1; justify-self:start }
+  .fecho-actions .btn{ padding:.6rem .7rem; font-size:.9375rem }
+}
+@media (min-width:960px){ .fecho-inner{ grid-template-columns:minmax(0, 1fr) auto; align-items:center; column-gap:var(--space-8) } }
 
 /* ---------- Construir junto: the door to the builder cadernos (F29) ---------- */
 .doors{ display:grid; margin-top:var(--space-8); border-top:2px solid var(--ink) }
@@ -399,7 +419,14 @@ main:focus{ outline:none }
 .module-details dd{ margin-top:.3rem }
 .module-details .is-missing dt{ color:var(--status-bottleneck) }
 .module-details .is-helpers dt{ color:var(--status-live) }
-.dialog-nav{ display:flex; justify-content:space-between; margin-top:var(--space-8) }
+.dialog-nav{ display:flex; justify-content:space-between; gap:var(--space-3); margin-top:var(--space-8) }
+/* The neighbours go by name, with a small word saying which way. On a phone they stack. */
+.dialog-nav .btn{ min-width:0; text-align:left }
+.dialog-nav .btn:last-child{ text-align:right }
+.dialog-nav small{ display:block; margin-bottom:.15rem; font-size:.8125rem; font-weight:400; color:var(--ink-2) }
+.dialog-nav .btn:hover small{ color:inherit }
+/* The piece's code stays for whoever builds, small and in the second ink. */
+.dialog-code{ font-weight:400; letter-spacing:.06em; color:var(--ink-2) }
 /* The ficha of a piece fits on one screen where there is room (F31): wider, the six fields in two
    columns, row by row. On a phone it keeps one column, with less air around it. */
 @media (min-width:760px){
@@ -412,7 +439,9 @@ main:focus{ outline:none }
   .dialog-head, .dialog-body{ padding:var(--space-4) }
   .module-details{ margin-top:var(--space-4); gap:var(--space-3) }
   .module-details dd{ font-size:1.0625rem; line-height:1.5 }
-  .dialog-nav{ margin-top:var(--space-6) }
+  .dialog-nav{ flex-direction:column; margin-top:var(--space-6) }
+  .dialog-nav .btn{ justify-content:flex-start; text-align:left }
+  .dialog-nav .btn:last-child{ justify-content:space-between; text-align:left }
 }
 
 /* ---------- The chain of actions ---------- */
@@ -459,8 +488,10 @@ main:focus{ outline:none }
 .verify{ padding:var(--space-6); border:2px solid currentColor }
 .verify-head{ display:grid; gap:var(--space-3) }
 .verify-head .btn{ justify-self:start; min-width:12rem }
-.chapter--night .verify-head .btn{ background:var(--night-accent); border-color:var(--night-accent); color:var(--night) }
-.chapter--night .verify-head .btn:hover{ background:var(--night-ink); border-color:var(--night-ink) }
+/* On the night panel Conferir is the ink button turned over (F38): paper on ink, like every other
+   main button, instead of a light blue of its own. */
+.chapter--night .verify-head .btn{ background:var(--night-ink); border-color:var(--night-ink); color:var(--night) }
+.chapter--night .verify-head .btn:hover{ background:transparent; border-color:var(--night-ink); color:var(--night-ink) }
 .verify-where{ font:400 var(--t-small)/1.5 var(--font-sans); color:var(--ink-2) }
 .verify-where a{ font-weight:700; color:inherit }
 .verify-progress{ height:4px; margin-top:var(--space-4); background:var(--rule) }
@@ -596,8 +627,8 @@ main:focus{ outline:none }
 .conferir{ margin-top:1.2rem; padding:1.2rem 1.4rem; background:var(--night); color:var(--night-ink); --rule:var(--night-rule); --ink-2:var(--night-ink-2) }
 .conferir-title{ font:500 clamp(1.7rem, 1.3rem + 1.2vw, 2.3rem)/1.05 var(--font-display) }
 .conferir .verify{ margin-top:.8rem; padding:0; border:0 }
-.conferir .verify-head .btn{ background:var(--night-accent); border-color:var(--night-accent); color:var(--night) }
-.conferir .verify-head .btn:hover{ background:var(--night-ink); border-color:var(--night-ink) }
+.conferir .verify-head .btn{ background:var(--night-ink); border-color:var(--night-ink); color:var(--night) }
+.conferir .verify-head .btn:hover{ background:transparent; border-color:var(--night-ink); color:var(--night-ink) }
 .conferir a:hover{ color:var(--night-accent) }
 .conferir :focus-visible{ outline-color:var(--night-accent) }
 .book-main-head{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.8rem 1.4rem; padding-bottom:.6rem; border-bottom:3px double var(--ink) }
@@ -867,7 +898,7 @@ main:focus{ outline:none }
 @supports not (color:revert){
   .btn .icon{ margin-left:.3rem; margin-right:.3rem }
   .icon-btn .icon, .now .icon, .more-link .icon, .panel-note .icon{ margin-right:.5rem }
-  .panel-nav > *, .actions > *, .filters > *{ margin:0 .6rem .6rem 0 }
+  .panel-nav > *, .actions > *, .filters > *, .fecho-actions > *{ margin:0 .6rem .6rem 0 }
 }
 @media (max-width:1179.98px), (max-height:559.98px){
   @supports not (color:revert){ .stage > * + *{ margin-top:.8rem } }

@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Escada from '../components/cronica/Escada.astro';
 import FichaPeca from '../components/cronica/FichaPeca.astro';
+import ShareButton from '../components/site/ShareButton.astro';
+import Icon from '../components/site/Icon.astro';
+import { LIVRO } from '../data/site/livro';
+import { CONSTRUIR } from '../data/site/cadernos';
 import { getPublicLedger } from '../lib/ledger-view/source';
 import { SHARE } from '../data/site/share';
 import { MOVED, bottleneckHref } from '../data/site/cadernos';
@@ -20,7 +24,7 @@ const gargalo = bottleneckHref('');
     const go = () => {
       let id;
       try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
-      const to = Object.hasOwn(moved, id) ? moved[id] : id.startsWith('gargalo-') ? gargalo + id.slice(8) : null;
+      const to = Object.prototype.hasOwnProperty.call(moved, id) ? moved[id] : id.startsWith('gargalo-') ? gargalo + id.slice(8) : null;
       if (!to) return;
       const [path, hash] = to.split('#');
       location.replace(path + location.search + (hash ? '#' + hash : ''));
@@ -31,6 +35,18 @@ const gargalo = bottleneckHref('');
   <div class="front">
     <Escada ledger={ledger} />
   </div>
+  <!-- The end of the home (F38): what the staircase is, in one line, for whoever scrolled past the
+       step's text, and the three things anyone can do from here. -->
+  <section class="fecho" aria-labelledby="fecho-title">
+    <div class="fecho-inner">
+      <p class="fecho-line" id="fecho-title">Cada degrau é um passo de quem quer mudar de vida, da escolha ao trabalho. <em>Escolha um degrau pra ler o passo e ver se já funciona.</em></p>
+      <div class="fecho-actions">
+        <ShareButton ink />
+        <a class="btn" href={LIVRO.href}>Abrir o livro</a>
+        <a class="btn" href={CONSTRUIR.href}>{CONSTRUIR.name}<Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
   <FichaPeca />
 </BaseLayout>
 <script>import '../scripts/home';</script>

@@ -9,6 +9,8 @@ export function openModule(id: string, from?: HTMLElement | null) {
   const tpl = document.getElementById(`module-${id}`);
   if (!dialog || !(tpl instanceof HTMLTemplateElement)) return;
   $('#module-dialog-id')!.textContent = id;
+  // Opened from a step of the staircase, the ficha says which step it stands behind.
+  $('#module-dialog-kicker')!.textContent = from?.dataset.step ? `Peça do passo ${from.dataset.step}` : 'Peça do projeto';
   $('#module-dialog-title')!.textContent = tpl.dataset.name ?? '';
   $('#module-dialog-body')!.replaceChildren(tpl.content.cloneNode(true));
   if (!dialog.open) { origin = from ?? (document.activeElement as HTMLElement | null); dialog.showModal(); }

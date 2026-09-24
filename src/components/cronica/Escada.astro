@@ -1,11 +1,12 @@
 ---
 import Icon from '../site/Icon.astro';
+import ShareButton from '../site/ShareButton.astro';
 import snapshotData from '../../data/transparency.json';
 import { transparencySnapshotSchema } from '../../lib/transparency';
 import type { LedgerView } from '../../lib/ledger-view/source';
 import { NOW_LEAD, OPENING, STEPS } from '../../data/site/journey';
 import { MODULES } from '../../data/site/modules';
-import { STATUSES, type ModuleStatus } from '../../data/site/statuses';
+import { STATUSES } from '../../data/site/statuses';
 import type { IconName } from '../site/icon-names';
 
 interface Props { ledger: LedgerView }
@@ -26,12 +27,13 @@ const treads: { name: string; icon?: IconName }[] = [
   ...STEPS.map(s => ({ name: s.shortName, icon: s.icon })),
   { name: 'Sua vez', icon: 'people' },
 ];
-const ways: { icon: IconName; title: string; status: ModuleStatus; lead: string; when: string; href?: string; link?: string }[] = [
-  { icon: 'coin', title: 'Doar', status: 'planned', lead: 'Ainda não abriu.', when: 'Abre quando tiver conta oficial.' },
-  { icon: 'people', title: 'Ser voluntário', status: 'planned', lead: 'Ainda não abriu.', when: 'Abre quando começar na primeira cidade.' },
-  { icon: 'briefcase', title: 'Oferecer vaga', status: 'planned', lead: 'Ainda não abriu.', when: 'Abre quando as primeiras pessoas entrarem.' },
-  { icon: 'code', title: 'Construir junto', status: 'live', lead: 'Já dá pra ajudar.', when: 'Tem tarefa de código, design, pesquisa e mais.', href: '/construir', link: 'Ver como' },
+// The top of the staircase (F38): first what anyone can do today, each with its action; then, in
+// one line, what opens later. Nothing here asks for a name or a contact.
+const ways: { icon: IconName; title: string; when: string; share?: boolean; href?: string; link?: string }[] = [
+  { icon: 'link', title: 'Contar pra alguém', when: 'Mande este site pra quem pode ajudar.', share: true },
+  { icon: 'code', title: 'Construir junto', when: 'Tem tarefa de código, design, pesquisa e mais.', href: '/construir', link: 'Ver as tarefas' },
 ];
+const LATER = 'Doar, ser voluntário e oferecer vaga ainda não abriram. Abrem quando tiver conta oficial e o projeto começar na primeira cidade.';
 ---
 <section class="stage" id="inicio" aria-labelledby="stage-title" data-escada data-at="0" style={`--n:${treads.length}`}>
   <h1 id="stage-title" class="stage-title">Uma plataforma de caridade <em>inteligente.</em></h1>
@@ -81,7 +83,7 @@ const ways: { icon: IconName; title: string; status: ModuleStatus; lead: string;
           <div class="panel-nav">
             <button class="btn" type="button" data-go={k - 1}><Icon name="arrow-left" /><span>{prev.name}</span></button>
             <button class="btn btn--ink" type="button" data-go={k + 1}><span>{next.name}</span><Icon name="arrow-right" /></button>
-            <button class="link-btn panel-more" type="button" data-module={s.module} aria-haspopup="dialog">Mais detalhes</button>
+            <button class="link-btn panel-more" type="button" data-module={s.module} data-step={k} aria-haspopup="dialog">Mais detalhes</button>
           </div>
         </div>
       );
@@ -95,9 +97,11 @@ const ways: { icon: IconName; title: string; status: ModuleStatus; lead: string;
         {ways.map(w => (
           <li><Icon name={w.icon} class="way-icon" />
             <span class="way-title">{w.title}</span>
-            <span class="way-when"><strong class={`now--${w.status}`}>{w.lead}</strong> {w.when}{w.href && <> <a href={w.href}>{w.link}</a></>}</span></li>
+            <span class="way-when"><strong class="now--live">Dá pra fazer hoje.</strong> {w.when}</span>
+            <span class="way-do">{w.share ? <ShareButton ink /> : <a class="btn" href={w.href}>{w.link}<Icon name="arrow-right" /></a>}</span></li>
         ))}
       </ul>
+      <p class="now now--planned panel-later"><Icon name={STATUSES.planned.icon} /><span>{LATER}</span></p>
       <p class="panel-note"><Icon name="lock" />A gente não guarda contato de ninguém por enquanto.</p>
       <div class="panel-nav">
         <button class="btn" type="button" data-go={LAST - 1}><Icon name="arrow-left" /><span>{treads[LAST - 1]!.name}</span></button>

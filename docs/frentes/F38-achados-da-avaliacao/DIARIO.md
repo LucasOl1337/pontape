@@ -28,4 +28,26 @@ Em `prints/`: `lote1-404-*`, `lote1-transparencia-*`, `lote1-abas-*`, `lote1-hom
 
 ### Onde parei
 
-Lote 1 pronto. `lint`, `typecheck`, `test` (145), `ledger:verify`, `build` e `budget` passam, rodados um a um com o `astro dev` no ar. A parte técnica foi de 53,5 pra 54,7 KB (de 60) com o que carrega sob demanda. Próximo: lote 2, quando o Regente liberar.
+Lote 1 pronto. `lint`, `typecheck`, `test` (145), `ledger:verify`, `build` e `budget` passam, rodados um a um com o `astro dev` no ar. A parte técnica foi de 53,5 pra 54,7 KB (de 60) com o que carrega sob demanda. Lote 1 aprovado pelo Regente (PR #90).
+
+## 24/09 · Lote 2 (UX e texto) pronto
+
+Mesmo jeito de conferir (bancada `f38-medidas`, build local servido à parte). Prints agora fora do repo, em `/tmp/claude-1000/f38-prints/lote2-*` (celular 393 e desktop 1440 de cada item).
+
+| Item | Causa | O que mudou | Commit |
+|---|---|---|---|
+| 1 · ficha com jargão | O alto dizia "Peça M7" e os botões "M6" e "M8", num passo chamado 5. | O alto diz "Peça do passo 5" (fora da home, "Peça do projeto"); o código M7 fica pequeno e cinza ao lado. Os botões levam o nome da peça vizinha, com "Anterior" e "Próxima" em cima; no celular um embaixo do outro. | `4adbd50` |
+| 2 · estado da escada | A bolinha vermelha era o cursor do portal (lote 1). O hachurado cinza do degrau aberto repetia o que a bolinha já diz. No celular, a bolinha não tinha nome. | Sai o hachurado. O degrau aberto é marcado pela bolinha, pelo caminho cheio até ela e pontilhado depois, e no computador pelo nome em azul. "alguém" aparece em cima da bolinha no passo 1 também no celular. | `9c845d0` |
+| 3 · "Sua vez" sem ação | Três dos quatro jeitos diziam "Ainda não abriu". | Abre com os dois que já funcionam, cada um com botão: "Mandar pra alguém" (folha de compartilhar do celular; sem ela, copia o link e avisa) e "Ver as tarefas". Doar, voluntário e vaga viram uma linha dizendo quando abrem. Nada coleta dado, nenhuma conta criada. | `7ffa1d9` |
+| 4 · Conferir azul-claro | Única cor de botão do site que não aparecia em outro lugar. | Botão principal ao contrário: papel sobre tinta (16:1); no hover só contorno. /transparencia e parte técnica. | `e7d0545` |
+| 5 · home ao rolar | No computador o texto do passo sobe primeiro e a escada fica sozinha até o rodapé preto. | Faixa curta depois da escada: uma linha sobre o que ela é e como usar, e três botões (mandar pra alguém, abrir o livro, construir junto). A primeira tela não muda. | `79803b9` |
+| extra · #87 | O script embutido da home usava `Object.hasOwn` (Chrome 93); script embutido não passa pelo build. | Forma antiga equivalente. | `2ab6bcf` |
+
+### Decisões propostas
+
+- Item 5: a faixa explica a escada pra quem rolou, mas o texto do passo continua subindo junto com a página no computador. Prender o painel na tela ao rolar mexeria no layout da escada (D031); não fiz.
+- Item 3: "Mandar pra alguém" também aparece na faixa do fim da home. Se parecer repetido, sai de um dos dois.
+
+### Onde parei
+
+Lote 2 pronto. `lint`, `typecheck`, `test` (145), `ledger:verify`, `build` e `budget` passam (home 23,7 KB, parte técnica 55,2 KB com o sob demanda, de 60). Próximo: lote 3, quando o Regente liberar.

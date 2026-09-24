@@ -1,4 +1,4 @@
-// Shared by every page: header menu, toast, dialog close.
+// Shared by every page: header menu, toast, dialog close, "Mandar pra alguém".
 const root = document.documentElement;
 root.classList.replace('no-js', 'js');
 
@@ -44,3 +44,24 @@ addEventListener('scroll', () => {
     scrollTicking = false;
   });
 }, { passive: true });
+
+/* ---------- Mandar pra alguém: the share sheet, or the link copied ---------- */
+
+document.addEventListener('click', async e => {
+  const button = (e.target as Element).closest<HTMLElement>('[data-share]');
+  if (!button) return;
+  const url = new URL('/', location.href).href;
+  const data = { title: button.dataset.shareTitle ?? document.title, text: button.dataset.shareText ?? '', url };
+  if (navigator.share) {
+    try { await navigator.share(data); return; } catch (error) {
+      // Closing the share sheet is a choice, not an error.
+      if (error instanceof DOMException && error.name === 'AbortError') return;
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    toast('Link copiado. É só colar numa conversa.');
+  } catch {
+    toast(`Mande este endereço: ${location.host}`);
+  }
+});
