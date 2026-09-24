@@ -4,15 +4,19 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import process from 'node:process';
 import { Resvg, type ResvgRenderOptions } from '@resvg/resvg-js';
-import { LOGO_VIEWBOX, logoRects } from './logo';
+import { LOGO_VIEWBOX, logoMark } from './logo';
 import { ANIL } from './palette';
 
 const ROOT = process.cwd();
+// The site's own type (F38): Newsreader for the name and the headline, the turn in italic, and
+// Atkinson for the small print, as on the page.
 const FONT_FILES = [
-  resolve(ROOT, 'src/assets/og/archivo-condensed-800.ttf'),
+  resolve(ROOT, 'src/assets/og/newsreader-display-500.ttf'),
+  resolve(ROOT, 'src/assets/og/newsreader-italic-400.ttf'),
   resolve(ROOT, 'src/assets/og/atkinson-next-700.ttf'),
 ];
-const POSTER = "font-family:'Archivo Condensed';font-weight:800";
+export const DISPLAY = "font-family:'Newsreader 16pt';font-weight:500";
+export const ITALIC = "font-family:'Newsreader 16pt';font-style:italic;font-weight:400";
 const TEXT = "font-family:'Atkinson Hyperlegible Next';font-weight:700";
 const INK = ANIL.ink;
 
@@ -58,7 +62,7 @@ const icon = (name: string, x: number, y: number, size: number, color: string) =
 
 // Paper tile behind the mark so it survives dark browser chrome.
 export function faviconSvg(): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="${ANIL.paper}"/><svg x="3" y="4.5" width="26" height="${(26 * LOGO_VIEWBOX.height) / LOGO_VIEWBOX.width}" viewBox="0 0 ${LOGO_VIEWBOX.width} ${LOGO_VIEWBOX.height}">${logoRects()}</svg></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="${ANIL.paper}"/><svg x="3" y="4.5" width="26" height="${(26 * LOGO_VIEWBOX.height) / LOGO_VIEWBOX.width}" viewBox="0 0 ${LOGO_VIEWBOX.width} ${LOGO_VIEWBOX.height}">${logoMark(ANIL.ink, ANIL.accent, 3)}</svg></svg>`;
 }
 
 // ICO container holding PNG images (supported by every current browser).
@@ -97,87 +101,94 @@ export interface ShareCard {
 const W = 1200;
 const H = 630;
 const LEFT = 72;
-const COLUMN = 600;
+const RIGHT = W - 72;
+const COLUMN = 560;
 
+// The home staircase, as on the page (D031): the ground, seven steps and the top, a line that is
+// solid up to "alguém" and dotted after, the icons under each tread, the numbers under the floor
+// and the AI going along in the accent colour.
+const STEP_ICONS = ['scale', 'pin', 'mic', 'plate', 'voice-ai', 'briefcase', 'chart', 'people'];
 function stairsArt(): string {
-  const steps = [
-    { fill: ANIL.paper2, icon: 'scale', color: INK },
-    { fill: ANIL.paper3, icon: 'pin', color: INK },
-    { fill: ANIL.accentLight, icon: 'plate', color: INK },
-    { fill: ANIL.accent, icon: 'voice-ai', color: ANIL.paper },
-    { fill: INK, icon: 'briefcase', color: ANIL.accentLight },
-  ];
-  const x0 = 740;
-  const w = 76;
-  const gap = 12;
-  const base = 548;
-  const sun = `<circle cx="1060" cy="190" r="118" fill="${ANIL.paper2}" stroke="${INK}" stroke-width="3"/>`;
-  return sun + steps.map((s, i) => {
-    const h = 120 + i * 62;
-    const x = x0 + i * (w + gap);
-    const y = base - h;
-    return `<rect x="${x + 6}" y="${y + 6}" width="${w}" height="${h}" rx="12" fill="${INK}"/>`
-      + `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${s.fill}" stroke="${INK}" stroke-width="3"/>`
-      + icon(s.icon, x + 18, y + 16, 40, s.color);
-  }).join('');
+  const n = 9;
+  const x0 = 640;
+  const w = (RIGHT - x0) / n;
+  const floor = 470;
+  const u = 36;
+  const at = 1;
+  const top = (k: number) => floor - k * u;
+  let solid = `M${x0} ${floor}`;
+  let dotted = '';
+  for (let k = 0; k < n; k++) {
+    const seg = `${k ? `V${top(k)}` : ''}H${x0 + (k + 1) * w}`;
+    if (k <= at) solid += seg;
+    else dotted += (dotted ? '' : `M${x0 + k * w} ${top(k - 1)}`) + seg;
+  }
+  const icons = STEP_ICONS.map((name, i) => icon(name, x0 + (i + 1) * w + w / 2 - 11, top(i + 1) + 8, 22, i + 1 <= at ? INK : ANIL.ink2)).join('');
+  const numbers = Array.from({ length: 7 }, (_, i) =>
+    `<text x="${x0 + (i + 1.5) * w}" y="${floor + 36}" text-anchor="middle" style="${ITALIC};font-size:28px" fill="${ANIL.accent}">${i + 1}</text>`).join('');
+  const walker = `<circle cx="${x0 + (at + 0.5) * w}" cy="${top(at) - 1}" r="11" fill="${ANIL.accent}" stroke="${ANIL.paper}" stroke-width="5"/>`;
+  const ball = `<g transform="translate(${x0 + w / 2 - 20} ${floor - 44}) scale(${40 / 48})" fill="none" stroke="${INK}" stroke-width="2.6" stroke-linejoin="round"><circle cx="24" cy="24" r="21"/><path d="M24 16.5l7.1 5.2-2.7 8.4h-8.8l-2.7-8.4ZM24 16.5V3M31.1 21.7l12.8-4.2M28.4 30.1l7.9 10.9M19.6 30.1l-7.9 10.9M16.9 21.7 4.1 17.5"/></g>`;
+  const railY = floor + 70;
+  const railX = x0 + 1.5 * w;
+  const rail = `<line x1="${railX}" y1="${railY}" x2="${RIGHT - 4}" y2="${railY}" stroke="${ANIL.accent}" stroke-width="3"/>`
+    + `<path d="M${RIGHT - 14} ${railY - 10}l10 10-10 10" fill="none" stroke="${ANIL.accent}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`
+    + `<rect x="${railX - 18}" y="${railY - 18}" width="36" height="36" fill="${ANIL.paper}"/>` + icon('voice-ai', railX - 14, railY - 14, 28, ANIL.accent);
+  return `<line x1="${x0}" y1="${floor}" x2="${RIGHT}" y2="${floor}" stroke="${INK}" stroke-width="1.5"/>`
+    + `<path d="${solid}" fill="none" stroke="${INK}" stroke-width="4" stroke-linejoin="miter"/>`
+    + `<path d="${dotted}" fill="none" stroke="${ANIL.ink2}" stroke-width="4" stroke-dasharray="4 5"/>`
+    + icons + numbers + ball + walker + rail;
 }
 
+// The chain of the book, as on /transparencia: sheets, each tied to the one before, all checked.
 function chainArt(): string {
-  const links = [
-    { fill: ANIL.paper2, icon: 'flag', color: INK, label: 'nº 4' },
-    { fill: ANIL.paper3, icon: 'person', color: INK, label: 'nº 3' },
-    { fill: ANIL.accentLight, icon: 'package', color: ANIL.accent, label: 'nº 2' },
-    { fill: ANIL.buildingBg, icon: 'coin', color: ANIL.building, label: 'nº 1' },
-  ];
-  return links.map((l, i) => {
-    const x = 770 + (i % 2) * 36;
-    const y = 96 + i * 118;
-    const connector = i ? `<line x1="${900}" y1="${y - 46}" x2="${900}" y2="${y}" stroke="${INK}" stroke-width="3" stroke-dasharray="8 6"/>` : '';
-    return connector
-      + `<rect x="${x + 6}" y="${y + 6}" width="330" height="72" rx="14" fill="${INK}"/>`
-      + `<rect x="${x}" y="${y}" width="330" height="72" rx="14" fill="${l.fill}" stroke="${INK}" stroke-width="3"/>`
-      + icon(l.icon, x + 22, y + 18, 36, l.color)
-      + `<text x="${x + 306}" y="${y + 47}" text-anchor="end" style="${TEXT};font-size:26px" fill="${ANIL.ink2}">${l.label}</text>`;
-  }).join('');
+  const sheets = 4;
+  const w = 92;
+  const h = 116;
+  const gap = 34;
+  const x0 = RIGHT - sheets * w - (sheets - 1) * gap;
+  const y = 250;
+  return Array.from({ length: sheets }, (_, i) => {
+    const x = x0 + i * (w + gap);
+    const lines = [26, 44, 62, 80].map(dy => `<line x1="${x + 16}" y1="${y + dy}" x2="${x + w - (dy === 80 ? 40 : 16)}" y2="${y + dy}" stroke="${ANIL.ink2}" stroke-width="3" stroke-linecap="round"/>`).join('');
+    const link = i ? `<rect x="${x - gap - 8}" y="${y + h / 2 - 11}" width="${gap + 16}" height="22" rx="11" fill="none" stroke="${INK}" stroke-width="3"/>` : '';
+    const seal = `<circle cx="${x + w - 18}" cy="${y + h - 18}" r="15" fill="${ANIL.live}"/><path d="M${x + w - 25} ${y + h - 18}l5 5 9-10" fill="none" stroke="${ANIL.paper}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${ANIL.paper}" stroke="${INK}" stroke-width="3"/>${lines}${link}${seal}`;
+  }).join('')
+    + `<text x="${x0}" y="${y + h + 56}" style="${TEXT};font-size:22px" fill="${ANIL.ink2}">Cada ação presa na anterior.</text>`;
 }
 
 export function shareCardSvg(card: ShareCard): string {
-  // Name: shrinks to fit the column when the definitive name is long.
-  let nameSize = 58;
-  while (nameSize > 32 && measure(card.name, POSTER, nameSize) > COLUMN - 90) nameSize -= 2;
-  // Headline: biggest size that fits the column and ends above the footer, the highlight on its own line.
-  const topOf = (s: number) => 196 + s * 0.8;
-  const lastBaseline = 522;
-  let size = 104;
+  // Name: as in the header, the mark and the name in Newsreader, across the whole top; shrinks if
+  // a long name needs it.
+  let nameSize = 54;
+  while (nameSize > 32 && measure(card.name, DISPLAY, nameSize) > RIGHT - LEFT - 82) nameSize -= 2;
+  // Headline: biggest size that fits the column above the footer; the turn in italic, in anil, on
+  // its own line, like "mudar de vida." on the home.
+  const topOf = (s: number) => 200 + s * 0.78;
+  const lastBaseline = 500;
+  let size = 96;
   let lines: string[] = [];
   for (; size >= 48; size -= 4) {
-    lines = [...wrap(card.lead, POSTER, size, COLUMN), card.highlight];
-    const fitsWidth = measure(card.highlight, POSTER, size) <= COLUMN;
-    if (fitsWidth && topOf(size) + (lines.length - 1) * size * 0.98 <= lastBaseline) break;
+    lines = wrap(card.lead, DISPLAY, size, COLUMN);
+    const fitsWidth = measure(card.highlight, ITALIC, size) <= COLUMN;
+    if (fitsWidth && topOf(size) + lines.length * size * 1.02 <= lastBaseline) break;
   }
-  const lineHeight = size * 0.98;
+  const lineHeight = size * 1.02;
   const top = topOf(size);
-  const last = lines.length - 1;
-  const highlightWidth = measure(card.highlight, POSTER, size);
-  const headline = lines.map((line, i) => {
-    const y = top + i * lineHeight;
-    const band = i === last ? `<rect x="${LEFT - 6}" y="${y - size * 0.34}" width="${highlightWidth + 12}" height="${size * 0.36}" fill="${ANIL.accentLight}"/>` : '';
-    return `${band}<text x="${LEFT}" y="${y}" style="${POSTER};font-size:${size}px" fill="${INK}">${escapeXml(line)}</text>`;
-  }).join('');
-  const markWidth = 72;
+  const headline = [...lines.map((line, i) =>
+    `<text x="${LEFT}" y="${top + i * lineHeight}" style="${DISPLAY};font-size:${size}px;letter-spacing:-0.02em" fill="${INK}">${escapeXml(line)}</text>`),
+    `<text x="${LEFT}" y="${top + lines.length * lineHeight}" style="${ITALIC};font-size:${size}px;letter-spacing:-0.02em" fill="${ANIL.accent}">${escapeXml(card.highlight)}</text>`].join('');
+  const markWidth = 64;
   const markHeight = (markWidth * LOGO_VIEWBOX.height) / LOGO_VIEWBOX.width;
+  const markY = 62;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  <defs>
-    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.4" fill="${INK}" fill-opacity="0.16"/></pattern>
-    <pattern id="stripe" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="28" fill="${ANIL.buildingBg}"/><rect x="14" width="14" height="28" fill="${ANIL.building}"/></pattern>
-  </defs>
   <rect width="${W}" height="${H}" fill="${ANIL.paper}"/>
-  <rect width="${W}" height="${H}" fill="url(#dots)"/>
-  <rect width="${W}" height="14" fill="url(#stripe)"/>
-  <svg x="${LEFT}" y="68" width="${markWidth}" height="${markHeight}" viewBox="0 0 ${LOGO_VIEWBOX.width} ${LOGO_VIEWBOX.height}">${logoRects()}</svg>
-  <text x="${LEFT + markWidth + 18}" y="${68 + markHeight - 4}" style="${POSTER};font-size:${nameSize}px" fill="${INK}">${escapeXml(card.name)}</text>
+  <svg x="${LEFT}" y="${markY}" width="${markWidth}" height="${markHeight}" viewBox="-1 -1 ${LOGO_VIEWBOX.width + 2} ${LOGO_VIEWBOX.height + 2}">${logoMark(INK, ANIL.accent, 2.6)}</svg>
+  <text x="${LEFT + markWidth + 18}" y="${markY + markHeight - 2}" style="${DISPLAY};font-size:${nameSize}px;letter-spacing:-0.01em" fill="${INK}">${escapeXml(card.name)}</text>
+  <rect x="${LEFT}" y="146" width="${RIGHT - LEFT}" height="1.5" fill="${INK}"/>
+  <rect x="${LEFT}" y="150.5" width="${RIGHT - LEFT}" height="1.5" fill="${INK}"/>
   ${card.art === 'stairs' ? stairsArt() : chainArt()}
   ${headline}
-  <text x="${LEFT}" y="${H - 44}" style="${TEXT};font-size:26px" fill="${ANIL.ink2}">${escapeXml(card.footer)}</text>
+  <text x="${LEFT}" y="${H - 50}" style="${TEXT};font-size:22px;letter-spacing:0.02em" fill="${ANIL.ink2}">${escapeXml(card.footer)}</text>
 </svg>`;
 }
