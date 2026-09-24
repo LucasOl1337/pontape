@@ -24,6 +24,18 @@
 
 E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "Baixou o livro" com 100 marcas (o rebase trouxe o livro novo), "Conferir esta" até uma ação do meio, `?ate=` vindo da parte técnica, arquivo adulterado quebrando na ação nº 2 sem pintar assinatura. O Conferir da parte técnica ainda fecha a corrente. `npm run check` verde. A página técnica ficou em 59,5 KB de 60: sobra pouca, o próximo evento do livro pode apertar. Não rodei nota numérica do Lighthouse. E2 e E3 não começaram. Nenhuma conta em serviço foi criada.
 
+## 24/09/2026 · E1b, lista técnica sob demanda
+
+- A parte técnica passava de 60 KB porque o HTML trazia cada ação. Agora entram só as últimas 30. "Ver as anteriores", a última página e o Conferir buscam `/livro/ledger.json` e montam o resto. O Conferir percorreu as 100, da nº 1 até a nº 100.
+- O exemplo fictício continua inteiro na página. A camada leiga não foi mexida.
+- O HTML também não leva o livro inteiro, só as 30 últimas com um lacre próprio. O livro completo entra na hora de conferir ou de pedir as anteriores.
+- `TECHNICAL_LIMIT` de 96 KB saiu. A página técnica ficou em 52,1 KB de 60, com 103 ações no livro.
+- Conferido na bancada: "Ver as anteriores" monta o resto, e o Conferir fecha as 103, da nº 1 até a nº 103, batendo com a marca publicada.
+
+## Decisões propostas
+
+- Sem Bitcoin e sem criptomoeda (pedido do Lucas, 24/09/2026). OpenTimestamps sai. O carimbo do E2 é Sigstore Rekor mais RFC 3161, com snapshot no Internet Archive só se não atrasar. A camada leiga fica com o Regente.
+
 ## Próximo passo
 
-PR aberta: https://github.com/LucasOl1337/pontape/pull/100. Regente revisa. E2 só depois do merge: worker que recebe evento, fila e um livro só.
+PR da E1b: https://github.com/LucasOl1337/pontape/pull/102. Em seguida o E2: worker, fila, escrevente, Rekor e carimbo RFC 3161. A chave nova nasce no Worker. Conta em serviço não crio.
