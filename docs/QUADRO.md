@@ -11,7 +11,7 @@ Atualizado: 24/09/2026, tarde · Site sem crédito pessoal (D036), contador de v
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
 | F41 | [Chat com AI: a Yumi](frentes/F41-chat-ai/BRIEF.md) | tecla | `tecla/f41-chat` | **No ar** (PRs #105 e #106, D039): Tirar dúvida em todas as páginas, `/api/chat` pelo 9Router, Secret no Worker | Acompanhar custo e respostas; Tecla em espera |
-| F42 | [Transparência que prova e recebe](frentes/F42-transparencia-que-recebe/BRIEF.md) | lastro | `lastro/f42-e2` | E1 (#100) e E1b (#102) integradas; Regente pôs a corrente em cinco cenas e tirou o Bitcoin (#103, D038) | E2 em andamento: Worker que recebe evento, fila, escrevente, chave em Secret, carimbo no Sigstore Rekor e RFC 3161; depois E3 (pagamento em modo teste) |
+| F42 | [Transparência que prova e recebe](frentes/F42-transparencia-que-recebe/BRIEF.md) | lastro | `lastro/f42-e2` | E1, E1b e **E2 integradas** (#100, #102, #108): escrevente no GitHub Actions, chave nova no secret, rotação na ação 111, Rekor e RFC 3161 prontos; corrente em cinco cenas sem Bitcoin (#103, D038) e uma tela (#104) | E2b: modo carimbar (assina e carimba a cabeça sem evento, diário) pra o selo ficar verde; depois E3 (pagamento em modo teste) |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
