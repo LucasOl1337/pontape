@@ -96,15 +96,23 @@ Sandbox do Asaas, sem valor real: [docs](https://docs.asaas.com/docs/sandbox), c
 - A reconciliação diária lê `/v3/financialTransactions`. Sem `ASAAS_SANDBOX_KEY`, não grava nada. Linha do extrato que falta no livro vira evento. Linha do livro que o extrato não mostra continua no livro, com aviso.
 - Conta sandbox ainda não existe. Os testes usam pagamento fictício. A chave, quando o Lucas criar a conta, vai no secret `ASAAS_SANDBOX_KEY`.
 
+## 24/09/2026 · Estado final da F42
+
+A frente para aqui. E1, E1b, E2, E2b, E2c e E3 estão na main (PRs #100, #102, #108, #110, #111, #112, #113). O selo confere o livro no navegador. O escrevente assina com `LEDGER_SIGNING_PKCS8` e carimba no Rekor e na freetsa. Se o carimbo cai, a ação entra mesmo assim. `/doar` está fechada no ar. O webhook até o escrevente não leva nome, CPF nem e-mail. O painel lê o livro.
+
+Espera: o Lucas criar a conta sandbox do Asaas. Quando existir, o Regente coloca os secrets `ASAAS_SANDBOX_KEY`, `ASAAS_WEBHOOK_TOKEN` e `LEDGER_DISPATCH_TOKEN` (PAT com `actions:write`) e chama o Lastro pra uma doação de teste de ponta a ponta. Até lá, nada de dinheiro real e nada de flag ligada.
+
 ## Checklist do E4
 
-- Associação criada e CNPJ no nome dela.
-- Conta bancária da associação, não de pessoa.
-- OK do Lucas pra dinheiro real.
-- Trocar o sandbox pela API de produção e abrir as duas flags.
-- Conferir uma doação real no livro, com tarifa separada e sem nome.
+O que falta pra virar a chave de verdade, depois do teste sandbox:
+
+- Associação criada.
+- CNPJ no nome dela.
+- Conta de produção do Asaas, da associação, não de pessoa.
+- Comprovante público com tarja, cobrindo nome e documento.
+- Revisão jurídica antes de receber doação real.
+- OK do Lucas. Aí sim trocar o sandbox pela API de produção e abrir as duas flags.
 
 ## Próximo passo
 
-PR aberta: https://github.com/LucasOl1337/pontape/pull/113. A conta sandbox continua com o Lucas.
->>>>>>> a3df63c (Registra a comparação de pagamento do E3)
+Em espera. A PR #113 já entrou.
