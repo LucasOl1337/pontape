@@ -135,6 +135,7 @@ describe('primeira camada da transparência (F32)', () => {
     const text = JSON.stringify(PLAIN);
     expect(text).not.toMatch(TECHNICAL_WORDS);
     expect(text).not.toContain('—');
+    expect(PLAIN.scenes).toHaveLength(5);
     expect(PLAIN.questions.map(item => item.q)).toEqual([
       'O que fica no livro?', 'Como eu sei que ninguém mexeu?', 'Quem garante a data?',
     ]);

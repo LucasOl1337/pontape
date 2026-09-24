@@ -11,7 +11,8 @@ export const LIVRO = {
 
 // Everything the first layer says, in one place, so a test keeps the technical words out.
 export const PLAIN = {
-  lead: `Tudo que o ${PROJECT_NAME} faz fica neste livro. Leia as três respostas e aperte o selo.`,
+  lead: `Cada real, cada entrega e cada decisão do ${PROJECT_NAME} entram num livro que ninguém muda escondido. Veja como funciona e confira você mesmo.`,
+  // Kept for the technical page and the tests; the lay screen tells this in the five scenes.
   questions: [
     { id: 'what', q: 'O que fica no livro?', a: 'Cada real que entra e sai, cada entrega de comida, roupa e higiene, e cada decisão do projeto. Nome, CPF e lugar de pessoa não entram.' },
     { id: 'how', q: 'Como eu sei que ninguém mexeu?', a: 'Cada ação ganha uma marca feita do texto dela mesma, e leva junto a marca da anterior, como elo de corrente. Se alguém mexe numa, as seguintes não batem. O selo refaz essa conta no seu aparelho. Nada é enviado pra gente.' },
