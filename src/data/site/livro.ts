@@ -22,10 +22,10 @@ export const PLAIN = {
   chain: 'Cada elo preso no anterior. O último vai pro registro público, com a data.',
   // The chain in five scenes (Corrente.astro). `short` names the scene for the dots.
   scenes: [
-    { short: 'a ação entra', text: 'Uma ação entra no livro. Por exemplo: comprou 20 kits de higiene, R$ 480.' },
-    { short: 'a marca', text: 'Ela ganha uma marca: uma conta feita a partir do texto dela. Qualquer computador refaz a conta e chega no mesmo resultado.' },
-    { short: 'a corrente', text: 'A ação seguinte carrega a marca da anterior, como elo de corrente. É o estilo do blockchain, sem moeda nenhuma.' },
-    { short: 'alguém mexe', text: 'Se alguém muda uma vírgula, a marca muda inteira, e as seguintes deixam de bater. Qualquer pessoa vê onde quebrou.' },
+    { short: 'a doação entra', text: 'Alguém doa R$ 50 pelo site. A doação entra no livro na hora, com valor e data. Sem nome.' },
+    { short: 'a marca', text: 'A ação ganha uma marca: uma conta feita a partir do texto dela. Qualquer computador refaz a conta e chega no mesmo resultado.' },
+    { short: 'a corrente', text: 'Os R$ 50 viram 5 kits de higiene, e os kits chegam na praça. Cada ação carrega a marca da anterior, como elo de corrente. É o estilo do blockchain, sem moeda nenhuma.' },
+    { short: 'alguém mexe', text: 'Se alguém tentar dizer que entraram só R$ 20, a marca muda inteira e as ações seguintes deixam de bater. Qualquer pessoa vê onde quebrou.' },
     { short: 'a data', text: 'A marca do fim vai pra um registro público, fora da gente, e ganha a data de lá. Depois disso, ninguém muda o passado.' },
   ],
   verify: 'O selo baixa o livro e refaz a conta no seu aparelho. Nada é enviado pra gente.',
