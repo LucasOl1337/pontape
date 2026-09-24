@@ -724,6 +724,13 @@ main:focus{ outline:none }
 .plain-count div + div{ padding-left:1rem; border-left:1px solid var(--rule) }
 .plain-count dt{ font:700 .875rem/1.3 var(--font-sans); color:var(--ink-2) }
 .plain-count dd{ font:500 clamp(1.5rem, 1.1rem + 1.2vw, 2.4rem)/1.1 var(--font-display); white-space:nowrap }
+/* A narrow phone (320 px, or 640 px at 200% zoom): the three counts keep one line with less air and
+   a number that follows the screen width, so "R$ 0,00" never pushes past the edge (#56). */
+@media (max-width:399px){
+  .plain-count div{ padding-right:.6rem }
+  .plain-count div + div{ padding-left:.6rem }
+  .plain-count dd{ font-size:min(1.5rem, 6.4vw) }
+}
 .plain-note{ margin-top:.5rem; font:400 .875rem/1.5 var(--font-sans); color:var(--ink-2) }
 .plain-side .conferir{ margin-top:var(--space-4) }
 /* Until the first click the result says nothing new: it stays for the screen reader, out of sight. */
