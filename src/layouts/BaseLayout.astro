@@ -61,6 +61,10 @@ const cardImage = `${absolute(card.image)}?v=${cardVersion}`;
     <slot name="head" />
     <!-- Marca que o JS carregou antes da primeira pintura. O build inclui o hash na CSP. -->
     <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+    <!-- Contador de visitas da Cloudflare (Web Analytics): sem cookie, sem saber quem é quem. A hospedagem
+         em Workers não injeta o script sozinha, então ele vai aqui; a CSP libera só este arquivo (#55).
+         O token é público por natureza: identifica o site, não uma pessoa. -->
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: '831beb0259ae49268aca96287454432b' })}></script>
   </head>
   <body data-strip={strip ? undefined : 'off'}>
     <IconSprite />
