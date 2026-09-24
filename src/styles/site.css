@@ -61,6 +61,8 @@ main:focus{ outline:none }
 .btn--ink{ background:var(--ink); color:var(--paper) }
 .btn--ink:hover{ background:var(--accent); border-color:var(--accent); color:var(--paper) }
 .btn:disabled{ opacity:.55; cursor:progress }
+/* Without JS the share button has nothing to do. */
+.no-js [data-share]{ display:none }
 .actions{ display:flex; flex-wrap:wrap; gap:var(--space-3); margin-top:var(--space-8) }
 .link-btn{
   display:inline; padding:0; border:0; background:none; cursor:pointer;
@@ -225,11 +227,15 @@ main:focus{ outline:none }
 .panel-more{ display:inline-flex; align-items:center; min-height:44px; margin-left:.4rem; padding-left:.2rem; padding-right:.2rem; font-size:1.0625rem }
 .panel-ways{ display:grid; grid-template-columns:1fr 1fr; gap:0 1.6rem; margin-top:clamp(.7rem, 2.2 * var(--cqh), 1.4rem); border-top:1px solid var(--ink) }
 .panel-ways li{ display:grid; grid-template-columns:2rem minmax(0, 1fr); align-items:start; align-content:start; gap:.2rem .7rem; padding-top:clamp(.45rem, 1.4 * var(--cqh), .8rem); padding-bottom:clamp(.45rem, 1.4 * var(--cqh), .8rem); border-bottom:1px solid var(--rule) }
-.panel-ways .way-icon{ grid-row:span 2; width:1.8rem; height:1.8rem; margin-top:.1rem; color:var(--accent); stroke-width:1.7 }
+.panel-ways .way-icon{ grid-row:span 3; width:1.8rem; height:1.8rem; margin-top:.1rem; color:var(--accent); stroke-width:1.7 }
 .way-title{ font:500 clamp(1.2rem, 2.9 * var(--cqh), 1.6rem)/1.1 var(--font-display) }
 .way-when{ font:400 .9375rem/1.4 var(--font-sans); color:var(--ink-2) }
 .way-when strong{ font-weight:700; color:var(--now) }
 .way-when a{ font-weight:700; color:var(--ink) }
+/* The action of each way sits under its text, in the same column (F38). */
+.way-do{ grid-column:2; margin-top:.45rem }
+.way-do .btn{ min-height:44px; padding:.5rem .9rem; font-size:.9375rem }
+.panel-later{ border-top:0; padding-top:0 }
 .panel-note{ display:flex; align-items:center; gap:.5rem; margin-top:.8rem; font:400 .9375rem/1.4 var(--font-sans); color:var(--ink-2) }
 
 /* Wide and tall enough: everything on one screen. The title and the step share the corner the low
