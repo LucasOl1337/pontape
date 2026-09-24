@@ -2,7 +2,7 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 24/09/2026, tarde · Site sem crédito pessoal (D036), contador de visitas (D037), **sem Bitcoin** (D038), transparência com corrente animada e selo novo (F42 E1, PRs #100 a #103), **Lastro (Grok 4.7) no E2** · **Divulgação começou** (D035): `/perguntas` com quem faz e contato (PR #97), posts no X e no LinkedIn do Lucas publicados pelo Regente · Home em tom de marca (D034, PR #96) e lema caridade inteligente (D033) · **Lema novo: caridade inteligente** (D033, PR #91) · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 24/09/2026, tarde · Site sem crédito pessoal (D036), contador de visitas (D037), **sem Bitcoin** (D038), transparência com corrente animada e selo novo (F42 E1, PRs #100 a #103), **Lastro (Grok 4.7) no E2**, transparência em uma tela (#104), **Tecla (Codex) na Yumi (F41)** · **Divulgação começou** (D035): `/perguntas` com quem faz e contato (PR #97), posts no X e no LinkedIn do Lucas publicados pelo Regente · Home em tom de marca (D034, PR #96) e lema caridade inteligente (D033) · **Lema novo: caridade inteligente** (D033, PR #91) · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
 **Hoje:** home pro leigo (F29), cadernos em páginas (F31), transparência em duas camadas (F32) e paleta Anil (F33, D030) no ar. A escada da F34 foi **reprovada** (D031) e a F36 trouxe o meio termo; a F37 pôs o sistema de escolha, com IA e transparência, no primeiro degrau (D032). Tudo no ar. **Dia encerrado pelo Lucas às 15:44**: nenhuma PR aberta, nenhuma bancada de agente ligada, todos em espera. Pra amanhã: o Lucas conferir a escada no computador e no celular, o trecho perdido do áudio (pergunta 11) e retomar a F25 quando ele quiser. Às 13:04 todos os agentes reiniciaram com conversa nova, a pedido do Lucas; cada um retoma pelo BRIEF e pelo DIARIO. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
@@ -10,7 +10,8 @@ Atualizado: 24/09/2026, tarde · Site sem crédito pessoal (D036), contador de v
 
 | ID | Frente | Dono | Branch | Estado | Próximo passo |
 |---|---|---|---|---|---|
-| F42 | [Transparência que prova e recebe](frentes/F42-transparencia-que-recebe/BRIEF.md) | lastro | `lastro/f42-e1` | E1 (#100) e E1b (#102) integradas; Regente pôs a corrente em cinco cenas e tirou o Bitcoin (#103, D038) | E2 em andamento: Worker que recebe evento, fila, escrevente, chave em Secret, carimbo no Sigstore Rekor e RFC 3161; depois E3 (pagamento em modo teste) |
+| F41 | [Chat com AI: a Yumi](frentes/F41-chat-ai/BRIEF.md) | tecla | `tecla/f41-chat` | Em andamento: Worker `/api/chat` no 9Router, botão Tirar dúvida no cabeçalho | PR pro Regente revisar; Regente põe o Secret e publica |
+| F42 | [Transparência que prova e recebe](frentes/F42-transparencia-que-recebe/BRIEF.md) | lastro | `lastro/f42-e2` | E1 (#100) e E1b (#102) integradas; Regente pôs a corrente em cinco cenas e tirou o Bitcoin (#103, D038) | E2 em andamento: Worker que recebe evento, fila, escrevente, chave em Secret, carimbo no Sigstore Rekor e RFC 3161; depois E3 (pagamento em modo teste) |
 | F31 | [Layout e UX, começando pelos cadernos](frentes/F31-ux-cadernos/BRIEF.md) | prumo | `prumo/f31-*` | #67 a #69, #71, #72, #75 a #79 integradas; nenhum defeito alto ou médio, teclado e foco conferidos em 9 páginas | Em espera. Sobra de baixa no DIARIO |
 | F25 | [Assinatura e âncora do livro no ar](frentes/F25-assinatura-ancora/BRIEF.md) | fino | `fino/f25-ancora` | **pausada** (D023) | Retoma depois da F27; âncora 43 aguardando `ots upgrade` |
 
@@ -20,7 +21,6 @@ Issues abertas: #55 (beacon do Cloudflare barrado pela CSP), #56 (livro em 320 p
 
 | ID | Frente | Depende de |
 |---|---|---|
-| F41 | [Chat com AI no site](frentes/F41-chat-ai/BRIEF.md) | conta de AI confirmada com o Lucas; sem guardar mensagem (D012) |
 | F10b | `LICENSE` | decisão 7 do Lucas |
 | F05 | Captação e seleção: candidato certo, roteiro, voluntários, panfleto | depois da plataforma (D009) |
 | F06 | [Do selecionado ao primeiro salário](frentes/F06-pesquisa-oportunidades/BRIEF.md) | em espera (D009) |
