@@ -158,7 +158,6 @@ main:focus{ outline:none }
 .tread.is-ahead .tread-block{ border-top-style:dotted; border-top-color:var(--ink-2) }
 .tread.is-ahead .tread-block::before{ background:repeating-linear-gradient(to bottom, var(--ink-2) 0 3px, transparent 3px 7px) }
 .tread:hover .tread-block{ background:rgba(var(--ink-rgb), .045) }
-.tread[aria-selected="true"] .tread-block{ background:repeating-linear-gradient(-45deg, rgba(var(--ink-rgb), .13) 0 1px, transparent 1px 8px) }
 /* The ring goes around the whole tread, name included: the ground tread has no block to draw it on. */
 .tread:focus-visible{ outline:3px solid var(--accent); outline-offset:-3px }
 /* The icon sits clear of the dot of "alguém" standing on its tread (22 px plus the ring), and never
@@ -282,7 +281,8 @@ main:focus{ outline:none }
   .tread-label{ padding-top:calc(var(--label-pad) + var(--icon) + .3rem) }
   .tread:first-child .tread-label, .tread:last-of-type .tread-label{ padding-top:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .1rem) }
   .walker{ width:16px; height:16px; margin:0 0 -9.5px -8px; box-shadow:0 0 0 3px var(--paper) }
-  .walker-label{ display:none }
+  /* On the first step "alguém" names the dot, as on a computer: above it, clear of the next riser. */
+  .walker-label{ right:-.3rem; bottom:calc(100% + .3rem); font-size:1rem }
   .tread-ball{ width:clamp(24px, 7vw, 40px) }
   .panel-title{ font-size:clamp(1.9rem, 8.4vw, 2.8rem) }
   .panel-text{ font-size:1.125rem }
