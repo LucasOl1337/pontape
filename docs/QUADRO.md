@@ -2,7 +2,7 @@
 
 Estado das frentes. Só o Regente edita, a cada evento. Espelhado na nota "VidaNova Quadro" do canvas Maestri.
 
-Atualizado: 24/09/2026 · **Home em tom de marca** (D034, PR #96, aguardando OK do Lucas) · **Lema novo: caridade inteligente** (D033, PR #91) · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
+Atualizado: 24/09/2026 · **Divulgação começou** (D035): `/perguntas` com quem faz e contato (PR #97), posts no X e no LinkedIn do Lucas publicados pelo Regente · Home em tom de marca (D034, PR #96) e lema caridade inteligente (D033) · **Lema novo: caridade inteligente** (D033, PR #91) · **Site no ar em https://pontape.org** (D019), publicação automática ligada (D021)
 
 **Hoje:** home pro leigo (F29), cadernos em páginas (F31), transparência em duas camadas (F32) e paleta Anil (F33, D030) no ar. A escada da F34 foi **reprovada** (D031) e a F36 trouxe o meio termo; a F37 pôs o sistema de escolha, com IA e transparência, no primeiro degrau (D032). Tudo no ar. **Dia encerrado pelo Lucas às 15:44**: nenhuma PR aberta, nenhuma bancada de agente ligada, todos em espera. Pra amanhã: o Lucas conferir a escada no computador e no celular, o trecho perdido do áudio (pergunta 11) e retomar a F25 quando ele quiser. Às 13:04 todos os agentes reiniciaram com conversa nova, a pedido do Lucas; cada um retoma pelo BRIEF e pelo DIARIO. · Ordem de execução do Lucas (D009): **plataforma e transparência total primeiro**, entrevista e conexões depois.
 
@@ -19,6 +19,7 @@ Issues abertas: #55 (beacon do Cloudflare barrado pela CSP), #56 (livro em 320 p
 
 | ID | Frente | Depende de |
 |---|---|---|
+| F41 | [Chat com AI no site](frentes/F41-chat-ai/BRIEF.md) | conta de AI confirmada com o Lucas; sem guardar mensagem (D012) |
 | F10b | `LICENSE` | decisão 7 do Lucas |
 | F05 | Captação e seleção: candidato certo, roteiro, voluntários, panfleto | depois da plataforma (D009) |
 | F06 | [Do selecionado ao primeiro salário](frentes/F06-pesquisa-oportunidades/BRIEF.md) | em espera (D009) |
