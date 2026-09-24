@@ -793,11 +793,20 @@ main:focus{ outline:none }
 /* ---------- Transparência, first layer (F32, D029): plain words, the technical part behind a button ---------- */
 /* One column on a phone, in reading order; two on a desk, on the header grid (x = logo). */
 .plain{ display:grid; grid-template-columns:minmax(0, 1fr); row-gap:var(--space-6); max-width:var(--page); margin-left:auto; margin-right:auto; padding:var(--space-4) var(--gutter) var(--space-16) }
+/* The first screen (F42): everything a lay reader needs without scrolling. On a desk, the seal on
+   the left and the scenes on the right, filling the height under the header. */
+.plain-screen{ display:grid; grid-template-areas:'head' 'scenes' 'side'; gap:var(--space-6); align-items:start }
+.plain-screen .plain-head{ grid-area:head }
+.plain-screen .corrente{ grid-area:scenes }
+.plain-screen .plain-side{ grid-area:side }
+.plain-side{ display:grid; gap:var(--space-5); align-content:start }
+.plain-screen .conferir{ margin-top:0 }
+.plain-screen .corrente{ max-width:none }
 .plain-top{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.5rem 1rem }
 .plain-tech{ min-height:44px; padding:.4rem .9rem; font-size:.9375rem }
-.plain-title{ font:500 clamp(2.1rem, 1.3rem + 2.6vw, 4.6rem)/1 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
+.plain-title{ font:500 clamp(2.1rem, 1.3rem + 2vw, 3.6rem)/1 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
 .plain-title em{ font-style:italic; color:var(--accent) }
-.plain-lead{ max-width:40rem; margin-top:var(--space-3); font:400 clamp(1.125rem, 1rem + .5vw, 1.5rem)/1.45 var(--font-serif) }
+.plain-lead{ max-width:40rem; margin-top:var(--space-3); font:400 clamp(1.0625rem, 1rem + .35vw, 1.3rem)/1.45 var(--font-serif) }
 .plain-count{ display:grid; grid-template-columns:repeat(3, auto); justify-content:start; border-top:2px solid var(--ink) }
 .plain-count div{ display:flex; flex-direction:column-reverse; justify-content:flex-end; padding:.45rem 1rem .1rem 0 }
 .plain-count div + div{ padding-left:1rem; border-left:1px solid var(--rule) }
@@ -811,7 +820,6 @@ main:focus{ outline:none }
   .plain-count dd{ font-size:min(1.5rem, 6.4vw) }
 }
 .plain-note{ margin-top:.5rem; font:400 .875rem/1.5 var(--font-sans); color:var(--ink-2) }
-.ask-grid{ display:grid; gap:var(--space-5); align-items:center }
 .perguntas{ display:grid; gap:var(--space-4) }
 .perguntas h2{ font:600 1.35rem/1.25 var(--font-serif) }
 .pergunta-num{ color:var(--accent); font-family:var(--font-display); font-weight:500 }
@@ -848,12 +856,14 @@ main:focus{ outline:none }
   .kind{ padding-right:1.5rem }
   .kind + .kind{ padding-left:1.5rem; border-left:1px solid var(--rule) }
   .trust-body{ grid-template-columns:minmax(0, 1fr) minmax(16rem, 21rem); column-gap:var(--space-8) }
-  .ask-grid{ grid-template-columns:minmax(0, 1fr); column-gap:var(--space-8) }
 }
 @media (min-width:960px){
   .plain{ padding-top:var(--space-6) }
   .plain .verify-head{ grid-template-columns:auto minmax(0, 1fr); align-items:center; column-gap:1.25rem }
+  .plain-screen{ grid-template-columns:minmax(0, 5fr) minmax(0, 6fr); grid-template-rows:auto 1fr; grid-template-areas:'head scenes' 'side scenes'; column-gap:var(--space-10); min-height:calc(100 * var(--svh) - var(--header-h) - var(--strip-h) - 8rem) }
+  .plain-screen .corrente{ align-self:center; max-width:46rem }
 }
+@media (min-width:1400px){ .plain-screen{ column-gap:var(--space-16) } }
 
 /* ---------- 404 (same layout, redrawn in this variant) ---------- */
 .block{ max-width:var(--page); margin:auto; padding:var(--space-16) var(--gutter) var(--space-24) }
@@ -921,7 +931,6 @@ main:focus{ outline:none }
 .corrente{ display:grid; gap:var(--space-3); align-content:start; max-width:40rem; --c-t:.55s }
 .corrente-art{ width:100%; height:auto; overflow:visible; font-family:var(--font-sans) }
 /* The scenes take the whole width under the three questions: the drawing needs room to be read. */
-.ask-grid .corrente{ grid-column:1 / -1; padding-top:var(--space-4); border-top:1px solid var(--rule) }
 .corrente-caption{ display:grid; gap:var(--space-2) }
 .corrente-text{ display:none; grid-template-columns:1.6rem minmax(0, 1fr); gap:.5rem; align-items:start; min-height:3.2em; font:400 1rem/1.45 var(--font-sans); color:var(--ink) }
 .corrente-all{ display:grid; gap:.35rem; font:400 .9375rem/1.4 var(--font-sans); color:var(--ink-2) }

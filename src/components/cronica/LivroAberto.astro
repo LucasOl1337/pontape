@@ -10,8 +10,9 @@ import { recentLines } from '../../lib/ledger-view/plain';
 import { decisionPlain } from '../../data/site/decisions';
 import { LIVRO, PLAIN } from '../../data/site/livro';
 
-// First layer of /transparencia (F42 E1): three short questions, one chain drawing,
-// and the seal that redoes the sums in the browser.
+// First layer of /transparencia, one screen (F42): the chain told in five scenes on one side,
+// the seal that redoes the sums on the other, the numbers under it. What happened lately and
+// the way to the technical page come after, for whoever scrolls.
 interface Props { ledger: LedgerView }
 const { ledger } = Astro.props;
 const events = ledger.events;
@@ -36,35 +37,25 @@ const shortDay = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
     <a class="btn plain-tech" href={LIVRO.tecnico}><Icon name="code" />Parte técnica</a>
   </div>
 
-  <header class="plain-head">
-    <h1 id="page-title" class="plain-title">Tudo que o projeto faz, <em>à vista.</em></h1>
-    <p class="plain-lead">{PLAIN.lead}</p>
-  </header>
-
-  <div class="ask-grid">
-    <ol class="perguntas">
-      {PLAIN.questions.map((item, i) => (
-        <li>
-          <h2><span class="pergunta-num">{i + 1}.</span> {item.q}</h2>
-          <p>{item.a}</p>
-          {item.id === 'when' && <p>{PLAIN.stampWaiting}</p>}
-        </li>
-      ))}
-    </ol>
+  <div class="plain-screen">
+    <header class="plain-head">
+      <h1 id="page-title" class="plain-title">Tudo que o projeto faz, <em>à vista.</em></h1>
+      <p class="plain-lead">{PLAIN.lead}</p>
+    </header>
     <Corrente />
-  </div>
-
-  <section class="conferir" id="conferir" aria-labelledby="t-verify">
-    <h2 id="t-verify" class="conferir-title">Confira você mesmo.</h2>
-    <VerifyPanel data="ledger-real" where={PLAIN.verify} plain seal details={LIVRO.tecnico} />
-    <LedgerData id="ledger-real" ledger={ledger} />
-  </section>
-
-  <div class="plain-numbers">
-    <dl class="plain-count">
-      {numbers.map(n => <div><dt>{n.label}</dt><dd>{n.value}</dd></div>)}
-    </dl>
-    <p class="plain-note">{note}</p>
+    <div class="plain-side">
+      <section class="conferir" id="conferir" aria-labelledby="t-verify">
+        <h2 id="t-verify" class="sr-only">Confira você mesmo</h2>
+        <VerifyPanel data="ledger-real" where={PLAIN.verify} plain seal details={LIVRO.tecnico} />
+        <LedgerData id="ledger-real" ledger={ledger} />
+      </section>
+      <div class="plain-numbers">
+        <dl class="plain-count">
+          {numbers.map(n => <div><dt>{n.label}</dt><dd>{n.value}</dd></div>)}
+        </dl>
+        <p class="plain-note">{note}</p>
+      </div>
+    </div>
   </div>
 
   <section class="plain-recent" aria-labelledby="t-recent">
