@@ -106,5 +106,5 @@ Sandbox do Asaas, sem valor real: [docs](https://docs.asaas.com/docs/sandbox), c
 
 ## Próximo passo
 
-PR do fluxo. A conta sandbox continua com o Lucas.
+PR aberta: https://github.com/LucasOl1337/pontape/pull/113. A conta sandbox continua com o Lucas.
 >>>>>>> a3df63c (Registra a comparação de pagamento do E3)
