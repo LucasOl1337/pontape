@@ -38,4 +38,4 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 ## Próximo passo
 
-PR da E1b. Em seguida o E2: worker, fila, escrevente, Rekor e carimbo RFC 3161. Conta em serviço não crio.
+PR da E1b: https://github.com/LucasOl1337/pontape/pull/102. Em seguida o E2: worker, fila, escrevente, Rekor e carimbo RFC 3161. A chave nova nasce no Worker. Conta em serviço não crio.
