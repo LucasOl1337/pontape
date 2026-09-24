@@ -2,6 +2,8 @@
 
 Nome escolhido pelo Lucas em 22/09/2026 (D016). O repositório ainda se chama VidaNova.
 
+**Lema (D033):** caridade inteligente. O PontaPé é uma plataforma de caridade inteligente: a IA define como os recursos chegam e faz de graça tudo que uma IA pode fazer pra melhorar a vida da pessoa.
+
 Rascunho v0.2 · 22/09/2026 · dono: Regente · fontes: [spec 01](fontes/2026-09-22-spec-01.md) e [spec 02](fontes/2026-09-22-spec-02.md) do Lucas
 
 Este é o documento-guia do produto. Mudança de escopo passa pelo Lucas; o Regente atualiza o texto. Agente que achar furo ou contradição anota no próprio `DIARIO.md` e avisa o Regente.

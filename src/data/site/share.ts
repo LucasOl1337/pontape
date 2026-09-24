@@ -4,13 +4,13 @@ import type { ShareCard } from '../../lib/share/render';
 // What each page says when its link is shared. The image is drawn from this at build.
 export const SHARE: Record<'home' | 'transparencia', ShareCard & { title: string; description: string; image: string; alt: string }> = {
   home: {
-    title: `${PROJECT_NAME} · o primeiro passo pra quem quer mudar de vida`,
-    description: 'Projeto sem fins lucrativos e aberto: a IA vai ajudar a escolher com cuidado quem mais quer mudar de vida, e toda ação fica num livro público que qualquer um confere. Depois vêm comida, roupa e trabalho.',
+    title: `${PROJECT_NAME} · caridade inteligente`,
+    description: 'Plataforma de caridade inteligente, sem fins lucrativos e aberta: a IA ajuda a decidir como a ajuda chega e faz de graça tudo que pode por quem quer mudar de vida. Toda ação fica num livro público que qualquer um confere.',
     image: '/og.png',
-    alt: `${PROJECT_NAME}: O primeiro passo pra quem quer mudar de vida. Ilustração de cinco degraus.`,
+    alt: `${PROJECT_NAME}: Uma plataforma de caridade inteligente. Ilustração de cinco degraus.`,
     name: PROJECT_NAME,
-    lead: 'O primeiro passo pra quem quer',
-    highlight: 'mudar de vida.',
+    lead: 'Uma plataforma de caridade',
+    highlight: 'inteligente.',
     footer: 'Sem fins lucrativos · Código aberto · Tudo à vista',
     art: 'stairs',
   },
