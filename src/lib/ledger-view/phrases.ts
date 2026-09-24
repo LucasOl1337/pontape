@@ -35,6 +35,7 @@ export const PROJECT_KIND = {
   repository_created: 'repositório',
   decision_recorded: 'decisão',
   pull_request_merged: 'mudança',
+  signing_key_rotated: 'assinatura',
 } as const;
 
 const plural = (n: string, one: string, many: string) => `${n} ${n === '1' ? one : many}`;
@@ -44,6 +45,7 @@ export function phrase(p: LedgerPayload): string {
     case 'project':
       if (p.action === 'repository_created') return 'Repositório do projeto criado';
       if (p.action === 'decision_recorded') return `Decisão ${p.decisionId} registrada`;
+      if (p.action === 'signing_key_rotated') return 'Chave pública de assinatura trocada';
       return `PR #${p.pullRequest} integrada`;
     case 'finance':
       if (p.action === 'reversal') return `Estorno da ação nº ${p.correctionOf}`;

@@ -1,8 +1,8 @@
 // Build-only data loader. The browser imports index.ts, never this module.
 import source from '../../data/ledger/ledger.json';
 import trust from '../../data/ledger/trust.json';
-import { z } from 'zod';
 import { ledgerDocumentSchema } from './schema';
+import { trustDocumentSchema } from './trust-doc';
 import { verifyDocument } from './verify';
 
 export async function publishedLedger() {
@@ -10,6 +10,4 @@ export async function publishedLedger() {
   if (!result.valid) throw new Error(`Build interrompido: livro inválido (${result.code}).`);
   return ledgerDocumentSchema.parse(source);
 }
-export const ledgerTrust = z.strictObject({
-  signature: z.literal('not_configured'), timestamp: z.literal('not_anchored'), mirror: z.literal('not_configured'),
-}).parse(trust);
+export const ledgerTrust = trustDocumentSchema.parse(trust);

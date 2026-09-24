@@ -67,7 +67,8 @@ export async function verifyLedger(input: unknown, expectedCheckpoint?: unknown)
     }
     if (payload.type === 'project' && payload.correctionOf === null) {
       const source = payload.action === 'decision_recorded' ? `decision:${payload.decisionId}`
-        : payload.action === 'pull_request_merged' ? `pr:${payload.pullRequest}` : 'repository';
+        : payload.action === 'pull_request_merged' ? `pr:${payload.pullRequest}`
+          : payload.action === 'signing_key_rotated' ? `signing-key:${payload.publicKey}` : 'repository';
       if (sources.has(source)) return fail('duplicate_source');
       sources.add(source);
     }

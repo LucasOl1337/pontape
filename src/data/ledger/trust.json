@@ -1,5 +1,7 @@
 {
   "signature": "not_configured",
+  "publicKey": "e332cae4d252fca11d48f183027c134e565b908a099e94a1a112a5ed41ecb0b6",
+  "previousPublicKey": "ab8b5cfb6bf0f218e2514fe47fa9a014827376ec9f0c556bcb1df3a3c3d81dc6",
   "timestamp": "not_anchored",
   "mirror": "not_configured"
 }
