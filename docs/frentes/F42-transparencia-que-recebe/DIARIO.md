@@ -61,6 +61,12 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 - O dispatch sem evento e o schedule das 12:15 em São Paulo usam esse modo. O mesmo checkpoint de novo reaproveita a entrada que o Rekor já tem (409). O livro não é tocado.
 - O selo fica verde quando esse `trust.json` real entra no site. Quem dispara depois do merge é o Regente. A chave de produção não foi lida daqui.
 
+## 24/09/2026 · E2c, carimbo junto da ação
+
+- Depois do fetch, o livro está na ação 116 e o carimbo em 114. Cada merge novo espera o schedule do dia seguinte, e o selo não cobre a cabeça.
+- O `ledger-project.yml` agora, no mesmo push, roda `ledger:stamp` quando entrou ação nova ou quando o carimbo está atrás da cabeça. Grava `trust.json` e `checkpoint-signed.json` junto do livro. Não dispara um segundo workflow: o push do token não abriria outro job, e um segundo commit deixaria a cabeça descoberta por um tempo.
+- Se o carimbo falha, o push não sai. A tentativa seguinte relê a main. A chave de produção não foi lida daqui.
+
 ## Próximo passo
 
-PR aberta: https://github.com/LucasOl1337/pontape/pull/110. E3 depois que o Regente integrar e disparar o carimbo.
+PR do E2c. E3 em seguida: comparação de Stripe, Asaas e Mercado Pago no diário, proposta antes de codar.
