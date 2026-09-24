@@ -399,7 +399,14 @@ main:focus{ outline:none }
 .module-details dd{ margin-top:.3rem }
 .module-details .is-missing dt{ color:var(--status-bottleneck) }
 .module-details .is-helpers dt{ color:var(--status-live) }
-.dialog-nav{ display:flex; justify-content:space-between; margin-top:var(--space-8) }
+.dialog-nav{ display:flex; justify-content:space-between; gap:var(--space-3); margin-top:var(--space-8) }
+/* The neighbours go by name, with a small word saying which way. On a phone they stack. */
+.dialog-nav .btn{ min-width:0; text-align:left }
+.dialog-nav .btn:last-child{ text-align:right }
+.dialog-nav small{ display:block; margin-bottom:.15rem; font-size:.8125rem; font-weight:400; color:var(--ink-2) }
+.dialog-nav .btn:hover small{ color:inherit }
+/* The piece's code stays for whoever builds, small and in the second ink. */
+.dialog-code{ font-weight:400; letter-spacing:.06em; color:var(--ink-2) }
 /* The ficha of a piece fits on one screen where there is room (F31): wider, the six fields in two
    columns, row by row. On a phone it keeps one column, with less air around it. */
 @media (min-width:760px){
@@ -412,7 +419,9 @@ main:focus{ outline:none }
   .dialog-head, .dialog-body{ padding:var(--space-4) }
   .module-details{ margin-top:var(--space-4); gap:var(--space-3) }
   .module-details dd{ font-size:1.0625rem; line-height:1.5 }
-  .dialog-nav{ margin-top:var(--space-6) }
+  .dialog-nav{ flex-direction:column; margin-top:var(--space-6) }
+  .dialog-nav .btn{ justify-content:flex-start; text-align:left }
+  .dialog-nav .btn:last-child{ justify-content:space-between; text-align:left }
 }
 
 /* ---------- The chain of actions ---------- */

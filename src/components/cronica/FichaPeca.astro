@@ -5,12 +5,13 @@ import { DETAIL_FIELDS, MODULES } from '../../data/site/modules';
 import { STATUSES } from '../../data/site/statuses';
 import { STATUS_DATE, formatDay, withName } from '../../data/site/project';
 
-// The ficha of a piece: a small dialog in the middle of the screen, opened from a step ("Mais
+// The ficha of a piece: its name as the title, the code (M7) small beside the kicker, the neighbours
+// by name (F38). The ficha of a piece: a small dialog in the middle of the screen, opened from a step ("Mais
 // detalhes") on the home or from the list of pieces. scripts/modules.ts fills it from a template.
 ---
 <dialog class="dialog" id="module-dialog" aria-labelledby="module-dialog-title">
   <div class="dialog-head">
-    <div><p class="kicker">Peça <span id="module-dialog-id"></span></p><h2 id="module-dialog-title"></h2></div>
+    <div><p class="kicker"><span id="module-dialog-kicker">Peça do projeto</span> <span class="dialog-code" id="module-dialog-id"></span></p><h2 id="module-dialog-title"></h2></div>
     <button class="close-btn" type="button" data-close aria-label="Fechar"><Icon name="close" /></button>
   </div>
   <div class="dialog-body" id="module-dialog-body"></div>
@@ -26,8 +27,8 @@ import { STATUS_DATE, formatDay, withName } from '../../data/site/project';
         {DETAIL_FIELDS.map(f => <div class={f.tone ? `is-${f.tone}` : undefined}><dt>{f.label}</dt><dd>{withName(m[f.key])}</dd></div>)}
       </dl>
       <div class="dialog-nav">
-        <button class="btn" type="button" data-module={prev.id} aria-label={`Peça anterior: ${prev.name}`}><Icon name="arrow-left" />{prev.id}</button>
-        <button class="btn" type="button" data-module={next.id} aria-label={`Próxima peça: ${next.name}`}>{next.id}<Icon name="arrow-right" /></button>
+        <button class="btn" type="button" data-module={prev.id} aria-label={`Peça anterior: ${prev.name}`}><Icon name="arrow-left" /><span><small>Anterior</small>{prev.name}</span></button>
+        <button class="btn" type="button" data-module={next.id} aria-label={`Próxima peça: ${next.name}`}><span><small>Próxima</small>{next.name}</span><Icon name="arrow-right" /></button>
       </div>
     </template>
   );

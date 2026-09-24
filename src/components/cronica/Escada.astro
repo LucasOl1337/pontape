@@ -81,7 +81,7 @@ const ways: { icon: IconName; title: string; status: ModuleStatus; lead: string;
           <div class="panel-nav">
             <button class="btn" type="button" data-go={k - 1}><Icon name="arrow-left" /><span>{prev.name}</span></button>
             <button class="btn btn--ink" type="button" data-go={k + 1}><span>{next.name}</span><Icon name="arrow-right" /></button>
-            <button class="link-btn panel-more" type="button" data-module={s.module} aria-haspopup="dialog">Mais detalhes</button>
+            <button class="link-btn panel-more" type="button" data-module={s.module} data-step={k} aria-haspopup="dialog">Mais detalhes</button>
           </div>
         </div>
       );
