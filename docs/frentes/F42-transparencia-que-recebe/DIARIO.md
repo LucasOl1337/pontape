@@ -69,4 +69,4 @@ E1 conferido na bancada, computador e janela estreita: três perguntas, selo, "B
 
 ## Próximo passo
 
-PR do E2c. E3 em seguida: comparação de Stripe, Asaas e Mercado Pago no diário, proposta antes de codar.
+PR aberta: https://github.com/LucasOl1337/pontape/pull/112. E3 em seguida: comparação no diário e proposta antes de codar.
