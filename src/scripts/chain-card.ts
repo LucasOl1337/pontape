@@ -1,5 +1,5 @@
 import type { LedgerEvent } from '../lib/ledger/schema';
-import { projectSourceUrl } from '../lib/ledger/source-url';
+import { projectSourceUrl } from '../lib/ledger-view/source-url';
 import { formatCents } from '../lib/ledger-view/money';
 import { EVIDENCE, PROJECT_KIND, TYPES, phrase } from '../lib/ledger-view/phrases';
 import { PLAIN } from '../data/site/livro';

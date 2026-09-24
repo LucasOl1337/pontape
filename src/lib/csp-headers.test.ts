@@ -71,7 +71,7 @@ describe('CSP dos HTML gerados', () => {
       writeFileSync(join(directory, '_headers'), template);
       expect(run('generate', directory).status).toBe(0);
       const headers = readFileSync(join(directory, '_headers'), 'utf8');
-      expect(headers).toContain("script-src 'self' https://static.cloudflareinsights.com/beacon.min.js 'sha256-");
+      expect(headers).toContain("script-src 'self' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/ 'sha256-");
       expect(headers).toContain("connect-src 'self' https://cloudflareinsights.com;");
       expect(run('verify', directory).status).toBe(0);
 

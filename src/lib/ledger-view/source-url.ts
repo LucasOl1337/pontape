@@ -1,5 +1,6 @@
 // Renamed from LucasOl1337/VidaNova on 23/09/2026; GitHub redirects the old URL.
-// Kept out of schema.ts so a page script can build the same links without loading zod.
+// Lives in ledger-view, not in ledger, so a page script builds the same links without loading the
+// verifier chunk (ledger-core, astro.config.mjs).
 export const REPOSITORY_URL = 'https://github.com/LucasOl1337/pontape';
 
 type ProjectLink = { type: string; action?: string; sourceCommit?: string; pullRequest?: string };

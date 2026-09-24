@@ -7,10 +7,10 @@ import process from 'node:process';
 const HASH_TOKEN = /^'sha256-[A-Za-z0-9+/]+={0,2}'$/;
 const CSP_LINE = /^[ \t]+Content-Security-Policy:[ \t]*([^\r\n]+)$/gm;
 // The only outside script allowed: the Cloudflare Web Analytics beacon, which the host injects
-// (#55). The exact file, not the whole origin. It counts visits without cookies or personal data:
-// https://www.cloudflare.com/web-analytics/ and https://developers.cloudflare.com/web-analytics/faq/
-// (acesso em 24/09/2026).
-const ALLOWED_SCRIPTS = ['https://static.cloudflareinsights.com/beacon.min.js'];
+// (#55). The exact file and its versioned pieces (beacon.min.js/v...), not the whole origin. It
+// counts visits without cookies or personal data: https://www.cloudflare.com/web-analytics/ and
+// https://developers.cloudflare.com/web-analytics/faq/ (acesso em 24/09/2026).
+const ALLOWED_SCRIPTS = ['https://static.cloudflareinsights.com/beacon.min.js', 'https://static.cloudflareinsights.com/beacon.min.js/'];
 
 async function htmlPaths(directory) {
   const paths = [];

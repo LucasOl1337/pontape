@@ -101,13 +101,24 @@ export function mountSeal(panel: HTMLElement, getLedger: () => LedgerView) {
     const events = view.events.slice(0, through);
     const checkpoint = through >= total ? view.checkpoint : undefined;
     interim({ id: 'marks', mark: 'run', title: 'Recalculando as marcas.', text: '' });
-    const [{ proofReport, proofFromTrust }, result] = await Promise.all([
-      import('../lib/ledger-view/proof'),
-      verifyEvents(events, checkpoint),
-    ]);
-    let proof: BookProof = { signature: 'missing', stamp: 'missing' };
-    try { proof = proofFromTrust(JSON.parse(document.getElementById('ledger-proof')?.textContent || '{}')); } catch { /* missing proof stays missing */ }
-    render(proofReport({ source, total, through, proof, result }));
+    try {
+      const [{ proofReport, proofFromTrust }, result] = await Promise.all([
+        import('../lib/ledger-view/proof'),
+        verifyEvents(events, checkpoint),
+      ]);
+        // The page embeds the proof already read from trust.json at build (VerifyPanel); a raw trust
+      // document (with `timestamp`) is still accepted, so both shapes end in the same place.
+      let proof: BookProof = { signature: 'missing', stamp: 'missing' };
+      try {
+        const embedded = JSON.parse(document.getElementById('ledger-proof')?.textContent || '{}') as Record<string, unknown>;
+        proof = 'timestamp' in embedded ? proofFromTrust(embedded) : { ...proof, ...(embedded as Partial<BookProof>) };
+      } catch { /* missing proof stays missing */ }
+      render(proofReport({ source, total, through, proof, result }));
+    } catch {
+      // Never leave the seal spinning: say it could not check here, so the person can try again.
+      render({ steps: [{ id: 'marks', mark: 'bad', title: 'Não deu pra conferir aqui.', text: 'Alguma parte não carregou. Recarregue a página e tente de novo.' }],
+        summary: { state: 'partial', title: 'Conferência incompleta.', text: 'Não deu pra terminar a conta.' } });
+    }
     btn.disabled = false;
   }
 
