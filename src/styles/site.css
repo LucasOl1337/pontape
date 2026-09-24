@@ -10,6 +10,8 @@ body{
   font:400 var(--t-body)/1.6 var(--font-serif); font-kerning:normal;
   -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:clip;
 }
+/* clip came in Chrome 90 (#87). On the body, hidden goes to the window and the sticky header keeps working. */
+@supports not (overflow-x:clip){ body{ overflow-x:hidden } }
 h1,h2,h3,p,ol,ul,dl,dd,figure,blockquote{ margin:0 }
 ol,ul{ padding:0; list-style:none }
 img,svg{ display:block; max-width:100% }
@@ -25,7 +27,7 @@ strong{ font-weight:600 }
 .skip-link{ position:fixed; left:8px; top:-100px; z-index:100; background:var(--ink); color:var(--paper); padding:12px 16px; font:700 1rem var(--font-sans) }
 .skip-link:focus{ top:8px }
 .sprite{ position:absolute; width:0; height:0; overflow:hidden }
-.wrap{ width:100%; max-width:var(--page); margin-inline:auto; padding-inline:var(--gutter) }
+.wrap{ width:100%; max-width:var(--page); margin-left:auto; margin-right:auto; padding-left:var(--gutter); padding-right:var(--gutter) }
 main:focus{ outline:none }
 [hidden]{ display:none !important }
 
@@ -93,7 +95,7 @@ main:focus{ outline:none }
 .status-strip a:hover{ color:var(--inverse-accent) }
 /* On a phone the three pieces run as one sentence: two lines instead of three (F31). */
 @media (max-width:599px){
-  .status-strip-inner{ display:block; padding-block:.45rem; font-size:.875rem; line-height:1.45 }
+  .status-strip-inner{ display:block; padding-top:.45rem; padding-bottom:.45rem; font-size:.875rem; line-height:1.45 }
   .status-strip strong{ margin-right:.35rem; font-size:.75rem }
   .status-strip a{ margin-left:.2rem; white-space:nowrap }
 }
@@ -127,17 +129,17 @@ main:focus{ outline:none }
 /* ---------- The front: one screen, the staircase is the page ---------- */
 .front{ display:grid; grid-template-rows:1fr auto; grid-template-columns:minmax(0, 1fr) }
 /* The staircase follows the page grid (F31): on a wide screen the title starts where the logo starts. */
-.stage{ width:100%; max-width:var(--page); margin-inline:auto }
+.stage{ width:100%; max-width:var(--page); margin-left:auto; margin-right:auto }
 .stage, .panels, .panel{ min-width:0 }
 /* One screen on a 1440 x 900 desk, with air under the staircase (4.5rem, down to 2.5rem on a short
    screen), and never so short that a step has to scroll inside itself (F36). */
 @media (min-width:1180px) and (min-height:560px){
-  .front{ --air:clamp(2.5rem, 100svh - var(--header-h) - var(--strip-h) - 41.5rem, 4.5rem); padding-bottom:var(--air);
-    min-height:max(calc(100svh - var(--header-h) - var(--strip-h)), calc(41.5rem + var(--air))) }
+  .front{ --air:clamp(2.5rem, 100 * var(--svh) - var(--header-h) - var(--strip-h) - 41.5rem, 4.5rem); padding-bottom:var(--air);
+    min-height:max(calc(100 * var(--svh) - var(--header-h) - var(--strip-h)), calc(41.5rem + var(--air))) }
 }
-.stage{ position:relative; --num-size:clamp(1.2rem, 3.2cqh, 1.9rem); --name-size:clamp(.72rem, 1.7cqh, .95rem); --label-pad:.5rem;
-  --label-h:calc(var(--label-pad) + var(--num-size) + .1rem + 1.1 * var(--name-size) + .5rem); --rail-h:clamp(1.8rem, 4cqh, 2.6rem); --head:max(31cqh, 12.5rem); --u:calc((100cqh - var(--label-h) - var(--rail-h) - var(--head)) / (var(--n) - 1)) }
-.stage-title{ font:500 clamp(2.2rem, 7cqh, 4.6rem)/1.02 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
+.stage{ position:relative; --num-size:clamp(1.2rem, 3.2 * var(--cqh), 1.9rem); --name-size:clamp(.72rem, 1.7 * var(--cqh), .95rem); --label-pad:.5rem;
+  --label-h:calc(var(--label-pad) + var(--num-size) + .1rem + 1.1 * var(--name-size) + .5rem); --rail-h:clamp(1.8rem, 4 * var(--cqh), 2.6rem); --head:max(31 * var(--cqh), 12.5rem); --u:calc((100 * var(--cqh) - var(--label-h) - var(--rail-h) - var(--head)) / (var(--n) - 1)) }
+.stage-title{ font:500 clamp(2.2rem, 7 * var(--cqh), 4.6rem)/1.02 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
 .stage-title em{ font-style:italic; color:var(--accent) }
 
 /* Treads: one column each, the tread line on top, the riser on the left. The ones still ahead
@@ -155,16 +157,16 @@ main:focus{ outline:none }
 }
 .tread.is-ahead .tread-block{ border-top-style:dotted; border-top-color:var(--ink-2) }
 .tread.is-ahead .tread-block::before{ background:repeating-linear-gradient(to bottom, var(--ink-2) 0 3px, transparent 3px 7px) }
-.tread:hover .tread-block{ background:color-mix(in srgb, var(--ink) 4.5%, transparent) }
-.tread[aria-selected="true"] .tread-block{ background:repeating-linear-gradient(-45deg, color-mix(in srgb, var(--ink) 13%, transparent) 0 1px, transparent 1px 8px) }
+.tread:hover .tread-block{ background:rgba(var(--ink-rgb), .045) }
+.tread[aria-selected="true"] .tread-block{ background:repeating-linear-gradient(-45deg, rgba(var(--ink-rgb), .13) 0 1px, transparent 1px 8px) }
 /* The ring goes around the whole tread, name included: the ground tread has no block to draw it on. */
 .tread:focus-visible{ outline:3px solid var(--accent); outline-offset:-3px }
 /* The icon sits clear of the dot of "alguém" standing on its tread (22 px plus the ring), and never
    outgrows the lowest tread, so it never runs into the number under the floor (F34, F36). */
-.stage{ --icon-t:14px; --icon-b:clamp(.3rem, .8cqh, .6rem); --icon:min(clamp(22px, 5.4cqh, 50px), calc(var(--u) - 3px - var(--icon-t) - var(--icon-b))) }
+.stage{ --icon-t:14px; --icon-b:clamp(.3rem, .8 * var(--cqh), .6rem); --icon:min(clamp(22px, 5.4 * var(--cqh), 50px), calc(var(--u) - 3px - var(--icon-t) - var(--icon-b))) }
 .tread-icon{ width:var(--icon); height:var(--icon); margin:var(--icon-t) auto 0; stroke-width:1.7; color:var(--ink) }
 .tread.is-ahead .tread-icon{ color:var(--ink-2) }
-.tread-ball{ position:absolute; left:50%; bottom:calc(100% + 3px); width:clamp(30px, 7cqh, 56px); height:auto; transform:translateX(-50%); fill:none; stroke:var(--ink); stroke-width:2.2; stroke-linejoin:round }
+.tread-ball{ position:absolute; left:50%; bottom:calc(100% + 3px); width:clamp(30px, 7 * var(--cqh), 56px); height:auto; transform:translateX(-50%); fill:none; stroke:var(--ink); stroke-width:2.2; stroke-linejoin:round }
 .tread-label{ display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:.1rem; height:var(--label-h); padding:var(--label-pad) .2rem 0; border-top:1px solid var(--ink) }
 .tread-num{ font:italic 500 var(--num-size)/1 var(--font-display); color:var(--accent) }
 /* The number sits at a fixed distance under the floor, with its name right under it (F34, F36).
@@ -182,7 +184,7 @@ main:focus{ outline:none }
   left:calc((var(--at) + .5) / var(--n) * 100%); bottom:calc(var(--rail-h) + var(--label-h) + var(--at) * var(--u));
   transition:left .55s var(--ease), bottom .55s cubic-bezier(.3, 1.5, .5, 1);
 }
-.walker-label{ position:absolute; right:calc(100% + .5rem); bottom:100%; font:italic 400 clamp(1rem, 2.6cqh, 1.4rem)/1 var(--font-serif); color:var(--accent); white-space:nowrap; transition:opacity .3s }
+.walker-label{ position:absolute; right:calc(100% + .5rem); bottom:100%; font:italic 400 clamp(1rem, 2.6 * var(--cqh), 1.4rem)/1 var(--font-serif); color:var(--accent); white-space:nowrap; transition:opacity .3s }
 .stage:not([data-at="1"]) .walker-label{ opacity:0 }
 .stage[data-at="0"] .walker{ margin-left:clamp(20px, 3vw, 44px) }
 
@@ -196,7 +198,7 @@ main:focus{ outline:none }
 .rail::before{ content:""; position:absolute; left:0; right:4px; top:50%; border-top:2px solid currentColor }
 .rail::after{ content:""; position:absolute; right:4px; top:50%; width:9px; height:9px; border-top:2px solid currentColor; border-right:2px solid currentColor; transform:translateY(-50%) rotate(45deg) }
 .rail .icon{ position:relative; width:1.5em; height:1.5em; margin-left:-.75em; padding:.1em; background:var(--paper); stroke-width:1.9 }
-.rail-label{ position:relative; padding-inline:.3rem .45rem; background:var(--paper); font:italic 400 clamp(1rem, 2.4cqh, 1.3rem)/1 var(--font-serif); white-space:nowrap }
+.rail-label{ position:relative; padding-left:.3rem; padding-right:.45rem; background:var(--paper); font:italic 400 clamp(1rem, 2.4 * var(--cqh), 1.3rem)/1 var(--font-serif); white-space:nowrap }
 
 /* Panels: one per tread, shown in the same place. */
 .panel{ outline:none }
@@ -205,27 +207,27 @@ main:focus{ outline:none }
 @media (prefers-reduced-motion:no-preference){ .js .panel.is-active{ animation:panel-in .35s var(--ease) both } }
 @keyframes panel-in{ from{ opacity:0; transform:translateY(10px) } }
 .panel-kicker{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.12em; text-transform:uppercase; color:var(--accent) }
-.panel-title{ margin-top:clamp(.3rem, 1.1cqh, .8rem); font:500 clamp(2rem, 5.6cqh, 3.6rem)/1 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
+.panel-title{ margin-top:clamp(.3rem, 1.1 * var(--cqh), .8rem); font:500 clamp(2rem, 5.6 * var(--cqh), 3.6rem)/1 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
 .panel-title em{ font-style:italic; color:var(--accent) }
-.panel-text{ margin-top:clamp(.5rem, 1.5cqh, 1rem); max-width:34em; font-size:clamp(1.0625rem, 2.6cqh, 1.55rem); line-height:1.4 }
+.panel-text{ margin-top:clamp(.5rem, 1.5 * var(--cqh), 1rem); max-width:34em; font-size:clamp(1.0625rem, 2.6 * var(--cqh), 1.55rem); line-height:1.4 }
 .panel > :first-child{ margin-top:0 }
 /* "Já funciona?" in words, in the color of the step's state. */
 .now--live{ --now:var(--status-live) }
 .now--building{ --now:var(--status-building) }
 .now--bottleneck{ --now:var(--status-bottleneck) }
 .now--planned{ --now:var(--status-planned) }
-.now{ display:flex; align-items:flex-start; gap:.55rem; max-width:34em; margin-top:clamp(.6rem, 1.8cqh, 1.1rem); padding-top:clamp(.5rem, 1.4cqh, .8rem); border-top:1px solid var(--rule); font:400 clamp(1rem, 2.2cqh, 1.1875rem)/1.45 var(--font-sans) }
+.now{ display:flex; align-items:flex-start; gap:.55rem; max-width:34em; margin-top:clamp(.6rem, 1.8 * var(--cqh), 1.1rem); padding-top:clamp(.5rem, 1.4 * var(--cqh), .8rem); border-top:1px solid var(--rule); font:400 clamp(1rem, 2.2 * var(--cqh), 1.1875rem)/1.45 var(--font-sans) }
 .now .icon{ width:1.3em; height:1.3em; margin-top:.05em; color:var(--now); stroke-width:2.2 }
 .now strong{ font-weight:700; color:var(--now) }
-.panel-ledger{ margin-top:.7rem; font:400 clamp(1rem, 2.2cqh, 1.1875rem)/1.5 var(--font-sans) }
+.panel-ledger{ margin-top:.7rem; font:400 clamp(1rem, 2.2 * var(--cqh), 1.1875rem)/1.5 var(--font-sans) }
 .panel-ledger strong{ font:500 1.4em/1 var(--font-display) }
 .panel-ledger a{ display:inline-flex; align-items:center; gap:.3rem; margin-left:.2rem; font-weight:700; white-space:nowrap }
-.panel-nav{ display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; margin-top:clamp(.8rem, 2.4cqh, 1.5rem) }
-.panel-more{ display:inline-flex; align-items:center; min-height:44px; margin-left:.4rem; padding-inline:.2rem; font-size:1.0625rem }
-.panel-ways{ display:grid; grid-template-columns:1fr 1fr; gap:0 1.6rem; margin-top:clamp(.7rem, 2.2cqh, 1.4rem); border-top:1px solid var(--ink) }
-.panel-ways li{ display:grid; grid-template-columns:2rem minmax(0, 1fr); align-items:start; align-content:start; gap:.2rem .7rem; padding-block:clamp(.45rem, 1.4cqh, .8rem); border-bottom:1px solid var(--rule) }
+.panel-nav{ display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; margin-top:clamp(.8rem, 2.4 * var(--cqh), 1.5rem) }
+.panel-more{ display:inline-flex; align-items:center; min-height:44px; margin-left:.4rem; padding-left:.2rem; padding-right:.2rem; font-size:1.0625rem }
+.panel-ways{ display:grid; grid-template-columns:1fr 1fr; gap:0 1.6rem; margin-top:clamp(.7rem, 2.2 * var(--cqh), 1.4rem); border-top:1px solid var(--ink) }
+.panel-ways li{ display:grid; grid-template-columns:2rem minmax(0, 1fr); align-items:start; align-content:start; gap:.2rem .7rem; padding-top:clamp(.45rem, 1.4 * var(--cqh), .8rem); padding-bottom:clamp(.45rem, 1.4 * var(--cqh), .8rem); border-bottom:1px solid var(--rule) }
 .panel-ways .way-icon{ grid-row:span 2; width:1.8rem; height:1.8rem; margin-top:.1rem; color:var(--accent); stroke-width:1.7 }
-.way-title{ font:500 clamp(1.2rem, 2.9cqh, 1.6rem)/1.1 var(--font-display) }
+.way-title{ font:500 clamp(1.2rem, 2.9 * var(--cqh), 1.6rem)/1.1 var(--font-display) }
 .way-when{ font:400 .9375rem/1.4 var(--font-sans); color:var(--ink-2) }
 .way-when strong{ font-weight:700; color:var(--now) }
 .way-when a{ font-weight:700; color:var(--ink) }
@@ -236,14 +238,21 @@ main:focus{ outline:none }
    someone climbs; the staircase sits out of the flow, so it never moves. */
 @media (min-width:1180px) and (min-height:560px){
   .stage{ container-type:size; min-height:31rem; display:flex; flex-direction:column }
-  .stair{ position:absolute; inset:0 }
-  .stage{ --corner-w:calc(100cqw * 4 / var(--n) - var(--gutter) - 1.2rem); --ring-room:8px }
+  .stair{ position:absolute; top:0; right:0; bottom:0; left:0 }
+  .stage{ --corner-w:calc(100 * var(--cqw) * 4 / var(--n) - var(--gutter) - 1.2rem); --ring-room:8px }
   .stage-title, .panels{ position:relative; z-index:2; margin-left:var(--gutter); width:var(--corner-w) }
   /* Room for the focus ring of the panel and its first buttons, which the scrolling box would cut. */
   .panels{ padding:var(--ring-room); margin-left:calc(var(--gutter) - var(--ring-room)); width:calc(var(--corner-w) + 2 * var(--ring-room)) }
-  .stage-title{ margin-top:3cqh }
-  .stage:not([data-at="0"]) .stage-title{ font-size:clamp(1.3rem, 3.4cqh, 2.3rem); line-height:1.12; letter-spacing:-.015em }
-  .panels{ flex:1 1 0; min-height:0; margin-top:calc(clamp(.8rem, 2.6cqh, 1.8rem) - var(--ring-room)); margin-bottom:calc(var(--rail-h) + var(--label-h) + 3 * var(--u) + 1.2cqh - var(--ring-room)); overflow:auto; scrollbar-width:thin }
+  .stage-title{ margin-top:calc(3 * var(--cqh)) }
+  .stage:not([data-at="0"]) .stage-title{ font-size:clamp(1.3rem, 3.4 * var(--cqh), 2.3rem); line-height:1.12; letter-spacing:-.015em }
+  .panels{ flex:1 1 0; min-height:0; margin-top:calc(clamp(.8rem, 2.6 * var(--cqh), 1.8rem) - var(--ring-room)); margin-bottom:calc(var(--rail-h) + var(--label-h) + 3 * var(--u) + 1.2 * var(--cqh) - var(--ring-room)); overflow:auto; scrollbar-width:thin }
+}
+/* A browser without container units (Chrome before 105, #87): the stage is the screen under the
+   header, less the air, and at most a page wide. Newer browsers never read this. */
+@media (min-width:1180px) and (min-height:560px){
+  @supports not (height:1cqh){
+    .stage{ --cqh:calc((100vh - var(--header-h) - var(--strip-h) - var(--air)) / 100); --cqw:calc(min(100vw, var(--page)) / 100) }
+  }
 }
 @media (min-width:1180px) and (min-height:560px) and (prefers-reduced-motion:no-preference){
   .stage-title{ transition:font-size .35s var(--ease) }
@@ -251,8 +260,8 @@ main:focus{ outline:none }
 /* Wider than the page: the staircase stands inside the grid too, its floor starting under the logo
    and ending under the last menu item. Below that it runs to the edges of the screen. */
 @media (min-width:100rem) and (min-height:560px){
-  .stair{ inset:0 var(--gutter) }
-  .stage{ --corner-w:calc((100cqw - 2 * var(--gutter)) * 4 / var(--n) - 1.2rem) }
+  .stair{ right:var(--gutter); left:var(--gutter) }
+  .stage{ --corner-w:calc((100 * var(--cqw) - 2 * var(--gutter)) * 4 / var(--n) - 1.2rem) }
 }
 /* A short stage (laptops): the step keeps what matters and drops the extras. */
 @container (max-height:700px){
@@ -262,10 +271,10 @@ main:focus{ outline:none }
 }
 /* Narrow or short: title, staircase, step, all in the flow. The title keeps its size here, so the
    staircase under it never jumps. */
-@media not ((min-width:1180px) and (min-height:560px)){
-  .stage{ display:flex; flex-direction:column; gap:.8rem; padding:1.2rem var(--gutter) 1.6rem; --num-size:1.2rem; --label-pad:.3rem; --icon:16px; --label-h:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .3rem); --rail-h:1.6rem; --head:1.5rem; --u:calc((min(24svh, 15rem) - var(--label-h) - var(--head)) / (var(--n) - 1)) }
+@media (max-width:1179.98px), (max-height:559.98px){
+  .stage{ display:flex; flex-direction:column; gap:.8rem; padding:1.2rem var(--gutter) 1.6rem; --num-size:1.2rem; --label-pad:.3rem; --icon:16px; --label-h:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .3rem); --rail-h:1.6rem; --head:1.5rem; --u:calc((min(24 * var(--svh), 15rem) - var(--label-h) - var(--head)) / (var(--n) - 1)) }
   .stage-title{ font-size:clamp(1.75rem, 8.2vw, 2.6rem) }
-  .stair{ position:relative; height:calc(min(24svh, 15rem) + var(--rail-h)); margin-inline:calc(-1 * var(--gutter)); padding-inline:.4rem }
+  .stair{ position:relative; height:calc(min(24 * var(--svh), 15rem) + var(--rail-h)); margin-left:calc(-1 * var(--gutter)); margin-right:calc(-1 * var(--gutter)); padding-left:.4rem; padding-right:.4rem }
   .rail-label{ font-size:.9375rem }
   .tread-name{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap }
   /* The low treads are a few pixels tall here: the icon goes under the floor, over its number. */
@@ -279,12 +288,20 @@ main:focus{ outline:none }
   .panel-text{ font-size:1.125rem }
   .panel-ways{ grid-template-columns:1fr }
 }
+/* The treads are a ninth of the screen wide on a phone (34 to 46 px). The touch area grows the only
+   way it can without touching the drawing (F38): each tread answers in its whole column, from the
+   top of the staircase down through the rail band, and the first and last reach the screen edge. */
+@media (max-width:599px){
+  .tread::after{ content:""; position:absolute; top:calc(var(--label-h) + var(--k) * var(--u) - min(24 * var(--svh), 15rem)); right:0; bottom:calc(-1 * var(--rail-h)); left:0 }
+  .tread:first-child::after{ left:-.4rem }
+  .tread:last-of-type::after{ right:-.4rem }
+}
 /* Tablets and small laptops, under 1180 px: the text corner of the wide layout gets too narrow and
    the longer steps scrolled inside it (F31). Same flow as the phone, with the tread names back, a
    taller staircase and the text at a reading width. */
-@media (min-width:600px) and (not ((min-width:1180px) and (min-height:560px))){
-  .stage{ --icon:18px; --name-size:.75rem; --label-h:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .1rem + 2.2 * var(--name-size) + .3rem); --u:calc((min(34svh, 18rem) + 1rem - var(--label-h) - var(--head)) / (var(--n) - 1)) }
-  .stair{ height:calc(min(34svh, 18rem) + 1rem + var(--rail-h)) }
+@media (min-width:600px) and (max-width:1179.98px), (min-width:600px) and (max-height:559.98px){
+  .stage{ --icon:18px; --name-size:.75rem; --label-h:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .1rem + 2.2 * var(--name-size) + .3rem); --u:calc((min(34 * var(--svh), 18rem) + 1rem - var(--label-h) - var(--head)) / (var(--n) - 1)) }
+  .stair{ height:calc(min(34 * var(--svh), 18rem) + 1rem + var(--rail-h)) }
   .tread-name{ position:static; width:auto; height:auto; overflow:visible; clip:auto; white-space:normal }
   .panels{ max-width:46rem }
   .panel-ways{ grid-template-columns:1fr 1fr }
@@ -303,13 +320,13 @@ main:focus{ outline:none }
 .door-arrow{ align-self:center; width:1.3rem; height:1.3rem }
 @media (min-width:760px){ .doors{ grid-template-columns:1fr 1fr; column-gap:var(--space-12) } }
 .doors--compact{ margin-top:var(--space-3) }
-.doors--compact .door{ align-items:center; padding-block:var(--space-3) }
+.doors--compact .door{ align-items:center; padding-top:var(--space-3); padding-bottom:var(--space-3) }
 .doors--compact .door-icon{ margin-top:0 }
 @media (min-width:960px){ .doors--compact{ grid-template-columns:repeat(3, 1fr); column-gap:var(--space-8) } }
 
 /* ---------- Cadernos: pages of their own under /construir (F31) ---------- */
 /* Same grid as the header: the title, the list and the footer start where the logo starts. */
-.caderno{ max-width:var(--page); margin-inline:auto; padding:clamp(1.25rem, .8rem + 1.6vw, 2.25rem) var(--gutter) var(--space-16) }
+.caderno{ max-width:var(--page); margin-left:auto; margin-right:auto; padding:clamp(1.25rem, .8rem + 1.6vw, 2.25rem) var(--gutter) var(--space-16) }
 .caderno-head{ padding-bottom:var(--space-6); border-bottom:3px double var(--ink) }
 .crumbs ol{ display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .5rem; font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
 .crumbs li + li::before{ content:"›" / ""; margin-right:.5rem; color:var(--ink-2) }
@@ -321,7 +338,7 @@ main:focus{ outline:none }
 .caderno-body{ padding-top:var(--space-6) }
 .caderno-body > :first-child{ margin-top:0 }
 /* The double rule above already opens the list. */
-.caderno-body > :is(.index, .questions, .doors):first-child{ border-top:0 }
+.caderno-body > .index:first-child, .caderno-body > .questions:first-child, .caderno-body > .doors:first-child{ border-top:0 }
 .caderno-more{ margin-top:var(--space-12); padding-top:var(--space-3); border-top:2px solid var(--ink) }
 .caderno-more-title{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2) }
 .caderno-more .doors{ border-top:0 }
@@ -369,7 +386,7 @@ main:focus{ outline:none }
   width:min(42rem, calc(100vw - 2 * var(--gutter))); max-height:min(90vh, 52rem); padding:0;
   border:2px solid var(--ink); background:var(--paper); color:var(--ink); box-shadow:10px 10px 0 var(--ink);
 }
-.dialog::backdrop{ background:color-mix(in srgb, var(--ink) 62%, transparent) }
+.dialog::backdrop{ background:rgba(var(--ink-rgb), .62) }
 .dialog-head{ position:sticky; top:0; display:flex; gap:var(--space-4); justify-content:space-between; align-items:flex-start; padding:var(--space-6); background:var(--paper); border-bottom:3px double var(--ink) }
 .dialog-head h2{ margin-top:var(--space-2); font:500 clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem)/1.05 var(--font-display) }
 .close-btn{ display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; flex-shrink:0; border:1.5px solid var(--ink); background:none; cursor:pointer }
@@ -436,7 +453,7 @@ main:focus{ outline:none }
 .chain-full dt{ font-family:var(--font-sans); font-weight:700; margin-top:.4rem }
 .chain-empty{ padding:var(--space-6) 0; border-top:1px solid var(--rule) }
 .chain-empty .icon{ width:2rem; height:2rem; color:var(--accent) }
-.chain-empty-title{ margin-block:var(--space-2); font:600 1.25rem/1.3 var(--font-serif) }
+.chain-empty-title{ margin-top:var(--space-2); margin-bottom:var(--space-2); font:600 1.25rem/1.3 var(--font-serif) }
 
 /* Conferir */
 .verify{ padding:var(--space-6); border:2px solid currentColor }
@@ -460,7 +477,7 @@ main:focus{ outline:none }
 /* ---------- Bottlenecks as open questions ---------- */
 .questions{ margin-top:var(--space-8); border-top:2px solid var(--ink) }
 .question{ border-bottom:1px solid var(--rule) }
-.question summary{ display:grid; grid-template-columns:3rem 1fr auto; gap:var(--space-3); align-items:center; padding-block:var(--space-4); cursor:pointer; list-style:none }
+.question summary{ display:grid; grid-template-columns:3rem 1fr auto; gap:var(--space-3); align-items:center; padding-top:var(--space-4); padding-bottom:var(--space-4); cursor:pointer; list-style:none }
 .question summary::-webkit-details-marker{ display:none }
 .question summary:focus-visible{ outline-offset:-3px }
 .question-num{ font:500 2.75rem/1 var(--font-display); color:var(--accent) }
@@ -498,7 +515,7 @@ main:focus{ outline:none }
 .segmented [aria-pressed="true"] .count{ color:var(--paper) }
 .select{ display:inline-flex; align-items:center; gap:.6rem; font:700 .9375rem/1.2 var(--font-sans) }
 .select-box{ position:relative; display:inline-flex; align-items:center }
-.select select{ appearance:none; min-height:44px; padding:.5rem 2.6rem .5rem .8rem; border:2px solid var(--ink); border-radius:0; background:var(--paper); color:var(--ink); font:inherit; cursor:pointer }
+.select select{ -webkit-appearance:none; appearance:none; min-height:44px; padding:.5rem 2.6rem .5rem .8rem; border:2px solid var(--ink); border-radius:0; background:var(--paper); color:var(--ink); font:inherit; cursor:pointer }
 .select .icon{ position:absolute; right:.75rem; width:1.1em; height:1.1em; pointer-events:none }
 .task-count{ margin-left:auto; font:400 var(--t-small)/1.4 var(--font-sans); color:var(--ink-2) }
 .tasks{ display:grid; gap:var(--space-6) var(--space-8); margin-top:var(--space-6) }
@@ -510,9 +527,12 @@ main:focus{ outline:none }
 .task-first{ color:var(--status-live) }
 .task-title{ font:600 1.25rem/1.25 var(--font-serif) }
 .task-title a{ text-decoration:none }
-.task-title a::after{ content:""; position:absolute; inset:0 }
-.task-title a:focus-visible{ outline:none }
-.task:has(a:focus-visible){ outline:3px solid var(--accent); outline-offset:6px }
+.task-title a::after{ content:""; position:absolute; top:0; right:0; bottom:0; left:0 }
+/* The ring goes around the whole task where :has() exists; elsewhere the link keeps its own. */
+@supports selector(:has(a)){
+  .task-title a:focus-visible{ outline:none }
+  .task:has(a:focus-visible){ outline:3px solid var(--accent); outline-offset:6px }
+}
 .task:hover .task-title a{ color:var(--ink); text-decoration:underline; text-decoration-thickness:1px }
 .task-line{ font-size:1.0625rem; line-height:1.45 }
 .task-go{ display:inline-flex; align-items:center; gap:.3rem; margin-top:auto; padding-top:var(--space-1); font:700 .9375rem/1.3 var(--font-sans) }
@@ -530,12 +550,12 @@ main:focus{ outline:none }
 .how-steps li::before{ content:counter(how); font:italic 500 1.5rem/1 var(--font-display); color:var(--accent) }
 .expediente-box{ padding:var(--space-6); border:3px double var(--ink); font-family:var(--font-sans); font-size:var(--t-small) }
 .expediente-title{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.5rem; padding-bottom:var(--space-3); border-bottom:1px solid var(--ink); font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:.8125rem }
-.repo-files li{ display:grid; grid-template-columns:auto 1fr; column-gap:.6rem; padding-block:var(--space-3); border-bottom:1px solid var(--rule) }
+.repo-files li{ display:grid; grid-template-columns:auto 1fr; column-gap:.6rem; padding-top:var(--space-3); padding-bottom:var(--space-3); border-bottom:1px solid var(--rule) }
 .repo-files .icon{ grid-row:span 2; margin-top:.15rem }
 .repo-files code{ font-weight:700 }
 .repo-files span{ color:var(--ink-2) }
 .repo-facts{ display:grid; gap:0; margin-top:var(--space-3) }
-.repo-facts div{ display:flex; justify-content:space-between; gap:1rem; padding-block:.4rem; border-bottom:1px dotted var(--rule) }
+.repo-facts div{ display:flex; justify-content:space-between; gap:1rem; padding-top:.4rem; padding-bottom:.4rem; border-bottom:1px dotted var(--rule) }
 .repo-facts dt{ font-weight:700 }
 @media (min-width:960px){ .expediente{ grid-template-columns:7fr 5fr; gap:var(--space-16) } }
 
@@ -561,7 +581,7 @@ main:focus{ outline:none }
 .toast.shown{ transform:translate(-50%, 0); visibility:visible; transition:transform .25s var(--ease) }
 
 /* ---------- Ledger page: the book on one screen, the rest in tabs ---------- */
-.book{ display:grid; gap:2rem; max-width:var(--page); margin-inline:auto; padding:1.6rem var(--gutter) 2.4rem }
+.book{ display:grid; gap:2rem; max-width:var(--page); margin-left:auto; margin-right:auto; padding:1.6rem var(--gutter) 2.4rem }
 .book-title{ margin-top:.5rem; font:500 clamp(2.4rem, 1.5rem + 2.6vw, 3.9rem)/.98 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
 .book-title em{ font-style:italic; color:var(--accent) }
 .book-lead{ max-width:34rem; margin-top:.8rem; font:400 1.125rem/1.5 var(--font-serif); color:var(--ink-2) }
@@ -600,7 +620,7 @@ main:focus{ outline:none }
 .book .chain-context{ font-size:1rem; line-height:1.45 }
 .book .chain-seal{ margin-top:.4rem }
 @media (min-width:960px){
-  .book{ grid-template-columns:minmax(0, 5fr) minmax(0, 7fr); gap:3.5rem; min-height:calc(100svh - var(--header-h) - var(--strip-h)); align-items:start }
+  .book{ grid-template-columns:minmax(0, 5fr) minmax(0, 7fr); gap:3.5rem; min-height:calc(100 * var(--svh) - var(--header-h) - var(--strip-h)); align-items:start }
 }
 @media (max-width:599px){
   .pager{ display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)) }
@@ -612,11 +632,28 @@ main:focus{ outline:none }
   .book-numbers dd{ font-size:1.7rem }
 }
 
-.book-more{ max-width:var(--page); margin-inline:auto; padding:0 var(--gutter) 4rem }
+.book-more{ max-width:var(--page); margin-left:auto; margin-right:auto; padding:0 var(--gutter) 4rem }
 .tabs{ display:flex; flex-wrap:wrap; gap:0 2rem; border-bottom:3px double var(--ink) }
 .tabs button{ min-height:48px; padding:.6rem 0; border:0; border-bottom:4px solid transparent; margin-bottom:-3px; background:none; cursor:pointer; font:500 clamp(1.25rem, 1rem + .8vw, 1.75rem)/1.1 var(--font-display) }
 .tabs button[aria-selected="true"]{ border-bottom-color:var(--accent); color:var(--accent) }
 .tabs button:hover{ color:var(--accent) }
+/* On a phone the three tabs keep one line (F38): smaller type and a shorter gap. The double rule
+   is drawn as a background, so that with very large text the row can scroll sideways without
+   cutting it; the side with more tabs then fades out. */
+@media (max-width:599px){
+  .tabs{
+    flex-wrap:nowrap; gap:0 clamp(.75rem, 3.6vw, 1.25rem); overflow-x:auto; scrollbar-width:none; border-bottom:0;
+    background:linear-gradient(var(--ink), var(--ink)) left bottom / 100% 1px no-repeat, linear-gradient(var(--ink), var(--ink)) left calc(100% - 2px) / 100% 1px no-repeat;
+  }
+  .tabs::-webkit-scrollbar{ display:none }
+  .tabs button{ flex-shrink:0; margin-bottom:0; white-space:nowrap; font-size:clamp(1rem, 5vw, 1.375rem) }
+  .tabs[data-more]{ --fade-r:3rem }
+  .tabs[data-less]{ --fade-l:3rem }
+  .tabs[data-more], .tabs[data-less]{
+    -webkit-mask-image:linear-gradient(to right, transparent, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent);
+    mask-image:linear-gradient(to right, transparent, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent);
+  }
+}
 .tab-panel{ padding-top:1.6rem; outline:none }
 .tab-panel:focus-visible{ outline:3px solid var(--accent); outline-offset:4px }
 .js .tab-panel:not(.is-active){ display:none }
@@ -629,7 +666,7 @@ main:focus{ outline:none }
 .mini-stair{ display:grid; grid-template-columns:repeat(var(--n), minmax(0, 1fr)); align-items:stretch; min-height:22rem }
 /* Every step ends on the same floor and starts one rise above the one before, however long its text:
    the first one used to spill under the box below (F32). */
-.mini-stair li{ margin-top:calc((var(--n) - 1 - var(--k)) * 3.5rem); min-height:9rem; padding:.9rem .9rem .9rem 1rem; border-top:3px solid var(--ink); border-left:3px solid var(--ink); background:repeating-linear-gradient(-45deg, color-mix(in srgb, var(--ink) 7%, transparent) 0 1px, transparent 1px 9px) }
+.mini-stair li{ margin-top:calc((var(--n) - 1 - var(--k)) * 3.5rem); min-height:9rem; padding:.9rem .9rem .9rem 1rem; border-top:3px solid var(--ink); border-left:3px solid var(--ink); background:repeating-linear-gradient(-45deg, rgba(var(--ink-rgb), .07) 0 1px, transparent 1px 9px) }
 .mini-stair li:first-child{ border-left-color:transparent }
 .mini-stair h3{ margin-top:.3rem; font:500 clamp(1.2rem, 1rem + .7vw, 1.6rem)/1.1 var(--font-display) }
 .mini-stair p{ margin-top:.4rem; font:400 .9375rem/1.45 var(--font-sans); color:var(--ink-2) }
@@ -654,12 +691,12 @@ main:focus{ outline:none }
 .fine-print .actions{ margin-top:.8rem }
 .verify-cli{ margin-top:1rem; font:400 var(--t-small)/1.6 var(--font-sans); color:var(--ink-2) }
 .sources{ display:grid; margin-top:1rem; border-top:1px solid var(--ink) }
-.sources li{ display:grid; gap:.1rem; padding-block:.55rem; border-bottom:1px solid var(--rule); font:400 var(--t-small)/1.45 var(--font-sans) }
+.sources li{ display:grid; gap:.1rem; padding-top:.55rem; padding-bottom:.55rem; border-bottom:1px solid var(--rule); font:400 var(--t-small)/1.45 var(--font-sans) }
 .sources a{ display:inline-flex; align-items:center; gap:.3rem; justify-self:start; font-weight:700 }
 .sources .icon{ width:1em; height:1em }
 .sources span{ color:var(--ink-2) }
 .trust-list{ display:grid; margin-top:1rem; border-top:1px solid var(--ink); font:400 var(--t-small)/1.4 var(--font-sans) }
-.trust-list div{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:.3rem 1rem; padding-block:.6rem; border-bottom:1px solid var(--rule) }
+.trust-list div{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:.3rem 1rem; padding-top:.6rem; padding-bottom:.6rem; border-bottom:1px solid var(--rule) }
 .trust-list dt{ font-weight:700 }
 .trust-list dd{ display:inline-flex; align-items:center; gap:.35rem; color:var(--ink-2) }
 @media (min-width:960px){
@@ -672,7 +709,7 @@ main:focus{ outline:none }
 }
 
 .money{ margin-top:1.4rem }
-.money-totals{ display:grid; grid-template-columns:repeat(3, 1fr); border-block:2px solid var(--ink) }
+.money-totals{ display:grid; grid-template-columns:repeat(3, 1fr); border-top:2px solid var(--ink); border-bottom:2px solid var(--ink) }
 .money-totals div{ padding:1rem .75rem 1rem 0 }
 .money-totals div + div{ padding-left:.75rem; border-left:1px solid var(--rule) }
 .money-totals dt{ font:700 var(--t-small)/1.3 var(--font-sans); color:var(--ink-2) }
@@ -681,7 +718,7 @@ main:focus{ outline:none }
 .money-where{ margin-top:1.6rem }
 .money-where h3, .why-zero h3{ font:500 var(--t-h3)/1.15 var(--font-display) }
 .bars{ margin-top:.8rem; display:grid }
-.bars li{ display:grid; grid-template-columns:1fr auto; gap:.3rem 1rem; align-items:center; padding-block:.6rem; border-bottom:1px solid var(--rule) }
+.bars li{ display:grid; grid-template-columns:1fr auto; gap:.3rem 1rem; align-items:center; padding-top:.6rem; padding-bottom:.6rem; border-bottom:1px solid var(--rule) }
 .bar-name{ display:inline-flex; align-items:center; gap:.45rem; font:700 1rem/1.3 var(--font-sans) }
 .bar-track{ grid-column:1 / -1; grid-row:2; height:10px; border-bottom:1px solid var(--ink) }
 .bar-fill{ display:block; height:100%; width:var(--p); background:var(--accent) }
@@ -699,7 +736,7 @@ main:focus{ outline:none }
 }
 
 .rules{ margin-top:1.4rem; border-top:2px solid var(--ink) }
-.rules-row{ display:grid; gap:.5rem; padding-block:1rem; border-bottom:1px solid var(--rule) }
+.rules-row{ display:grid; gap:.5rem; padding-top:1rem; padding-bottom:1rem; border-bottom:1px solid var(--rule) }
 .rules-row--head{ display:none }
 .rules-type{ display:inline-flex; align-items:center; gap:.45rem; font:700 1.0625rem/1.3 var(--font-sans) }
 .rules-label{ display:block; font:700 .75rem/1.3 var(--font-sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-2) }
@@ -713,7 +750,7 @@ main:focus{ outline:none }
 
 /* ---------- Transparência, first layer (F32, D029): plain words, the technical part behind a button ---------- */
 /* One column on a phone, in reading order; two on a desk, on the header grid (x = logo). */
-.plain{ display:grid; grid-template-columns:minmax(0, 1fr); row-gap:var(--space-6); max-width:var(--page); margin-inline:auto; padding:var(--space-4) var(--gutter) var(--space-16) }
+.plain{ display:grid; grid-template-columns:minmax(0, 1fr); row-gap:var(--space-6); max-width:var(--page); margin-left:auto; margin-right:auto; padding:var(--space-4) var(--gutter) var(--space-16) }
 .plain-top{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.5rem 1rem }
 .plain-tech{ min-height:44px; padding:.4rem .9rem; font-size:.9375rem }
 .plain-title{ font:500 clamp(2.1rem, 1.3rem + 2.6vw, 4.6rem)/1 var(--font-display); letter-spacing:-.025em; text-wrap:balance }
@@ -724,6 +761,13 @@ main:focus{ outline:none }
 .plain-count div + div{ padding-left:1rem; border-left:1px solid var(--rule) }
 .plain-count dt{ font:700 .875rem/1.3 var(--font-sans); color:var(--ink-2) }
 .plain-count dd{ font:500 clamp(1.5rem, 1.1rem + 1.2vw, 2.4rem)/1.1 var(--font-display); white-space:nowrap }
+/* A narrow phone (320 px, or 640 px at 200% zoom): the three counts keep one line with less air and
+   a number that follows the screen width, so "R$ 0,00" never pushes past the edge (#56). */
+@media (max-width:399px){
+  .plain-count div{ padding-right:.6rem }
+  .plain-count div + div{ padding-left:.6rem }
+  .plain-count dd{ font-size:min(1.5rem, 6.4vw) }
+}
 .plain-note{ margin-top:.5rem; font:400 .875rem/1.5 var(--font-sans); color:var(--ink-2) }
 .plain-side .conferir{ margin-top:var(--space-4) }
 /* Until the first click the result says nothing new: it stays for the screen reader, out of sight. */
@@ -759,7 +803,7 @@ main:focus{ outline:none }
 .c-mark{ fill:none; stroke:var(--paper); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round }
 .c-scribble{ fill:none; stroke:var(--status-bottleneck); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round }
 .recent{ margin-top:var(--space-2) }
-.recent li{ display:grid; grid-template-columns:3.1rem minmax(0, 1fr); gap:.75rem; padding-block:.55rem; border-bottom:1px solid var(--rule) }
+.recent li{ display:grid; grid-template-columns:3.1rem minmax(0, 1fr); gap:.75rem; padding-top:.55rem; padding-bottom:.55rem; border-bottom:1px solid var(--rule) }
 .recent time{ font:700 .875rem/1.75 var(--font-sans); color:var(--ink-2); font-variant-numeric:tabular-nums }
 .recent p{ font-size:1.0625rem; line-height:1.45 }
 .recent strong{ font-weight:700; color:var(--accent) }
@@ -801,6 +845,10 @@ main:focus{ outline:none }
 .step-missing-mark{ font:italic 500 2rem/1 var(--font-display) }
 .lost-stairs figcaption{ margin-top:var(--space-3); font:italic 400 1rem var(--font-serif); color:var(--ink-2) }
 @media (min-width:960px){ .lost-grid{ grid-template-columns:3fr 2fr; align-items:center } }
+/* A narrow phone (320 px, or 640 px at 200% zoom): each of the five columns is under 60 px, so the
+   names get a smaller size and less side padding. "Trabalho", in the last column, stays inside the
+   screen even with the browser's text set larger (#54). */
+@media (max-width:399px){ .stairs .step{ padding:.45rem .3rem; font-size:.6875rem } }
 /* Below 316 px, keep the icons and the missing mark; the names go, like on the home staircase. */
 @media (max-width:315px){ .stairs .step-label{ display:none } }
 
@@ -809,8 +857,20 @@ main:focus{ outline:none }
    its touch area with padding only, so the headline under it does not move. */
 @media (max-width:959px){
   .panel-ledger a, .question-help a, .more-link, .sources a, .chain-facts a{ min-height:44px }
-  .chain-full summary{ min-height:44px; padding-block:.75rem }
-  .crumbs a{ padding-block:.85rem }
+  .chain-full summary{ min-height:44px; padding-top:.75rem; padding-bottom:.75rem }
+  .crumbs a{ padding-top:.85rem; padding-bottom:.85rem }
+}
+
+/* Chrome before 84 (#87, the Android 11 of the studio phone has 83) has no gap in flexbox: the
+   pieces that would touch get a margin instead. `revert` came in the same release, so newer
+   browsers never read this. */
+@supports not (color:revert){
+  .btn .icon{ margin-left:.3rem; margin-right:.3rem }
+  .icon-btn .icon, .now .icon, .more-link .icon, .panel-note .icon{ margin-right:.5rem }
+  .panel-nav > *, .actions > *, .filters > *{ margin:0 .6rem .6rem 0 }
+}
+@media (max-width:1179.98px), (max-height:559.98px){
+  @supports not (color:revert){ .stage > * + *{ margin-top:.8rem } }
 }
 
 @media (prefers-reduced-motion:reduce){
