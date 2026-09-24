@@ -30,8 +30,8 @@ menuBtn?.addEventListener('click', () => menuBtn.setAttribute('aria-expanded', S
 document.querySelectorAll('.site-nav a').forEach(a => a.addEventListener('click', closeMenu));
 $('#yumi-open')?.addEventListener('click', async () => {
   closeMenu();
-  const { openYumiChat } = await import('./yumi-chat');
-  openYumiChat();
+  const { openYumeChat } = await import('./yumi-chat');
+  openYumeChat();
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && header?.classList.contains('menu-open')) { closeMenu(); menuBtn?.focus(); }

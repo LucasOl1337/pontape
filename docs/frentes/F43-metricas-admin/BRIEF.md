@@ -1,4 +1,4 @@
-# F43 · Contador público, painel do admin e histórico da Yumi
+# F43 · Contador público, painel do admin e histórico da Yume
 
 **Dono:** `tecla` (Codex GPT-6-Sol) · **Worktree:** `~/Projects/VidaNova/.worktrees/tecla` · **Branch:** `tecla/f43-metricas` · **Revisão, secrets e publicação:** Regente
 
@@ -6,7 +6,7 @@
 
 1. Um **contador público na home**: quantas pessoas já entraram, cliques únicos e o que mais fizer sentido em público.
 2. Um **painel do admin** em `pontape.org/admin`, com e-mail e senha, só pra ele, com todas as estatísticas.
-3. **Histórico das conversas da Yumi**, pra ele ler e melhorar o site. Sai o "a conversa não é guardada".
+3. **Histórico das conversas da Yume**, pra ele ler e melhorar o site. Sai o "a conversa não é guardada".
 
 ## O que já existe
 
@@ -19,7 +19,7 @@
 
 - **Nunca guardar IP, user agent bruto, nome, telefone, CPF ou e-mail.** Pessoa única por dia = SHA-256 de (IP + user agent + dia + `SESSION_SECRET`), truncado; o IP não vai pro banco.
 - Mensagem que o filtro de dado pessoal barra **não é guardada** e não vai pro modelo (já é assim). O que passa pelo filtro é guardado: texto, papel, hora, id da conversa (aleatório, só na aba), modelo usado. Retenção: 180 dias, apagamento por job diário.
-- A primeira linha da Yumi vira: "Sou a Yumi, AI do PontaPé. Esta conversa fica guardada pra melhorar o site, sem nome nem contato. Não mande dado pessoal." Ajustar `yumi.js` e o dialog.
+- A primeira linha da Yume vira: "Sou a Yume, AI do PontaPé. Esta conversa fica guardada pra melhorar o site, sem nome nem contato. Não mande dado pessoal." Ajustar `yumi.js` e o dialog.
 - Termo **AI**, nunca "IA"; sem Bitcoin; texto público em PT-BR, frase curta, sem travessão.
 - Nada de biblioteca pesada no cliente; orçamento de 60 KB por página (`scripts/check-budget.mjs`). O painel do admin é uma página à parte e pode passar do orçamento do site público, mas fica fora da lista do budget só se o Regente aprovar.
 - CSP continua `default-src 'self'`; sem CDN.
@@ -35,8 +35,8 @@
 
 ### 2. Contador público
 
-- `GET /api/stats/public` devolve, com cache de 60 s: visitas desde 24/09/2026, pessoas hoje, pessoas nos últimos 7 dias, conferências do selo, conversas com a Yumi, passos da escada abertos. Só números agregados.
-- Na home, uma linha discreta e sem rolagem, no rodapé da escada (abaixo da linha da AI) ou no topo do rodapé do site: "Desde 24/09: 1.234 visitas · 87 pessoas hoje · 56 conversas com a Yumi". Proponha o lugar em 10 linhas antes de codar; o Regente escolhe. Sem JS o texto vem do build (última contagem conhecida) e o JS atualiza.
+- `GET /api/stats/public` devolve, com cache de 60 s: visitas desde 24/09/2026, pessoas hoje, pessoas nos últimos 7 dias, conferências do selo, conversas com a Yume, passos da escada abertos. Só números agregados.
+- Na home, uma linha discreta e sem rolagem, no rodapé da escada (abaixo da linha da AI) ou no topo do rodapé do site: "Desde 24/09: 1.234 visitas · 87 pessoas hoje · 56 conversas com a Yume". Proponha o lugar em 10 linhas antes de codar; o Regente escolhe. Sem JS o texto vem do build (última contagem conhecida) e o JS atualiza.
 - A página de transparência ganha a mesma linha embaixo dos números do livro.
 
 ### 3. Painel do admin
@@ -58,4 +58,4 @@
 
 ## Pronto quando
 
-Contador público na home e na transparência, `/admin` com login funcionando, conversas da Yumi visíveis no painel, testes verdes, `npm run check` verde, PR pra `main`.
+Contador público na home e na transparência, `/admin` com login funcionando, conversas da Yume visíveis no painel, testes verdes, `npm run check` verde, PR pra `main`.

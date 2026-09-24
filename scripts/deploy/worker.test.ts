@@ -15,7 +15,7 @@ const env = (secret = 'test-only') => ({ NINEROUTER_TOKEN: secret,
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe('Yumi no Worker', () => {
+describe('Yume no Worker', () => {
   it('não expõe chave e recusa mensagem longa', async () => {
     const missing = await worker.fetch(request([{ role: 'user', content: 'Olá' }]), env(''));
     expect(missing.status).toBe(503);

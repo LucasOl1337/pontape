@@ -23,8 +23,8 @@ function validMessages(value) {
 }
 
 async function chat(request, env) {
-  if (!env.NINEROUTER_TOKEN) return error('Yumi está indisponível agora.', 503);
-  if (!env.CHAT_RATE_LIMITER) return error('Yumi está indisponível agora.', 503);
+  if (!env.NINEROUTER_TOKEN) return error('Yume está indisponível agora.', 503);
+  if (!env.CHAT_RATE_LIMITER) return error('Yume está indisponível agora.', 503);
   if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) {
     return error('Envie uma mensagem em JSON.', 415);
   }
@@ -44,7 +44,7 @@ async function chat(request, env) {
   const key = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip)))]
     .map(byte => byte.toString(16).padStart(2, '0')).join('');
   const { success } = await env.CHAT_RATE_LIMITER.limit({ key });
-  if (!success) return error('A Yumi precisa de um tempo. Tente de novo em um minuto.', 429);
+  if (!success) return error('A Yume precisa de um tempo. Tente de novo em um minuto.', 429);
 
   if (body.messages.some(message => containsPersonalData(message.content))) {
     const content = 'Não guardo nem uso dados pessoais nesta conversa. Por favor, tire sua dúvida sem nome, telefone, CPF ou e-mail.';
@@ -84,7 +84,7 @@ async function chat(request, env) {
     }
     await upstream.body?.cancel();
   }
-  return error('A Yumi não conseguiu responder agora. Tente daqui a pouco.', 502);
+  return error('A Yume não conseguiu responder agora. Tente daqui a pouco.', 502);
 }
 
 function sameToken(left, right) {

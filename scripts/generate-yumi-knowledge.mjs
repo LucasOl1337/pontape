@@ -32,4 +32,4 @@ const knowledge = `PONTAPÉ: ESTADO E PLANO\n${project}\n\nDECISÕES EM PALAVRAS
   .replace(/\n{3,}/g, '\n\n');
 
 writeFileSync('scripts/deploy/yumi-knowledge.js', `// Gerado por scripts/generate-yumi-knowledge.mjs. Não edite à mão.\nexport const YUMI_KNOWLEDGE = ${JSON.stringify(knowledge)};\n`);
-console.log(`Contexto da Yumi: ${knowledge.length} caracteres`);
+console.log(`Contexto da Yume: ${knowledge.length} caracteres`);

@@ -58,7 +58,7 @@ describe('dados do site', () => {
   });
 
   it('o site não dá crédito pessoal a ninguém (D036)', () => {
-    const text = JSON.stringify([OPENING, STEPS, FAQ, CONTATO_TEXTO]);
+    const text = JSON.stringify([OPENING, STEPS, FAQ, CONTATO_TEXTO, Object.keys(DECISIONS).map(decisionPlain)]);
     expect(text).not.toMatch(/Lucas|Oliveira|Herreiro/);
   });
 

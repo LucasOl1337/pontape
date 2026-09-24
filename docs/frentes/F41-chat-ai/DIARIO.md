@@ -1,4 +1,4 @@
-# F41 · DIARIO da Yumi
+# F41 · DIARIO da Yume
 
 ## 24/09/2026 · implementação no worktree tecla
 
@@ -36,7 +36,7 @@ O contexto gerado tem cerca de 20 mil caracteres, aproximadamente 5 mil tokens. 
 
 ## 24/09/2026 · no ar
 
-- O Regente informou que revisou, integrou e publicou a [PR #105](https://github.com/LucasOl1337/pontape/pull/105). A Yumi está no ar em `pontape.org`, com `NINEROUTER_TOKEN` como Secret do Worker. Ele conferiu `GET /api/chat/health` com `configured: true` e uma resposta real. Essa verificação de produção foi feita por ele.
+- O Regente informou que revisou, integrou e publicou a [PR #105](https://github.com/LucasOl1337/pontape/pull/105). A Yume está no ar em `pontape.org`, com `NINEROUTER_TOKEN` como Secret do Worker. Ele conferiu `GET /api/chat/health` com `configured: true` e uma resposta real. Essa verificação de produção foi feita por ele.
 - A [PR #106](https://github.com/LucasOl1337/pontape/pull/106) tirou `scripts/deploy/yumi-knowledge.js` do Git e o pôs no `.gitignore`, porque o arquivo é gerado a cada check.
 - O CI da atualização do DIARIO revelou que `npm run typecheck` isolado tentava importar o arquivo antes de gerá-lo. Acrescentei `pretypecheck` e `pretest` para gerar o contexto também nesses comandos isolados. O `npm run check` completo já fazia essa geração.
 - Estado: em espera. Próximo passo: só um ajuste pedido pelo Regente.
