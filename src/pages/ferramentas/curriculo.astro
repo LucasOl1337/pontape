@@ -150,7 +150,9 @@ import { SKILLS, SHIFTS, SCHOOLING } from '../../data/site/curriculo';
 
   fieldset{ margin:0; padding:0; border:0; min-width:0 }
   fieldset + fieldset{ margin-top:var(--space-8); padding-top:var(--space-6); border-top:1px solid var(--rule) }
-  legend{ padding:0; font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
+  /* Floated, the legend leaves the fieldset border and sits under the rule like any other heading. */
+  legend{ float:left; width:100%; padding:0; font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
+  legend + *{ clear:both }
   .cv-hint{ margin-top:.4rem; font:400 var(--t-small)/1.45 var(--font-sans); color:var(--ink-2) }
   .cv-fields{ display:grid; gap:var(--space-4); margin-top:var(--space-4) }
   .cv-row{ display:grid; gap:var(--space-4) }
