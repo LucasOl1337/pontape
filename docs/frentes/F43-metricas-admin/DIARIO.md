@@ -38,3 +38,9 @@ Mil conversas de três trocas geram aproximadamente 16 mil gravações D1 inclui
 - Migração de produção e Secrets ficam a cargo do Regente. O worktree tecla não aplicou migração remota nem publicou o Worker.
 - PR para `main`: [#117](https://github.com/LucasOl1337/pontape/pull/117), aberta após fetch e rebase na D043.
 - O Worker local na porta 8794 foi encerrado após a PR. A bancada `pontape-f43-ui` já não aparece na lista de bancadas ativas. `maestri list` mostra só Lastro conectado; o resumo e o link da PR foram entregues ao Regente nesta conversa.
+
+## 24/09/2026 · no ar, em espera
+
+- F43 revisada e integrada na `main` pela [PR #117](https://github.com/LucasOl1337/pontape/pull/117). O Regente aplicou a migração no D1 de produção e confirmou o login do admin com o usuário `lucasol1337`, as estatísticas públicas e privadas respondendo e o contador no pé da escada.
+- O deploy estava quebrado desde E3 porque o Worker importava `asaas.ts` sem esse arquivo na pasta temporária. O Regente corrigiu o empacotamento para espelhar o repositório na [PR #118](https://github.com/LucasOl1337/pontape/pull/118), também integrada.
+- Estado final: F43 no ar. Tecla em espera até nova demanda do Regente.
