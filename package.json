@@ -3,10 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "bin": {
+    "pontape": "bin/pontape.mjs"
+  },
   "engines": {
     "node": ">=24.21.0 <25"
   },
   "scripts": {
+    "cli": "node bin/pontape.mjs",
+    "test:cli": "node scripts/generate-yumi-knowledge.mjs && vitest run scripts/cli",
+    "test:python": "python3 -B -m unittest discover -s tools -p 'test_*.py'",
+    "test:all": "npm test && npm run test:python",
     "dev": "astro dev",
     "build": "node scripts/generate-yumi-knowledge.mjs && astro build && node scripts/csp-headers.mjs generate && node scripts/csp-headers.mjs verify",
     "preview": "astro preview",
@@ -16,7 +23,7 @@
     "pretest": "node scripts/generate-yumi-knowledge.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "npm run lint && npm run typecheck && npm test && npm run ledger:verify && npm run build && npm run budget",
+    "check": "npm run lint && npm run typecheck && npm run test:all && npm run ledger:verify && npm run build && npm run budget",
     "ledger:append": "node scripts/ledger/append.ts",
     "ledger:verify": "node scripts/ledger/verify.ts",
     "ledger:sign": "node scripts/ledger/sign.ts",

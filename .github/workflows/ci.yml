@@ -29,7 +29,7 @@ jobs:
       - name: Tipos
         run: npm run typecheck
       - name: Testes
-        run: npm test
+        run: npm run test:all
       - name: Livro público
         run: npm run ledger:verify
       - name: Build estático

@@ -12,6 +12,7 @@ build/
 .vercel/
 coverage/
 *.log
+__pycache__/
 
 # Gerado no build (scripts/generate-yumi-knowledge.mjs); muda a cada npm run check.
 scripts/deploy/yumi-knowledge.js

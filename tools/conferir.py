@@ -19,12 +19,14 @@ NONNEGATIVE = re.compile(r"(?:0|[1-9][0-9]{0,19})\Z")
 SIGNED_CENTS = re.compile(r"-?[1-9][0-9]{0,19}\Z")
 COMMIT = re.compile(r"[0-9a-f]{40}\Z")
 DECISION = re.compile(r"D[0-9]{3}\Z")
+EXTERNAL_ID = re.compile(r"[A-Za-z0-9:_-]{1,80}\Z")
 ENVELOPE = {"schemaVersion", "sequence", "previousHash", "recordedAt", "payload", "hash"}
 COMMON = {"type", "action", "occurredOn", "correctionOf"}
 SPECIFIC = {
     "repository_created": {"repository"},
     "decision_recorded": {"decisionId", "sourceCommit"},
     "pull_request_merged": {"pullRequest", "mergeCommit"},
+    "signing_key_rotated": {"publicKey", "previousPublicKey"},
     "movement_recorded": {"currency", "amountCents", "category", "evidence"},
     "reversal": {"currency", "amountCents", "category", "evidence"},
     "food_delivered": {"quantity"},
@@ -39,7 +41,7 @@ CATEGORIES = {"donation", "food", "clothing", "hygiene", "operations", "fee", "r
 EVIDENCE = {"pending", "not_published"}
 CHECKPOINT = {"schemaVersion", "ledger", "sequence", "headHash", "generatedAt"}
 ACTIONS = {
-    "project": {"repository_created", "decision_recorded", "pull_request_merged"},
+    "project": {"repository_created", "decision_recorded", "pull_request_merged", "signing_key_rotated"},
     "finance": {"movement_recorded", "reversal"},
     "field": {"food_delivered", "clothing_delivered", "hygiene_delivered"},
     "candidate": {"contact_completed", "interview_completed", "referral_completed", "support_completed"},
@@ -140,7 +142,12 @@ def check_payload(payload, recorded_at, earlier, corrected_targets, project_sour
     family, action = payload["type"], payload["action"]
     if not isinstance(family, str) or not isinstance(action, str) or action not in ACTIONS.get(family, set()):
         raise LedgerError("família ou ação não prevista no contrato v1")
-    if set(payload) != COMMON | SPECIFIC[action]:
+    allowed = COMMON | SPECIFIC[action]
+    if family == "finance" and "externalId" in payload:
+        allowed = allowed | {"externalId"}
+        if not isinstance(payload["externalId"], str) or not EXTERNAL_ID.fullmatch(payload["externalId"]):
+            raise LedgerError("externalId inválido")
+    if set(payload) != allowed:
         raise LedgerError("payload tem campo ausente ou extra para a ação")
     occurred_on = payload["occurredOn"]
     if not isinstance(occurred_on, str) or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", occurred_on):
@@ -192,6 +199,11 @@ def check_payload(payload, recorded_at, earlier, corrected_targets, project_sour
             if not isinstance(payload["sourceCommit"], str) or not COMMIT.fullmatch(payload["sourceCommit"]):
                 raise LedgerError("sourceCommit inválido")
             source = (action, payload["decisionId"])
+        elif action == "signing_key_rotated":
+            for field in ("publicKey", "previousPublicKey"):
+                if not isinstance(payload[field], str) or not HASH.fullmatch(payload[field]):
+                    raise LedgerError(f"{field} inválida")
+            source = (action, payload["publicKey"])
         else:
             decimal_string(payload["pullRequest"], SEQUENCE, "pullRequest")
             if not isinstance(payload["mergeCommit"], str) or not COMMIT.fullmatch(payload["mergeCommit"]):
