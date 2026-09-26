@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tools.conferir import jcs
+from tools.conferir import jcs, verify, LedgerError
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,6 +54,25 @@ def run_book(path):
 
 
 class ConferirTest(unittest.TestCase):
+    def test_key_rotation_and_processor_id_match_current_contract(self):
+        payloads = [
+            {"type": "project", "action": "signing_key_rotated", "publicKey": "a" * 64, "previousPublicKey": "b" * 64},
+            {"type": "finance", "action": "movement_recorded", "currency": "BRL", "amountCents": "1000", "category": "donation", "evidence": "pending", "externalId": "pay_ficticio_python"},
+        ]
+        for payload in payloads:
+            with self.subTest(action=payload["action"]):
+                document = contract_vector()
+                event = document["events"][0]
+                event["payload"] = {**payload, "occurredOn": "2000-01-01", "correctionOf": None}
+                unsigned = {key: value for key, value in event.items() if key != "hash"}
+                event["hash"] = hashlib.sha256(jcs(unsigned).encode("utf-8")).hexdigest()
+                document["checkpoint"]["headHash"] = event["hash"]
+                self.assertEqual(verify(document), (1, 1000 if payload["type"] == "finance" else 0))
+                field = "externalId" if payload["type"] == "finance" else "publicKey"
+                event["payload"][field] = "valor inválido fictício"
+                with self.assertRaises(LedgerError):
+                    verify(document)
+
     def test_fixed_contract_vector(self):
         document = contract_vector()
         unsigned = {key: value for key, value in document["events"][0].items() if key != "hash"}
