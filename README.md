@@ -1,81 +1,82 @@
 # PontaPé
 
-Caridade inteligente. Nome escolhido pelo Lucas em 22/09/2026 (D016); o repositório é `LucasOl1337/pontape` (antes VidaNova) e a pasta local ainda se chama VidaNova.
+Plataforma sem fins lucrativos e de código aberto. Usa AI pra levar cada doação a quem pode mudar de vida e acompanha a pessoa até o trabalho. O livro público permite conferir as ações do projeto.
 
-Uma plataforma de caridade inteligente, sem fins lucrativos e open source: a AI ajuda a decidir como os recursos chegam a quem quer mudar de vida e faz de graça tudo que uma AI pode fazer pra melhorar a vida dessa pessoa.
+Site: [pontape.org](https://pontape.org). Produto e estado das frentes: [PRD](docs/PRD.md) e [Quadro](docs/QUADRO.md).
 
-A base é um sistema com AI e tudo à vista: a AI ajuda a escolher com cuidado quem mais quer mudar de vida, e toda ação do projeto, cada real e cada passo, fica num livro público que qualquer um pode conferir. Depois a gente vai até a pessoa, conversa com ela por voz (ela não precisa saber ler), garante comida, roupa e higiene pros primeiros dias e conecta com trabalho.
+Hoje o repositório contém site Astro, livro verificável, chat Yume, métricas e painel admin. Checkout e webhook Asaas estão implementados atrás de configuração; a operação com candidatos, voz e vagas ainda está em planejamento. Não confunda o estado do código com a abertura das doações.
 
-Estado: fundação. Esta base entrega uma página provisória e um painel estático com zero e data de referência. Atendimento e doações ainda não estão habilitados. A interface completa vem da F07; o livro público de ações vem da F08.
+## Começar pelo CLI
 
-## Rodar localmente
-
-Requisitos: **Node.js 24.21.0** (também registrado em `.node-version`) e npm. Ative essa versão no seu gerenciador de Node antes dos comandos. Não precisa de conta externa, variável de ambiente ou backend.
-
-Na raiz do checkout:
-
-```sh
-npm install
-npm run dev
-```
-
-Abra o endereço local mostrado pelo Astro, normalmente `http://localhost:4321`. Encerre com `Ctrl+C` no terminal. Se o Astro iniciar em segundo plano, use `npm run dev -- stop`. `.env.example` documenta que esta fase não exige configuração; não é necessário copiá-lo.
-
-## Verificar a base
-
-Para reproduzir a instalação do CI a partir do lockfile:
+Use Node 24.21, fixado em `.node-version`, e npm:
 
 ```sh
 npm ci
-npm run lint
-npm run typecheck
-npm test
-npm run build
+npm run cli -- --help
+npm run cli -- doctor
+npm --silent run cli -- capabilities --json
+npm --silent run cli -- status --json
 ```
 
-`npm run check` executa as quatro verificações em sequência. `npm run test:watch` acompanha os testes durante edição. O build é inteiramente estático, gravado em `dist/`.
+O CLI permite consultar e operar as funções atuais sem navegador. Tem ajuda por comando, saída JSON versionada, códigos de saída, timeout, sessão admin própria e ambiente fictício para testes. Não acrescenta dependências nem exige build próprio.
 
-Para conferir o build localmente:
+**[Guia completo do CLI](docs/cli/README.md)** · [Plano e levantamento](docs/cli/PLANO.md) · [Registro da entrega](docs/cli/DIARIO.md)
 
 ```sh
-npm run preview
+# Instalação opcional do atalho neste ambiente
+npm link
+pontape help ledger
+pontape ledger verify
+pontape site data --collection modules --id M4
+pontape dev mock
 ```
 
-Esse comando não publica o site. O workflow de CI roda em toda PR e em pushes para `main`, com permissão apenas de leitura e sem segredos ou deploy.
+`dev mock` executa o Worker real com SQLite em memória e provedores fictícios. Informa credenciais locais de teste, não precisa de conta externa e não publica nada. Para trabalhar na interface:
+
+```sh
+npm run dev
+```
+
+Abra o endereço informado pelo Astro, normalmente `http://localhost:4321`. `Ctrl+C` encerra. `.env.example` documenta a configuração para testar o Worker com provedores reais.
+
+## Verificações
+
+```sh
+npm run check
+npm run test:cli
+npm run cli -- test --suite python
+```
+
+`check` executa lint, tipos, Vitest (incluindo integração do CLI), Python, verificação do livro, build e orçamento de assets. Build estático em `dist/`; `npm run preview` permite conferir os assets, sem as APIs do Worker. O CI roda em PRs e pushes para `main`.
 
 ## Onde trabalhar
 
 | Caminho | Responsabilidade |
 |---|---|
-| `src/pages/` | Rotas Astro; `index.astro` é a página provisória |
-| `src/layouts/` | HTML base, idioma, metadados e estilos globais |
-| `src/components/blocks/` | Blocos que a F07 vai compor a partir da F01 |
-| `src/styles/tokens.css` | Fonte única dos tokens visuais; valores iniciais da F01 |
-| `src/data/transparency.json` | Snapshot financeiro público, versionado e com data |
-| `src/lib/transparency.ts` | Schema estrito e tipo exportado do snapshot |
-| `src/lib/*.test.ts` | Testes Vitest, sem navegador ou serviço externo |
-| `docs/` | Produto, decisões, pesquisas e diários |
+| `bin/pontape.mjs`, `scripts/cli/` | Executável, descoberta, comandos e testes de integração |
+| `src/pages/`, `src/components/`, `src/styles/` | Rotas, interface e estilos |
+| `src/data/site/` | Nome do projeto, módulos, jornada, tarefas e textos do site |
+| `src/data/transparency.json` | Snapshot financeiro público validado no build |
+| `src/data/ledger/`, `src/lib/ledger/` | Livro público, schemas e verificação criptográfica |
+| `scripts/ledger/` | Operação do livro; comandos npm antigos preservados |
+| `scripts/deploy/` | Worker, chat, métricas, admin, SQL e publicação |
+| `tools/conferir.py` | Conferidor independente em Python |
+| `docs/` | Produto, decisões, operação, pesquisas e diários |
 
-React está instalado e integrado ao Astro. A F07 pode criar componentes `.tsx` e hidratá-los explicitamente com `client:*` quando houver interação. O placeholder não carrega JavaScript de React nem fontes externas.
+## Livro público
 
-O snapshot aceita apenas os campos declarados no schema. Nesta fase, valores financeiros devem ser zero, moeda BRL e doações desabilitadas. `asOf` é a data do dado, não a data do build. Não atualize a data automaticamente nem acrescente texto livre ou dados pessoais. A validação também roda no build; mudar só o teste não torna um snapshot inválido publicável.
+```sh
+npm run cli -- ledger summary
+npm run cli -- ledger list --limit 5
+npm run cli -- ledger verify
+```
 
-A F08 terá contrato próprio para eventos públicos de projeto, finanças e ações. Ela poderá exportar tipos e verificador em `src/lib/` e manter dados versionados em `src/data/`, sem depender dos componentes de tela. Esta etapa não implementa cadeia de hashes nem transforma o snapshot em livro de eventos. D009 e D010 definem plataforma e transparência primeiro, entrevista depois.
+`ledger append --event arquivo.json` simula; `--apply` grava localmente. Assinatura exige chave Ed25519 fora do repositório. A corrente, a assinatura e o carimbo externo são verificações distintas. Os comandos de operação e suas dependências estão no [guia](docs/cli/README.md#livro-de-ações).
 
-## Documentos e contribuição
+[Como conferir](docs/transparencia/COMO-CONFERIR.md) · [Contrato do livro](docs/transparencia/CONTRATO.md) · [Operação](docs/transparencia/OPERACAO.md)
 
-- [PRD](docs/PRD.md)
-- [Quadro](docs/QUADRO.md)
-- [Decisões](docs/DECISOES.md)
-- [Arquitetura](docs/arquitetura/ARQUITETURA.md), com execução regida pelo brief aprovado da F02 e decisões posteriores
-- [Como contribuir, rascunho](CONTRIBUTING.md)
+## Contribuir
 
-Toda PR passa por aprovação de admin. Licença e abertura do repositório aguardam decisão do Lucas.
+Leia [AGENTS.md](AGENTS.md), [CONTRIBUTING.md](CONTRIBUTING.md), [decisões](docs/DECISOES.md) e [arquitetura](docs/arquitetura/ARQUITETURA.md). Toda PR passa por revisão de admin. Licença [Apache-2.0](LICENSE).
 
-## Livro público de ações
-
-O primeiro lote real, com fontes e datas, fica em `src/data/ledger/ledger.json`. Confira com `npm run ledger:verify`. Para propor um evento, `npm run ledger:append -- --event arquivo.json` simula sem gravar; `--apply` é explícito. O Regente opera o livro de produção.
-
-A mesma lógica pode ser importada no navegador por `src/lib/ledger/index.ts`. O build gera os downloads em `/livro/` e falha se a cadeia não conferir. [Como conferir](docs/transparencia/COMO-CONFERIR.md), [contrato para F07](docs/transparencia/CONTRATO.md) e [operação, assinatura e proposta OpenTimestamps](docs/transparencia/OPERACAO.md). Assinatura, ancoragem e espelho externos ainda não estão ativos.
-
-O projeto registra em `package.json` a aprovação de install script apenas para `esbuild@0.28.2`, a versão fixada no lockfile. A política `allowScripts` do npm 11.19 acompanha o repositório; atualização do esbuild exige revisar e aprovar a nova versão. Não usar liberação global de scripts para contornar avisos. [Referência do npm](https://docs.npmjs.com/cli/v11/commands/npm-install-scripts/) (consulta em 22/09/2026).
+O pacote aprova apenas o install script de `esbuild@0.28.2`, conforme `allowScripts` no `package.json`. Uma atualização dessa dependência exige revisar sua nova versão.
