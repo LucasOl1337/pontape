@@ -1,0 +1,238 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Caderno from '../../components/cronica/Caderno.astro';
+import Badge from '../../components/site/Badge.astro';
+import Icon from '../../components/site/Icon.astro';
+import { PROJECT_NAME } from '../../data/site/project';
+import { SKILLS, SHIFTS, SCHOOLING } from '../../data/site/curriculo';
+
+// A free résumé maker that runs only in the browser: nothing is sent, nothing is kept (D012).
+// Kept out of the menu and of the sitemap until the decision on it; noindex like /doar.
+---
+<BaseLayout title={`Seu currículo, de graça · ${PROJECT_NAME}`} description="Monte um currículo simples de graça, ouça ele em voz alta pra conferir e imprima ou salve em PDF. Nada sai do seu celular." current="ferramentas" noindex>
+  <Caderno kicker="Ferramenta" title="Seu currículo," turn="de graça."
+    lead="Responda o que souber. O currículo vai ficando pronto do lado, numa folha só. No fim você ouve ele em voz alta pra conferir, e imprime ou salva em PDF.">
+    <div class="cv-intro">
+      <p><Badge status="live" /></p>
+      <p class="cv-warn"><strong>Usar isto não te coloca em nenhuma fila</strong> e não é promessa de vaga. É de graça e aberto pra qualquer pessoa. Nada do que você escrever aqui chega até a gente.</p>
+    </div>
+
+    <div class="cv-tabs" role="tablist" aria-label="Preencher ou ver o currículo">
+      <button class="cv-tab" type="button" role="tab" id="cv-tab-form" aria-controls="cv-pane-form" aria-selected="true">Preencher</button>
+      <button class="cv-tab" type="button" role="tab" id="cv-tab-sheet" aria-controls="cv-pane-sheet" aria-selected="false">Ver currículo</button>
+    </div>
+
+    <div class="cv-cols">
+      <div class="cv-pane" id="cv-pane-form" role="tabpanel" aria-labelledby="cv-tab-form">
+        <form id="cv-form" autocomplete="off">
+          <fieldset>
+            <legend>Seus dados</legend>
+            <p class="cv-hint">O telefone é o campo mais importante. É por ali que a empresa chama.</p>
+            <div class="cv-fields">
+              <label class="cv-field"><span>Seu nome</span><input type="text" id="cv-name" placeholder="Nome e sobrenome" /></label>
+              <label class="cv-field"><span>Telefone com WhatsApp</span><input type="tel" id="cv-phone" placeholder="(11) 91234-5678" /></label>
+              <div class="cv-row">
+                <label class="cv-field"><span>Bairro</span><input type="text" id="cv-district" placeholder="Onde você mora" /></label>
+                <label class="cv-field"><span>Cidade</span><input type="text" id="cv-city" placeholder="Sua cidade" /></label>
+              </div>
+            </div>
+            <p class="cv-hint">Não pedimos rua e número. Bairro e cidade bastam, e é mais seguro num papel que vai de mão em mão.</p>
+          </fieldset>
+
+          <fieldset>
+            <legend>O que eu sei fazer</legend>
+            <p class="cv-hint">Marque tudo que você já fez, mesmo sem carteira assinada. Isso vai no alto do currículo.</p>
+            <div class="cv-checks">
+              {SKILLS.map(s => <label class="cv-check"><input type="checkbox" data-skill={s} /><span>{s}</span></label>)}
+            </div>
+            <div class="cv-adder">
+              <input type="text" id="cv-skill-new" placeholder="Outra coisa que eu sei fazer" aria-label="Outra coisa que eu sei fazer" />
+              <button class="btn cv-btn-sm" type="button" id="cv-skill-add">Adicionar</button>
+            </div>
+            <ul class="cv-chips" id="cv-skill-chips"></ul>
+          </fieldset>
+
+          <fieldset>
+            <legend>Onde eu já trabalhei</legend>
+            <p class="cv-hint">Pode deixar vazio. Se nunca trabalhou registrado, o currículo não mostra essa parte. Vale faxina, obra, cuidar de alguém, catar material, vender na rua.</p>
+            <div id="cv-jobs"></div>
+            <div class="cv-actions"><button class="btn cv-btn-sm" type="button" id="cv-job-add"><Icon name="plus" />Adicionar um trabalho</button></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Cursos</legend>
+            <p class="cv-hint">Só se você tiver. Curso curto conta, e curso da igreja ou do CRAS também.</p>
+            <div class="cv-adder">
+              <input type="text" id="cv-course-new" placeholder="Nome do curso" aria-label="Nome do curso" />
+              <button class="btn cv-btn-sm" type="button" id="cv-course-add">Adicionar</button>
+            </div>
+            <ul class="cv-chips" id="cv-course-chips"></ul>
+          </fieldset>
+
+          <fieldset>
+            <legend>Escolaridade</legend>
+            <div class="cv-fields">
+              <label class="cv-field"><span>Até onde você estudou</span>
+                <select id="cv-school">
+                  <option value="">Prefiro não contar</option>
+                  {SCHOOLING.map(s => <option>{s}</option>)}
+                </select>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Disponibilidade</legend>
+            <p class="cv-hint">Isso ajuda muito quem está contratando.</p>
+            <div class="cv-checks">
+              {SHIFTS.map(s => <label class="cv-check"><input type="checkbox" data-shift={s} /><span>{s}</span></label>)}
+              <label class="cv-check"><input type="checkbox" id="cv-license" /><span>Tenho CNH</span></label>
+              <label class="cv-check"><input type="checkbox" id="cv-travel" /><span>Posso viajar</span></label>
+            </div>
+            <div class="cv-fields" id="cv-license-wrap" hidden>
+              <label class="cv-field"><span>Categoria da CNH</span><input type="text" id="cv-license-cat" placeholder="A, B, AB, D" /></label>
+            </div>
+          </fieldset>
+
+          <div class="cv-actions">
+            <button class="btn cv-btn-quiet" type="button" id="cv-example">Ver com um exemplo inventado</button>
+            <button class="btn cv-btn-quiet" type="button" id="cv-clear"><Icon name="undo" />Apagar tudo</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="cv-pane cv-col-sheet" id="cv-pane-sheet" role="tabpanel" aria-labelledby="cv-tab-sheet" hidden>
+        <p class="kicker">O currículo</p>
+        <p class="cv-hint" id="cv-missing" aria-live="polite"></p>
+        <div class="cv-actions">
+          <button class="btn btn--ink" type="button" id="cv-listen"><Icon name="play" /><span>Ouvir meu currículo</span></button>
+          <button class="btn" type="button" id="cv-print"><Icon name="download" />Imprimir ou salvar em PDF</button>
+        </div>
+        <p class="cv-say" id="cv-say" role="status" aria-live="polite" hidden></p>
+        <div class="cv-desk">
+          <article class="cv-sheet" id="cv-sheet" aria-label="Prévia do currículo"></article>
+        </div>
+        <p class="cv-hint">Uma folha só, letra grande, imprime bem em preto e branco. Sem foto e sem CPF, de propósito.</p>
+      </div>
+    </div>
+
+    <section class="cv-notes" aria-labelledby="cv-notes-title">
+      <h2 id="cv-notes-title" class="kicker">Como esta ferramenta cuida de você</h2>
+      <ul>
+        <li><h3>Nada sai do seu celular</h3><p>O que você escreve não é enviado nem guardado. Por isso, se a página recarregar, tudo apaga.</p></li>
+        <li><h3>Nenhuma parte em branco</h3><p>Quem nunca teve carteira assinada não vê um buraco no currículo. Ele começa pelo que você sabe fazer.</p></li>
+        <li><h3>Sem foto, sem CPF, sem idade</h3><p>Nada disso é preciso pra se candidatar. E num papel que vai de mão em mão, CPF é risco.</p></li>
+        <li><h3>A folha é só sua</h3><p>O currículo sai sem o nome do {PROJECT_NAME}. Contar ou não de onde veio é escolha sua.</p></li>
+      </ul>
+    </section>
+  </Caderno>
+</BaseLayout>
+
+<script>import '../../scripts/curriculo';</script>
+
+<style>
+  .cv-intro{ display:grid; gap:var(--space-4); max-width:40rem }
+  .cv-warn{ padding:.85rem 1rem; border-left:3px solid var(--accent); background:var(--paper-2); font:400 var(--t-small)/1.5 var(--font-sans) }
+  .cv-warn strong{ font-weight:700 }
+
+  /* Phone: two tabs, one pane at a time. Wide: both side by side. */
+  .cv-tabs{ display:flex; margin-top:var(--space-6); border:2px solid var(--ink) }
+  .cv-tab{ flex:1; min-height:48px; padding:.7rem .6rem; border:0; background:transparent; font:700 1rem/1.2 var(--font-sans); cursor:pointer }
+  .cv-tab + .cv-tab{ border-left:2px solid var(--ink) }
+  .cv-tab[aria-selected="true"]{ background:var(--ink); color:var(--paper) }
+  .cv-cols{ display:grid; gap:var(--space-8); padding-top:var(--space-6) }
+  @media (min-width:960px){
+    .cv-tabs{ display:none }
+    .cv-cols{ grid-template-columns:minmax(0, 1fr) minmax(0, 1.05fr); gap:3.5rem; align-items:start }
+    .cv-pane[hidden]{ display:block !important }
+    .cv-col-sheet{ position:sticky; top:calc(var(--header-h) + var(--space-6)) }
+  }
+
+  fieldset{ margin:0; padding:0; border:0; min-width:0 }
+  fieldset + fieldset{ margin-top:var(--space-8); padding-top:var(--space-6); border-top:1px solid var(--rule) }
+  /* Floated, the legend leaves the fieldset border and sits under the rule like any other heading. */
+  legend{ float:left; width:100%; padding:0; font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
+  legend + *{ clear:both }
+  .cv-hint{ margin-top:.4rem; font:400 var(--t-small)/1.45 var(--font-sans); color:var(--ink-2) }
+  .cv-fields{ display:grid; gap:var(--space-4); margin-top:var(--space-4) }
+  .cv-row{ display:grid; gap:var(--space-4) }
+  @media (min-width:480px){ .cv-row{ grid-template-columns:1fr 1fr } }
+  .cv-field{ display:block }
+  .cv-field > span{ display:block; margin-bottom:.35rem; font:700 var(--t-small)/1.3 var(--font-sans) }
+  input[type="text"], input[type="tel"], select{
+    width:100%; min-height:48px; padding:.6rem .7rem; border:1.5px solid var(--ink); border-radius:0;
+    background:var(--paper); color:var(--ink); font:400 1.0625rem/1.4 var(--font-sans);
+  }
+  input::placeholder{ color:var(--ink-2) }
+
+  .cv-checks{ display:grid; grid-template-columns:repeat(auto-fill, minmax(10.5rem, 1fr)); gap:.4rem; margin-top:var(--space-4) }
+  .cv-check{ display:flex; align-items:center; gap:.5rem; min-height:44px; padding:.35rem .5rem; border:1.5px solid var(--rule); cursor:pointer; font:400 var(--t-small)/1.3 var(--font-sans) }
+  .cv-check:hover{ border-color:var(--ink) }
+  .cv-check input{ width:22px; height:22px; flex:none; margin:0; accent-color:var(--accent) }
+  .cv-check.on{ border-color:var(--accent); background:var(--paper-2) }
+
+  .cv-adder{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:var(--space-4) }
+  .cv-adder input{ flex:1 1 11rem; width:auto }
+  .cv-btn-sm{ min-height:44px; padding:.4rem .9rem; font-size:var(--t-small); border-width:1.5px }
+  .cv-btn-quiet{ border-color:var(--rule); color:var(--ink-2); font-size:var(--t-small) }
+  .cv-btn-quiet:hover{ background:var(--paper-3); color:var(--ink) }
+  .cv-actions{ display:flex; flex-wrap:wrap; gap:var(--space-3); margin-top:var(--space-4) }
+  #cv-form > .cv-actions{ margin-top:var(--space-8) }
+
+  .cv-say{ margin-top:var(--space-3); padding:.7rem .85rem; border-left:3px solid var(--accent); background:var(--paper-2); font:400 var(--t-small)/1.5 var(--font-sans) }
+
+  /* The sheet: paper on the desk, in the same palette as the site. Print turns it black on white. */
+  .cv-desk{ margin-top:var(--space-4); padding:var(--space-3); background:var(--paper-3); border:1px solid var(--rule) }
+  .cv-sheet{ max-width:46rem; margin:auto; padding:2.25rem 2rem; background:var(--paper); color:var(--ink); font:400 1rem/1.5 var(--font-sans); box-shadow:0 1px 3px rgba(var(--ink-rgb), .18) }
+  @media (max-width:520px){ .cv-sheet{ padding:1.5rem 1.25rem } }
+
+  .cv-notes{ margin-top:var(--space-12); padding-top:var(--space-3); border-top:2px solid var(--ink) }
+  .cv-notes ul{ display:grid; gap:var(--space-6); margin-top:var(--space-6) }
+  @media (min-width:760px){ .cv-notes ul{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:var(--space-6) 2.5rem } }
+  .cv-notes h3{ font:700 1.0625rem/1.3 var(--font-sans) }
+  .cv-notes p{ margin-top:.3rem; font:400 var(--t-small)/1.5 var(--font-sans); color:var(--ink-2) }
+
+  /* The sheet's own content is drawn by the script, so its rules are global inside .cv-sheet. */
+  .cv-sheet :global(.cv-name){ font:500 2.1rem/1.05 var(--font-display); letter-spacing:-.02em; text-wrap:balance }
+  @media (max-width:520px){ .cv-sheet :global(.cv-name){ font-size:1.75rem } }
+  .cv-sheet :global(.cv-contact){ margin-top:.5rem; padding-bottom:.9rem; border-bottom:2px solid var(--ink); font-size:1.0625rem }
+  .cv-sheet :global(.cv-contact b){ font-weight:700 }
+  .cv-sheet :global(section){ margin-top:1.4rem }
+  .cv-sheet :global(h3){ padding-bottom:.3rem; border-bottom:1px solid var(--rule); font:700 .75rem/1.2 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2) }
+  .cv-sheet :global(.cv-skills){ display:flex; flex-wrap:wrap; gap:.3rem .9rem; margin-top:.6rem }
+  .cv-sheet :global(.cv-skills li){ position:relative; padding-left:.85rem; font-size:1.0625rem }
+  .cv-sheet :global(.cv-skills li::before){ content:""; position:absolute; left:0; top:.55em; width:.4rem; height:.4rem; background:var(--ink) }
+  .cv-sheet :global(.cv-job){ margin-top:.75rem }
+  .cv-sheet :global(.cv-job b){ display:block; font-size:1.0625rem; font-weight:700 }
+  .cv-sheet :global(.cv-job span){ display:block; font-size:.9375rem; color:var(--ink-2) }
+  .cv-sheet :global(.cv-line){ margin-top:.55rem; font-size:1.0625rem }
+  .cv-sheet :global(.cv-empty){ margin-top:.6rem; font:italic 400 1rem var(--font-serif); color:var(--ink-2) }
+
+  :global(.cv-chips){ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.75rem }
+  :global(.cv-chip){ display:inline-flex; align-items:center; gap:.4rem; padding:.3rem .5rem; border:1.5px solid var(--accent); background:var(--paper-2); font:400 var(--t-small)/1.3 var(--font-sans) }
+  :global(.cv-chip button){ width:28px; height:28px; flex:none; border:0; background:none; cursor:pointer; color:var(--ink-2); font:700 1.1rem/1 var(--font-sans) }
+  :global(.cv-chip button:hover){ color:var(--accent) }
+  :global(.cv-job-box){ display:grid; gap:var(--space-3); margin-top:var(--space-4); padding:var(--space-4); border:1.5px solid var(--rule) }
+  :global(.cv-job-head){ display:flex; align-items:center; justify-content:space-between; gap:.5rem }
+  :global(.cv-job-n){ font:700 var(--t-label)/1 var(--font-sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-2) }
+
+  /* Print: only the sheet, on one A4 page, black on white. */
+  @page{ size:A4; margin:14mm }
+  @media print{
+    :global(.status-strip), :global(.site-header), :global(.site-footer), :global(.skip-link), :global(.toast),
+    :global(.caderno-head), .cv-intro, .cv-tabs, #cv-pane-form, .cv-col-sheet > :not(.cv-desk), .cv-notes{ display:none !important }
+    :global(body), :global(.caderno){ padding:0; background:#fff; color:#000 }
+    .cv-cols{ display:block; padding:0 }
+    #cv-pane-sheet{ display:block !important; position:static }
+    .cv-desk{ margin:0; padding:0; border:0; background:none }
+    .cv-sheet{ max-width:none; padding:0; box-shadow:none; background:#fff; color:#000; font-size:11.5pt; line-height:1.4 }
+    .cv-sheet :global(.cv-name){ font-size:24pt }
+    .cv-sheet :global(.cv-contact){ font-size:11.5pt; border-bottom-color:#000 }
+    .cv-sheet :global(section){ margin-top:14pt; break-inside:avoid }
+    .cv-sheet :global(h3){ font-size:8pt; color:#333; border-bottom-color:#999 }
+    .cv-sheet :global(.cv-skills li), .cv-sheet :global(.cv-line), .cv-sheet :global(.cv-job b){ font-size:11.5pt }
+    .cv-sheet :global(.cv-skills li::before){ background:#000 }
+    .cv-sheet :global(.cv-job span){ font-size:10pt; color:#333 }
+    .cv-sheet :global(.cv-empty){ display:none }
+  }
+</style>
