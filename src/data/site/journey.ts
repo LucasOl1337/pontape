@@ -1,5 +1,6 @@
 import type { IconName } from '../../components/site/icon-names';
 import type { ModuleStatus } from './statuses';
+import { CURRICULO } from './curriculo';
 
 export interface JourneyStep {
   shortName: string;
@@ -11,6 +12,8 @@ export interface JourneyStep {
   now: string;
   /** The step where the AI starts going along (F36): the staircase draws its line from here. */
   aiFrom?: true;
+  /** Something that already helps while the step itself is not open (D044). One quiet line, no badge. */
+  tool?: { text: string; href: string; link: string };
 }
 
 // How a step answers "já funciona?": the words for its module's state, then why.
@@ -43,7 +46,8 @@ export const STEPS: JourneyStep[] = [
     now: 'Ainda não começou. Depende de doações, e elas ainda não abriram.' },
   { shortName: 'Apoio da AI', title: 'Apoio da AI', icon: 'voice-ai', module: 'M7',
     text: 'A AI ajuda a pessoa a descobrir o que sabe fazer e o que quer. Depois prepara ela pra vaga: currículo, documentos, entrevista. Sem custo.',
-    now: 'Ainda não começou. Está no plano.' },
+    now: 'Ainda não começou. Está no plano.',
+    tool: { text: 'Enquanto isso, já dá pra montar um currículo simples no celular. Nada é enviado.', href: CURRICULO.href, link: 'Fazer meu currículo' } },
   { shortName: 'Trabalho', title: 'Trabalho', icon: 'briefcase', module: 'M6',
     text: 'Pronta, a pessoa é apresentada a quem oferece vaga, sem expor quem ela é. E a AI segue ao lado dela, sem prazo e sem custo.',
     now: 'Ainda não começou. Está no plano.' },

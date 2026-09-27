@@ -7,9 +7,9 @@ import { PROJECT_NAME } from '../../data/site/project';
 import { SKILLS, SHIFTS, SCHOOLING } from '../../data/site/curriculo';
 
 // A free résumé maker that runs only in the browser: nothing is sent, nothing is kept (D012).
-// Kept out of the menu and of the sitemap until the decision on it; noindex like /doar.
+// Out of the menu on purpose (D044): reached from step 5 of the staircase and from the footer.
 ---
-<BaseLayout title={`Seu currículo, de graça · ${PROJECT_NAME}`} description="Monte um currículo simples de graça, ouça ele em voz alta pra conferir e imprima ou salve em PDF. Nada sai do seu celular." current="ferramentas" noindex>
+<BaseLayout title={`Seu currículo, de graça · ${PROJECT_NAME}`} description="Monte um currículo simples de graça, ouça ele em voz alta pra conferir e imprima ou salve em PDF. Nada sai do seu celular." current="ferramentas">
   <Caderno kicker="Ferramenta" title="Seu currículo," turn="de graça."
     lead="Responda o que souber. O currículo vai ficando pronto do lado, numa folha só. No fim você ouve ele em voz alta pra conferir, e imprime ou salva em PDF.">
     <div class="cv-intro">
@@ -30,7 +30,7 @@ import { SKILLS, SHIFTS, SCHOOLING } from '../../data/site/curriculo';
             <p class="cv-hint">O telefone é o campo mais importante. É por ali que a empresa chama.</p>
             <div class="cv-fields">
               <label class="cv-field"><span>Seu nome</span><input type="text" id="cv-name" placeholder="Nome e sobrenome" /></label>
-              <label class="cv-field"><span>Telefone com WhatsApp</span><input type="tel" id="cv-phone" placeholder="(11) 91234-5678" /></label>
+              <label class="cv-field"><span>Telefone com WhatsApp</span><input type="tel" id="cv-phone" placeholder="(11) 90000-0000" /></label>
               <div class="cv-row">
                 <label class="cv-field"><span>Bairro</span><input type="text" id="cv-district" placeholder="Onde você mora" /></label>
                 <label class="cv-field"><span>Cidade</span><input type="text" id="cv-city" placeholder="Sua cidade" /></label>

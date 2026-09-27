@@ -76,7 +76,7 @@ function render() {
 
 /* ---------- Listen: the phone reads the résumé aloud, offline, so whoever can't read can check it ---------- */
 
-function spoken() {
+function spoken(): string[] {
   const d = read();
   const parts = [`Currículo de ${d.name || 'nome não preenchido'}.`];
   // Digit by digit, so a phone number is not read as one big number.
@@ -88,7 +88,7 @@ function spoken() {
   if (d.school) parts.push(`Escolaridade: ${d.school}.`);
   if (d.availability.length) parts.push(`Disponível: ${d.availability.join(', ')}.`);
   parts.push('Fim do currículo.');
-  return parts.join(' ');
+  return parts;
 }
 
 const say = (message: string) => { const el = $('cv-say'); el.textContent = message; el.hidden = false; };
@@ -105,14 +105,23 @@ $('cv-listen').addEventListener('click', () => {
   if (speaking) { stopSpeaking(); return; }
   try {
     speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(spoken());
-    utterance.lang = 'pt-BR';
-    utterance.rate = 0.95;
+    // One sentence per utterance: Chrome stops a long one after about 15 seconds.
     const voice = speechSynthesis.getVoices().find(v => /pt[-_]BR/i.test(v.lang));
-    if (voice) utterance.voice = voice;
-    utterance.onend = stopSpeaking;
-    utterance.onerror = () => { stopSpeaking(); say('O aparelho não conseguiu falar agora. Tente de novo.'); };
-    speechSynthesis.speak(utterance);
+    const parts = spoken();
+    parts.forEach((text, i) => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'pt-BR';
+      utterance.rate = 0.95;
+      if (voice) utterance.voice = voice;
+      if (i === parts.length - 1) utterance.onend = stopSpeaking;
+      utterance.onerror = e => {
+        // Pressing stop cancels the queue; that is not a failure.
+        if (e.error === 'interrupted' || e.error === 'canceled') return;
+        stopSpeaking();
+        say('O aparelho não conseguiu falar agora. Tente de novo.');
+      };
+      speechSynthesis.speak(utterance);
+    });
     speaking = true;
     listenLabel.textContent = 'Parar de ouvir';
     say('Ouça e confira se está tudo certo. Aperte de novo pra parar.');

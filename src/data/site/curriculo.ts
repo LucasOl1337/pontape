@@ -1,4 +1,7 @@
-// The résumé tool (/ferramentas/curriculo): the choices on the form. Informal work counts the same.
+// The résumé tool (D044): open to anyone, reached from step 5 and the footer, never from the menu.
+export const CURRICULO = { href: '/ferramentas/curriculo', name: 'Currículo de graça' } as const;
+
+// The choices on the form. Informal work counts the same.
 export const SKILLS = [
   'Limpeza', 'Cozinha', 'Cuidar de criança', 'Cuidar de idoso', 'Construção civil', 'Pintura',
   'Jardinagem', 'Carga e descarga', 'Atendimento ao cliente', 'Caixa', 'Vendas', 'Entrega', 'Costura',
@@ -16,7 +19,7 @@ export const SCHOOLING = [
 // Fictitious person, for the "Ver com um exemplo inventado" button. Not a real candidate.
 export const EXAMPLE = {
   name: 'Maria Aparecida Ferreira (exemplo inventado)',
-  phone: '(11) 91234-5678',
+  phone: '(11) 90000-0000',
   district: 'Jardim Ângela',
   city: 'São Paulo',
   skills: ['Limpeza', 'Cozinha', 'Cuidar de idoso'],
