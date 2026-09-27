@@ -6,7 +6,7 @@ import { CONSTRUIR } from '../../data/site/cadernos';
 import { LIVRO } from '../../data/site/livro';
 import { PERGUNTAS } from '../../data/site/perguntas';
 
-interface Props { current?: 'home' | 'transparencia' | 'construir' | 'perguntas' | 'not-found' }
+interface Props { current?: 'home' | 'transparencia' | 'construir' | 'perguntas' | 'ferramentas' | 'not-found' }
 const { current = 'home' } = Astro.props;
 const onHome = current === 'home';
 // Inside a section the door stays marked: the page itself at its address, the section below it

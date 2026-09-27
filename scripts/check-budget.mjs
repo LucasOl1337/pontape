@@ -15,6 +15,8 @@ const PAGES = [
   // The builder cadernos (F31), each a page of its own.
   'construir/index.html', 'construir/pecas/index.html', 'construir/gargalos/index.html',
   'construir/tarefas/index.html', 'construir/codigo-aberto/index.html',
+  // The résumé tool: form and sheet run in the page, with no library.
+  'ferramentas/curriculo/index.html',
 ];
 
 const gz = buffer => gzipSync(buffer, { level: 9 }).length;
