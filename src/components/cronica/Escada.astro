@@ -78,6 +78,7 @@ const LATER = 'Doar, ser voluntário e oferecer vaga ainda não abriram. Abrem q
           <h2 class="panel-title">{s.title}</h2>
           <p class="panel-text">{s.text}</p>
           <p class:list={['now', `now--${status}`]}><Icon name={STATUSES[status].icon} /><span><strong>{lead}</strong>{s.now.slice(lead.length)}</span></p>
+          {s.tool && <p class="panel-ledger panel-tool">{s.tool.text} <a href={s.tool.href}>{s.tool.link}<Icon name="arrow-right" /></a></p>}
           {k === STEPS.length && (
             <p class="panel-ledger">Até hoje: <strong>{ledger.events.length}</strong> ações anotadas e <strong>{brl.format(snapshot.receivedCents / 100)}</strong> recebido. <a href="/transparencia">Abrir o livro<Icon name="arrow-right" /></a></p>
           )}
