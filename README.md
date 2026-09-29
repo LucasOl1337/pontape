@@ -1,6 +1,6 @@
 # PontaPé
 
-Caridade inteligente. Nome escolhido pelo Lucas em 22/09/2026 (D016); o repositório é `LucasOl1337/pontape` (antes VidaNova) e a pasta local ainda se chama VidaNova.
+Caridade inteligente.
 
 Uma plataforma de caridade inteligente, sem fins lucrativos e open source: a AI ajuda a decidir como os recursos chegam a quem quer mudar de vida e faz de graça tudo que uma AI pode fazer pra melhorar a vida dessa pessoa.
 
