@@ -17,6 +17,8 @@ const PAGES = [
   'construir/tarefas/index.html', 'construir/codigo-aberto/index.html',
   // The résumé tool: form and sheet run in the page, with no library.
   'ferramentas/curriculo/index.html',
+  // The benefits check: questions and rules run in the page, with no library.
+  'ferramentas/direitos/index.html',
 ];
 
 const gz = buffer => gzipSync(buffer, { level: 9 }).length;

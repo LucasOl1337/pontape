@@ -1,0 +1,235 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Caderno from '../../components/cronica/Caderno.astro';
+import Badge from '../../components/site/Badge.astro';
+import Icon from '../../components/site/Icon.astro';
+import { PROJECT_NAME, formatDay } from '../../data/site/project';
+import { CHECKED, SOURCES } from '../../data/site/direitos';
+
+// Benefits check that runs only in the browser: buttons and one number, nothing sent, nothing kept (D012).
+// No place to type words, so no Yume here either. Out of the menu and the sitemap, noindex, until decided.
+const COUNTERS = {
+  people: { id: 'dr-people', min: 1, label: 'pessoas' },
+  small: { id: 'dr-kids6', min: 0, label: 'crianças' },
+  young: { id: 'dr-kids17', min: 0, label: 'crianças e jovens' },
+};
+const yesNo = (name: string) => [{ value: 'sim', label: 'Sim' }, { value: 'nao', label: 'Não' }].map(o => ({ ...o, name }));
+---
+<BaseLayout title={`Quais direitos eu tenho? · ${PROJECT_NAME}`} description="Responda algumas perguntas e veja quais benefícios do governo sua família pode ter, onde pedir e o que levar. Sem nome, sem CPF. Nada sai do seu celular." current="ferramentas" noindex chat={false}>
+  <Caderno kicker="Ferramenta" title="Quais direitos" turn="eu tenho?"
+    lead="Responda algumas perguntas tocando nos botões. No fim aparece o que sua família pode receber do governo, onde pedir e o que levar.">
+    <div class="dr-intro">
+      <p><Badge status="live" /></p>
+      <p class="dr-warn"><strong>Isto não te inscreve em nada</strong> e não é promessa de benefício. Quem decide é o governo. Não pedimos nome, CPF nem endereço, e nada do que você responder sai do seu celular.</p>
+    </div>
+
+    <form id="dr-form" class="dr-form" autocomplete="off" novalidate>
+      <p class="dr-progress" id="dr-progress" aria-live="polite">Pergunta 1 de 8</p>
+      <div class="dr-bar" aria-hidden="true"><span id="dr-bar"></span></div>
+
+      <fieldset class="dr-step" data-step="people">
+        <legend>Quantas pessoas moram na sua casa, contando você?</legend>
+        <p class="dr-hint">Conte só quem mora e divide as despesas com você.</p>
+        <div class="dr-counter" data-counter={COUNTERS.people.id} data-min={COUNTERS.people.min}>
+          <button class="btn" type="button" data-step-by="-1" aria-label="Uma pessoa a menos">−</button>
+          <output id={COUNTERS.people.id} aria-live="polite">1</output>
+          <button class="btn" type="button" data-step-by="1" aria-label="Uma pessoa a mais">+</button>
+          <span class="dr-unit">{COUNTERS.people.label}</span>
+        </div>
+      </fieldset>
+
+      <fieldset class="dr-step" data-step="income">
+        <legend>Quanto dinheiro entra na casa por mês, somando todo mundo?</legend>
+        <p class="dr-hint">Some salário, bico, pensão e aposentadoria de quem mora com você. Pode ser um valor aproximado.</p>
+        <label class="dr-money"><span aria-hidden="true">R$</span><input type="text" id="dr-income" inputmode="numeric" maxlength="6" placeholder="0" aria-label="Valor em reais, só números" /></label>
+        <p class="dr-hint">Só números, sem centavos.</p>
+        <button class="btn dr-btn-quiet" type="button" id="dr-zero">Não entra nada</button>
+      </fieldset>
+
+      <fieldset class="dr-step" data-step="kids6">
+        <legend>Quantas crianças de até 6 anos moram na casa?</legend>
+        <div class="dr-counter" data-counter={COUNTERS.small.id} data-min={COUNTERS.small.min}>
+          <button class="btn" type="button" data-step-by="-1" aria-label="Uma criança a menos">−</button>
+          <output id={COUNTERS.small.id} aria-live="polite">0</output>
+          <button class="btn" type="button" data-step-by="1" aria-label="Uma criança a mais">+</button>
+          <span class="dr-unit">{COUNTERS.small.label}</span>
+        </div>
+      </fieldset>
+
+      <fieldset class="dr-step" data-step="kids17">
+        <legend>E quantas crianças e jovens de 7 a 17 anos?</legend>
+        <div class="dr-counter" data-counter={COUNTERS.young.id} data-min={COUNTERS.young.min}>
+          <button class="btn" type="button" data-step-by="-1" aria-label="Um jovem a menos">−</button>
+          <output id={COUNTERS.young.id} aria-live="polite">0</output>
+          <button class="btn" type="button" data-step-by="1" aria-label="Um jovem a mais">+</button>
+          <span class="dr-unit">{COUNTERS.young.label}</span>
+        </div>
+      </fieldset>
+
+      <fieldset class="dr-step" data-step="pregnant">
+        <legend>Tem alguém grávida ou amamentando?</legend>
+        <div class="dr-choices">{yesNo('pregnant').map(o => <label class="dr-choice"><input type="radio" name={o.name} value={o.value} /><span>{o.label}</span></label>)}</div>
+      </fieldset>
+
+      <fieldset class="dr-step" data-step="medical">
+        <legend>Alguém da casa usa aparelho médico ligado na tomada?</legend>
+        <p class="dr-hint">Por exemplo, aparelho de oxigênio ou de respirar.</p>
+        <div class="dr-choices">{yesNo('medical').map(o => <label class="dr-choice"><input type="radio" name={o.name} value={o.value} /><span>{o.label}</span></label>)}</div>
+      </fieldset>
+
+      <fieldset class="dr-step" data-step="bolsa">
+        <legend>Vocês já recebem o Bolsa Família?</legend>
+        <div class="dr-choices">{yesNo('bolsa').map(o => <label class="dr-choice"><input type="radio" name={o.name} value={o.value} /><span>{o.label}</span></label>)}</div>
+      </fieldset>
+
+      <fieldset class="dr-step" data-step="cadunico">
+        <legend>Vocês têm o CadÚnico?</legend>
+        <p class="dr-hint">É o cadastro que se faz no CRAS, o posto da assistência social da prefeitura.</p>
+        <div class="dr-choices dr-choices--list">
+          <label class="dr-choice"><input type="radio" name="cadunico" value="recent" /><span>Sim, atualizei faz menos de 2 anos</span></label>
+          <label class="dr-choice"><input type="radio" name="cadunico" value="old" /><span>Sim, mas faz mais tempo</span></label>
+          <label class="dr-choice"><input type="radio" name="cadunico" value="no" /><span>Não</span></label>
+          <label class="dr-choice"><input type="radio" name="cadunico" value="unknown" /><span>Não sei</span></label>
+        </div>
+      </fieldset>
+
+      <p class="dr-say" id="dr-say" role="status" aria-live="polite" hidden></p>
+      <div class="dr-nav">
+        <button class="btn" type="button" id="dr-back"><Icon name="arrow-left" />Voltar</button>
+        <button class="btn dr-btn-quiet" type="button" id="dr-listen-q"><Icon name="play" /><span>Ouvir a pergunta</span></button>
+        <button class="btn btn--ink" type="button" id="dr-next">Continuar<Icon name="arrow-right" /></button>
+      </div>
+      <p class="dr-example"><button class="btn dr-btn-quiet" type="button" id="dr-example">Ver com uma família inventada</button></p>
+    </form>
+
+    <section class="dr-result" id="dr-result" aria-labelledby="dr-result-title" tabindex="-1" hidden>
+      <p class="kicker">O resultado</p>
+      <h2 id="dr-result-title" class="dr-result-title">Vocês podem ter direito a:</h2>
+      <p class="dr-sum" id="dr-sum"></p>
+      <div id="dr-alert"></div>
+      <ol class="dr-cards" id="dr-cards"></ol>
+      <div class="dr-actions">
+        <button class="btn btn--ink" type="button" id="dr-listen"><Icon name="play" /><span>Ouvir o resultado</span></button>
+        <button class="btn" type="button" id="dr-print"><Icon name="download" />Imprimir ou salvar em PDF</button>
+        <button class="btn dr-btn-quiet" type="button" id="dr-edit"><Icon name="pen" />Mudar as respostas</button>
+        <button class="btn dr-btn-quiet" type="button" id="dr-restart"><Icon name="undo" />Começar de novo</button>
+      </div>
+      <p class="dr-hint dr-checked">Regras conferidas nos sites do governo em <time datetime={CHECKED}>{formatDay(CHECKED)}</time>. É uma conta aproximada: a palavra final é sempre do governo.</p>
+    </section>
+
+    <section class="dr-faq" aria-labelledby="dr-faq-title">
+      <h2 id="dr-faq-title" class="kicker">Dúvidas comuns</h2>
+      <details><summary>O que é o CRAS?</summary><p>É o Centro de Referência de Assistência Social, um posto da prefeitura. É lá que se faz o CadÚnico e se pede ajuda com benefícios. Pra saber qual fica perto de você, ligue de graça pro 121.</p></details>
+      <details><summary>O que é o CadÚnico?</summary><p>É o cadastro do governo das famílias de baixa renda. Quase todo benefício olha pra ele. Fazer é de graça e dura mais ou menos 1 hora.</p></details>
+      <details><summary>Esta página me inscreve em algum benefício?</summary><p>Não. Ela só mostra o que sua família pode ter e como pedir. Quem decide é o governo, com os dados do CadÚnico.</p></details>
+      <details><summary>O resultado está certo?</summary><p>É uma conta feita com as regras oficiais, mas é aproximada. O valor e a resposta final podem ser diferentes. Na dúvida, ligue pro 121.</p></details>
+      <details><summary>Alguém vê as minhas respostas?</summary><p>Não. A conta é feita no seu celular. Nada é enviado nem guardado. Se a página recarregar, tudo apaga.</p></details>
+    </section>
+
+    <section class="dr-notes" aria-labelledby="dr-notes-title">
+      <h2 id="dr-notes-title" class="kicker">Como esta ferramenta cuida de você</h2>
+      <ul>
+        <li><h3>Nada sai do seu celular</h3><p>As respostas não são enviadas nem guardadas. Não tem lugar pra escrever nome, CPF ou endereço.</p></li>
+        <li><h3>Regras, não palpite</h3><p>O resultado sai de regras fixas, tiradas dos sites do governo. Nenhuma AI decide nada aqui.</p></li>
+        <li><h3>Tudo com fonte</h3><p>Cada benefício mostra de onde veio a regra, pra qualquer pessoa conferir.</p></li>
+        <li><h3>Pra ouvir</h3><p>Cada pergunta e o resultado podem ser ouvidos em voz alta, pra quem lê pouco.</p></li>
+      </ul>
+    </section>
+
+    <section class="dr-sources" aria-labelledby="dr-sources-title">
+      <h2 id="dr-sources-title" class="kicker">Fontes</h2>
+      <ul>{Object.values(SOURCES).map(s => <li><a href={s.url} rel="noopener" target="_blank">{s.label}</a></li>)}</ul>
+      <p class="dr-hint">Acessadas em <time datetime={CHECKED}>{formatDay(CHECKED)}</time>. O salário mínimo de 2026 é R$ 1.621.</p>
+    </section>
+  </Caderno>
+</BaseLayout>
+
+<script>import '../../scripts/direitos';</script>
+
+<style>
+  .dr-intro{ display:grid; gap:var(--space-4); max-width:40rem }
+  .dr-warn{ padding:.85rem 1rem; border-left:3px solid var(--accent); background:var(--paper-2); font:400 var(--t-small)/1.5 var(--font-sans) }
+  .dr-warn strong{ font-weight:700 }
+
+  .dr-form{ max-width:40rem; margin-top:var(--space-8); padding:var(--space-6); border:2px solid var(--ink); background:var(--paper) }
+  @media (max-width:520px){ .dr-form{ padding:var(--space-4) } }
+  .dr-progress{ font:700 var(--t-label)/1.2 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
+  .dr-bar{ height:6px; margin-top:.5rem; background:var(--paper-3) }
+  .dr-bar span{ display:block; height:100%; width:12.5%; background:var(--accent); transition:width .2s }
+
+  /* Without JS every question shows at once; with it, one at a time. */
+  :global(.js) .dr-step:not(.on){ display:none }
+  .dr-step{ margin:var(--space-6) 0 0; padding:0; border:0; min-width:0 }
+  .dr-step legend{ float:left; width:100%; padding:0; font:500 clamp(1.4rem, 1.1rem + 1.4vw, 1.9rem)/1.2 var(--font-display); letter-spacing:-.01em; text-wrap:balance }
+  .dr-step legend + *{ clear:both }
+  .dr-hint{ margin-top:.5rem; font:400 var(--t-small)/1.45 var(--font-sans); color:var(--ink-2) }
+
+  .dr-counter{ display:flex; align-items:center; gap:.75rem; margin-top:var(--space-4) }
+  .dr-counter .btn{ width:56px; height:56px; padding:0; justify-content:center; font:700 1.6rem/1 var(--font-sans) }
+  .dr-counter output{ min-width:2.5ch; text-align:center; font:500 2.4rem/1 var(--font-display) }
+  .dr-unit{ font:400 1.0625rem/1.3 var(--font-sans); color:var(--ink-2) }
+
+  .dr-money{ display:flex; align-items:center; gap:.5rem; max-width:16rem; margin-top:var(--space-4); padding:0 .8rem; border:2px solid var(--ink); background:var(--paper) }
+  .dr-money span{ font:700 1.3rem/1 var(--font-sans) }
+  .dr-money input{ width:100%; min-height:56px; border:0; background:transparent; color:var(--ink); font:500 1.8rem/1 var(--font-display) }
+  .dr-money input:focus{ outline:none }
+  .dr-money:focus-within{ outline:3px solid var(--accent); outline-offset:2px }
+  #dr-zero{ margin-top:var(--space-3) }
+
+  .dr-choices{ display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-top:var(--space-4) }
+  .dr-choices--list{ grid-template-columns:1fr }
+  .dr-choice{ display:flex; align-items:center; gap:.6rem; min-height:56px; padding:.5rem .8rem; border:2px solid var(--rule); cursor:pointer; font:400 1.0625rem/1.3 var(--font-sans) }
+  .dr-choice:hover{ border-color:var(--ink) }
+  .dr-choice input{ width:22px; height:22px; flex:none; margin:0; accent-color:var(--accent) }
+  .dr-choice:has(input:checked){ border-color:var(--accent); background:var(--paper-2); font-weight:700 }
+
+  .dr-nav{ display:flex; flex-wrap:wrap; gap:var(--space-3); margin-top:var(--space-8); padding-top:var(--space-4); border-top:1px solid var(--rule) }
+  #dr-next{ margin-left:auto }
+  .dr-btn-quiet{ border-color:var(--rule); color:var(--ink-2); font-size:var(--t-small) }
+  .dr-btn-quiet:hover{ background:var(--paper-3); color:var(--ink) }
+  .dr-example{ margin-top:var(--space-4) }
+  .dr-say{ margin-top:var(--space-4); padding:.7rem .85rem; border-left:3px solid var(--accent); background:var(--paper-2); font:400 var(--t-small)/1.5 var(--font-sans) }
+
+  .dr-result{ max-width:46rem; margin-top:var(--space-8) }
+  .dr-result:focus{ outline:none }
+  .dr-result-title{ margin-top:.3rem; font:500 clamp(1.6rem, 1.2rem + 1.6vw, 2.2rem)/1.15 var(--font-display) }
+  .dr-sum{ margin-top:.5rem; font:400 1.0625rem/1.5 var(--font-sans) }
+  .dr-sum :global(b){ font-weight:700 }
+  .dr-actions{ display:flex; flex-wrap:wrap; gap:var(--space-3); margin-top:var(--space-6) }
+  .dr-checked{ margin-top:var(--space-4) }
+
+  .dr-result :global(.dr-alert){ margin-top:var(--space-4); padding:.85rem 1rem; border:2px solid var(--accent); background:var(--paper-2); font:400 1rem/1.5 var(--font-sans) }
+  .dr-result :global(.dr-alert b){ font-weight:700 }
+  .dr-cards{ display:grid; gap:var(--space-4); margin-top:var(--space-6); padding:0; list-style:none; counter-reset:card }
+  .dr-cards :global(.dr-card){ padding:var(--space-4) var(--space-4) var(--space-4) calc(var(--space-4) + 3px); border:1.5px solid var(--rule); border-left:5px solid var(--accent); background:var(--paper) }
+  .dr-cards :global(.dr-card h3){ font:700 1.2rem/1.25 var(--font-sans) }
+  .dr-cards :global(.dr-est){ display:inline-block; margin-top:.4rem; padding:.2rem .5rem; background:var(--ink); color:var(--paper); font:700 1rem/1.3 var(--font-sans) }
+  .dr-cards :global(.dr-what){ margin-top:.5rem; font:400 1.0625rem/1.5 var(--font-sans) }
+  .dr-cards :global(h4){ margin-top:var(--space-4); font:700 var(--t-label)/1.2 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2) }
+  .dr-cards :global(ol), .dr-cards :global(ul){ margin-top:.4rem; padding-left:1.3rem; font:400 1rem/1.5 var(--font-sans) }
+  .dr-cards :global(li + li){ margin-top:.3rem }
+  .dr-cards :global(.dr-src){ margin-top:var(--space-3); font:400 var(--t-small)/1.4 var(--font-sans); color:var(--ink-2) }
+
+  .dr-faq, .dr-notes, .dr-sources{ max-width:46rem; margin-top:var(--space-12); padding-top:var(--space-3); border-top:2px solid var(--ink) }
+  .dr-faq details{ border-bottom:1px solid var(--rule) }
+  .dr-faq details:first-of-type{ margin-top:var(--space-4) }
+  .dr-faq summary{ min-height:48px; padding:.8rem 0; cursor:pointer; font:700 1.0625rem/1.3 var(--font-sans) }
+  .dr-faq details p{ padding-bottom:var(--space-4); font:400 1rem/1.5 var(--font-sans); color:var(--ink-2) }
+  .dr-notes ul{ display:grid; gap:var(--space-6); margin-top:var(--space-6) }
+  @media (min-width:760px){ .dr-notes ul{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:var(--space-6) 2.5rem } }
+  .dr-notes h3{ font:700 1.0625rem/1.3 var(--font-sans) }
+  .dr-notes p{ margin-top:.3rem; font:400 var(--t-small)/1.5 var(--font-sans); color:var(--ink-2) }
+  .dr-sources ul{ margin-top:var(--space-4); padding-left:1.2rem; list-style:disc; font:400 var(--t-small)/1.6 var(--font-sans) }
+
+  /* Print: only the result, black on white, links written out. */
+  @page{ size:A4; margin:14mm }
+  @media print{
+    :global(.status-strip), :global(.site-header), :global(.site-footer), :global(.skip-link), :global(.toast),
+    :global(.caderno-head), .dr-intro, .dr-form, .dr-actions, .dr-faq, .dr-notes, .dr-sources{ display:none !important }
+    :global(body), :global(.caderno){ padding:0; background:#fff; color:#000 }
+    .dr-result{ margin:0; max-width:none }
+    .dr-cards :global(.dr-card){ break-inside:avoid; border-color:#999; border-left-color:#000 }
+    .dr-cards :global(.dr-est){ background:none; color:#000; padding:0 }
+    .dr-cards :global(.dr-src a)::after{ content:" (" attr(href) ")"; word-break:break-all }
+  }
+</style>
