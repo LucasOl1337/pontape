@@ -101,7 +101,7 @@ function showResult() {
   $('dr-sum').innerHTML = `Na sua casa entram <b>${reais(a.income)}</b> por mês pra <b>${a.people} ${a.people === 1 ? 'pessoa' : 'pessoas'}</b>. Dá <b>${reais(perPerson)} por pessoa</b>.`;
   $('dr-alert').innerHTML = updateCadunico
     ? `<p class="dr-alert"><b>${a.cadunico === 'old' ? 'Atualize seu CadÚnico.' : 'O primeiro passo é o CadÚnico.'}</b> Sem ele em dia, os benefícios não chegam ou podem parar.</p>`
-    : '';
+    : benefits.length ? '' : '<p class="dr-sum">Se a vida mudar, faça a conta de novo. Enquanto isso, isto vale pra qualquer pessoa:</p>';
 
   const card = (title: string, body: string) => `<li class="dr-card"><h3>${esc(title)}</h3>${body}</li>`;
   const source = (label: string, url: string) =>
@@ -116,8 +116,7 @@ function showResult() {
         + `<h4>Como pedir</h4>${list('ol', b.steps)}`
         + (b.papers ? `<h4>O que levar</h4>${list('ul', b.papers)}` : '')
         + source(b.source.label, b.source.url))).join('')
-    : `<li class="dr-card"><p class="dr-what">Se a vida mudar, faça a conta de novo. Enquanto isso, isto vale pra qualquer pessoa:</p></li>`
-      + ALWAYS.map(x => card(x.title, `<p class="dr-what">${esc(x.what)}</p>${source(x.source.label, x.source.url)}`)).join('');
+    : ALWAYS.map(x => card(x.title, `<p class="dr-what">${esc(x.what)}</p>${source(x.source.label, x.source.url)}`)).join('');
 
   form.hidden = true;
   const result = $('dr-result');
