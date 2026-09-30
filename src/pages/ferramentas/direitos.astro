@@ -7,7 +7,8 @@ import { PROJECT_NAME, formatDay } from '../../data/site/project';
 import { CHECKED, SOURCES } from '../../data/site/direitos';
 
 // Benefits check that runs only in the browser: buttons and one number, nothing sent, nothing kept (D012).
-// No place to type words, so no Yume here either. Out of the menu and the sitemap, noindex, until decided.
+// No place to type words, so no Yume here either. Out of the menu on purpose (D045): reached from
+// step 4 of the staircase and from the footer.
 const COUNTERS = {
   people: { id: 'dr-people', min: 1, label: 'pessoas' },
   small: { id: 'dr-kids6', min: 0, label: 'crianças' },
@@ -15,7 +16,7 @@ const COUNTERS = {
 };
 const yesNo = (name: string) => [{ value: 'sim', label: 'Sim' }, { value: 'nao', label: 'Não' }].map(o => ({ ...o, name }));
 ---
-<BaseLayout title={`Quais direitos eu tenho? · ${PROJECT_NAME}`} description="Responda algumas perguntas e veja quais benefícios do governo sua família pode ter, onde pedir e o que levar. Sem nome, sem CPF. Nada sai do seu celular." current="ferramentas" noindex chat={false}>
+<BaseLayout title={`Quais direitos eu tenho? · ${PROJECT_NAME}`} description="Responda algumas perguntas e veja quais benefícios do governo sua família pode ter, onde pedir e o que levar. Sem nome, sem CPF. Nada sai do seu celular." current="ferramentas" chat={false}>
   <Caderno kicker="Ferramenta" title="Quais direitos" turn="eu tenho?"
     lead="Responda algumas perguntas tocando nos botões. No fim aparece o que sua família pode receber do governo, onde pedir e o que levar.">
     <div class="dr-intro">
@@ -43,7 +44,7 @@ const yesNo = (name: string) => [{ value: 'sim', label: 'Sim' }, { value: 'nao',
 
       <fieldset class="dr-step" data-step="income">
         <legend>Quanto dinheiro entra na casa por mês, somando todo mundo?</legend>
-        <p class="dr-hint">Some salário, bico, pensão e aposentadoria de quem mora com você. Pode ser um valor aproximado.</p>
+        <p class="dr-hint">Some salário, bico, pensão e aposentadoria de quem mora com você. Não conte o Bolsa Família. Pode ser um valor aproximado.</p>
         <label class="dr-money"><span aria-hidden="true">R$</span><input type="text" id="dr-income" inputmode="numeric" maxlength="6" placeholder="0" aria-label="Valor em reais, só números" /></label>
         <p class="dr-hint">Só números, sem centavos.</p>
         <button class="btn dr-btn-quiet" type="button" id="dr-zero">Não entra nada</button>

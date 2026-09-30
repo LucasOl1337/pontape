@@ -35,6 +35,12 @@ describe('direitos', () => {
     expect(gas(4)).toContain('1 a cada 2 meses');
   });
 
+  it('Gás do Povo por enquanto só pra família do Bolsa Família, ou com renda pra entrar nele', () => {
+    expect(ids({ people: 2, income: 1000 })).not.toContain('gas');
+    expect(ids({ people: 2, income: 1000, receivesBolsa: true })).toContain('gas');
+    expect(ids({ people: 2, income: 436 })).toContain('gas');
+  });
+
   it('luz de graça até meio salário mínimo; desconto até um salário mínimo; nada acima', () => {
     expect(ids({ income: 810.5 })).toContain('luz');
     expect(ids({ income: 811 })).toEqual(['cadunico', 'luz-desconto']);

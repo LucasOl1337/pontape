@@ -1,9 +1,10 @@
-// The benefits tool: fixed rules taken from the government's own pages, run only in the browser.
+// The benefits tool (D045): fixed rules taken from the government's own pages, run only in the browser.
 // Nothing typed here leaves the device (D012). The rules decide; nothing is guessed by an AI.
+// Open to anyone, reached from step 4 of the staircase and the footer, never from the menu.
 export const DIREITOS = { href: '/ferramentas/direitos', name: 'Quais direitos eu tenho?' } as const;
 
 // Every value below changes by law or decree. Update the numbers and CHECKED together.
-export const CHECKED = '2026-09-28';
+export const CHECKED = '2026-09-30';
 export const MINIMUM_WAGE = 1621;
 const HALF_WAGE = MINIMUM_WAGE / 2;
 const BOLSA_LINE = 218;
@@ -19,6 +20,8 @@ export const SOURCES = {
   luz: { label: 'Ministério de Minas e Energia: Luz do Povo', url: 'https://www.gov.br/mme/pt-br/luzdopovo' },
   agua: { label: 'ANA: Tarifa Social de Água e Esgoto', url: 'https://www.gov.br/ana/pt-br/assuntos/saneamento-basico/tarifa-social-de-agua-e-esgoto' },
   salario: { label: 'Planalto: salário mínimo de R$ 1.621 em 2026', url: 'https://www.gov.br/planalto/pt-br/acompanhe-o-planalto/noticias/2025/12/publicado-decreto-que-reajusta-salario-minimo-para-r-1-621-a-partir-de-1o-de-janeiro' },
+  // Art. 4, § 1, III: the Bolsa Família itself does not count as income. The income question says so.
+  lei: { label: 'Lei 14.601/2023, do Bolsa Família', url: 'https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/L14601.htm' },
 } as const satisfies Record<string, Source>;
 
 export type Cadunico = 'recent' | 'old' | 'no' | 'unknown';
@@ -85,7 +88,7 @@ export function check(a: Answers): Result {
   } else if (a.receivesBolsa && perPerson <= PROTECTION_LINE) {
     benefits.push({
       id: 'protecao', title: 'Regra de Proteção do Bolsa Família',
-      what: 'Se a renda subiu, você não perde tudo de uma vez. A família continua recebendo metade do valor por até 18 meses. Pode aceitar o emprego sem medo.',
+      what: 'Se a renda subiu, você não perde tudo de uma vez. A família continua recebendo metade do valor por até 18 meses. Dá pra aceitar um emprego sem perder o Bolsa Família no mesmo mês.',
       steps: [
         'Conte a renda nova no CRAS quando atualizar o CadÚnico. Esconder a renda pode cortar o benefício.',
         'Na dúvida sobre o seu caso, ligue pro 121.',
@@ -94,13 +97,16 @@ export function check(a: Answers): Result {
     });
   }
 
-  if (low && people >= 2) {
+  // Today the programme only reaches Bolsa Família families of 2 or more (gov.br, Receber Vale Gás).
+  // Without the Bolsa, or the income to get it, the card would promise what the government does not give.
+  const bolsaFamily = a.receivesBolsa || perPerson <= BOLSA_LINE;
+  if (low && people >= 2 && bolsaFamily) {
     benefits.push({
       id: 'gas', title: 'Gás do Povo',
-      what: `Botijão de gás de graça: 1 a cada ${people >= 4 ? '2' : '3'} meses. É o programa que substituiu o Auxílio Gás.`,
+      what: `Botijão de gás de graça: 1 a cada ${people >= 4 ? '2' : '3'} meses. Por enquanto, vale só pra família do Bolsa Família.`,
       steps: [
-        'É automático pra quem tem o CadÚnico atualizado nos últimos 2 anos.',
-        'Baixe o aplicativo Meu Social e escolha uma revenda de gás credenciada perto de você.',
+        'Não precisa pedir. Todo mês o governo escolhe as famílias pelo CadÚnico, que precisa estar atualizado nos últimos 2 anos.',
+        'Veja se já tem vale no aplicativo Meu Social ou ligando pro 121. Lá também aparecem as revendas de gás credenciadas.',
         'Na revenda, use o cartão do Bolsa Família com chip ou informe o CPF de quem é responsável pela família. Chega um código por SMS.',
       ],
       source: SOURCES.gas,
@@ -110,7 +116,7 @@ export function check(a: Answers): Result {
   if (low || (a.medicalDevice && income <= 3 * MINIMUM_WAGE)) {
     benefits.push({
       id: 'luz', title: 'Conta de luz de graça',
-      what: 'Até 80 kWh por mês sem pagar a energia. Na conta sobram só as taxas, como a iluminação pública.',
+      what: 'Até 80 kWh por mês sem pagar a energia. Na conta sobram as taxas, como a iluminação pública, e o que passar de 80 kWh.',
       steps: [
         'É automático pra quem tem o CadÚnico.',
         'Olhe a conta de luz. Se o desconto não aparecer, ligue pra empresa de luz da sua cidade ou pro 121.',
@@ -121,7 +127,7 @@ export function check(a: Answers): Result {
   } else if (perPerson <= MINIMUM_WAGE) {
     benefits.push({
       id: 'luz-desconto', title: 'Desconto na conta de luz',
-      what: 'Desconto novo de 2026, até 120 kWh por mês, pra família no CadÚnico que ganha um pouco mais.',
+      what: 'Desconto na conta em até 120 kWh por mês, pra família no CadÚnico que ganha um pouco mais.',
       steps: [
         'É automático pra quem tem o CadÚnico.',
         'Se o desconto não aparecer na conta, ligue pra empresa de luz da sua cidade ou pro 121.',
