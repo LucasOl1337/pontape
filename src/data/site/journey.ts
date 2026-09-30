@@ -1,6 +1,7 @@
 import type { IconName } from '../../components/site/icon-names';
 import type { ModuleStatus } from './statuses';
 import { CURRICULO } from './curriculo';
+import { DIREITOS } from './direitos';
 
 export interface JourneyStep {
   shortName: string;
@@ -43,7 +44,8 @@ export const STEPS: JourneyStep[] = [
     now: 'Precisa de ajuda. A AI ainda está aprendendo sotaque, gíria e barulho de rua.' },
   { shortName: 'Comida e roupa', title: 'O básico, garantido', icon: 'plate', module: 'M5',
     text: 'Comida pros primeiros dias, roupa nova e higiene. Tudo pago por doação, e cada compra fica à vista.',
-    now: 'Ainda não começou. Depende de doações, e elas ainda não abriram.' },
+    now: 'Ainda não começou. Depende de doações, e elas ainda não abriram.',
+    tool: { text: 'Enquanto isso, dá pra ver no celular o que o governo já pode dar pra sua família. Nada é enviado.', href: DIREITOS.href, link: 'Ver meus direitos' } },
   { shortName: 'Apoio da AI', title: 'Apoio da AI', icon: 'voice-ai', module: 'M7',
     text: 'A AI ajuda a pessoa a descobrir o que sabe fazer e o que quer. Depois prepara ela pra vaga: currículo, documentos, entrevista. Sem custo.',
     now: 'Ainda não começou. Está no plano.',
