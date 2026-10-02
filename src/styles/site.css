@@ -809,7 +809,7 @@ main:focus{ outline:none }
 .plain-screen .plain-head{ grid-area:head }
 .plain-screen .corrente{ grid-area:scenes }
 .plain-screen .plain-side{ grid-area:side }
-.plain-side{ display:grid; gap:var(--space-5); align-content:start }
+.plain-side{ display:grid; gap:var(--space-4); align-content:start }
 .plain-screen .conferir{ margin-top:0 }
 .plain-screen .corrente{ max-width:none }
 .plain-top{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.5rem 1rem }
@@ -870,10 +870,13 @@ main:focus{ outline:none }
 @media (min-width:960px){
   .plain{ padding-top:var(--space-6) }
   .plain .verify-head{ grid-template-columns:auto minmax(0, 1fr); align-items:center; column-gap:1.25rem }
-  .plain-screen{ grid-template-columns:minmax(0, 5fr) minmax(0, 6fr); grid-template-rows:auto 1fr; grid-template-areas:'head scenes' 'side scenes'; column-gap:var(--space-10); min-height:calc(100 * var(--svh) - var(--header-h) - var(--strip-h) - 8rem) }
-  .plain-screen .corrente{ align-self:center; max-width:46rem }
 }
-@media (min-width:1400px){ .plain-screen{ column-gap:var(--space-16) } }
+/* Two columns only when the three cards still fit side by side next to the text. */
+@media (min-width:1280px){
+  .plain-screen{ grid-template-columns:minmax(0, 5fr) minmax(0, 6fr); grid-template-rows:auto 1fr; grid-template-areas:'head scenes' 'side scenes'; column-gap:var(--space-8); min-height:calc(100 * var(--svh) - var(--header-h) - var(--strip-h) - 8rem) }
+  .plain-screen .corrente{ align-self:center; max-width:none }
+}
+@media (min-width:1400px){ .plain-screen{ grid-template-columns:minmax(0, 4fr) minmax(0, 6fr); column-gap:var(--space-12) } }
 
 /* ---------- 404 (same layout, redrawn in this variant) ---------- */
 .block{ max-width:var(--page); margin:auto; padding:var(--space-16) var(--gutter) var(--space-24) }
@@ -937,89 +940,136 @@ main:focus{ outline:none }
 .contato-note .icon{ width:1em; height:1em; flex:none }
 @media (max-width: 40rem){ .contato-ways li{ grid-template-columns:1.4rem 1fr } .contato-ways span{ grid-column:2 } }
 
-/* ---------- A corrente em cinco cenas (/transparencia, D038) ---------- */
-.corrente{ display:grid; gap:var(--space-3); align-content:start; max-width:40rem; --c-t:.55s }
-.corrente-art{ width:100%; height:auto; overflow:visible; font-family:var(--font-sans) }
-/* The scenes take the whole width under the three questions: the drawing needs room to be read. */
-.corrente-caption{ display:grid; gap:var(--space-2) }
-.corrente-text{ display:none; grid-template-columns:1.6rem minmax(0, 1fr); gap:.5rem; align-items:start; min-height:3.2em; font:400 1rem/1.45 var(--font-sans); color:var(--ink) }
-.corrente-all{ display:grid; gap:.35rem; font:400 .9375rem/1.4 var(--font-sans); color:var(--ink-2) }
-.corrente-all li{ display:grid; grid-template-columns:1.6rem minmax(0, 1fr); gap:.5rem }
-.corrente-num{ display:inline-grid; place-items:center; width:1.5rem; height:1.5rem; border-radius:50%; background:var(--accent); color:var(--paper); font:700 .8rem/1 var(--font-sans) }
-.corrente.is-live .corrente-text{ display:grid }
-.corrente.is-live .corrente-all{ display:none }
-.corrente-controls{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.5rem 1rem }
-.corrente-dots{ display:flex; gap:.35rem }
-.corrente-dots button{ width:44px; height:44px; padding:0; border:0; background:transparent; cursor:pointer; display:grid; place-items:center }
-.corrente-dots button::before{ content:""; width:.7rem; height:.7rem; border-radius:50%; border:2px solid var(--ink); background:transparent; transition:background var(--c-t), transform var(--c-t) }
-.corrente-dots button[aria-selected="true"]::before{ background:var(--accent); border-color:var(--accent); transform:scale(1.25) }
-.corrente-play{ display:inline-flex; align-items:center; gap:.4rem; min-height:44px; padding:0 .6rem; border:0; background:transparent; color:var(--ink-2); font:700 .875rem/1 var(--font-sans); cursor:pointer }
-.corrente-play:hover{ color:var(--accent) }
-.corrente-play .icon{ width:1.1rem; height:1.1rem }
+/* ---------- O livro em cinco passos (/transparencia, D038; refeito em 02/10) ----------
+   Three lines of the book stay on screen the whole time, so nothing jumps around. Each step turns
+   on what it explains: the line, its seal, the seal it keeps from the line before, what breaks when
+   someone changes the past, the registry outside. A seal is a shape, not a code: a lay reader sees
+   at a glance whether two seals are the same. Without JS (no data-scene number) the whole good chain shows. */
+.corrente{ display:grid; gap:var(--space-4); align-content:start; --c-t:.5s; --c-ok:var(--accent); --c-bad:var(--status-bottleneck); --c-good:var(--status-live) }
+.cr-example{ font:400 .875rem/1.4 var(--font-sans); color:var(--ink-2) }
 
-/* Parts: what each scene shows. Everything starts hidden and the scene number turns it on. */
-.c-sheet{ fill:var(--paper); stroke:var(--ink); stroke-width:2 }
-.c-title{ font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; fill:var(--ink-2) }
-.c-prev{ font-size:9.5px; fill:var(--accent); font-weight:700 }
-.c-body{ font-size:11px; fill:var(--ink) }
-.c-amount{ font-size:13px; font-weight:700; fill:var(--ink) }
-.c-amount-bad{ fill:var(--status-bottleneck) }
-.c-strike{ fill:none; stroke:var(--status-bottleneck); stroke-width:2; stroke-linecap:round }
-.c-mark-box{ fill:var(--accent); stroke:none }
-.c-mark{ font-size:10.5px; font-weight:700; fill:var(--paper); letter-spacing:.04em }
-.c-link rect{ fill:none; stroke:var(--ink); stroke-width:2.2 }
-.c-link-x{ fill:none; stroke:var(--status-bottleneck); stroke-width:2.4; stroke-linecap:round }
-.c-stamp rect{ fill:var(--ink) }
-.c-stamp path{ fill:none; stroke:var(--ink); stroke-width:3; stroke-linejoin:round }
-.c-pencil{ fill:var(--status-bottleneck) }
-.c-registry rect{ fill:var(--paper-2); stroke:var(--ink); stroke-width:2; stroke-dasharray:4 3 }
-.c-registry path{ fill:none; stroke:var(--ink); stroke-width:1.5 }
-.c-registry-title{ font-size:9px; font-weight:700; letter-spacing:.1em; fill:var(--ink-2) }
-.c-registry-line{ font-size:10.5px; fill:var(--ink) }
-.c-registry-date{ font-size:10.5px; font-weight:700; fill:var(--ink) }
-.c-registry-check{ stroke:var(--status-live) !important; stroke-width:2.4 !important; stroke-linecap:round; stroke-linejoin:round }
-
-.c-sheet-g, .c-link, .c-mark-g, .c-stamp, .c-pencil, .c-registry, .c-travel, .c-amount-bad, .c-strike, .c-link-x, .c-mark-bad, .c-registry-date, .c-registry-check{
-  opacity:0; transition:opacity var(--c-t) ease, transform var(--c-t) ease;
+/* The five steps, as a row of numbered buttons: where you are and what is next. */
+.cr-steps{ display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:.35rem; counter-reset:step }
+.cr-step{
+  display:flex; flex-direction:column; align-items:flex-start; gap:.3rem; min-height:44px; padding:.45rem .1rem .3rem;
+  border:0; border-top:3px solid var(--rule); background:none; color:var(--ink-2); text-align:left; cursor:pointer;
+  font:700 .8125rem/1.15 var(--font-sans); transition:border-color var(--c-t), color var(--c-t);
 }
-.c-sheet-g{ transform:translateX(-18px) }
-.c-mark-g{ transform:translateY(8px) }
-.c-travel{ transform:translate(324px, 141px) }
+.cr-step-num{ display:inline-grid; place-items:center; width:1.5rem; height:1.5rem; border-radius:50%; border:2px solid currentColor; font-size:.75rem }
+.cr-step[data-done]{ border-top-color:var(--ink); color:var(--ink) }
+.cr-step[aria-current]{ border-top-color:var(--accent); color:var(--accent) }
+.cr-step[aria-current] .cr-step-num{ background:var(--accent); border-color:var(--accent); color:var(--paper) }
+.cr-step:hover{ color:var(--accent) }
 
-/* Scene 1: the first action slides in. */
-[data-scene] .c-sheet-1{ opacity:1; transform:none }
-/* Scene 2: the stamp presses and the mark appears. */
-[data-scene="2"] .c-stamp, [data-scene="3"] .c-stamp{ opacity:1 }
-[data-scene="2"] .c-stamp{ animation:c-press var(--c-t) ease both }
-[data-scene="2"] .c-sheet-1 .c-mark-g, [data-scene="3"] .c-sheet-1 .c-mark-g, [data-scene="4"] .c-sheet-1 .c-mark-g, [data-scene="5"] .c-sheet-1 .c-mark-g{ opacity:1; transform:none }
-/* Scene 3: the chain. */
-[data-scene="3"] .c-sheet-g, [data-scene="4"] .c-sheet-g, [data-scene="5"] .c-sheet-g{ opacity:1; transform:none }
-[data-scene="3"] .c-mark-g, [data-scene="4"] .c-mark-g, [data-scene="5"] .c-mark-g{ opacity:1; transform:none }
-[data-scene="3"] .c-link, [data-scene="4"] .c-link, [data-scene="5"] .c-link{ opacity:1 }
-[data-scene="3"] .c-sheet-2{ transition-delay:.15s }
-[data-scene="3"] .c-sheet-3{ transition-delay:.35s }
-[data-scene="3"] .c-link-1{ transition-delay:.3s }
-[data-scene="3"] .c-link-2{ transition-delay:.5s }
-/* Scene 4: someone changes R$ 480 and the chain breaks from there. */
-[data-scene="4"] .c-pencil{ opacity:1; animation:c-write .9s ease both }
-[data-scene="4"] .c-amount-ok{ opacity:.35 }
-[data-scene="4"] .c-strike, [data-scene="4"] .c-amount-bad{ opacity:1; transition-delay:.5s }
-[data-scene="4"] .c-sheet-1 .c-mark-ok{ opacity:0; transition-delay:.9s }
-[data-scene="4"] .c-sheet-1 .c-mark-bad{ opacity:1; transition-delay:.9s }
-[data-scene="4"] .c-sheet-1 .c-mark-box{ fill:var(--status-bottleneck); transition:fill var(--c-t) .9s }
-[data-scene="4"] .c-link rect{ stroke:var(--status-bottleneck); stroke-dasharray:3 2; transition:stroke var(--c-t) 1.3s }
-[data-scene="4"] .c-link-x{ opacity:1; transition-delay:1.3s }
-[data-scene="4"] .c-sheet-2 .c-mark-box, [data-scene="4"] .c-sheet-3 .c-mark-box{ fill:var(--status-bottleneck); transition:fill var(--c-t) 1.6s }
-[data-scene="4"] .c-sheet-2 .c-mark, [data-scene="4"] .c-sheet-3 .c-mark{ text-decoration:line-through }
-/* Scene 5: the last mark travels to the public registry and gets its date. */
-[data-scene="5"] .c-registry{ opacity:1 }
-[data-scene="5"] .c-travel{ opacity:1; transform:translate(298px, 203px); transition-delay:.2s; transition-duration:1.1s }
-[data-scene="5"] .c-registry-date, [data-scene="5"] .c-registry-check{ opacity:1; transition-delay:1.4s }
-[data-scene="5"] .c-sheet-3 .c-mark-g{ opacity:.35; transition-delay:.2s }
+/* The stage: three cards side by side, joined by a link; the registry under them. */
+.cr-stage{ display:grid; gap:var(--space-3); padding:var(--space-4); border:1px solid var(--rule); background:var(--paper-2) }
+.cr-chain{ display:grid; grid-template-columns:minmax(0, 1fr) 1.6rem minmax(0, 1fr) 1.6rem minmax(0, 1fr); align-items:stretch }
+.cr-card{
+  display:flex; flex-direction:column; gap:.35rem; min-width:0; padding:.75rem .75rem .65rem;
+  border:2px solid var(--ink); background:var(--paper); font-family:var(--font-sans);
+  transition:opacity var(--c-t), transform var(--c-t), border-color var(--c-t), box-shadow var(--c-t);
+}
+.cr-card-n{ font:700 .75rem/1 var(--font-sans); letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2) }
+.cr-what{ font:400 1rem/1.3 var(--font-sans); color:var(--ink); min-height:2.6em }
+.cr-amount{ display:flex; flex-wrap:wrap; align-items:baseline; gap:.45rem; font:700 1.25rem/1.1 var(--font-sans); color:var(--ink) }
+.cr-amount-bad{ display:none; color:var(--c-bad) }
+.cr-amount-ok{ transition:opacity var(--c-t), font-size var(--c-t) }
+.cr-marks{ display:grid; gap:.3rem; margin-top:auto; padding-top:.5rem; border-top:1px dashed var(--rule) }
+.cr-prev, .cr-own{ display:flex; align-items:center; gap:.4rem; min-height:1.9rem; font:700 .8125rem/1.15 var(--font-sans); color:var(--ink-2) }
+.cr-prev > span:first-child, .cr-own > span:first-child{ flex:1; min-width:0 }
+/* A seal: a round stamp with a shape inside. Same shape, same seal. */
+.cr-seal{ position:relative; flex:none; display:inline-grid; width:2.2rem; height:2.2rem; border-radius:50%; background:var(--c-ok); transition:background var(--c-t), transform var(--c-t), opacity var(--c-t) }
+.cr-seal svg{ grid-area:1/1; width:100%; height:100% }
+.cr-g{ fill:var(--paper); fill-rule:evenodd; transition:opacity var(--c-t) }
+.cr-g-bad{ opacity:0 }
+.cr-seal-mini{ width:1.7rem; height:1.7rem }
+.cr-nomatch{ display:none; padding:.1rem .35rem; border-radius:3px; background:var(--c-bad); color:var(--paper); font-size:.7rem; letter-spacing:.02em; white-space:nowrap }
+.cr-link{ display:grid; place-items:center; color:var(--ink); transition:opacity var(--c-t), color var(--c-t) }
+.cr-link .icon{ width:1.35rem; height:1.35rem; stroke-width:2.2; transform:rotate(-45deg) }
+.cr-registry{
+  display:grid; grid-template-columns:auto minmax(0, 1fr) auto; align-items:center; gap:.7rem; padding:.6rem .8rem;
+  border:2px dashed var(--ink); background:var(--paper); font-family:var(--font-sans);
+  transition:opacity var(--c-t), transform var(--c-t);
+}
+.cr-registry p{ display:grid; gap:.1rem }
+.cr-registry b{ font:700 .9rem/1.2 var(--font-sans) }
+.cr-registry p span{ font:400 .85rem/1.3 var(--font-sans); color:var(--ink-2) }
+.cr-registry-ok{ width:1.6rem; height:1.6rem; color:var(--c-good); stroke-width:2.6 }
 
-@keyframes c-press{ 0%{ transform:translateY(-14px) } 70%{ transform:translateY(4px) } 100%{ transform:none } }
-@keyframes c-write{ 0%{ transform:translate(-6px, 8px) } 50%{ transform:translate(2px, -2px) } 100%{ transform:none } }
+/* What this step says, big enough to read, and the controls. */
+.cr-caption{ display:grid; gap:var(--space-3) }
+.cr-now{ display:none; grid-template-columns:2rem minmax(0, 1fr); gap:.7rem; align-items:start; min-height:6.4em; font:400 1.0625rem/1.45 var(--font-sans); color:var(--ink) }
+.cr-now-title{ display:block; margin-bottom:.15rem; font:500 1.35rem/1.2 var(--font-display); letter-spacing:-.01em }
+.cr-now-num{ display:inline-grid; place-items:center; width:2rem; height:2rem; border-radius:50%; background:var(--accent); color:var(--paper); font:700 .95rem/1 var(--font-sans) }
+.corrente-all{ display:grid; gap:.6rem; font:400 1rem/1.45 var(--font-sans); color:var(--ink) }
+.corrente-all li{ display:grid; grid-template-columns:2rem minmax(0, 1fr); gap:.7rem }
+.corrente-all b{ display:block; font:500 1.15rem/1.25 var(--font-display) }
+.corrente.is-live .cr-now{ display:grid }
+.corrente.is-live .corrente-all{ display:none }
+.cr-nav{ display:flex; flex-wrap:wrap; align-items:center; gap:.5rem }
+.cr-nav-btn{
+  display:inline-flex; align-items:center; gap:.4rem; min-height:44px; padding:0 .9rem;
+  border:2px solid var(--ink); background:transparent; color:var(--ink); font:700 .9375rem/1 var(--font-sans); cursor:pointer;
+}
+.cr-nav-btn:hover{ background:var(--ink); color:var(--paper) }
+.cr-nav-btn:disabled{ opacity:.35; cursor:default; background:transparent; color:var(--ink) }
+.cr-nav-btn .icon{ width:1.05rem; height:1.05rem }
+.cr-nav-next{ margin-left:auto; background:var(--ink); color:var(--paper) }
+.cr-nav-next:hover{ background:var(--accent); border-color:var(--accent) }
+
+/* ----- The steps. Only applies once the script has set a number. ----- */
+/* What is not part of this step yet sits faded, so the eye goes to what is new. */
+.corrente[data-scene="1"] .cr-card-2, .corrente[data-scene="1"] .cr-card-3,
+.corrente[data-scene="1"] .cr-link, .corrente[data-scene="2"] .cr-card-2, .corrente[data-scene="2"] .cr-card-3,
+.corrente[data-scene="2"] .cr-link{ opacity:.28 }
+.corrente[data-scene="1"] .cr-registry, .corrente[data-scene="2"] .cr-registry,
+.corrente[data-scene="3"] .cr-registry, .corrente[data-scene="4"] .cr-registry{ opacity:.28 }
+/* 1: only the line. Its seal is not there yet. */
+.corrente[data-scene="1"] .cr-card-1 .cr-marks{ opacity:0 }
+.corrente[data-scene="1"] .cr-card-1{ border-color:var(--accent); box-shadow:0 0 0 4px rgba(41, 78, 178, .15) }
+/* 2: the seal comes out of the line, with a press. */
+.corrente[data-scene="2"] .cr-card-1{ border-color:var(--accent); box-shadow:0 0 0 4px rgba(41, 78, 178, .15) }
+.corrente[data-scene="2"] .cr-card-1 .cr-own .cr-seal{ animation:cr-stamp .7s var(--ease) .25s both; box-shadow:0 0 0 4px rgba(41, 78, 178, .2) }
+/* 3: the chain. Each card shows the seal it keeps from the one before, the same shape. */
+.corrente[data-scene="3"] .cr-prev .cr-seal{ animation:cr-pulse 1.2s ease .6s 2 both }
+.corrente[data-scene="3"] .cr-card-2{ transition-delay:.1s }
+.corrente[data-scene="3"] .cr-card-3{ transition-delay:.3s }
+/* 4: someone changes line 1. Its amount and seal change; line 2 still keeps the old seal: it no longer matches. */
+.corrente[data-scene="4"] .cr-card-1{ border-color:var(--c-bad); box-shadow:0 0 0 4px rgba(173, 42, 28, .14) }
+.corrente[data-scene="4"] .cr-card-1 .cr-amount-ok{ opacity:.5; font-size:.95rem; text-decoration:line-through; text-decoration-color:var(--c-bad); text-decoration-thickness:2px }
+.corrente[data-scene="4"] .cr-card-1 .cr-amount-bad{ display:inline; animation:cr-in .45s ease .2s both }
+.corrente[data-scene="4"] .cr-card-1 .cr-own .cr-seal{ background:var(--c-bad); transition-delay:.8s }
+.corrente[data-scene="4"] .cr-card-1 .cr-g-ok{ opacity:0; transition-delay:.8s }
+.corrente[data-scene="4"] .cr-card-1 .cr-g-bad{ opacity:1; transition-delay:.8s }
+.corrente[data-scene="4"] .cr-card-2{ border-color:var(--c-bad); transition-delay:1.4s }
+.corrente[data-scene="4"] .cr-card-2 .cr-nomatch{ display:inline-block; animation:cr-in .4s ease 1.5s both }
+.corrente[data-scene="4"] .cr-link-1{ color:var(--c-bad); opacity:.9; transition-delay:1.4s }
+.corrente[data-scene="4"] .cr-link-1 .icon{ animation:cr-snap .5s ease 1.4s both }
+.corrente[data-scene="4"] .cr-card-3, .corrente[data-scene="4"] .cr-link-2{ opacity:.45; transition-delay:1.8s }
+/* 5: the seal of the last line goes to the registry outside, which keeps it with the date. */
+.corrente[data-scene="5"] .cr-card-3{ border-color:var(--accent); box-shadow:0 0 0 4px rgba(41, 78, 178, .15) }
+.corrente[data-scene="5"] .cr-registry{ border-style:solid; border-color:var(--c-good); animation:cr-rise .6s var(--ease) .3s both }
+.corrente[data-scene="5"] .cr-registry-ok{ animation:cr-in .4s ease 1s both }
+
+@keyframes cr-stamp{ 0%{ transform:translateY(-14px) scale(1.5); opacity:0 } 60%{ transform:translateY(2px) scale(.92); opacity:1 } 100%{ transform:none; opacity:1 } }
+@keyframes cr-pulse{ 0%, 100%{ transform:none } 50%{ transform:scale(1.25) } }
+@keyframes cr-snap{ 0%{ transform:rotate(-45deg) } 40%{ transform:rotate(-20deg) scale(1.2) } 100%{ transform:rotate(-45deg) scale(.85) } }
+@keyframes cr-in{ from{ opacity:0; transform:scale(.6) } }
+@keyframes cr-rise{ from{ opacity:.28; transform:translateY(10px) } to{ opacity:1; transform:none } }
+
+/* A narrow screen: the three lines stack, joined top to bottom; the step names go, the numbers stay. */
+@media (max-width:699px){
+  .cr-stage{ padding:var(--space-3) }
+  .cr-chain{ grid-template-columns:minmax(0, 1fr); grid-template-rows:auto 1.4rem auto 1.4rem auto }
+  .cr-link .icon{ transform:rotate(45deg) }
+  .corrente[data-scene="4"] .cr-link-1 .icon{ animation:none }
+  .cr-what{ min-height:0 }
+  .cr-marks{ grid-template-columns:minmax(0, 1fr); gap:.2rem }
+  .cr-step{ align-items:center; text-align:center }
+  .cr-step-label{ font-size:.6875rem }
+  .cr-nav-btn{ padding:0 .7rem }
+}
 @media (prefers-reduced-motion:reduce){
   .corrente{ --c-t:0s }
-  .c-sheet-g, .c-link, .c-mark-g, .c-stamp, .c-pencil, .c-registry, .c-travel, .c-amount-bad, .c-strike, .c-link-x, .c-mark-bad, .c-registry-date, .c-registry-check{ transition:none; animation:none !important }
+  .corrente *{ animation:none !important; transition:none !important }
 }

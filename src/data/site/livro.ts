@@ -20,13 +20,14 @@ export const PLAIN = {
   ],
   stampWaiting: 'Neste livro esse carimbo ainda não entrou. Quando entrar, o selo mostra o registro e o dia.',
   chain: 'Cada elo preso no anterior. O último vai pro registro público, com a data.',
-  // The chain in five scenes (Corrente.astro). `short` names the scene for the dots.
+  // The book in five steps (Corrente.astro). `short` names the step on its button; `title` is the
+  // idea in one line, `text` says it with the example on screen.
   scenes: [
-    { short: 'a doação entra', text: 'Alguém doa R$ 50 pelo site. A doação entra no livro na hora, com valor e data. Sem nome.' },
-    { short: 'a marca', text: 'A ação ganha uma marca: uma conta feita a partir do texto dela. Qualquer computador refaz a conta e chega no mesmo resultado.' },
-    { short: 'a corrente', text: 'Os R$ 50 viram 5 kits de higiene, e os kits chegam na praça. Cada ação carrega a marca da anterior, como elo de corrente. É o estilo do blockchain, sem moeda nenhuma.' },
-    { short: 'alguém mexe', text: 'Se alguém tentar dizer que entraram só R$ 20, a marca muda inteira e as ações seguintes deixam de bater. Qualquer pessoa vê onde quebrou.' },
-    { short: 'a data', text: 'A marca do fim vai pra um registro público, fora da gente, e ganha a data de lá. Depois disso, ninguém muda o passado.' },
+    { short: 'O livro', title: 'Tudo vira uma linha no livro.', text: 'Entraram R$ 50 de doação? Isso vira a linha 1, com o valor e a data. Sem nome de ninguém.' },
+    { short: 'A marca', title: 'Cada linha ganha uma marca.', text: 'A marca sai do texto da linha, como uma impressão digital. Qualquer celular refaz a conta e chega na mesma marca.' },
+    { short: 'A corrente', title: 'Cada linha guarda a marca da anterior.', text: 'Dos R$ 50, R$ 48 pagam 5 kits, que chegam na praça. A linha 2 guarda a marca da linha 1, e a 3 guarda a da 2. Fica uma corrente.' },
+    { short: 'Alguém mexe', title: 'Se alguém muda o passado, aparece.', text: 'Trocar R$ 50 por R$ 20 muda a marca da linha 1. A linha 2 ainda guarda a marca antiga, então não bate mais. Qualquer pessoa vê onde quebrou.' },
+    { short: 'A data', title: 'A última marca fica guardada fora daqui.', text: 'Um registro público, que não é nosso, guarda a marca da última linha com a data. Depois disso, nem a gente consegue mudar essas linhas sem deixar sinal.' },
   ],
   verify: 'O selo baixa o livro e refaz a conta no seu aparelho. Nada é enviado pra gente.',
   seal: 'Conferir agora',
