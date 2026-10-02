@@ -25,10 +25,10 @@ function batchOf(input: unknown): unknown[] | null {
 
 try {
   const { values } = parseArgs({ options: {
-    'event-json': { type: 'string' }, apply: { type: 'boolean', default: false },
+    'event-json': { type: 'string' }, 'event-file': { type: 'string' }, apply: { type: 'boolean', default: false },
   } });
-  if (!values['event-json']) throw new Error('Use --event-json \'{"source","eventId","payload"}\' [--apply].');
-  const envelope: unknown = JSON.parse(values['event-json']);
+  if (Boolean(values['event-json']) === Boolean(values['event-file'])) throw new Error('Use --event-json ou --event-file arquivo.json [--apply].');
+  const envelope: unknown = JSON.parse(values['event-file'] ? await readFile(values['event-file'], 'utf8') : values['event-json']!);
   if (!values.apply) {
     console.log('DRY-RUN: nenhum arquivo foi alterado e o secret não foi lido.');
     process.exit(0);

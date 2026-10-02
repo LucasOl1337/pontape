@@ -52,3 +52,13 @@ O contexto de qualquer agente compacta; o arquivo sobrevive. Cada frente segue e
 - **Idioma:** docs e texto de interface em PT-BR; código e identificadores em inglês. O termo é sempre **AI**, nunca "IA" nem "inteligência artificial".
 - **Texto público** (site, panfleto, roteiro de entrevista): frase curta e direta, que quem lê pouco entende ouvindo em voz alta. Sem travessão, sem jargão, sem rebaixar ninguém.
 - **Pesquisa:** toda afirmação factual leva link e data de acesso.
+
+## CLI para agentes
+
+A entrada operacional é `node bin/pontape.mjs` (ou `npm run cli --`). Comece por `capabilities --json`, `doctor --json` e `docs/cli/README.md`. Use `npm --silent run cli -- ... --json` quando for ler stdout como JSON. O catálogo informa opções, efeitos e exemplos; não faça scraping da ajuda humana.
+
+- `status`, `site data` e `ledger` consultam as fontes do checkout. Comandos HTTP usam loopback por padrão; origem remota deve ser explícita.
+- `dev mock` sobe o Worker real com dados/provedores fictícios e banco em memória. `test --suite cli` testa processos do CLI contra esse servidor. Não precisa de credenciais reais.
+- Preserve os limites de `--apply`, a autorização do Worker e as regras de publicação deste arquivo. Timeout de envio não autoriza repetir uma operação incerta.
+- Uma nova função operacional precisa de comando no catálogo, exemplo documentado e teste pela interface do CLI. Reutilize o domínio existente.
+- Planejamento e registro desta frente: `docs/cli/PLANO.md` e `docs/cli/DIARIO.md`.
