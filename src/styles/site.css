@@ -272,9 +272,9 @@ main:focus{ outline:none }
 @media (min-width:1180px) and (min-height:560px) and (prefers-reduced-motion:no-preference){
   .stage-title{ transition:font-size .35s var(--ease) }
 }
-/* Wider than the page: the staircase stands inside the grid too, its floor starting under the logo
-   and ending under the last menu item. Below that it runs to the edges of the screen. */
-@media (min-width:100rem) and (min-height:560px){
+/* The staircase stands inside the page grid on a computer, its floor starting under the logo and
+   ending under the last menu item, with the same air on both sides at any width (02/10). */
+@media (min-width:1180px) and (min-height:560px){
   .stair{ right:var(--gutter); left:var(--gutter) }
   .stage{ --corner-w:calc((100 * var(--cqw) - 2 * var(--gutter)) * 4 / var(--n) - 1.2rem) }
 }
