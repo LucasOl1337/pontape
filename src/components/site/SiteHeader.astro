@@ -6,8 +6,9 @@ import { CONSTRUIR } from '../../data/site/cadernos';
 import { LIVRO } from '../../data/site/livro';
 import { PERGUNTAS } from '../../data/site/perguntas';
 
-interface Props { current?: 'home' | 'transparencia' | 'construir' | 'perguntas' | 'not-found' }
-const { current = 'home' } = Astro.props;
+// `chat={false}` leaves the Yume out: a tool with no place to type keeps it that way.
+interface Props { current?: 'home' | 'transparencia' | 'construir' | 'perguntas' | 'ferramentas' | 'not-found'; chat?: boolean }
+const { current = 'home', chat = true } = Astro.props;
 const onHome = current === 'home';
 // Inside a section the door stays marked: the page itself at its address, the section below it
 // (the cadernos under /construir, the technical page under /transparencia).
@@ -31,11 +32,11 @@ const links = [
         {links.map(l => <li><a href={l.href} aria-current={l.current}>{l.label}</a></li>)}
       </ul>
     </nav>
-    <button class="icon-btn chat-open-btn" id="yumi-open" type="button" aria-haspopup="dialog" aria-controls="yumi-dialog">Tirar dúvida</button>
+    {chat && <button class="icon-btn chat-open-btn" id="yumi-open" type="button" aria-haspopup="dialog" aria-controls="yumi-dialog">Tirar dúvida</button>}
   </div>
   <div class="read-progress" aria-hidden="true"></div>
 </header>
-<dialog class="yumi-dialog" id="yumi-dialog" aria-labelledby="yumi-title">
+{chat && <dialog class="yumi-dialog" id="yumi-dialog" aria-labelledby="yumi-title">
   <div class="yumi-head">
     <div><p class="yumi-kicker">PontaPé</p><h2 id="yumi-title">Converse com a Yume</h2></div>
     <button class="icon-btn" type="button" data-close aria-label="Fechar conversa"><Icon name="close" /></button>
@@ -48,4 +49,4 @@ const links = [
     <textarea id="yumi-input" name="message" rows="2" maxlength="600" required placeholder="Escreva aqui. Enter envia."></textarea>
     <div class="yumi-form-bottom"><p id="yumi-status" role="status" aria-live="polite"></p><button class="btn btn--ink" type="submit">Enviar</button></div>
   </form>
-</dialog>
+</dialog>}

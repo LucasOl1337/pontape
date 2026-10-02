@@ -11,14 +11,16 @@ import { PROJECT_NAME } from '../data/site/project';
 interface Props {
   title: string;
   description: string;
-  current?: 'home' | 'transparencia' | 'construir' | 'perguntas' | 'not-found';
+  current?: 'home' | 'transparencia' | 'construir' | 'perguntas' | 'ferramentas' | 'not-found';
   share?: keyof typeof SHARE;
   noindex?: boolean;
   /** The "em construção" strip. The home says it in its own first screen (F29). */
   strip?: boolean;
+  /** The Yume chat in the header. Off on a tool that keeps everything in buttons. */
+  chat?: boolean;
 }
 
-const { title, description, current, share = 'home', noindex = false, strip = true } = Astro.props;
+const { title, description, current, share = 'home', noindex = false, strip = true, chat = true } = Astro.props;
 const card = SHARE[share];
 // Share previews need absolute URLs. `site` comes from SITE_URL at build (astro.config.mjs);
 // until the domain exists the paths stay relative.
@@ -70,7 +72,7 @@ const cardImage = `${absolute(card.image)}?v=${cardVersion}`;
     <IconSprite />
     <a class="skip-link" href="#conteudo">Pular pro conteúdo</a>
     {strip && <StatusStrip />}
-    <SiteHeader current={current} />
+    <SiteHeader current={current} chat={chat} />
     <main id="conteudo" tabindex="-1"><slot /></main>
     <SiteFooter />
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
