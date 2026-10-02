@@ -43,7 +43,7 @@ export async function runLocal(ctx: Context): Promise<unknown> {
       note: 'Esses módulos ainda não têm serviço operacional. Consulte site data --collection modules.' };
     case 'doctor': {
       const [major, minor] = process.versions.node.split('.').map(Number);
-      const checks = [
+      const checks: { name: string; ok: boolean; expected?: string; actual?: string }[] = [
         { name: 'node', ok: major === 24 && minor! >= 21, actual: process.versions.node, expected: '>=24.21.0 <25' },
         { name: 'dependencies', ...await dependencies() },
         { name: 'ledger', ok: await exists(join(ROOT, 'src/data/ledger/ledger.json')) },
