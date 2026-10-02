@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bolsaEstimate, check, parseIncome, reais, type Answers } from './direitos';
+import { ALWAYS, bolsaEstimate, check, parseIncome, reais, type Answers } from './direitos';
 
 const base: Answers = {
   people: 1, income: 0, kidsUpTo6: 0, kids7to17: 0,
@@ -87,6 +87,12 @@ describe('direitos', () => {
   it('a família de 3 com R$ 600,00 vê os benefícios, e não R$ 60.000', () => {
     expect(check({ ...base, people: 3, income: parseIncome('600,00') }).perPerson).toBe(200);
     expect(ids({ people: 3, income: parseIncome('600,00') })).toContain('bolsa');
+  });
+
+  it('o 121 diz o horário do atendente, com a página do próprio Disque Social como fonte', () => {
+    const disque = ALWAYS.find(a => a.title === 'Disque Social 121')!;
+    expect(disque.what).toContain('segunda a sexta, das 7h às 19h');
+    expect(disque.source.url).toContain('disque-social-121');
   });
 
   it('todo benefício leva a fonte oficial', () => {
