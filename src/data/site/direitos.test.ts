@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bolsaEstimate, check, reais, type Answers } from './direitos';
+import { bolsaEstimate, check, parseIncome, reais, type Answers } from './direitos';
 
 const base: Answers = {
   people: 1, income: 0, kidsUpTo6: 0, kids7to17: 0,
@@ -67,6 +67,23 @@ describe('direitos', () => {
   it('escreve dinheiro do jeito brasileiro', () => {
     expect(reais(1621)).toBe('R$ 1.621');
     expect(reais(810.5)).toBe('R$ 810,50');
+  });
+
+  it('entende a renda escrita de qualquer jeito, com ou sem centavos', () => {
+    expect(parseIncome('600')).toBe(600);
+    expect(parseIncome('600,00')).toBe(600);
+    expect(parseIncome('600,5')).toBe(600.5);
+    expect(parseIncome('1.200')).toBe(1200);
+    expect(parseIncome('1.200,50')).toBe(1200.5);
+    expect(parseIncome('600.00')).toBe(600);
+    expect(parseIncome('600,')).toBe(600);
+    expect(parseIncome('')).toBe(0);
+    expect(parseIncome(',')).toBe(0);
+  });
+
+  it('a família de 3 com R$ 600,00 vê os benefícios, e não R$ 60.000', () => {
+    expect(check({ ...base, people: 3, income: parseIncome('600,00') }).perPerson).toBe(200);
+    expect(ids({ people: 3, income: parseIncome('600,00') })).toContain('bolsa');
   });
 
   it('todo benefício leva a fonte oficial', () => {

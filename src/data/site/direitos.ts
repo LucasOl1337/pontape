@@ -58,6 +58,18 @@ export interface Result {
 export const reais = (value: number) =>
   `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: value % 1 ? 2 : 0, maximumFractionDigits: 2 })}`;
 
+// The income as people write it: "600", "600,00", "1.200,50", even "600.00". The comma marks the
+// cents; a dot is a thousands mark, unless only one or two digits come after it.
+export function parseIncome(text: string): number {
+  const s = text.replace(/[^\d.,]/g, '');
+  const comma = s.lastIndexOf(',');
+  const dot = s.lastIndexOf('.');
+  const cut = comma >= 0 ? comma : /\.\d{1,2}$/.test(s) ? dot : -1;
+  const whole = (cut >= 0 ? s.slice(0, cut) : s).replace(/\D/g, '');
+  const cents = cut >= 0 ? s.slice(cut + 1).replace(/\D/g, '').slice(0, 2).padEnd(2, '0') : '00';
+  return Number(whole || 0) + Number(cents) / 100;
+}
+
 export function bolsaEstimate(a: Pick<Answers, 'people' | 'kidsUpTo6' | 'kids7to17' | 'pregnantOrNursing'>): number {
   return Math.max(BOLSA.floor, BOLSA.perPerson * a.people)
     + BOLSA.earlyChild * a.kidsUpTo6

@@ -45,8 +45,8 @@ const yesNo = (name: string) => [{ value: 'sim', label: 'Sim' }, { value: 'nao',
       <fieldset class="dr-step" data-step="income">
         <legend>Quanto dinheiro entra na casa por mês, somando todo mundo?</legend>
         <p class="dr-hint">Some salário, bico, pensão e aposentadoria de quem mora com você. Não conte o Bolsa Família. Pode ser um valor aproximado.</p>
-        <label class="dr-money"><span aria-hidden="true">R$</span><input type="text" id="dr-income" inputmode="numeric" maxlength="6" placeholder="0" aria-label="Valor em reais, só números" /></label>
-        <p class="dr-hint">Só números, sem centavos.</p>
+        <label class="dr-money"><span aria-hidden="true">R$</span><input type="text" id="dr-income" inputmode="numeric" maxlength="12" placeholder="0" aria-label="Valor em reais" /></label>
+        <p class="dr-hint">Pode ser com ou sem centavos.</p>
         <button class="btn dr-btn-quiet" type="button" id="dr-zero">Não entra nada</button>
       </fieldset>
 
