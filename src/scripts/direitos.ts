@@ -1,5 +1,5 @@
 // The benefits check: one question at a time, all in memory. No request, no storage (D012).
-import { ALWAYS, CHECKED, EXAMPLE, check, reais, type Answers, type Cadunico, type Result } from '../data/site/direitos';
+import { ALWAYS, CHECKED, EXAMPLE, check, parseIncome, reais, type Answers, type Cadunico, type Result } from '../data/site/direitos';
 import { formatDay } from '../data/site/project';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -17,7 +17,7 @@ const picked = (name: string) => form.querySelector<HTMLInputElement>(`input[nam
 function answers(): Answers {
   return {
     people: count('dr-people'),
-    income: Number(income.value || 0),
+    income: parseIncome(income.value),
     kidsUpTo6: count('dr-kids6'),
     kids7to17: count('dr-kids17'),
     pregnantOrNursing: picked('pregnant') === 'sim',
@@ -30,7 +30,7 @@ function answers(): Answers {
 // What is still missing on a step, in words; empty when it can move on.
 function missing(step: HTMLFieldSetElement): string {
   const name = step.dataset.step!;
-  if (name === 'income') return income.value ? '' : 'Escreva o valor, ou toque em "Não entra nada".';
+  if (name === 'income') return /\d/.test(income.value) ? '' : 'Escreva o valor, ou toque em "Não entra nada".';
   if (['pregnant', 'medical', 'bolsa', 'cadunico'].includes(name)) return picked(name) ? '' : 'Escolha uma resposta pra continuar.';
   return '';
 }
@@ -72,7 +72,7 @@ form.addEventListener('click', e => {
   say('');
 });
 
-income.addEventListener('input', () => { income.value = income.value.replace(/\D/g, '').replace(/^0+(?=\d)/, ''); say(''); });
+income.addEventListener('input', () => { income.value = income.value.replace(/[^\d.,]/g, '').replace(/^0+(?=\d)/, ''); say(''); });
 $('dr-zero').addEventListener('click', () => { income.value = '0'; show(at + 1); focusStep(); });
 
 /* ---------- Moving through the questions ---------- */
