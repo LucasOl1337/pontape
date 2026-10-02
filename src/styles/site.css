@@ -1018,12 +1018,13 @@ main:focus{ outline:none }
 .cr-nav-next:hover{ background:var(--accent); border-color:var(--accent) }
 
 /* ----- The steps. Only applies once the script has set a number. ----- */
-/* What is not part of this step yet sits faded, so the eye goes to what is new. */
+/* Inactive cards lose their border emphasis, never their text contrast. */
 .corrente[data-scene="1"] .cr-card-2, .corrente[data-scene="1"] .cr-card-3,
-.corrente[data-scene="1"] .cr-link, .corrente[data-scene="2"] .cr-card-2, .corrente[data-scene="2"] .cr-card-3,
+.corrente[data-scene="2"] .cr-card-2, .corrente[data-scene="2"] .cr-card-3{ border-color:var(--rule); background:var(--paper-2) }
+.corrente[data-scene="1"] .cr-link,
 .corrente[data-scene="2"] .cr-link{ opacity:.28 }
 .corrente[data-scene="1"] .cr-registry, .corrente[data-scene="2"] .cr-registry,
-.corrente[data-scene="3"] .cr-registry, .corrente[data-scene="4"] .cr-registry{ opacity:.28 }
+.corrente[data-scene="3"] .cr-registry, .corrente[data-scene="4"] .cr-registry{ border-color:var(--rule); background:var(--paper-2) }
 /* 1: only the line. Its seal is not there yet. */
 .corrente[data-scene="1"] .cr-card-1 .cr-marks{ opacity:0 }
 .corrente[data-scene="1"] .cr-card-1{ border-color:var(--accent); box-shadow:0 0 0 4px rgba(41, 78, 178, .15) }
@@ -1036,7 +1037,7 @@ main:focus{ outline:none }
 .corrente[data-scene="3"] .cr-card-3{ transition-delay:.3s }
 /* 4: someone changes line 1. Its amount and seal change; line 2 still keeps the old seal: it no longer matches. */
 .corrente[data-scene="4"] .cr-card-1{ border-color:var(--c-bad); box-shadow:0 0 0 4px rgba(173, 42, 28, .14) }
-.corrente[data-scene="4"] .cr-card-1 .cr-amount-ok{ opacity:.5; font-size:.95rem; text-decoration:line-through; text-decoration-color:var(--c-bad); text-decoration-thickness:2px }
+.corrente[data-scene="4"] .cr-card-1 .cr-amount-ok{ color:var(--ink-2); font-size:.95rem; text-decoration:line-through; text-decoration-color:var(--c-bad); text-decoration-thickness:2px }
 .corrente[data-scene="4"] .cr-card-1 .cr-amount-bad{ display:inline; animation:cr-in .45s ease .2s both }
 .corrente[data-scene="4"] .cr-card-1 .cr-own .cr-seal{ background:var(--c-bad); transition-delay:.8s }
 .corrente[data-scene="4"] .cr-card-1 .cr-g-ok{ opacity:0; transition-delay:.8s }
@@ -1045,7 +1046,8 @@ main:focus{ outline:none }
 .corrente[data-scene="4"] .cr-card-2 .cr-nomatch{ display:inline-block; animation:cr-in .4s ease 1.5s both }
 .corrente[data-scene="4"] .cr-link-1{ color:var(--c-bad); opacity:.9; transition-delay:1.4s }
 .corrente[data-scene="4"] .cr-link-1 .icon{ animation:cr-snap .5s ease 1.4s both }
-.corrente[data-scene="4"] .cr-card-3, .corrente[data-scene="4"] .cr-link-2{ opacity:.45; transition-delay:1.8s }
+.corrente[data-scene="4"] .cr-card-3{ border-color:var(--rule); background:var(--paper-2) }
+.corrente[data-scene="4"] .cr-link-2{ opacity:.45; transition-delay:1.8s }
 /* 5: the seal of the last line goes to the registry outside, which keeps it with the date. */
 .corrente[data-scene="5"] .cr-card-3{ border-color:var(--accent); box-shadow:0 0 0 4px rgba(41, 78, 178, .15) }
 .corrente[data-scene="5"] .cr-registry{ border-style:solid; border-color:var(--c-good); animation:cr-rise .6s var(--ease) .3s both }
