@@ -21,6 +21,7 @@ export const SOURCES = {
   agua: { label: 'ANA: Tarifa Social de Água e Esgoto', url: 'https://www.gov.br/ana/pt-br/assuntos/saneamento-basico/tarifa-social-de-agua-e-esgoto' },
   salario: { label: 'Planalto: salário mínimo de R$ 1.621 em 2026', url: 'https://www.gov.br/planalto/pt-br/acompanhe-o-planalto/noticias/2025/12/publicado-decreto-que-reajusta-salario-minimo-para-r-1-621-a-partir-de-1o-de-janeiro' },
   // Art. 4, § 1, III: the Bolsa Família itself does not count as income. The income question says so.
+  disque121: { label: 'MDS: Disque Social 121', url: 'https://www.gov.br/mds/pt-br/canais_atendimento/disque-social-121/disque-social/' },
   lei: { label: 'Lei 14.601/2023, do Bolsa Família', url: 'https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/L14601.htm' },
 } as const satisfies Record<string, Source>;
 
@@ -76,7 +77,7 @@ export function bolsaEstimate(a: Pick<Answers, 'people' | 'kidsUpTo6' | 'kids7to
     + BOLSA.variable * (a.kids7to17 + (a.pregnantOrNursing ? 1 : 0));
 }
 
-const HELP = 'Na dúvida, ligue de graça pro 121, o Disque Social. Funciona todo dia, a qualquer hora.';
+const HELP = 'Na dúvida, ligue de graça pro 121, o Disque Social. Tem atendente de segunda a sexta, das 7h às 19h.';
 
 export function check(a: Answers): Result {
   const people = Math.max(1, Math.floor(a.people));
@@ -192,7 +193,7 @@ const CONSTITUTION = { label: 'Constituição Federal, artigos 196 e 134', url: 
 export const ALWAYS: { title: string; what: string; source: Source }[] = [
   { title: 'SUS', what: 'Consulta, exame e vacina no posto de saúde. De graça, pra qualquer pessoa.', source: CONSTITUTION },
   { title: 'Defensoria Pública', what: 'Advogado de graça pra quem não pode pagar. Procure a Defensoria do seu estado.', source: CONSTITUTION },
-  { title: 'Disque Social 121', what: HELP, source: SOURCES.cadunico },
+  { title: 'Disque Social 121', what: HELP, source: SOURCES.disque121 },
 ];
 
 // Fictitious family, for the "Ver um exemplo" button. Not a real person.
