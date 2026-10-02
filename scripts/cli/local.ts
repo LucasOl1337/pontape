@@ -5,6 +5,13 @@ import { COMMANDS, DOCS, GLOBAL_OPTIONS } from './catalog.ts';
 import { CliError, ROOT, str, usage, type Context } from './core.ts';
 
 async function exists(path: string): Promise<boolean> { try { await access(path); return true; } catch { return false; } }
+// Every declared package must be installed: a stale node_modules passes a single-package probe and fails later.
+async function dependencies(): Promise<{ ok: boolean; expected: string; actual?: string }> {
+  const pkg = JSON.parse(await readFile(join(ROOT, 'package.json'), 'utf8')) as Record<string, Record<string, string> | undefined>;
+  const names = Object.keys({ ...pkg.dependencies, ...pkg.devDependencies });
+  const missing = (await Promise.all(names.map(async name => await exists(join(ROOT, 'node_modules', name, 'package.json')) ? '' : name))).filter(Boolean);
+  return missing.length ? { ok: false, expected: 'npm ci', actual: `faltam ${missing.join(', ')}` } : { ok: true, expected: 'npm ci' };
+}
 async function collection(name: string): Promise<unknown> {
   switch (name) {
     case 'modules': return (await import('../../src/data/site/modules.ts')).MODULES;
@@ -38,7 +45,7 @@ export async function runLocal(ctx: Context): Promise<unknown> {
       const [major, minor] = process.versions.node.split('.').map(Number);
       const checks = [
         { name: 'node', ok: major === 24 && minor! >= 21, actual: process.versions.node, expected: '>=24.21.0 <25' },
-        { name: 'dependencies', ok: await exists(join(ROOT, 'node_modules/zod/package.json')), expected: 'npm ci' },
+        { name: 'dependencies', ...await dependencies() },
         { name: 'ledger', ok: await exists(join(ROOT, 'src/data/ledger/ledger.json')) },
         { name: 'worker', ok: await exists(join(ROOT, 'scripts/deploy/worker.js')) },
       ];
@@ -46,7 +53,11 @@ export async function runLocal(ctx: Context): Promise<unknown> {
         build: await exists(join(ROOT, 'dist/index.html')),
         yumeKnowledge: await exists(join(ROOT, 'scripts/deploy/yumi-knowledge.js')),
       } };
-      if (checks.some(check => !check.ok)) throw new CliError('REQUIREMENTS', 'Há requisito local pendente.', 1, result);
+      const pending = checks.filter(check => !check.ok);
+      if (pending.length) {
+        const fix = pending.map(check => check.actual ? `${check.name} ${check.actual}, precisa ${check.expected}` : `${check.name}: ${check.expected ?? 'arquivo ausente'}`);
+        throw new CliError('REQUIREMENTS', `Requisito local pendente: ${fix.join('; ')}.`, 1, result);
+      }
       return result;
     }
     case 'status': {

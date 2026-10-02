@@ -28,3 +28,9 @@ Os módulos futuros não viraram serviços inventados. O mock não valida creden
 ## Próximo passo
 
 Revisão da PR da branch `codex/cli-agentes` para `main`, conforme a organização do repositório. A integração pode acionar o fluxo normal de publicação do projeto; esta frente entregou código e validação local.
+
+## 02/10/2026 · revisão do Regente antes do merge
+
+- Branch atualizada com a `main` (merge sem conflito, inclui as ferramentas de currículo e direitos). `npm run check` passou inteiro: 219 testes Vitest, 11 Python, livro, build e orçamento.
+- `doctor` passou a conferir todas as dependências do `package.json`, não só o `zod`. Um `node_modules` antigo sem `@noble/curves` passava no `doctor` e quebrava o typecheck depois.
+- A mensagem de erro do `doctor` agora diz qual requisito falta e o que fazer, também na saída humana.
