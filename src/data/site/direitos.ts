@@ -66,8 +66,8 @@ export function parseIncome(text: string): number {
   const dot = s.lastIndexOf('.');
   const cut = comma >= 0 ? comma : /\.\d{1,2}$/.test(s) ? dot : -1;
   const whole = (cut >= 0 ? s.slice(0, cut) : s).replace(/\D/g, '');
-  const cents = cut >= 0 ? s.slice(cut + 1).replace(/\D/g, '').slice(0, 2).padEnd(2, '0') : '00';
-  return Number(whole || 0) + Number(cents) / 100;
+  const cents = cut >= 0 ? s.slice(cut + 1).replace(/\D/g, '').slice(0, 2) : '';
+  return Number(`${whole || 0}.${cents || 0}`);
 }
 
 export function bolsaEstimate(a: Pick<Answers, 'people' | 'kidsUpTo6' | 'kids7to17' | 'pregnantOrNursing'>): number {

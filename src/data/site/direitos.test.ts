@@ -79,6 +79,9 @@ describe('direitos', () => {
     expect(parseIncome('600,')).toBe(600);
     expect(parseIncome('')).toBe(0);
     expect(parseIncome(',')).toBe(0);
+    expect(parseIncome('R$ 1.621,00')).toBe(1621);
+    expect(parseIncome('0,07')).toBe(0.07);
+    expect(parseIncome('1.200.000')).toBe(1200000);
   });
 
   it('a família de 3 com R$ 600,00 vê os benefícios, e não R$ 60.000', () => {
