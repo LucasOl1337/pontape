@@ -35,6 +35,8 @@ describe('dados do site', () => {
     expect(at('M5'), 'a comida vem depois da conversa').toBeGreaterThan(at('M4'));
     expect(OPENING.indexOf('AI'), 'a home abre pela AI, não pelo básico ou pelo trabalho').toBeLessThan(OPENING.indexOf('trabalho'));
     expect(OPENING).not.toContain('comida');
+    expect(OPENING).toMatch(/sem fins lucrativos/i);
+    expect(OPENING).toMatch(/tudo à vista/i);
   });
 
   it('o "já funciona?" de cada passo bate com o estado da peça', () => {

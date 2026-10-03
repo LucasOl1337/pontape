@@ -25,9 +25,9 @@ export const NOW_LEAD: Record<ModuleStatus, string> = {
   planned: 'Ainda não começou.',
 };
 
-// What the ground of the staircase says to whoever just arrived (D032): the system comes first,
-// the basics and the job after it. Kept as long as the old one (F36 frames the page around it).
-export const OPENING = 'Uma plataforma sem fins lucrativos que usa AI pra levar cada doação a quem mais pode mudar de vida. E fica ao lado dessa pessoa, de graça, até o trabalho. Tudo à vista.';
+// What the ground of the staircase says to whoever just arrived (D032, D034): the AI first,
+// then the person, until work. Two stamps close it. No "plataforma", no comida.
+export const OPENING = 'A gente usa AI pra levar cada doação a quem mais pode mudar de vida, e fica ao lado dessa pessoa, de graça, até o trabalho. Sem fins lucrativos. Tudo à vista.';
 
 // Candidate journey, PRD §4, in the words of whoever reads the home (F29). It starts with the system
 // (D032): the AI helps to choose with care, and how it chooses stays in the open. Then the person is

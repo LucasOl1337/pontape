@@ -60,11 +60,11 @@ const LATER = 'Doar, ser voluntário e oferecer vaga ainda não abriram. Abrem q
     <!-- Ground: what it is, why trust it, what to do now and whether it works yet. -->
     <div class="panel is-active" id="degrau-0" role="tabpanel" aria-labelledby="degrau-tab-0" tabindex="0" data-panel="0">
       <p class="panel-text">{OPENING}</p>
-      <p class="now now--building"><Icon name={STATUSES.building.icon} /><span><strong>Ainda em construção.</strong> Por enquanto, ninguém é atendido e nenhuma doação é recebida.</span></p>
       <div class="panel-nav">
         <button class="btn btn--ink" type="button" data-go="1">Ver como funciona<Icon name="arrow-right" /></button>
         <button class="btn" type="button" data-go={LAST}>Quero ajudar</button>
       </div>
+      <p class="now now--building now--foot"><Icon name={STATUSES.building.icon} /><span><strong>Ainda em construção.</strong> Por enquanto, ninguém é atendido e nenhuma doação é recebida.</span></p>
     </div>
 
     {STEPS.map((s, i) => {
