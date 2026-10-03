@@ -434,4 +434,4 @@ Vitrine de componentes real em `/dev/vitrine`, injetada só no dev, com livro fi
 
 `pontape check --scope all --json` passou: 223 testes Vitest, 11 Python, lint, tipos, livro, build, CSP e orçamento. Mais 99 estados em larguras intermediárias e fonte ampliada, 36 na build de produção e 75 ações de teclado passaram. Vitrine ausente da build e do sitemap, 404 no preview. Sem defeito alto ou médio encontrado nesta rodada. Painéis longos seguem com rolagem da página.
 
-Entrega pronta pra revisão da PR `regente/visual-vitrine` para `main`. O report ao Lucas vai com o link da PR nesta conversa. Não houve publicação. Servidores locais e abas de verificação encerrados ao entregar.
+Entrega na [PR #130](https://github.com/LucasOl1337/pontape/pull/130), `regente/visual-vitrine` para `main`. O report ao Lucas vai com o link da PR nesta conversa. Não houve publicação. Servidores locais e abas de verificação encerrados ao entregar.
