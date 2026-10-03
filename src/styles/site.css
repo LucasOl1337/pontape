@@ -156,6 +156,8 @@ body:has(.front){ --content:1120px; --page:calc(var(--content) + 2 * var(--gutte
 /* The block may be shorter than its icon on the low treads of a small staircase: the icon then
    overflows instead of pushing the label down, so the labels stay on one line. */
 .tread-block{ position:relative; flex:1; min-height:0; border-top:3px solid var(--ink); transition:background-color .2s }
+.tread:first-child .tread-block{ border-top:0 }
+.tread:first-child .tread-block::after{ content:""; position:absolute; left:0; right:0; bottom:0; border-top:3px solid var(--ink) }
 .tread + .tread .tread-block::before{
   content:""; position:absolute; left:-3px; top:-3px; width:3px; height:calc(var(--u) + 3px); background:var(--ink);
 }
@@ -170,15 +172,12 @@ body:has(.front){ --content:1120px; --page:calc(var(--content) + 2 * var(--gutte
 .tread-icon{ width:var(--icon); height:var(--icon); margin:var(--icon-t) auto 0; stroke-width:1.7; color:var(--ink) }
 .tread.is-ahead .tread-icon{ color:var(--ink-2) }
 .tread-ball{ position:absolute; left:50%; bottom:calc(100% + 3px); width:clamp(30px, 7 * var(--cqh), 56px); height:auto; transform:translateX(-50%); fill:none; stroke:var(--ink); stroke-width:2.2; stroke-linejoin:round }
-.tread-label{ display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:.1rem; height:var(--label-h); padding:var(--label-pad) .2rem 0; border-top:1px solid var(--ink) }
+.tread-label{ display:flex; flex-direction:column; flex-shrink:0; align-items:center; justify-content:flex-start; gap:.1rem; height:var(--label-h); padding:var(--label-pad) .2rem 0; border-top:1px solid var(--ink) }
 .tread-num{ font:italic 500 var(--num-size)/1 var(--font-display); color:var(--accent) }
-/* The number sits at a fixed distance under the floor, with its name right under it (F34, F36).
-   On a computer no name wraps, so the label keeps room for one line of name; one that did would
-   grow downward, into the rail band, and never lift its number. Início and Sua vez, which have no
-   number, put their name on the same line as the others. */
+.tread-num--spacer{ visibility:hidden }
+/* Every label reserves the same number row, including Início and Sua vez. */
 .tread-name{ font:700 var(--name-size)/1.1 var(--font-sans); letter-spacing:.04em; text-transform:uppercase; overflow-wrap:anywhere }
 .tread[aria-selected="true"] .tread-name{ color:var(--accent) }
-.tread:first-child .tread-label, .tread:last-of-type .tread-label{ padding-top:calc(var(--label-pad) + var(--num-size) + .1rem) }
 
 /* Someone: the dot in the accent colour, hopping from tread to tread. */
 .walker{
@@ -254,7 +253,6 @@ body:has(.front){ --content:1120px; --page:calc(var(--content) + 2 * var(--gutte
   /* The low treads are a few pixels tall here: the icon goes under the floor, over its number. */
   .tread-icon{ position:absolute; top:calc(100% + 1px + var(--label-pad)); left:50%; margin:0; transform:translateX(-50%) }
   .tread-label{ padding-top:calc(var(--label-pad) + var(--icon) + .3rem) }
-  .tread:first-child .tread-label, .tread:last-of-type .tread-label{ padding-top:calc(var(--label-pad) + var(--icon) + .3rem + var(--num-size) + .1rem) }
   .walker{ width:16px; height:16px; margin:0 0 -9.5px -8px; box-shadow:0 0 0 3px var(--paper) }
   /* On the first step "alguém" names the dot, as on a computer: above it, clear of the next riser. */
   .walker-label{ right:-.3rem; bottom:calc(100% + .3rem); font-size:1rem }
@@ -267,6 +265,8 @@ body:has(.front){ --content:1120px; --page:calc(var(--content) + 2 * var(--gutte
    way it can without touching the drawing (F38): each tread answers in its whole column, from the
    top of the staircase down through the rail band, and the first and last reach the screen edge. */
 @media (max-width:599px){
+  .panel[data-panel="0"] .panel-nav{ display:grid; grid-template-columns:minmax(0, 1.25fr) minmax(0, 1fr); align-items:stretch; gap:.75rem }
+  .panel[data-panel="0"] .panel-nav .btn{ padding:.7rem .5rem; font-size:.875rem }
   .tread::after{ content:""; position:absolute; top:calc(var(--label-h) + var(--k) * var(--u) - min(24 * var(--svh), 15rem)); right:0; bottom:calc(-1 * var(--rail-h)); left:0 }
   .tread:first-child::after{ left:-.4rem }
   .tread:last-of-type::after{ right:-.4rem }
@@ -289,26 +289,25 @@ body:has(.front){ --content:1120px; --page:calc(var(--content) + 2 * var(--gutte
   .front{ min-height:0; padding-bottom:1.5rem; gap:1rem }
   .stage{
     container-type:normal; display:grid;
-    grid-template-columns:minmax(22rem, 28rem) minmax(0, 1fr);
+    grid-template-columns:minmax(0, 26rem) minmax(0, 1fr);
     grid-template-areas:'title stairs' 'panel stairs';
     grid-template-rows:auto 1fr; align-items:start;
-    column-gap:3rem; row-gap:1.25rem;
-    min-height:0; padding:2rem var(--gutter) 0;
-    --num-size:1.25rem; --name-size:.625rem; --label-pad:.4rem;
-    --icon:18px; --icon-t:0px; --label-h:5.75rem; --rail-h:2rem;
-    --u:clamp(44px, (100svh - 22rem) / (var(--n) - 1), 72px);
+    column-gap:2.5rem; row-gap:1.5rem;
+    min-height:0; padding:3rem var(--gutter) 0;
+    --num-size:1.25rem; --name-size:.6875rem; --label-pad:.4rem;
+    --icon:18px; --icon-t:0px; --label-h:6.25rem; --rail-h:2rem;
+    --u:clamp(30px, (100 * var(--svh) - 23rem) / (var(--n) - 1), 48px);
   }
   .stage-title{
     grid-area:title; width:auto; margin:0; align-self:start;
-    font-size:clamp(2.75rem, 2.1rem + 1.4vw, 3.5rem); line-height:.98;
+    font-size:clamp(3rem, 2.1rem + 1.4vw, 3.75rem); line-height:1.02;
   }
-  /* Poster: "Caridade" / "inteligente." Stay one line when the title shrinks on a step. */
-  .stage[data-at="0"] .stage-title{ max-width:8em }
-  .stage:not([data-at="0"]) .stage-title{ font-size:1.375rem; line-height:1.1; max-width:none }
+  /* The heading and map stay in place when another step opens. */
+  .stage-title{ max-width:8em }
   .panels{ grid-area:panel; width:auto; margin:0; padding:0; overflow:visible }
   .panel-text{ font-size:1.1875rem; line-height:1.5; max-width:none }
-  .panel[data-panel="0"] .panel-text{ font-size:1.25rem; line-height:1.5 }
-  .panel-title{ font-size:1.8rem; margin-top:.4rem }
+  .panel[data-panel="0"] .panel-text{ font-size:1.3125rem; line-height:1.45 }
+  .panel-title{ font-size:2rem; margin-top:.5rem }
   .now{ margin-top:.9rem; padding-top:.7rem; font-size:1rem }
   .now--foot{ margin-top:1.25rem; padding-top:0; border-top:0; font-size:var(--t-small) }
   .panel[data-panel="0"] .panel-nav{ margin-top:1.5rem }
@@ -320,9 +319,8 @@ body:has(.front){ --content:1120px; --page:calc(var(--content) + 2 * var(--gutte
     height:calc((var(--n) - 1) * var(--u) + var(--label-h) + var(--rail-h)); margin:0;
   }
   .tread-icon{ position:absolute; top:calc(100% + .45rem); left:50%; margin:0; transform:translateX(-50%) }
-  .tread-label{ padding-top:2rem }
-  .tread:first-child .tread-label, .tread:last-of-type .tread-label{ padding-top:calc(2rem + var(--num-size) + .1rem) }
-  .tread-name{ line-height:1.2; letter-spacing:.02em }
+  .tread-label{ padding-top:2rem; gap:.3rem }
+  .tread-name{ line-height:1.2; letter-spacing:.015em; overflow-wrap:normal; max-width:100% }
   .tread-ball{ width:44px }
   .rail-label{ font-size:1rem }
   .panel-ways{ grid-template-columns:1fr; margin-top:.75rem }
@@ -332,16 +330,14 @@ body:has(.front){ --content:1120px; --page:calc(var(--content) + 2 * var(--gutte
   .front > .public-metrics{ position:static; max-width:var(--page); margin:0 auto; padding:0 var(--gutter); font-size:.75rem }
 }
 
-@media (min-width:1180px) and (min-height:560px) and (max-height:650px){
-  .stage{ padding-top:1rem; column-gap:2.5rem; --u:clamp(28px, 5.2vh, 42px); --label-h:4.25rem }
-  .stage[data-at="0"] .stage-title{ font-size:2.35rem }
+@media (min-width:1180px) and (min-height:560px) and (max-height:720px){
+  .stage{ padding-top:2rem; row-gap:1.25rem; --u:clamp(24px, (100 * var(--svh) - 22rem) / (var(--n) - 1), 42px) }
+  .stage-title{ font-size:2.75rem }
   .panel-text{ font-size:1.0625rem }
   .panel[data-panel="0"] .panel-text{ font-size:1.125rem }
   .now{ font-size:.9375rem }
   .now--foot{ margin-top:1rem }
   .tread-ball{ width:36px }
-  /* Nine treads in ~570 px: the long names wrap into the rail. Numbers stay; names live in the panel. */
-  .tread-name{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap }
 }
 
 /* The end of the home (F38): one line on what the staircase is, and what to do from here. */

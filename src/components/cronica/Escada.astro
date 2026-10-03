@@ -48,7 +48,7 @@ const LATER = 'Doar, ser voluntário e oferecer vaga ainda não abriram. Abrem q
             ? <svg class="tread-ball" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle cx="24" cy="24" r="21" /><path d="M24 16.5l7.1 5.2-2.7 8.4h-8.8l-2.7-8.4ZM24 16.5V3M31.1 21.7l12.8-4.2M28.4 30.1l7.9 10.9M19.6 30.1l-7.9 10.9M16.9 21.7 4.1 17.5" /></svg>
             : <Icon name={t.icon!} class="tread-icon" />}
         </span>
-        <span class="tread-label">{k > 0 && k <= STEPS.length && <span class="tread-num">{k}</span>}<span class="tread-name">{t.name}</span></span>
+        <span class="tread-label"><span class:list={['tread-num', { 'tread-num--spacer': k === 0 || k === LAST }]} aria-hidden={k === 0 || k === LAST ? 'true' : undefined}>{k > 0 && k <= STEPS.length ? k : '0'}</span><span class="tread-name">{t.name}</span></span>
       </button>
     ))}
     <span class="walker" aria-hidden="true"><span class="walker-label">alguém</span></span>
