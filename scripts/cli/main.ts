@@ -87,5 +87,6 @@ async function execute(command: Command, values: Values): Promise<unknown> {
     case 'http': return (await import('./http.ts')).runHttp(ctx);
     case 'process': return (await import('./process.ts')).runProcess(ctx);
     case 'mock': return (await import('./mock.ts')).runMock(ctx);
+    case 'visual': return (await import('./visual.ts')).runCapture(ctx);
   }
 }

@@ -34,3 +34,9 @@ Revisão da PR da branch `codex/cli-agentes` para `main`, conforme a organizaç�
 - Branch atualizada com a `main` (merge sem conflito, inclui as ferramentas de currículo e direitos). `npm run check` passou inteiro: 219 testes Vitest, 11 Python, livro, build e orçamento.
 - `doctor` passou a conferir todas as dependências do `package.json`, não só o `zod`. Um `node_modules` antigo sem `@noble/curves` passava no `doctor` e quebrava o typecheck depois.
 - A mensagem de erro do `doctor` agora diz qual requisito falta e o que fazer, também na saída humana.
+
+## 03/10/2026 · captura visual da home e vitrine
+
+Branch `regente/visual-vitrine`. `dev capture --bench NOME --base-url ORIGEM_LOCAL --out DIRETORIO_NOVO` entrou no catálogo, com exemplo e guia. O handler usa CDP/WebSocket nativos do Node 24 e valida bancada, controle e perfil antes de criar sua própria aba. Captura 12 PNGs e mede os nove estados em três tamanhos, incluindo 1440×667. Recusa sobrescrita e origem remota; preserva prints ao encontrar desalinhamento.
+
+O teste pela interface do CLI cobriu a descoberta/ajuda e a recusa de origem remota, caminho na origem e nome inválido sem criar saída. A execução real do comando na bancada `pontape-visual` passou nos 27 estados. `check --scope all --json` passou com 223 testes Vitest e 11 Python. A vitrine Astro ficou fora do build e do sitemap; preview respondeu 404. Evidência em [HOME-VITRINE-2026-10-03](../design/HOME-VITRINE-2026-10-03.md).

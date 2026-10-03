@@ -93,6 +93,22 @@ pontape dev mock
 
 Para desenvolvimento visual com recarga, `pontape dev site --port 4321`. Para o runtime Cloudflare local com provedores reais, configure `.env` conforme `.env.example` e use `pontape dev worker --port 8794`. Esse último reutiliza o script Wrangler existente, instala Wrangler se necessário e usa `.wrangler/f43` para persistência. Chamadas aos provedores podem consumir saldo. `pontape preview` serve somente o build estático, sem APIs do Worker.
 
+## Vitrine e captura visual
+
+Com `pontape dev site`, abra **http://127.0.0.1:4321/dev/vitrine** na bancada. A página usa a escada real com o livro fictício, os quatro estados, botões e tipografia do site. Navegue pelos nove degraus e use Tab e as setas pra conferir foco e seleção. A rota é injetada só no desenvolvimento: não existe na build, no preview nem no sitemap.
+
+Para registrar a home e a vitrine em 390×844, **1440×667** (janela curta do Lucas) e 1920×1080:
+
+```sh
+agent-bench ensure pontape-visual
+agent-bench browser pontape-visual
+pontape dev capture --bench pontape-visual --base-url http://127.0.0.1:4321 --out /tmp/pontape-prints --json
+```
+
+O Chromium precisa estar preparado e sob controle do agente numa bancada dos workspaces 6 a 11. A captura consulta `agent-bench status`, `browser-status` e `cdp`, usa uma aba própria e fecha só essa aba ao terminar. Recusa origem remota e diretório de saída já existente. Usa CDP e WebSocket nativos do Node 24, sem instalar browser, Playwright ou dependência nova. A origem padrão deste comando é `http://127.0.0.1:4321`; `PONTAPE_BASE_URL` não altera a captura.
+
+Saem 12 PNGs e `report.json`. Nos nove estados da home, o relatório confere seleção, rolagem lateral, sobreposição, rolagem interna do painel, alinhamento dos nomes, posição do título/escada e enquadramento do Início. Desalinhamento retorna `VISUAL_LAYOUT`, preservando os prints. A vitrine inteira é capturada nos três tamanhos. Animações ficam reduzidas e fontes terminam de carregar antes do print. O relatório mede geometria; a revisão visual dos PNGs continua necessária. Para captura longa, use a fila pesada da bancada.
+
 ## Livro de ações
 
 Consultas validam a corrente antes de devolver dados. Valores financeiros permanecem strings de centavos exatos.
