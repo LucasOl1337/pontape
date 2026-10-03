@@ -441,3 +441,11 @@ Entrega na [PR #130](https://github.com/LucasOl1337/pontape/pull/130), `regente/
 Lucas corrigiu a parada na PR aberta: mudança pedida por ele no site precisa ser integrada, publicada e conferida no ar, sem segundo pedido de autorização. `AGENTS.md` atualizado nos critérios de conclusão, no fluxo de Git e nas regras de publicação. PR aberta fica como etapa intermediária. Preparação ou trabalho sem publicar só por pedido explícito dele.
 
 Retomada da PR #130 para integrar e publicar pelo vigia existente, seguida de conferência em `https://pontape.org`.
+
+### Entrega concluída no ar
+
+A [PR #130](https://github.com/LucasOl1337/pontape/pull/130) foi integrada com todos os checks passando. O vigia publicou o commit `3b7d02c5a2061b0c285e90d78fa574aa9638ab32` nos domínios `pontape.org` e `www.pontape.org`, versão Cloudflare `f3c7cbfb-5f82-469d-8a78-39884ce23c60`. O histórico durável do publicador confirmou o commit publicado.
+
+Conferência no site público pela bancada `pontape-visual`: 36 estados em 390×844, 1440×667, 1920×1080 e 1920×889 com fonte de 20 px, mais 20 ações de teclado, sem falha. Prints de celular e desktop conferidos. Home e stylesheet novo responderam 200; `/dev/vitrine` respondeu 404. Relatório e prints da conferência em `/tmp/pontape-live-prints/` nesta máquina, além dos comprovantes versionados da implementação em `docs/design/prints/2026-10-03-home/`.
+
+A entrega do site está publicada e conferida. A regra permanente de concluir pedidos de mudança no site com integração, publicação e conferência está na `main`, em `AGENTS.md`.
