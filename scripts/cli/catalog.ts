@@ -10,7 +10,7 @@ export interface Command {
   name: string;
   description: string;
   effect: 'read' | 'local' | 'request' | 'apply' | 'server';
-  handler: 'local' | 'ledger' | 'http' | 'process' | 'mock';
+  handler: 'local' | 'ledger' | 'http' | 'process' | 'mock' | 'visual';
   options: Record<string, Option>;
   example: string;
 }
@@ -83,6 +83,10 @@ export const COMMANDS: Command[] = [
   }, 'donation checkout --amount-cents 1000'),
   command('donation webhook', 'Envia webhook Asaas; token via PONTAPE_WEBHOOK_TOKEN. Pode acionar o livro.', 'apply', 'http', { ...input, ...apply }, 'donation webhook --input /tmp/webhook.json'),
   command('dev site', 'Inicia Astro em primeiro plano. Ctrl+C encerra.', 'server', 'process', port, 'dev site --port 4321'),
+  command('dev capture', 'Captura home e vitrine local em três tamanhos, no Chromium de uma bancada.', 'local', 'visual', {
+    bench: string('Bancada agent-bench já preparada, com controle do agente.', { required: true }),
+    out: string('Diretório novo para PNGs e relatório. Recusa sobrescrever.', { required: true }),
+  }, 'dev capture --bench pontape-visual --base-url http://127.0.0.1:4321 --out /tmp/pontape-prints'),
   command('dev worker', 'Inicia Wrangler local com .env, build e D1 persistente (script existente).', 'server', 'process', port, 'dev worker --port 8794'),
   command('dev mock', 'Worker real com SQLite em memória e provedores fictícios, só em loopback.', 'server', 'mock', { port: string('Porta TCP; 0 escolhe uma livre. Padrão: 8794.') }, 'dev mock --port 8794'),
   command('preview', 'Serve o build Astro em primeiro plano.', 'server', 'process', port, 'preview --port 4321'),

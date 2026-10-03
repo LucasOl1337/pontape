@@ -116,6 +116,16 @@ describe('descoberta e contrato do executável', () => {
     const missing = await cli(['ledger', 'show', '--sequence', '999999']);
     expect(missing.code).toBe(4);
   });
+
+  it('captura visual recusa origem remota e nome inválido antes de acessar navegador ou gravar evidência', async () => {
+    const out = join(directory, 'visual-forbidden');
+    for (const [bench, origin] of [['pontape-visual', 'https://pontape.org'], ['../humano', 'http://127.0.0.1:4321'], ['pontape-visual', 'http://127.0.0.1:4321/dev/vitrine']]) {
+      const result = await cli(['dev', 'capture', '--bench', bench!, '--base-url', origin!, '--out', out]);
+      expect(result.code).toBe(2);
+      expect(result.result.error.code).toBe('USAGE');
+    }
+    await expect(stat(out)).rejects.toMatchObject({ code: 'ENOENT' });
+  });
 });
 
 describe('livro sem alterar o checkout', () => {

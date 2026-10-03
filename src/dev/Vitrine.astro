@@ -1,0 +1,83 @@
+---
+import '../styles/global.css';
+import IconSprite from '../components/site/IconSprite.astro';
+import LogoMark from '../components/site/LogoMark.astro';
+import Icon from '../components/site/Icon.astro';
+import Escada from '../components/cronica/Escada.astro';
+import { getExampleLedger } from '../lib/ledger-view/source';
+import { STATUSES } from '../data/site/statuses';
+
+const ledger = await getExampleLedger();
+const notices = [
+  { status: 'live' as const, lead: 'Já funciona.', text: 'Exemplo fictício de uma peça pronta.' },
+  { status: 'building' as const, lead: 'Em construção.', text: 'Exemplo fictício de uma peça em desenvolvimento.' },
+  { status: 'bottleneck' as const, lead: 'Precisa de ajuda.', text: 'Exemplo fictício de uma peça que falta resolver.' },
+  { status: 'planned' as const, lead: 'Mais pra frente.', text: 'Exemplo fictício de uma peça planejada.' },
+];
+---
+<!doctype html>
+<html lang="pt-BR" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Vitrine de desenvolvimento · PontaPé</title>
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+  </head>
+  <body class="vitrine" data-strip="off">
+    <IconSprite />
+    <a class="skip-link" href="#conteudo">Pular pro conteúdo</a>
+    <header class="vitrine-head wrap">
+      <a class="logo" href="/"><LogoMark /><span>PontaPé</span></a>
+      <p class="kicker">Desenvolvimento · dados fictícios</p>
+    </header>
+    <main id="conteudo" tabindex="-1">
+      <div class="wrap vitrine-intro">
+        <h1>Vitrine de componentes</h1>
+        <p>Os componentes do site, com o mesmo CSS. Use os degraus, o teclado e os botões pra conferir os estados. Esta página só existe no servidor de desenvolvimento.</p>
+        <nav aria-label="Exemplos"><a href="#escada">Escada e painéis</a><a href="#estados">Estados</a><a href="#acoes">Ações</a><a href="#letras">Tipografia</a></nav>
+      </div>
+      <section class="vitrine-section" id="escada" aria-labelledby="escada-example">
+        <div class="wrap"><h2 id="escada-example">Escada e painéis</h2><p class="vitrine-caption">Início, sete passos e Sua vez. O livro deste exemplo é fictício.</p></div>
+        <div class="front"><Escada ledger={ledger} /></div>
+      </section>
+      <section class="wrap vitrine-section" id="estados" aria-labelledby="states-example">
+        <h2 id="states-example">Estados</h2>
+        <div class="vitrine-grid">
+          {notices.map(n => <p class:list={['now', `now--${n.status}`]}><Icon name={STATUSES[n.status].icon} /><span><strong>{n.lead}</strong> {n.text}</span></p>)}
+        </div>
+      </section>
+      <section class="wrap vitrine-section" id="acoes" aria-labelledby="actions-example">
+        <h2 id="actions-example">Ações</h2>
+        <p class="vitrine-caption">Tab mostra o foco. Passe o mouse pra conferir a resposta visual.</p>
+        <div class="actions">
+          <a class="btn btn--ink" href="#escada">Ação principal<Icon name="arrow-right" /></a>
+          <a class="btn" href="#estados">Ação secundária</a>
+          <button class="btn" disabled>Carregando</button>
+          <button class="icon-btn" type="button" aria-label="Exemplo de botão Fechar"><Icon name="close" /></button>
+        </div>
+      </section>
+      <section class="wrap vitrine-section" id="letras" aria-labelledby="type-example">
+        <h2 id="type-example">Tipografia</h2>
+        <p class="kicker">Exemplo fictício · rótulo</p>
+        <p class="panel-title">Um passo de cada vez.</p>
+        <p class="panel-text">Texto de exemplo pra conferir a leitura, o espaço entre linhas e a largura da coluna.</p>
+        <p class="vitrine-caption">Texto pequeno. <a href="#escada">Link no texto.</a> <strong>Trecho em destaque.</strong></p>
+      </section>
+    </main>
+    <script>import '../scripts/home';</script>
+  </body>
+</html>
+<style>
+  .vitrine-head{ display:flex; flex-wrap:wrap; align-items:center; gap:1rem; padding-top:1rem; padding-bottom:1rem; border-bottom:1px solid var(--rule) }
+  .vitrine-intro{ padding-top:2rem; padding-bottom:2rem }
+  .vitrine-intro h1{ font:500 clamp(2rem, 5vw, 3rem)/1.1 var(--font-display) }
+  .vitrine-intro p{ max-width:42rem; margin-top:1rem }
+  .vitrine-intro nav{ display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; margin-top:1rem; font:700 1rem var(--font-sans) }
+  .vitrine-intro nav a{ padding:.5rem 0 }
+  .vitrine-section{ padding-top:2rem; padding-bottom:2rem; border-top:1px solid var(--rule) }
+  .vitrine-section h2{ font:500 1.75rem/1.2 var(--font-display) }
+  .vitrine-caption{ margin-top:.75rem; font:400 .9375rem/1.5 var(--font-sans); color:var(--ink-2) }
+  .vitrine-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap:1rem 2rem }
+  #letras > .kicker{ margin-top:1.5rem }
+</style>

@@ -7,7 +7,14 @@ export default defineConfig({
   // Final address of the site, set at build (SITE_URL=https://...) once the domain exists.
   // It turns share previews and the canonical link into absolute URLs.
   site: process.env.SITE_URL || undefined,
-  integrations: [react()],
+  integrations: [react(), {
+    name: 'pontape-vitrine',
+    hooks: {
+      'astro:config:setup': ({ command, injectRoute }) => {
+        if (command === 'dev') injectRoute({ pattern: '/dev/vitrine', entrypoint: './src/dev/Vitrine.astro' });
+      },
+    },
+  }],
   // Old phones (#87): the Android 11 of the studio phone comes with Chrome 83, and many entry-level
   // phones keep an old WebView. Without this the minifier writes media queries as ranges
   // (width>=960px, Chrome 104) and merges longhands back into shorthands those browsers drop, and the
