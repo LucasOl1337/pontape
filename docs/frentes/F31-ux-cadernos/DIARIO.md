@@ -405,3 +405,19 @@ O link do logo tinha 27 px de altura: passava no mínimo AA (24 px), mas ficava 
 ### Onde parei
 
 PRs 9 e 10 abertas e reportadas. Sem defeito alto ou médio aberto na F31. Em espera.
+
+## 03/10/2026 · Home: escada mais vertical e proposta mais rápida
+
+Branch `prumo/home-escada-vertical`, a partir da `main` em `b7987b6`. Pedido do Lucas com dois prints de pontape.org (ultrawide e recorte): a escada tava rampa, o texto espremido, e o Início demorava pra dizer o que é o projeto. Estilo Crônica permanece.
+
+A #128 tinha posto a escada numa terceira faixa, `--u` teto 24 px. No 3440×1440 isso dá ~10° de subida. No desktop agora: coluna de leitura à esquerda (`minmax(22rem, 28rem)`), escada à direita ocupando as duas linhas, `--u` até 72 px. Medido na bancada `pontape-home`: 1600×900 a escada fica 624×672 (~41°); 1920 com `u=72` (~43°). Abrir um degrau não restacka mais o mapa. Em janela baixa (1180×620) os nomes longos dos degraus somem (número fica; o nome vive no painel), senão eles entram no corrimão.
+
+Proposta: `A gente usa AI pra levar cada doação a quem mais pode mudar de vida, e fica ao lado dessa pessoa, de graça, até o trabalho. Sem fins lucrativos. Tudo à vista.` Aviso de construção depois das duas portas, mais quieto. Título poster em duas linhas no chão (`Caridade` / `inteligente.`). Mobile e tablet empilhados iguais.
+
+Conferido na bancada: 1600, 1920, 1180×620, 768, 390, degrau 1 e Sua vez. Teste `src/data/site/site-data.test.ts` passa. Prints `prints/home-escada-1600.png`, `home-escada-wide-1920.png`, `home-escada-short-1180.png`, `home-escada-mobile-390.png`.
+
+O que não mexi: `--content:1120px` (o Lucas acabou de centrar), `shortName` dos degraus, overlay, aviso de construção (fica; só muda de lugar). Nomes longos ainda quebram em 1600 (COMIDA E ROUPA, APOIO DA AI, TUDO À VISTA): geometria de 9 degraus na faixa, não reescrevi o dado.
+
+### Onde parei
+
+PR aberta pra `main`. Reporta ao Regente. Em espera.
