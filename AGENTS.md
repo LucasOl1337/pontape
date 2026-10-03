@@ -28,7 +28,7 @@ O contexto de qualquer agente compacta; o arquivo sobrevive. Cada frente segue e
 1. Leia `docs/QUADRO.md` e o `BRIEF.md` da sua frente em `docs/frentes/<ID>/`.
 2. Trabalhe no seu worktree (seção Git).
 3. A cada marco, anote no `DIARIO.md` da frente: o que fez, o que achou, decisões propostas, onde parou e o próximo passo. Depois de compactar, retome relendo `BRIEF.md` e `DIARIO.md`.
-4. Pronto quando o critério do BRIEF está batido, o DIARIO mostra o estado final, a PR pra `main` está aberta e o Regente recebeu o report.
+4. Pronto quando o critério do BRIEF está batido, o DIARIO mostra o estado final e o Regente recebeu o report. Para mudança no site pedida pelo Lucas, a PR precisa estar integrada na `main`, a publicação concluída e o resultado conferido em `https://pontape.org`. PR aberta é etapa intermediária, não entrega final.
 
 | Arquivo | Quem edita |
 |---|---|
@@ -41,12 +41,14 @@ O contexto de qualquer agente compacta; o arquivo sobrevive. Cada frente segue e
 
 - O checkout `~/Projects/VidaNova` é do Regente. Nele ninguém commita, troca branch, faz stash ou reset.
 - Cada agente trabalha no próprio worktree, `~/Projects/VidaNova/.worktrees/<crachá>`, na branch que o BRIEF indicar.
-- Entrega é PR pra `main`. O Regente revisa e faz o merge.
+- Mudanças passam por PR pra `main`. O Regente revisa e faz o merge; quem recebe o pedido direto do Lucas assume essa responsabilidade até concluir a entrega.
+- **Pedido de mudança no site já autoriza integrar e publicar essa mudança**, depois dos checks e da revisão. Não pedir um segundo OK nem parar com PR aberta ou código sem publicar. A entrega termina com a versão no ar e conferida. Preparação, rascunho, pausa ou trabalho sem publicar só quando o Lucas pedir isso explicitamente. Se houver bloqueio concreto, resolver o que for possível e informar o bloqueio exato; não decidir sozinho adiar a publicação. Regra do Lucas em 03/10/2026.
 - Commit pequeno, mensagem em PT-BR dizendo o quê e por quê.
 
 ## Regras
 
-- **Reservado ao Regente, com OK do Lucas:** publicar, deploy, comprar domínio, criar conta em serviço, configurar pagamento, contatar pessoa ou empresa, abrir o repositório ao público.
+- **Publicar e fazer deploy de mudança no site pedida pelo Lucas:** já autorizado pelo pedido, conforme a regra de entrega acima. Usar o fluxo de publicação existente e conferir a versão no ar.
+- **Reservado ao Regente, com OK específico do Lucas:** comprar domínio, criar conta em serviço, configurar pagamento, contatar pessoa ou empresa, abrir o repositório ao público.
 - **Dado real de candidato nunca entra no repositório.** Exemplo e seed usam dado fictício marcado como fictício.
 - **Segredo** só em `.env` local (ignorado pelo git); `.env.example` documenta as chaves.
 - **Idioma:** docs e texto de interface em PT-BR; código e identificadores em inglês. O termo é sempre **AI**, nunca "IA" nem "inteligência artificial".
