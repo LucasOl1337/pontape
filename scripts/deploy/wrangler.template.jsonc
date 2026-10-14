@@ -19,6 +19,9 @@
     { "name": "HIT_RATE_LIMITER", "namespace_id": "4301", "simple": { "limit": 60, "period": 60 } }
   ],
   "triggers": { "crons": ["17 3 * * *"] },
+  // Rede Alimenta: /api/alimenta/* vai pra esta API (Render). keep_vars mantém as vars do painel que não estão aqui.
+  "vars": { "ALIMENTA_API_ORIGIN": "https://rede-alimenta-api-u5q4.onrender.com" },
+  "keep_vars": true,
   "workers_dev": false,
   "routes": [
     { "pattern": "pontape.org", "custom_domain": true },
