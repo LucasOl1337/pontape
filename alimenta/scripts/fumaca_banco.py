@@ -51,7 +51,7 @@ def main() -> int:
         print(f"índices únicos parciais: {partial}")
         counts = {t.name: session.scalar(select(func.count()).select_from(t)) for t in Base.metadata.sorted_tables}
         print(f"linhas: {counts}")
-        tests = {t: session.scalar(text(f'SELECT count(*) FROM "{t}" WHERE is_test')) for t in  # nosec B608 - nomes fixos do esquema
+        tests = {t: session.scalar(text(f'SELECT count(*) FROM "{t}" WHERE is_test')) for t in
                  ("donors", "ngos", "lots", "lot_outcomes", "audit_log")}
         print(f"linhas is_test (devem ser 0 fora do ensaio): {tests}")
         k = kpis.compute(session)
