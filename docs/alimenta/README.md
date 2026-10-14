@@ -53,16 +53,18 @@ curl -X POST http://localhost:8000/demo/reset -H "X-Alimenta-Token: $ALIMENTA_WR
 
 ### Sem Docker, com uv
 
-Requer Python 3.12 (a FIAP pede 3.10 ou mais) e [uv](https://docs.astral.sh/uv/). Sem `DATABASE_URL`, o banco é um SQLite local (`alimenta.db`).
+Requer Python 3.11 ou 3.12 (`alimenta/.python-version` fixa 3.12; a FIAP pede 3.10 ou mais) e [uv](https://docs.astral.sh/uv/). Sem `DATABASE_URL`, o banco é um SQLite local (`alimenta.db`).
 
 ```bash
 cp alimenta/.env.example alimenta/.env              # defina ALIMENTA_WRITE_TOKEN
 uv sync --project alimenta                           # instala as dependências fixadas no uv.lock
 uv run --project alimenta python -m alimenta.data.generate   # gera o dataset simulado (seed 20261015)
+uv run --project alimenta python -m alimenta.data.generate --check   # confere os arquivos versionados
 uv run --project alimenta python -m alimenta.model.train     # treina, avalia e grava metrics.json
+uv run --project alimenta python -m alimenta.model.train --check   # retreina e compara com o versionado
 uv run --project alimenta uvicorn alimenta.api.main:app --port 8000
 uv run --project alimenta streamlit run alimenta/painel/app.py --server.port 8501
-uv run --project alimenta python -m pytest alimenta/tests
+uv run --project alimenta python -m pytest alimenta/tests   # ou, dentro de alimenta/: uv run pytest
 ```
 
 ### Variáveis de ambiente
@@ -100,13 +102,14 @@ Estrutura do código (pasta `alimenta/` na raiz do repo):
 | Caminho | O que tem |
 |---|---|
 | `alimenta/data/generate.py` | Gerador do dataset simulado, seed fixa `20261015` |
-| `alimenta/data/lots_history.csv` | Histórico simulado de cerca de 6.000 lotes, rotulado, para treino |
-| `alimenta/data/seed/` | Doadores, ONGs e lotes fictícios do seed operacional |
+| `alimenta/data/lots_history.csv` | Histórico simulado de 6.000 lotes, rotulado, para treino |
+| `alimenta/data/seed/` | 15 doadores, 20 ONGs e 150 lotes fictícios (cerca de 30 dias) |
 | `alimenta/data/DICIONARIO.md` | Campos, unidades, origem SIMULADO e como o rótulo nasce |
 | `alimenta/model/train.py` | Split antes de ajustar, baselines, métricas |
 | `alimenta/model/predict.py` | Carrega o artefato só depois de conferir o sha256 |
 | `alimenta/model/artifacts/` | `discard_risk-v1.joblib` e `metrics.json` |
 | `alimenta/core/matching.py` | Regras do match Doador × ONG |
+| `alimenta/core/domain.py` | Regiões, categorias e a constante `KG_PER_MEAL` |
 | `alimenta/core/kpis.py` | Cálculo dos KPIs |
 | `alimenta/db/` | Modelos SQLAlchemy e sessão; `create_all` e seed idempotente |
 | `alimenta/ledger/demo_ledger.py` | Livro da demo |
@@ -188,45 +191,50 @@ A região das refeições é a região da ONG, onde a fome foi atendida, e não 
 
 Alvo binário `discarded`: o lote foi descartado sem aproveitamento (1) ou não (0).
 
-O rótulo é simulado. O gerador calcula, para cada lote, uma probabilidade escondida que combina horas até vencer, armazenamento, perecibilidade da categoria, kg, hora do dia e demanda da região. Depois sorteia o rótulo dessa probabilidade, com ruído. O processo completo está em `alimenta/data/DICIONARIO.md`.
+O rótulo é simulado. O gerador calcula, para cada lote, uma probabilidade escondida que combina horas até vencer, armazenamento, perecibilidade da categoria, kg, hora do dia, fim de semana e demanda da região. Depois sorteia o rótulo dessa probabilidade, com ruído. O processo completo está em `alimenta/data/DICIONARIO.md`.
 
 O rótulo não sai de uma regra de prazo. Se saísse, o modelo só copiaria a regra e a acurácia não provaria nada.
 
 ### Como treina
 
-1. Split estratificado treino/teste **antes** de qualquer ajuste. O teste fica guardado até o fim.
-2. Modelo principal: `HistGradientBoostingClassifier`. Comparação: `LogisticRegression`.
+1. Split estratificado 80/20 **antes** de qualquer ajuste: 4.800 lotes de treino e 1.200 de teste. O teste fica guardado até o fim.
+2. Modelo principal: `HistGradientBoostingClassifier`, escolhido antes de olhar o teste. `LogisticRegression` entra só como comparação.
 3. Duas baselines no mesmo teste:
-   - classe majoritária (chuta sempre a classe mais comum);
-   - regra só de prazo (descarta se faltam poucas horas para vencer).
-4. O modelo precisa vencer as duas baselines no teste reservado.
-5. O CI retreina com a mesma seed e compara com o `metrics.json` versionado.
+   - classe majoritária (chuta sempre "não descartado");
+   - regra só de prazo: descartado se faltam 30,7 horas ou menos para vencer. O limiar foi escolhido só com o treino.
+4. O modelo precisa vencer as duas baselines no teste reservado (`beats_baselines: true` no `metrics.json`).
+5. `python -m alimenta.model.train --check` retreina com a mesma seed e compara com o `metrics.json` versionado. O CI roda esse passo.
 
-A tela mostra risco baixo, médio ou alto. Isso é só um limiar sobre a probabilidade do modelo, não outro modelo.
+Variáveis de entrada: `category`, `storage`, `region`, `kg`, `hours_to_expiry`, `published_hour`, `weekday`.
+
+A tela mostra risco baixo (probabilidade menor que 0,33), médio (de 0,33 a menos de 0,66) ou alto (0,66 ou mais). Isso é só um limiar sobre a probabilidade do modelo, não outro modelo.
 
 ### Métricas
 
-Valores lidos de `alimenta/model/artifacts/metrics.json`. Preencher depois do treino final.
+Valores de `alimenta/model/artifacts/metrics.json` no commit `55280f4` da branch `alimenta/rede-alimenta` (14/10/2026). Se o modelo for retreinado, atualize esta tabela pelo arquivo.
 
-| Métrica | Modelo `discard_risk-v1` | Baseline majoritária | Baseline de prazo |
+| Métrica no teste (1.200 lotes) | Modelo `discard_risk-v1` | Baseline majoritária | Baseline de prazo |
 |---|---|---|---|
-| Acurácia no teste | [metrics.json] | [metrics.json] | [metrics.json] |
-| Precisão, classe `discarded` | [metrics.json] | [metrics.json] | [metrics.json] |
-| Recall, classe `discarded` | [metrics.json] | [metrics.json] | [metrics.json] |
-| F1, classe `discarded` | [metrics.json] | [metrics.json] | [metrics.json] |
+| Acurácia | 0,789 | 0,581 | 0,722 |
+| Precisão, classe `discarded` | 0,778 | 0,000 | 0,680 |
+| Recall, classe `discarded` | 0,696 | 0,000 | 0,634 |
+| F1, classe `discarded` | 0,735 | 0,000 | 0,656 |
 
-- Tamanho do teste: [metrics.json: n_test] lotes. Treino: [metrics.json: n_train] lotes.
-- Matriz de confusão do modelo: [metrics.json: confusion_matrix].
-- sha256 do artefato: [metrics.json: sha256].
+- ROC AUC do modelo: 0,855.
+- Matriz de confusão do modelo (linha = verdade, coluna = previsão; ordem "não descartado", "descartado"): `[[597, 100], [153, 350]]`.
+- Teto prático: quem conhecesse a probabilidade escondida do gerador, sem o ruído, acertaria 79,9% neste mesmo teste (`alimenta/data/DICIONARIO.md`). O modelo chega a 78,9%. Acurácia perto de 100% seria sinal de vazamento.
+- Taxa de descarte no treino: 41,9%.
+- sha256 do artefato `discard_risk-v1.joblib`: `830dbe466ca635a4b8b5446b8f03888183ac512d2a06971cfbe60dd622af03d1`.
+- Versões: Python 3.12.14, scikit-learn 1.9.1, pandas 3.0.6, numpy 2.5.4.
 
-Acurácia sozinha engana quando uma classe é rara. Por isso a tabela traz recall e a matriz de confusão.
+Acurácia sozinha engana quando uma classe é mais rara. Por isso a tabela traz recall e a matriz de confusão. O modelo ainda deixa passar 153 de 503 lotes que seriam descartados.
 
 ### O que é modelo e o que é regra
 
 | Parte | Tipo |
 |---|---|
 | Probabilidade de descarte (`discard_proba`) | Modelo aprendido |
-| Faixa baixo, médio ou alto | Limiar fixo sobre a probabilidade |
+| Faixa baixo, médio ou alto | Limiar fixo sobre a probabilidade (0,33 e 0,66) |
 | Bloqueio de lote vencido | Regra fixa. Nenhum modelo decide se comida vencida pode ser doada |
 | Tipo de comida aceito pela ONG | Regra fixa |
 | Capacidade da ONG no dia | Regra fixa |

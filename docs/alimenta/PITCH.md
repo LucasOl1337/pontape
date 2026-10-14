@@ -40,7 +40,7 @@ Rubrica da FIAP, para lembrar onde está o peso: impacto social 30%, qualidade d
 
 Passo a passo. Fale enquanto clica.
 
-1. **Criar o lote.** No painel, cadastrar um lote de padaria, 12 kg, vencendo em poucas horas, região Leste.
+1. **Criar o lote.** No painel, cadastrar um lote de padaria de um doador da região Leste, 12 kg, vencendo em poucas horas.
    > Acabei de cadastrar 12 kg de pão que vencem hoje à noite.
 2. **Ver o risco.** O lote aparece com a probabilidade de descarte e a faixa de risco.
    > O modelo diz que este lote tem risco alto de ir para o lixo. Por isso ele sobe na fila e aparece nos alertas.
@@ -64,7 +64,7 @@ Se sobrar tempo: no Swagger, criar um lote com validade de ontem. Volta 422. "Co
 >
 > O rótulo de descarte não vem de uma regra de prazo. Se viesse, o modelo só copiaria a regra. O gerador mistura prazo, armazenamento, tipo de comida, peso, hora e demanda da região, com ruído.
 >
-> Separamos o teste antes de treinar. Comparamos com duas baselines: chutar sempre a classe mais comum, e uma regra só de prazo. O modelo bate as duas. A acurácia é [metrics.json], em [n_test] lotes de teste. Mostramos também a matriz de confusão, porque acurácia sozinha engana.
+> Separamos o teste antes de treinar. Comparamos com duas baselines: chutar sempre a classe mais comum, e uma regra só de prazo. O modelo bate as duas. Acerta 78,9% em 1.200 lotes de teste. Chutar a classe mais comum dá 58,1%, e a regra só de prazo dá 72,2%. Mostramos também a matriz de confusão, porque acurácia sozinha engana: o modelo ainda deixa passar 153 de 503 lotes que seriam descartados.
 >
 > O resto é regra, e dizemos isso: tipo de comida aceito, capacidade, distância e o bloqueio de vencido. Nenhum modelo decide se comida vencida pode ser doada.
 
@@ -115,10 +115,10 @@ Gravação de reserva:
 Não. Doadores, ONGs, lotes e histórico são simulados e rotulados assim em toda tela. O enunciado aceita dataset simulado. Não tratamos nenhum dado pessoal.
 
 **2. Se o dado é simulado, o que a acurácia prova?**
-Prova que o pipeline funciona: split antes do treino, baselines e métricas num teste separado. Não prova desempenho no mundo real. Para isso precisa de histórico de doações de verdade.
+Prova que o pipeline funciona: split antes do treino, baselines e métricas num teste separado. Não prova desempenho no mundo real. Para isso precisa de histórico de doações de verdade. Um detalhe: quem conhecesse a fórmula escondida do gerador acertaria no máximo 79,9%, por causa do ruído. Por isso 78,9% é perto do teto, e 99% seria sinal de erro.
 
 **3. O modelo não está só copiando uma regra de prazo?**
-Não. O rótulo vem de uma probabilidade que mistura seis fatores, com ruído. E a regra só de prazo é uma das baselines. O modelo precisa vencê-la no teste reservado.
+Não. O rótulo vem de uma probabilidade que mistura prazo, armazenamento, tipo de comida, peso, horário, dia da semana e demanda da região, com ruído. A regra só de prazo é uma das baselines: ela acerta 72,2% e o modelo, 78,9%, no mesmo teste reservado.
 
 **4. Por que não usaram Hugging Face?**
 O enunciado pede scikit-learn ou Hugging Face. Para dados em tabela, scikit-learn é a escolha direta. A análise semântica da descrição do lote com Hugging Face ficou fora deste corte, e está escrito em LIMITES.md.

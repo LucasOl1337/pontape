@@ -6,11 +6,11 @@
 
 | Item | Como nasce |
 |---|---|
-| Doadores | Cerca de 15, com nome inventado ("Doador Exemplo 03") |
-| ONGs | Cerca de 20, com nome inventado ("ONG Exemplo 07"), tipos aceitos, capacidade e janela de coleta sorteados |
+| Doadores | 15, com nome inventado ("Doador Exemplo 03") |
+| ONGs | 20, com nome inventado ("ONG Exemplo 07"), tipos aceitos, capacidade e janela de coleta sorteados |
 | Coordenadas | Pontos sorteados dentro da caixa de 5 macrorregiões de São Paulo. Nunca endereço real |
-| Lotes do seed | 5 categorias: hortifrúti, padaria, laticínios, refeição pronta e secos |
-| Histórico de treino | Cerca de 6.000 lotes em `alimenta/data/lots_history.csv` |
+| Lotes do seed | 150 lotes em 5 categorias: hortifrúti, padaria, laticínios, refeição pronta e secos |
+| Histórico de treino | 6.000 lotes em `alimenta/data/lots_history.csv` |
 | Rótulo `discarded` | Sorteado de uma probabilidade escondida, com ruído. O processo está em `alimenta/data/DICIONARIO.md` |
 | 30 dias de histórico operacional | Lotes, matches e entregas do seed, para o painel não nascer vazio |
 | Eventos do livro da demo | Cada entrega simulada vira um evento em `pontape-alimenta-demo` |
@@ -19,13 +19,13 @@ O gerador usa seed fixa `20261015`. Rodar de novo gera os mesmos dados.
 
 Nenhum parâmetro do gerador foi calibrado com fonte pública (FAO, IBGE, Embrapa). Os valores são escolhas do time, escritas no dicionário. Calibrar fica para depois.
 
-Consequência: a acurácia do modelo mostra que o pipeline de treino e avaliação está certo. Ela não mostra quanto o modelo acertaria com doações reais.
+Consequência: a acurácia do modelo (0,789 no teste reservado) mostra que o pipeline de treino e avaliação está certo. Ela não mostra quanto o modelo acertaria com doações reais.
 
 ## O que é estimativa
 
 **Refeições.** O painel divide os kg entregues por 0,544 kg. O número vem da Feeding America: "each meal is roughly 1.2 pounds" ([About our claims](https://www.feedingamerica.org/ways-to-give/faq/about-our-claims), acesso em 14/10/2026). 1,2 libra dá cerca de 0,544 kg.
 
-Esse fator é dos Estados Unidos e mede comida de banco de alimentos, não refeição servida no Brasil. Por isso o painel sempre escreve "refeições estimadas". Trocar por uma fonte brasileira é mudar uma constante em `alimenta/core/kpis.py`.
+Esse fator é dos Estados Unidos e mede comida de banco de alimentos, não refeição servida no Brasil. Por isso o painel sempre escreve "refeições estimadas". Trocar por uma fonte brasileira é mudar a constante `KG_PER_MEAL` em `alimenta/core/domain.py`.
 
 **kg salvos.** São kg de lotes simulados com entrega simulada. Não é comida real que deixou de ir para o lixo. O impacto social real da Rede Alimenta hoje é zero, e o painel não diz o contrário.
 
@@ -36,7 +36,7 @@ O modelo de AI faz uma coisa: estima a probabilidade de descarte de um lote. Tod
 | Parte | Tipo | Onde |
 |---|---|---|
 | Probabilidade de descarte | Modelo (scikit-learn) | `alimenta/model/` |
-| Faixa baixo, médio, alto | Limiar fixo sobre a probabilidade | `alimenta/model/predict.py` |
+| Faixa baixo, médio, alto | Limiar fixo sobre a probabilidade (0,33 e 0,66) | `alimenta/model/predict.py` |
 | Lote vencido bloqueado | Regra fixa | `alimenta/core/matching.py` |
 | Tipo de comida aceito pela ONG | Regra fixa | `alimenta/core/matching.py` |
 | Capacidade da ONG no dia | Regra fixa | `alimenta/core/matching.py` |
