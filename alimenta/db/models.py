@@ -2,10 +2,27 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import JSON, DateTime, Float, ForeignKey, Index, Integer, String, Text, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.types import TypeDecorator
+
+
+class UTCDateTime(TypeDecorator):
+    """Grava em UTC e devolve sempre com fuso (o SQLite perde o fuso)."""
+    impl = DateTime(timezone=True)
+    cache_ok = True
+
+    def process_bind_param(self, value, _dialect):
+        if value is not None:
+            value = value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
+        return value
+
+    def process_result_value(self, value, _dialect):
+        if value is not None:
+            value = value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
+        return value
 
 
 class Base(DeclarativeBase):
@@ -42,8 +59,8 @@ class Lot(Base):
     storage: Mapped[str] = mapped_column(String(16))
     kg: Mapped[float] = mapped_column(Float)
     description: Mapped[str] = mapped_column(Text, default="")
-    published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    published_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    expires_at: Mapped[datetime] = mapped_column(UTCDateTime())
     discard_proba: Mapped[float] = mapped_column(Float)
     risk_level: Mapped[str] = mapped_column(String(8))
     model_version: Mapped[str] = mapped_column(String(32))
@@ -60,11 +77,11 @@ class Match(Base):
     status: Mapped[str] = mapped_column(String(16), default="proposed")
     score: Mapped[float] = mapped_column(Float, default=0.0)
     distance_km: Mapped[float] = mapped_column(Float, default=0.0)
-    proposed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    collected_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    proposed_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    confirmed_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    collected_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    delivered_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    cancelled_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
     ledger_sequence: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     __table_args__ = (
