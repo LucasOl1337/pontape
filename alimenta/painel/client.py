@@ -13,6 +13,8 @@ from pathlib import Path
 import httpx
 
 API_URL = os.environ.get("ALIMENTA_API_URL", "http://localhost:8000").rstrip("/")
+# Endereço que a pessoa abre no navegador (no compose, API_URL é o nome interno "api").
+PUBLIC_API_URL = os.environ.get("ALIMENTA_PUBLIC_API_URL", API_URL).rstrip("/")
 GITHUB_REPO = os.environ.get("ALIMENTA_GITHUB_REPO", "LucasOl1337/pontape")
 SECURITY_DIR = Path(__file__).resolve().parents[1] / "seguranca"
 

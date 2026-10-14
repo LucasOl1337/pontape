@@ -258,4 +258,4 @@ with tabs[4]:
                                    for e in document["events"][-15:][::-1]]), hide_index=True, width="stretch")
 
 st.divider()
-st.caption(f"{DEMO_LABEL} · API {client.API_URL} · Swagger em {client.API_URL}/docs")
+st.caption(f"{DEMO_LABEL} · API {client.PUBLIC_API_URL} · Swagger em {client.PUBLIC_API_URL}/docs")
