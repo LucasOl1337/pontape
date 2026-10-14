@@ -2,7 +2,7 @@ import { ledgerPayloadSchema, type LedgerPayload } from './schema.ts';
 import * as z from 'zod/mini';
 
 // What an authorized source may hand the worker. Closed list: no name, CPF or free text.
-const sourceSchema = z.enum(['test', 'asaas', 'stripe']);
+const sourceSchema = z.enum(['test', 'asaas', 'stripe', 'alimenta']);
 const eventIdSchema = z.string().check(z.regex(/^[A-Za-z0-9:_-]{1,80}$/));
 
 export const ingestEnvelopeSchema = z.strictObject({
