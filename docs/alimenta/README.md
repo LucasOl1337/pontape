@@ -182,4 +182,140 @@ O fator de 0,544 kg por refeição vem da Feeding America: "each meal is roughly
 
 A região das refeições é a região da ONG, onde a fome foi atendida, e não a do doador.
 
-<!-- continua -->
+## Modelo de AI
+
+### O que ele prevê
+
+Alvo binário `discarded`: o lote foi descartado sem aproveitamento (1) ou não (0).
+
+O rótulo é simulado. O gerador calcula, para cada lote, uma probabilidade escondida que combina horas até vencer, armazenamento, perecibilidade da categoria, kg, hora do dia e demanda da região. Depois sorteia o rótulo dessa probabilidade, com ruído. O processo completo está em `alimenta/data/DICIONARIO.md`.
+
+O rótulo não sai de uma regra de prazo. Se saísse, o modelo só copiaria a regra e a acurácia não provaria nada.
+
+### Como treina
+
+1. Split estratificado treino/teste **antes** de qualquer ajuste. O teste fica guardado até o fim.
+2. Modelo principal: `HistGradientBoostingClassifier`. Comparação: `LogisticRegression`.
+3. Duas baselines no mesmo teste:
+   - classe majoritária (chuta sempre a classe mais comum);
+   - regra só de prazo (descarta se faltam poucas horas para vencer).
+4. O modelo precisa vencer as duas baselines no teste reservado.
+5. O CI retreina com a mesma seed e compara com o `metrics.json` versionado.
+
+A tela mostra risco baixo, médio ou alto. Isso é só um limiar sobre a probabilidade do modelo, não outro modelo.
+
+### Métricas
+
+Valores lidos de `alimenta/model/artifacts/metrics.json`. Preencher depois do treino final.
+
+| Métrica | Modelo `discard_risk-v1` | Baseline majoritária | Baseline de prazo |
+|---|---|---|---|
+| Acurácia no teste | [metrics.json] | [metrics.json] | [metrics.json] |
+| Precisão, classe `discarded` | [metrics.json] | [metrics.json] | [metrics.json] |
+| Recall, classe `discarded` | [metrics.json] | [metrics.json] | [metrics.json] |
+| F1, classe `discarded` | [metrics.json] | [metrics.json] | [metrics.json] |
+
+- Tamanho do teste: [metrics.json: n_test] lotes. Treino: [metrics.json: n_train] lotes.
+- Matriz de confusão do modelo: [metrics.json: confusion_matrix].
+- sha256 do artefato: [metrics.json: sha256].
+
+Acurácia sozinha engana quando uma classe é rara. Por isso a tabela traz recall e a matriz de confusão.
+
+### O que é modelo e o que é regra
+
+| Parte | Tipo |
+|---|---|
+| Probabilidade de descarte (`discard_proba`) | Modelo aprendido |
+| Faixa baixo, médio ou alto | Limiar fixo sobre a probabilidade |
+| Bloqueio de lote vencido | Regra fixa. Nenhum modelo decide se comida vencida pode ser doada |
+| Tipo de comida aceito pela ONG | Regra fixa |
+| Capacidade da ONG no dia | Regra fixa |
+| Distância (haversine) | Cálculo |
+| Urgência no ranking | Regra que usa o risco do modelo e as horas até vencer |
+| Rota de coleta | Heurística de vizinho mais próximo, se entrar |
+
+A previsão não é certificado sanitário. Ela só ajuda a decidir a ordem.
+
+## Livro da demo `pontape-alimenta-demo`
+
+Cada entrega confirmada (`POST /matches/{id}/deliver`) grava um evento num livro com hash encadeado. É o mesmo método do livro público do PontaPé: JSON canônico JCS ([RFC 8785](https://www.rfc-editor.org/rfc/rfc8785), acesso em 14/10/2026) e SHA-256, conforme [CONTRATO.md](../transparencia/CONTRATO.md).
+
+Regras:
+
+- O livro da demo é **separado** do livro real. Mora só na tabela `demo_ledger_events` e no download `GET /ledger`.
+- O livro real do PontaPé não recebe nenhum evento simulado. A regra "doação fictícia não entra no livro real" está na D040 ([DECISOES.md](../DECISOES.md)).
+- O evento segue o contrato v1 sem mudar nada: família `field`, ação `food_delivered`, `quantity` em **gramas**. Sem doador, ONG, região ou lote no evento. kg por região fica só no banco.
+- O download vem como `{notice, events}`. O `notice` diz "DEMONSTRAÇÃO · dados simulados · Rede Alimenta · quantity em gramas · não é o livro real do PontaPé".
+- O livro da demo não tem checkpoint. O conferidor só aceita checkpoint com o nome do livro real, então o nome `pontape-alimenta-demo` aparece no `notice` e no painel.
+
+Como conferir com o mesmo conferidor do público (Python, só biblioteca padrão):
+
+```bash
+curl -s http://localhost:8000/ledger -o livro-demo.json
+python3 tools/conferir.py livro-demo.json
+# Tudo certo: N ações, nada apagado nem mudado
+```
+
+Para ver a quebra: troque um `quantity` no arquivo e rode de novo. O conferidor aponta a linha alterada. A aba "Conferir livro da demo" do painel roda a mesma função `verify` de `tools/conferir.py`.
+
+## Segurança e DevSecOps
+
+Workflow `.github/workflows/alimenta.yml` ("Rede Alimenta"). Roda em todo PR e em todo push na main, sem filtro de caminho. Assim o commit mostrado na banca sempre tem uma execução. Permissão `contents: read`. O CI antigo (`ci.yml`) continua igual.
+
+| Job | Faz | Gate (reprova quando) |
+|---|---|---|
+| `testes` | `uv sync`, pytest, retreino com a mesma seed comparado ao `metrics.json` | Algum teste falha ou as métricas mudam |
+| `bandit` | Análise estática do código Python, relatório JSON e texto como artefato | Achado com severidade e confiança MEDIUM ou maior |
+| `trivy-fs` | Trivy em dependências (fs) e em configuração (Dockerfile, compose) | HIGH ou CRITICAL com correção disponível (`--ignore-unfixed`) |
+| `imagem` | `docker build` e `trivy image`, relatório SARIF/JSON como artefato | HIGH ou CRITICAL com correção disponível |
+| `deploy` | Chama os deploy hooks do Render | Só na main e só se o segredo existe. Sem segredo, pula e registra "não executado" |
+
+Achado aceito de propósito vai para `.trivyignore` ou `# nosec`, com justificativa, e aparece na [STRIDE.md](STRIDE.md).
+
+O Trivy é instalado por binário de versão fixa (v0.76.0) com checksum conferido, nunca por tag móvel de Action. Motivo: em 19/03/2026 a cadeia do Trivy foi comprometida. Saiu uma release maliciosa v0.69.4 e 76 de 77 tags do `aquasecurity/trivy-action` foram repontadas para código que roubava credenciais ([GHSA-69fq-xp46-6x23](https://github.com/aquasecurity/trivy/security/advisories/GHSA-69fq-xp46-6x23), acesso em 14/10/2026).
+
+"Vulnerabilidades mitigadas" no painel compara o primeiro scan real com o atual, por identificador. Ninguém plantou falha para mostrar redução. Se o primeiro scan veio limpo, o painel mostra zero, com data e commit.
+
+Linha de base: commit [preencher], data [preencher]. Achados na linha de base: [preencher]. Achados no scan atual: [preencher].
+
+Outras proteções:
+
+- Toda escrita na API exige `X-Alimenta-Token`. Leitura é aberta.
+- O painel guarda o token no servidor e nunca no navegador.
+- O artefato do modelo só carrega se o sha256 bate com o `metrics.json`.
+- A imagem roda com usuário não root.
+- Segredos só em variável de ambiente. `alimenta/.env.example` documenta as chaves sem valor.
+
+## Deploy
+
+Alvo: Render (API e painel, dois web services da mesma imagem, `render.yaml`) e Supabase Postgres.
+
+- O projeto Supabase `rede-alimenta` está em **us-east-1**. A região ideal seria **sa-east-1** (São Paulo), mas o pooler de sa-east-1 não respondeu na criação.
+- A API conecta pelo Supavisor pooler, modo sessão, porta 5432. Render e GitHub Actions só têm IPv4, e a conexão direta do Supabase é IPv6 ([Supabase, IPv4 e IPv6](https://supabase.com/docs/guides/troubleshooting/supabase--your-network-ipv4-and-ipv6-compatibility-cHe3BP), acesso em 14/10/2026).
+- Quem cria conta, segredo e serviço é o regente. Segredos do GitHub: `RENDER_DEPLOY_HOOK_API` e `RENDER_DEPLOY_HOOK_PAINEL`.
+
+URLs públicas:
+
+- API e Swagger: [preencher após deploy]
+- Painel: [preencher após deploy]
+- Execução do CI demonstrada: [preencher após deploy]
+
+## Limitações
+
+Resumo. A lista completa está em [LIMITES.md](LIMITES.md).
+
+- Tudo é simulado: doadores, ONGs, lotes, histórico e rótulo de descarte.
+- Refeições são estimativa com fator dos Estados Unidos.
+- Rota de coleta e análise semântica com Hugging Face podem não estar prontas.
+- No plano free, o Render dorme após 15 minutos parado e o Supabase pausa após 1 semana parado.
+- O livro da demo tem hash, mas ainda não tem assinatura nem carimbo público.
+
+## Integrantes
+
+| Nome | RM | Frente |
+|---|---|---|
+| [nome] | [RM] | [frente] |
+| [nome] | [RM] | [frente] |
+| [nome] | [RM] | [frente] |
+
+O site pontape.org não nomeia ninguém (D036). Os nomes aparecem só aqui, na entrega acadêmica.
