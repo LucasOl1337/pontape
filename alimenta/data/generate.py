@@ -2,7 +2,8 @@
 
 Gera:
 - data/lots_history.csv: histórico rotulado para treinar o modelo de risco.
-- data/seed/{donors,ngos,lots}.json: seed operacional da demonstração.
+(O seed de demonstração com ONGs saiu no corte r6, só doador. Esta função só grava o CSV;
+o histórico é o primeiro uso do gerador, então os bytes do CSV não mudam.)
 
 Nada aqui é dado real. O rótulo `discarded` é sorteado de uma probabilidade
 escondida (ver `discard_logit` e data/DICIONARIO.md), com ruído.
@@ -208,18 +209,7 @@ def seed_lots(rng, donor_list, ngo_list, days=30, per_day=(3, 7)):
 
 def build_all():
     rng = random.Random(SEED)
-    history = history_csv(history_rows(rng))
-    d = donors(rng)
-    g = ngos(rng)
-    lots = seed_lots(rng, d, g)
-    def doc(key, items):
-        return json.dumps({"notice": NOTICE, "seed": SEED, key: items}, ensure_ascii=False, indent=1) + "\n"
-    return {
-        DATA_DIR / "lots_history.csv": history,
-        DATA_DIR / "seed" / "donors.json": doc("donors", d),
-        DATA_DIR / "seed" / "ngos.json": doc("ngos", g),
-        DATA_DIR / "seed" / "lots.json": doc("lots", lots),
-    }
+    return {DATA_DIR / "lots_history.csv": history_csv(history_rows(rng))}
 
 
 def main(argv=None) -> int:

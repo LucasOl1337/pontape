@@ -1,6 +1,6 @@
 # Rede Alimenta · uma imagem para a API e o painel (DEMONSTRAÇÃO · dados simulados).
 # Build a partir da RAIZ do repositório: docker build -f alimenta/Dockerfile .
-# O .dockerignore da raiz é lista branca: só alimenta/ e tools/conferir.py entram.
+# O .dockerignore da raiz é lista branca: só alimenta/ e o catálogo src/data/alimenta/distribuidores.json entram.
 
 # --- Estágio 1: instala as dependências travadas no uv.lock -------------------
 FROM python:3.12-slim AS deps
@@ -35,7 +35,7 @@ RUN apt-get update \
 WORKDIR /app
 # Código fica do root (só leitura para o usuário app); o banco local vai para /tmp.
 COPY --from=deps /opt/venv /opt/venv
-COPY tools/conferir.py tools/conferir.py
+COPY src/data/alimenta/distribuidores.json src/data/alimenta/distribuidores.json
 COPY alimenta/ alimenta/
 USER app
 
@@ -43,11 +43,9 @@ ENV PORT=8000 \
     ALIMENTA_ENV=production \
     DATABASE_URL=sqlite:////tmp/alimenta.db
 
-EXPOSE 8000 8501
-# Serve para os dois papéis: a API responde /health, o painel /_stcore/health.
+EXPOSE 8000
+# A API responde /health (o painel saiu no corte r6).
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-    CMD python -c "import os,urllib.request; urllib.request.urlopen(f'http://127.0.0.1:{os.environ.get(\"PORT\",\"8000\")}/health', timeout=4)" || \
-        python -c "import os,urllib.request; urllib.request.urlopen(f'http://127.0.0.1:{os.environ.get(\"PORT\",\"8000\")}/_stcore/health', timeout=4)"
+    CMD python -c "import os,urllib.request; urllib.request.urlopen(f'http://127.0.0.1:{os.environ.get(\"PORT\",\"8000\")}/health', timeout=4)"
 
-# Padrão: API. O painel usa a mesma imagem com o comando alimenta/painel/run.sh.
 CMD ["sh", "-c", "exec uvicorn alimenta.api.main:app --host 0.0.0.0 --port ${PORT} --proxy-headers --forwarded-allow-ips='*'"]
