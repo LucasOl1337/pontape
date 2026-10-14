@@ -13,7 +13,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from alimenta.core.clock import aware, local, model_features, utcnow
-from alimenta.core.matching import LotExpired, LotView, NgoView, recommend, score_ngo
+from alimenta.core.matching import MAX_KM, LotExpired, LotView, NgoView, recommend, score_ngo
+from alimenta.core.route import DISTANCE, METHOD, Point, Stop, nearest_neighbor
 from alimenta.db.models import Donor, Lot, Match, Ngo
 from alimenta.ledger import demo_ledger
 from alimenta.model.predict import predict
@@ -152,3 +153,49 @@ def cancel(session: Session, match_id: int, now: datetime | None = None) -> Matc
     get(session, Lot, match.lot_id).status = "open"
     session.commit()
     return match
+
+
+def collection_route(session: Session, ngo_id: str, include_open: bool = False,
+                     now: datetime | None = None) -> dict:
+    """Ordem de coleta da ONG por vizinho mais próximo (heurística, ver core/route.py).
+
+    Entram os lotes com match `confirmed` dessa ONG (confirmados e ainda não
+    coletados). Com `include_open`, entram também os lotes abertos compatíveis:
+    não vencidos, de categoria aceita, que cabem na capacidade livre de hoje e
+    a até MAX_KM da ONG. Lotes do mesmo doador viram uma parada.
+    """
+    now = now or utcnow()
+    ngo = get(session, Ngo, ngo_id)
+    stops: dict[str, Stop] = {}
+
+    def add(lot: Lot, kind: str, match_id: int | None) -> None:
+        donor = session.get(Donor, lot.donor_id)
+        stop = stops.setdefault(donor.id, Stop(Point(donor.id, donor.lat, donor.lon)))
+        stop.items.append({"lot_id": lot.id, "kind": kind, "match_id": match_id, "kg": lot.kg,
+                           "category": lot.category, "expires_at": aware(lot.expires_at).isoformat(),
+                           "donor_name": donor.name, "donor_region": donor.region})
+
+    confirmed = session.execute(
+        select(Match, Lot).join(Lot, Lot.id == Match.lot_id)
+        .where(Match.ngo_id == ngo_id, Match.status == "confirmed").order_by(Lot.id)).all()
+    for match, lot in confirmed:
+        add(lot, "confirmed", match.id)
+    if include_open:
+        view = ngo_view(session, ngo, now)
+        for lot in session.scalars(select(Lot).where(Lot.status == "open").order_by(Lot.id)):
+            lv = lot_view(session, lot)
+            if lv.expires_at <= now:
+                continue
+            scored = score_ngo(lv, view, now)
+            if scored["eligible"] and scored["distance_km"] <= MAX_KM:
+                add(lot, "open", None)
+    result = nearest_neighbor(Point(ngo.id, ngo.lat, ngo.lon), list(stops.values()))
+    for stop in result["stops"]:
+        first = stop["items"][0]
+        stop.update(donor_id=stop.pop("id"), donor_name=first["donor_name"], donor_region=first["donor_region"],
+                    kg=round(sum(i["kg"] for i in stop["items"]), 1))
+        for item in stop["items"]:
+            item.pop("donor_name"), item.pop("donor_region")
+    return {"ngo_id": ngo.id, "ngo_name": ngo.name, "start": {"lat": ngo.lat, "lon": ngo.lon},
+            "include_open": include_open, "method": METHOD, "distance": DISTANCE,
+            "lots": sum(len(s["items"]) for s in result["stops"]), **result}

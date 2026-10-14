@@ -47,3 +47,18 @@ def test_panel_shows_api_refusal_for_expired_lot(client, auth, monkeypatch):
     at.number_input[1].set_value(-2.0)
     at.button[0].click().run()
     assert any(e.value.startswith("A API recusou (422)") for e in at.error)
+
+
+def test_panel_route_section_lists_stops(client, auth, monkeypatch):
+    wire(monkeypatch, client, auth)
+    at = AppTest.from_file(APP, default_timeout=60).run()
+    assert any(i.value.startswith("Nenhum lote para coletar") for i in at.info)
+    at.checkbox(key="route_open").check().run()
+    assert not at.exception and not at.error
+    ngo = client.get("/ngos").json()[0]
+    route = client.get(f"/ngos/{ngo['id']}/route", params={"include_open": "true"}).json()
+    summary = next(m.value for m in at.markdown if "paradas**" in m.value)
+    assert summary.startswith(f"**{len(route['stops'])} paradas**, {route['lots']} lotes")
+    table = next(df.value for df in at.dataframe if "Trecho (km)" in df.value.columns)
+    assert table["Ordem"].tolist() == list(range(1, len(route["stops"]) + 1))
+    assert table["Trecho (km)"].tolist() == [s["leg_km"] for s in route["stops"]]

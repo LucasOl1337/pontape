@@ -46,7 +46,7 @@ except Exception as exc:  # noqa: BLE001 - painel mostra o erro em vez de cair
     st.error(f"A API não respondeu em {client.API_URL}: {exc}")
     st.stop()
 
-tabs = st.tabs(["Visão geral", "Novo lote", "Modelo", "Segurança e CI", "Conferir livro da demo"])
+tabs = st.tabs(["Visão geral", "Novo lote", "Rota de coleta", "Modelo", "Segurança e CI", "Conferir livro da demo"])
 
 with tabs[0]:
     c = st.columns(5)
@@ -171,6 +171,45 @@ with tabs[1]:
                             st.error(f"{exc.status}: {exc.detail}")
 
 with tabs[2]:
+    st.subheader("Rota de coleta")
+    st.caption("Ordem por vizinho mais próximo: sai da ONG, vai sempre ao doador mais perto ainda não visitado e "
+               "volta à ONG. É uma heurística, não garante a menor rota. Distância em linha reta (haversine).")
+    ngos = client.get("/ngos")
+    r1, r2 = st.columns([3, 2])
+    ngo = r1.selectbox("ONG", ngos, key="route_ngo",
+                       format_func=lambda n: f"{n['name']} · {REGIONS[n['region']]['label']}")
+    include_open = r2.checkbox("Incluir lotes abertos compatíveis", key="route_open",
+                               help="Além dos confirmados e ainda não coletados: lotes abertos não vencidos, "
+                                    "de categoria aceita, que cabem na capacidade de hoje, até 25 km.")
+    route = client.get(f"/ngos/{ngo['id']}/route", include_open="true" if include_open else "false")
+    if not route["stops"]:
+        st.info("Nenhum lote para coletar nesta ONG agora. Marque a opção acima para ver os lotes abertos compatíveis.")
+    else:
+        st.markdown(f"**{len(route['stops'])} paradas**, {route['lots']} lotes · total "
+                    f"**{br(route['total_km'], 2)} km** (com a volta de {br(route['return_leg_km'], 2)} km)")
+        st.dataframe(pd.DataFrame([{
+            "Ordem": s["order"], "Doador": s["donor_name"], "Região": REGIONS[s["donor_region"]]["label"],
+            "Lotes": ", ".join(i["lot_id"] + (" (aberto)" if i["kind"] == "open" else "") for i in s["items"]),
+            "kg": s["kg"], "Trecho (km)": s["leg_km"], "Acumulado (km)": s["cumulative_km"]}
+            for s in route["stops"]]), hide_index=True, width="stretch")
+        path = [[route["start"]["lon"], route["start"]["lat"]]] + [[s["lon"], s["lat"]] for s in route["stops"]]
+        path.append(path[0])
+        points = pd.DataFrame([{"lon": route["start"]["lon"], "lat": route["start"]["lat"], "label": "ONG",
+                                "color": [200, 40, 40]}] +
+                              [{"lon": s["lon"], "lat": s["lat"], "label": str(s["order"]), "color": [30, 90, 200]}
+                               for s in route["stops"]])
+        st.pydeck_chart(pdk.Deck(layers=[
+            pdk.Layer("PathLayer", data=[{"path": path}], get_path="path", get_width=4, width_units="pixels",
+                      get_color=[30, 90, 200]),
+            pdk.Layer("ScatterplotLayer", data=points, get_position=["lon", "lat"], get_fill_color="color",
+                      get_radius=120, radius_min_pixels=6),
+            pdk.Layer("TextLayer", data=points, get_position=["lon", "lat"], get_text="label", get_size=16,
+                      get_color=[20, 20, 20], get_pixel_offset=[0, -18]),
+        ], map_style="light", initial_view_state=pdk.ViewState(latitude=route["start"]["lat"],
+                                                               longitude=route["start"]["lon"], zoom=10.5)))
+        st.caption("Linha: ONG → paradas na ordem → ONG. Pontos fictícios do seed.")
+
+with tabs[3]:
     st.subheader("Modelo de risco de descarte")
     st.markdown(f"**Alvo:** {model['target']}  \n**Algoritmo:** {model['algorithm']} · versão `{model['model_version']}`"
                 f" · seed {model['seed']}  \n**Split:** {model['split']['n_train']} treino / "
@@ -194,7 +233,7 @@ with tabs[2]:
                  width="stretch")
     st.caption(f"Artefato `{model['artifact']['file']}` · sha256 `{model['artifact']['sha256'][:16]}…`, conferido ao carregar.")
 
-with tabs[3]:
+with tabs[4]:
     st.subheader("Saúde do CI (branch main)")
     ci = client.ci_status()
     if ci["error"]:
@@ -228,7 +267,7 @@ with tabs[3]:
             st.markdown("**Aceitos com justificativa**")
             st.dataframe(pd.DataFrame(summary["accepted"]), hide_index=True, width="stretch")
 
-with tabs[4]:
+with tabs[5]:
     st.subheader("Conferir livro da demo")
     st.markdown(
         f"Livro **{demo_ledger.LEDGER_NAME}**, separado do livro real do PontaPé. Cada entrega da demonstração "
