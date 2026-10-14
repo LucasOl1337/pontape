@@ -121,7 +121,7 @@ Estrutura do código (pasta `alimenta/` na raiz do repo):
 | `docker-compose.yml` | `db`, `api` e `painel` |
 | `.github/workflows/alimenta.yml` | Workflow "Rede Alimenta" |
 
-Tabelas: `donors`, `ngos`, `lots`, `matches` e `demo_ledger_events`. Um índice único parcial em `matches.lot_id` (onde `status <> 'cancelled'`) impede no próprio banco que o mesmo lote vá para duas ONGs.
+Tabelas: `donors`, `ngos`, `lots`, `matches` e `demo_ledger_events`. Um índice único parcial em `matches.lot_id` (`uq_matches_active_lot`, onde `status <> 'cancelled'`) impede no próprio banco que o mesmo lote vá para duas ONGs.
 
 Rotas principais:
 
@@ -253,8 +253,8 @@ Regras:
 - O livro da demo é **separado** do livro real. Mora só na tabela `demo_ledger_events` e no download `GET /ledger`.
 - O livro real do PontaPé não recebe nenhum evento simulado. A regra "doação fictícia não entra no livro real" está na D040 ([DECISOES.md](../DECISOES.md)).
 - O evento segue o contrato v1 sem mudar nada: família `field`, ação `food_delivered`, `quantity` em **gramas**. Sem doador, ONG, região ou lote no evento. kg por região fica só no banco.
-- O download vem como `{notice, events}`. O `notice` diz "DEMONSTRAÇÃO · dados simulados · Rede Alimenta · quantity em gramas · não é o livro real do PontaPé".
-- O livro da demo não tem checkpoint. O conferidor só aceita checkpoint com o nome do livro real, então o nome `pontape-alimenta-demo` aparece no `notice` e no painel.
+- O download vem como `{notice, events}`. O `notice` diz "DEMONSTRAÇÃO · dados simulados · Rede Alimenta · livro pontape-alimenta-demo · quantity em gramas · não é o livro real do PontaPé".
+- O livro da demo não tem checkpoint. O conferidor só aceita checkpoint com o nome do livro real, então o nome `pontape-alimenta-demo` aparece no `notice`, na resposta de `GET /ledger/verify` e no painel.
 
 Como conferir com o mesmo conferidor do público (Python, só biblioteca padrão):
 

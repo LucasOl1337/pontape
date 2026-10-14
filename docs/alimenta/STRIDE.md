@@ -46,7 +46,7 @@ Escala usada. Impacto: baixo (atrapalha a demo), médio (número errado no paine
 | Ativo | Ameaça | Impacto | Prob. | Mitigação implementada | Evidência | Risco residual |
 |---|---|---|---|---|---|---|
 | F1 | Lote vencido entra como se fosse bom | Alto | Média | Regra fixa: validade no passado volta 422 | `alimenta/core/matching.py`; teste do 422 | Baixo |
-| F1 | Mesmo lote atribuído a duas ONGs | Médio | Média | Índice único parcial em `matches.lot_id` (status diferente de `cancelled`); API volta 409 | `alimenta/db/models.py`; teste do 409 | Baixo. O banco barra mesmo com duas requisições ao mesmo tempo |
+| F1 | Mesmo lote atribuído a duas ONGs | Médio | Média | Índice único parcial `uq_matches_active_lot` em `matches.lot_id` (status diferente de `cancelled`); API volta 409 | `alimenta/db/models.py`; teste do 409 | Baixo. O banco barra mesmo com duas requisições ao mesmo tempo |
 | F1 | Entrega repetida infla kg salvos | Médio | Média | `deliver` é idempotente; kg conta um por lote | `alimenta/core/kpis.py`; teste de entrega dupla | Baixo |
 | F4 | Alguém altera um evento antigo do livro da demo | Médio | Baixa | Corrente JCS + SHA-256; tabela só recebe INSERT; `hash` único | `alimenta/ledger/demo_ledger.py`; `GET /ledger/verify`; `python3 tools/conferir.py` | Médio. Sem assinatura nem carimbo externo, quem controla o banco pode reescrever a corrente inteira |
 | F7 | Artefato do modelo trocado por outro | Alto | Baixa | `predict.py` só carrega o `.joblib` se o sha256 bate com o `metrics.json` | `alimenta/model/predict.py`; teste com artefato alterado | Baixo |
