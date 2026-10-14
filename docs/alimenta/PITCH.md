@@ -86,4 +86,56 @@ Mostrar: a execução verde no GitHub, com o mesmo commit que está no ar, e os 
 >
 > O próximo passo é rodar com uma ONG de verdade. Para isso falta o que está em LIMITES.md, e a gente escreveu tudo lá.
 
-<!-- continua -->
+## Plano B: a demo caiu
+
+Decida em 20 segundos. Não tente consertar ao vivo.
+
+| O que falhou | O que fazer |
+|---|---|
+| URL pública não abre ou demora mais de 1 minuto | Trocar para o `docker compose up` local, já aberto em outra aba |
+| Local também falhou, ou não há internet | Tocar a gravação de reserva e narrar por cima com o mesmo roteiro |
+| Só o painel caiu, a API responde | Fazer a demo pelo Swagger: criar lote, recomendações, match, deliver, `GET /kpis`, `GET /ledger/verify` |
+| Só o banco caiu (Supabase pausado) | Ir para o compose local, que tem Postgres próprio |
+| Sem projetor | Mostrar no notebook e ler os números em voz alta |
+
+Frase para a banca:
+
+> A versão no ar não respondeu agora. Vamos mostrar a mesma coisa rodando localmente [ou: na gravação feita hoje com o mesmo commit].
+
+Gravação de reserva:
+
+- Arquivo: [preencher: caminho ou link da gravação].
+- Gravada em [preencher: data e hora], commit [preencher].
+- Mostra os 8 passos da demo, do lote novo até "Tudo certo" na conferência do livro.
+- Duração entre 2 e 3 minutos, sem som. A narração é ao vivo.
+
+## Perguntas prováveis da banca
+
+**1. Os dados são reais?**
+Não. Doadores, ONGs, lotes e histórico são simulados e rotulados assim em toda tela. O enunciado aceita dataset simulado. Não tratamos nenhum dado pessoal.
+
+**2. Se o dado é simulado, o que a acurácia prova?**
+Prova que o pipeline funciona: split antes do treino, baselines e métricas num teste separado. Não prova desempenho no mundo real. Para isso precisa de histórico de doações de verdade.
+
+**3. O modelo não está só copiando uma regra de prazo?**
+Não. O rótulo vem de uma probabilidade que mistura seis fatores, com ruído. E a regra só de prazo é uma das baselines. O modelo precisa vencê-la no teste reservado.
+
+**4. Por que não usaram Hugging Face?**
+O enunciado pede scikit-learn ou Hugging Face. Para dados em tabela, scikit-learn é a escolha direta. A análise semântica da descrição do lote com Hugging Face ficou fora deste corte, e está escrito em LIMITES.md.
+
+**5. Como vocês evitam que o mesmo lote vá para duas ONGs?**
+Um índice único no banco. Mesmo com duas requisições ao mesmo tempo, a segunda volta 409.
+
+**6. O que acontece com comida vencida?**
+É bloqueada por regra fixa: a API volta 422 e o lote nem entra. Nenhum modelo decide isso.
+
+**7. Como calcularam as refeições?**
+kg entregues divididos por 0,544 kg por refeição. É o fator da Feeding America, dos Estados Unidos. Por isso a tela diz "estimadas".
+
+**8. Qual vulnerabilidade vocês corrigiram?**
+[preencher com o que o scan real mostrou]. Se o primeiro scan veio limpo, a resposta honesta é: o gate está ativo, nenhum achado alto passou, e o painel mostra zero com data e commit. Não inventamos falha para mostrar correção.
+
+Perguntas extras, se houver tempo:
+
+- **Por que o banco está nos Estados Unidos?** O alvo é sa-east-1 (São Paulo). O pooler de lá não respondeu na criação, então o projeto ficou em us-east-1. Com dado simulado isso não pesa. Com dado real, mudaria.
+- **E a rota de coleta?** [preencher: pronta em `GET /ngos/{id}/route`, ou fora deste corte].
