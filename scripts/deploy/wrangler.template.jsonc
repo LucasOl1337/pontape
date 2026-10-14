@@ -25,6 +25,7 @@
   "workers_dev": false,
   "routes": [
     { "pattern": "pontape.org", "custom_domain": true },
-    { "pattern": "www.pontape.org", "custom_domain": true }
+    { "pattern": "www.pontape.org", "custom_domain": true },
+    { "pattern": "alimenta.pontape.org", "custom_domain": true }
   ]
 }

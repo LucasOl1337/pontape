@@ -166,6 +166,7 @@ async function asaasWebhook(request, env) {
 // Rede Alimenta: the browser talks to /api/alimenta/* on this origin and the Worker passes the call
 // to the Python API (ALIMENTA_API_ORIGIN). Same origin keeps the CSP at connect-src 'self' and needs
 // no CORS. Closed list of routes; only the headers the API needs go out, never the site cookies.
+const ALIMENTA_HOST = 'alimenta.pontape.org';
 const ALIMENTA_ID = '[A-Za-z0-9_-]{1,64}';
 const ALIMENTA_ROUTES = [
   ['POST', 'auth/code'], ['POST', 'auth/verify'],
@@ -243,6 +244,17 @@ export default {
     if (url.pathname === '/api/hit') return request.method === 'POST' ? handleHit(request, env) : error('Método não permitido.', 405);
     if (url.pathname === '/api/stats/public') return request.method === 'GET' ? publicStats(env) : error('Método não permitido.', 405);
     if (url.pathname.startsWith('/api/admin/')) return adminRoute(request, env, url.pathname, url.searchParams);
+    // alimenta.pontape.org: endereço da Rede Alimenta (parceria FIAP). A raiz mostra /alimenta/, as páginas
+    // e arquivos da Rede Alimenta seguem no mesmo endereço, e o resto do site volta pro pontape.org.
+    if (url.hostname === ALIMENTA_HOST) {
+      if (url.pathname === '/') return env.ASSETS.fetch(new globalThis.Request(new URL('/alimenta/', url), request));
+      const own = url.pathname === '/alimenta' || url.pathname.startsWith('/alimenta/') || /\.[a-z0-9]{1,8}$/i.test(url.pathname);
+      if (!own || url.protocol === 'http:') {
+        if (own) url.protocol = 'https:';
+        else { url.protocol = 'https:'; url.hostname = 'pontape.org'; }
+        return Response.redirect(url.toString(), 301);
+      }
+    }
     const local = /^localhost(?::\d+)?$/.test(request.headers.get('host') ?? '');
     if (!local && (url.hostname === 'www.pontape.org' || (url.hostname === 'pontape.org' && url.protocol === 'http:'))) {
       url.protocol = 'https:';

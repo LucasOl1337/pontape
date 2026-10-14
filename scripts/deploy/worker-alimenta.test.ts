@@ -111,3 +111,39 @@ describe('Proxy da Rede Alimenta no Worker', () => {
     expect(gone.status).toBe(204);
   });
 });
+
+describe('alimenta.pontape.org', () => {
+  const assetsEnv = () => {
+    const fetch = vi.fn().mockResolvedValue(new Response('<html></html>', { headers: { 'content-type': 'text/html' } }));
+    return { env: { ALIMENTA_API_ORIGIN: ORIGIN, ASSETS: { fetch } }, fetch };
+  };
+  it('mostra a página da Rede Alimenta na raiz, sem redirecionar', async () => {
+    const { env: e, fetch } = assetsEnv();
+    const result = await worker.fetch(new Request('https://alimenta.pontape.org/'), e);
+    expect(result.status).toBe(200);
+    expect(new URL((fetch.mock.calls[0]?.[0] as Request).url).pathname).toBe('/alimenta/');
+  });
+  it('serve as páginas e os arquivos da Rede Alimenta no próprio endereço', async () => {
+    const { env: e, fetch } = assetsEnv();
+    for (const path of ['/alimenta/distribuidores/', '/_astro/site.js', '/favicon.svg']) {
+      const result = await worker.fetch(new Request(`https://alimenta.pontape.org${path}`), e);
+      expect(result.status).toBe(200);
+    }
+    expect(fetch).toHaveBeenCalledTimes(3);
+  });
+  it('manda o resto do site pro pontape.org e o http pro https', async () => {
+    const { env: e } = assetsEnv();
+    const other = await worker.fetch(new Request('https://alimenta.pontape.org/transparencia/'), e);
+    expect(other.status).toBe(301);
+    expect(other.headers.get('location')).toBe('https://pontape.org/transparencia/');
+    const http = await worker.fetch(new Request('http://alimenta.pontape.org/alimenta/doar/'), e);
+    expect(http.headers.get('location')).toBe('https://alimenta.pontape.org/alimenta/doar/');
+  });
+  it('a API continua passando pelo proxy no subdomínio', async () => {
+    const upstream = vi.fn().mockResolvedValue(Response.json({ status: 'ok' }));
+    vi.stubGlobal('fetch', upstream);
+    const result = await worker.fetch(new Request('https://alimenta.pontape.org/api/alimenta/health'), env());
+    expect(result.status).toBe(200);
+    expect(sentTo(upstream).url).toBe(`${ORIGIN}/health`);
+  });
+});
