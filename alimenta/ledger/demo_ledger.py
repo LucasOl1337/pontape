@@ -114,7 +114,8 @@ def verify_document(document: dict) -> dict:
         count, _cents = module.verify(document)
     except module.LedgerError as exc:
         return {"ok": False, "ledger": LEDGER_NAME, "message": f"Problema: {exc}"}
-    total_g = sum(int(e["payload"]["quantity"]) for e in document.get("events", []))
-    head_hash = document["events"][-1]["hash"] if document.get("events") else ZERO_HASH
+    events = document if isinstance(document, list) else document["events"]
+    total_g = sum(int(e["payload"]["quantity"]) for e in events if e["payload"]["type"] == "field")
+    head_hash = events[-1]["hash"] if events else ZERO_HASH
     return {"ok": True, "ledger": LEDGER_NAME, "events": count, "head_hash": head_hash,
             "total_grams": total_g, "message": f"Tudo certo: {count} ações, nada apagado nem mudado"}

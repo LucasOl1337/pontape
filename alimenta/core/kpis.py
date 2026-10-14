@@ -35,6 +35,7 @@ def compute(session: Session, now: datetime | None = None) -> dict:
                      "deliveries": 0, "open_lots": 0, "lat": sum(REGIONS[r]["box"][:2]) / 2,
                      "lon": sum(REGIONS[r]["box"][2:]) / 2} for r in REGIONS}
     daily: dict[str, float] = defaultdict(float)
+    heat: dict[str, float] = defaultdict(float)
     kg_saved = 0.0
     match_minutes = []
     for m in matches:
@@ -46,6 +47,7 @@ def compute(session: Session, now: datetime | None = None) -> dict:
             region = by_region[ngos[m.ngo_id].region]
             region["kg_saved"] += lot.kg
             region["deliveries"] += 1
+            heat[m.ngo_id] += lot.kg
             daily[local(m.delivered_at).date().isoformat()] += lot.kg
 
     alerts = []
@@ -83,6 +85,8 @@ def compute(session: Session, now: datetime | None = None) -> dict:
         "lots_by_status": dict(sorted(status_count.items())),
         "lots_by_risk": dict(sorted(risk_count.items())),
         "by_region": list(by_region.values()),
+        "heat_points": [{"ngo_id": n, "region": ngos[n].region, "lat": ngos[n].lat, "lon": ngos[n].lon,
+                         "kg": round(v, 1)} for n, v in sorted(heat.items())],
         "daily_kg": [{"day": d, "kg": round(v, 1)} for d, v in sorted(daily.items())],
         "alerts": alerts,
     }
