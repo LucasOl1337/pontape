@@ -51,8 +51,9 @@ def main() -> int:
         print(f"índices únicos parciais: {partial}")
         counts = {t.name: session.scalar(select(func.count()).select_from(t)) for t in Base.metadata.sorted_tables}
         print(f"linhas: {counts}")
-        tests = {t: session.scalar(text(f'SELECT count(*) FROM "{t}" WHERE is_test')) for t in
-                 ("donors", "ngos", "lots", "lot_outcomes", "audit_log")}
+        tables = {t.name: t for t in Base.metadata.sorted_tables}
+        tests = {n: session.scalar(select(func.count()).select_from(tables[n]).where(tables[n].c.is_test.is_(True)))
+                 for n in ("donors", "ngos", "lots", "lot_outcomes", "audit_log")}
         print(f"linhas is_test (devem ser 0 fora do ensaio): {tests}")
         k = kpis.compute(session)
         print(f"kpis públicos: kg_saved={k['kg_saved']} entregas={k['deliveries']}")
