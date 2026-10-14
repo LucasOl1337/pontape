@@ -56,13 +56,13 @@ def discard_logit(category, storage, kg, hours_to_expiry, published_hour, weekda
     """Logito da probabilidade escondida de descarte (sem ruído)."""
     effective_hours = hours_to_expiry * STORAGE_SHELF[storage]
     urgency = math.exp(-effective_hours / 36.0)
-    z = -2.0
-    z += 3.4 * PERISHABILITY[category] * urgency
-    z += 0.9 * math.log1p(kg) / math.log1p(250)
-    z += 0.8 if published_hour >= 18 else 0.0
-    z += 0.5 if weekday >= 5 else 0.0
-    z -= 1.6 * (REGION_DEMAND[region] - 0.65)
-    z += 0.6 if (storage == "ambient" and category in {"dairy", "prepared_meal"}) else 0.0
+    z = -3.6
+    z += 6.1 * PERISHABILITY[category] * urgency
+    z += 1.6 * math.log1p(kg) / math.log1p(250)
+    z += 1.4 if published_hour >= 18 else 0.0
+    z += 0.9 if weekday >= 5 else 0.0
+    z -= 2.9 * (REGION_DEMAND[region] - 0.65)
+    z += 1.1 if (storage == "ambient" and category in {"dairy", "prepared_meal"}) else 0.0
     return z
 
 

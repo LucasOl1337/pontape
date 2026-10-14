@@ -34,16 +34,16 @@ O rótulo **não** é uma regra de prazo. Para cada lote, o gerador calcula um l
 ```
 horas_efetivas = hours_to_expiry × prateleira[storage]      (ambiente 1, refrigerado 2, congelado 4)
 urgência       = exp(-horas_efetivas / 36)
-z = -2,0
-  + 3,4 × perecibilidade[category] × urgência                (hortifrúti 1,0; padaria 0,85; laticínios 0,7; refeição 1,2; secos 0,1)
-  + 0,9 × ln(1+kg) / ln(251)
-  + 0,8 se published_hour ≥ 18
-  + 0,5 se fim de semana
-  − 1,6 × (region_demand − 0,65)                             (centro 0,7; norte 0,8; sul 0,6; leste 0,9; oeste 0,4)
-  + 0,6 se laticínio ou refeição pronta em ambiente
+z = -3,6
+  + 6,1 × perecibilidade[category] × urgência                (hortifrúti 1,0; padaria 0,85; laticínios 0,7; refeição 1,2; secos 0,1)
+  + 1,6 × ln(1+kg) / ln(251)
+  + 1,4 se published_hour ≥ 18
+  + 0,9 se fim de semana
+  − 2,9 × (region_demand − 0,65)                             (centro 0,7; norte 0,8; sul 0,6; leste 0,9; oeste 0,4)
+  + 1,1 se laticínio ou refeição pronta em ambiente
 ```
 
-Consequências que o modelo precisa aprender e que a regra só de prazo não vê: armazenamento, tamanho do lote, horário, dia e procura da região. O sorteio deixa erro irredutível; acurácia perto de 100% seria sinal de vazamento. Taxa de descarte gerada: 45,4%.
+Consequências que o modelo precisa aprender e que a regra só de prazo não vê: armazenamento, tamanho do lote, horário, dia e procura da região. O sorteio deixa erro irredutível; acurácia perto de 100% seria sinal de vazamento. Taxa de descarte gerada: 41,9%. Quem conhecesse o logito sem ruído acertaria cerca de 78% (teto prático); ver `alimenta/model/artifacts/metrics.json`.
 
 ## 2. `seed/*.json` · seed operacional da demonstração
 

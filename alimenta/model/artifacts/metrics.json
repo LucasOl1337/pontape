@@ -1,0 +1,178 @@
+{
+ "notice": "DEMONSTRAÇÃO · dados simulados",
+ "model_version": "discard_risk-v1",
+ "algorithm": "HistGradientBoostingClassifier",
+ "target": "discarded (1 = lote descartado sem aproveitamento; rótulo sorteado do processo escondido do gerador, ver data/DICIONARIO.md)",
+ "features": [
+  "category",
+  "storage",
+  "region",
+  "kg",
+  "hours_to_expiry",
+  "published_hour",
+  "weekday"
+ ],
+ "seed": 20261015,
+ "split": {
+  "method": "train_test_split estratificado antes de ajustar",
+  "test_size": 0.2,
+  "n_train": 4800,
+  "n_test": 1200,
+  "positive_rate_train": 0.4192
+ },
+ "decision_threshold": 0.5,
+ "risk_levels": {
+  "low": "proba < 0.33",
+  "medium": "0.33 ≤ proba < 0.66",
+  "high": "proba ≥ 0.66"
+ },
+ "test": {
+  "accuracy": 0.7892,
+  "confusion_matrix": {
+   "labels": [
+    "kept",
+    "discarded"
+   ],
+   "rows_true_cols_pred": [
+    [
+     597,
+     100
+    ],
+    [
+     153,
+     350
+    ]
+   ]
+  },
+  "per_class": {
+   "kept": {
+    "precision": 0.796,
+    "recall": 0.8565,
+    "f1-score": 0.8252,
+    "support": 697.0
+   },
+   "discarded": {
+    "precision": 0.7778,
+    "recall": 0.6958,
+    "f1-score": 0.7345,
+    "support": 503.0
+   }
+  },
+  "roc_auc": 0.8549
+ },
+ "baselines": {
+  "majority_class": {
+   "predicts": "kept",
+   "accuracy": 0.5808,
+   "confusion_matrix": {
+    "labels": [
+     "kept",
+     "discarded"
+    ],
+    "rows_true_cols_pred": [
+     [
+      697,
+      0
+     ],
+     [
+      503,
+      0
+     ]
+    ]
+   },
+   "per_class": {
+    "kept": {
+     "precision": 0.5808,
+     "recall": 1.0,
+     "f1-score": 0.7348,
+     "support": 697.0
+    },
+    "discarded": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1-score": 0.0,
+     "support": 503.0
+    }
+   }
+  },
+  "deadline_rule": {
+   "rule": "discarded se hours_to_expiry ≤ 30.7 (limiar escolhido só no treino)",
+   "accuracy": 0.7217,
+   "confusion_matrix": {
+    "labels": [
+     "kept",
+     "discarded"
+    ],
+    "rows_true_cols_pred": [
+     [
+      547,
+      150
+     ],
+     [
+      184,
+      319
+     ]
+    ]
+   },
+   "per_class": {
+    "kept": {
+     "precision": 0.7483,
+     "recall": 0.7848,
+     "f1-score": 0.7661,
+     "support": 697.0
+    },
+    "discarded": {
+     "precision": 0.6802,
+     "recall": 0.6342,
+     "f1-score": 0.6564,
+     "support": 503.0
+    }
+   }
+  },
+  "logistic_regression": {
+   "accuracy": 0.7417,
+   "confusion_matrix": {
+    "labels": [
+     "kept",
+     "discarded"
+    ],
+    "rows_true_cols_pred": [
+     [
+      557,
+      140
+     ],
+     [
+      170,
+      333
+     ]
+    ]
+   },
+   "per_class": {
+    "kept": {
+     "precision": 0.7662,
+     "recall": 0.7991,
+     "f1-score": 0.7823,
+     "support": 697.0
+    },
+    "discarded": {
+     "precision": 0.704,
+     "recall": 0.662,
+     "f1-score": 0.6824,
+     "support": 503.0
+    }
+   },
+   "roc_auc": 0.8201
+  }
+ },
+ "beats_baselines": true,
+ "versions": {
+  "python": "3.12.14",
+  "scikit_learn": "1.9.1",
+  "pandas": "3.0.6",
+  "numpy": "2.5.4"
+ },
+ "artifact": {
+  "file": "discard_risk-v1.joblib",
+  "sha256": "830dbe466ca635a4b8b5446b8f03888183ac512d2a06971cfbe60dd622af03d1"
+ }
+}
