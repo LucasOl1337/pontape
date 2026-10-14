@@ -1,27 +1,30 @@
-# Render Blueprint da Rede Alimenta (corte real: contas, ofertas e entregas de verdade).
-# Dois web services da MESMA imagem (alimenta/Dockerfile): API e painel.
-# Banco: Postgres do Supabase pelo pooler em modo sessão (porta 5432, IPv4).
+# Render Blueprint da Rede Alimenta (corte r6: só doador; o painel Streamlit saiu).
+# Um web service (alimenta/Dockerfile). A interface é o site pontape.org/alimenta (Cloudflare),
+# que chama esta API pelo proxy do worker.
+# Banco: Postgres do Supabase rede-alimenta-sp pelo pooler em modo sessão (porta 5432, IPv4).
 # Deploy: autoDeploy desligado; o workflow .github/workflows/alimenta.yml chama
-# os deploy hooks depois de testes e gates verdes na main.
+# o deploy hook depois de testes e gates verdes na main.
 services:
   - type: web
     name: rede-alimenta-api
     runtime: docker
     plan: free
-    region: virginia  # a região de um serviço do Render não muda depois de criado; o banco agora é sa-east-1
+    region: virginia  # a região de um serviço do Render não muda depois de criado; o banco é sa-east-1
     dockerfilePath: ./alimenta/Dockerfile
     dockerContext: .
     healthCheckPath: /health
     autoDeploy: false
     envVars:
       - key: ALIMENTA_ENV
-        value: production  # sem seed de exemplo, sem /demo/reset, sem emissor local de login
+        value: production  # sem emissor local de login
       - key: DATABASE_URL
         sync: false  # pooler Supabase rede-alimenta-sp (sessão, 5432); o código troca postgresql:// por postgresql+psycopg://
       - key: SUPABASE_URL
         sync: false  # https://<ref>.supabase.co; o JWKS sai daqui
       - key: SUPABASE_PUBLISHABLE_KEY
         sync: false  # sb_publishable_*: só pede e confere o código de login
+      - key: SUPABASE_SECRET_KEY
+        sync: false  # sb_secret_*: só para apagar o login em DELETE /me; vazio = pedido fica pendente
       - key: ALIMENTA_OPERATOR_EMAILS
         sync: false  # e-mails de operador separados por vírgula
       - key: ALIMENTA_TEST_EMAILS
@@ -29,27 +32,20 @@ services:
       - key: ALIMENTA_OPS_TOKEN
         sync: false  # só para POST /ops/sweep; o mesmo valor vai no secret do GitHub
       - key: ALIMENTA_SIGNUP_OPEN
-        value: "false"  # D012: cadastro de fora fechado até o Lucas aprovar os textos legais
+        value: "false"  # true quando o SMTP próprio estiver no ar (decisão r6)
       - key: ALIMENTA_PUBLISH_REAL_LEDGER
         value: "false"  # true só quando o Lucas autorizar a primeira publicação no livro real
       - key: ALIMENTA_LEDGER_DISPATCH_TOKEN
         sync: false  # fine-grained, Actions: write, só este repositório; vazio = não publica
-
-  - type: web
-    name: rede-alimenta-painel
-    runtime: docker
-    plan: free
-    region: virginia
-    dockerfilePath: ./alimenta/Dockerfile
-    dockerContext: .
-    dockerCommand: alimenta/painel/run.sh
-    healthCheckPath: /_stcore/health
-    autoDeploy: false
-    envVars:
-      - key: ALIMENTA_API_URL
-        sync: false  # URL pública da API, ex.: https://rede-alimenta-api-u5q4.onrender.com
-      - key: ALIMENTA_PUBLIC_API_URL
-        sync: false  # mesma URL pública (rodapé, Swagger e textos legais)
       - key: ALIMENTA_GITHUB_REPO
         value: LucasOl1337/pontape
-# O painel não guarda segredo: o login é o JWT de cada pessoa, na sessão do servidor.
+      - key: ALIMENTA_AI_BASE_URL
+        sync: false  # 9Router, OpenAI-compatível (com ou sem /v1); vazio = recomendação só por regra
+      - key: ALIMENTA_AI_KEY
+        sync: false  # chave do 9Router para esta API
+      - key: ALIMENTA_AI_MODEL
+        value: cc/claude-haiku-4-5-20251001
+      - key: ALIMENTA_AI_FALLBACK_MODEL
+        value: cx/gpt-5.6-luna
+      - key: ALIMENTA_AI_WEB_SEARCH
+        value: "false"  # busca web aberta; true só depois de testar o provedor de busca do 9Router
