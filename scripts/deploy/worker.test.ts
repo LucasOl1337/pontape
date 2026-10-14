@@ -85,10 +85,11 @@ describe('Yume no Worker', () => {
   });
 
   it('gera conhecimento público sem nomes pessoais nem termos vetados', () => {
-    expect(FAQ).toHaveLength(9);
+    expect(FAQ).toHaveLength(10);
     for (const item of FAQ) expect(YUMI_KNOWLEDGE).toContain(item.q);
     expect(YUMI_KNOWLEDGE).not.toMatch(/\bLucas\b|Oliveira|[\w.+-]+@[\w.-]+\.[a-z]{2,}/i);
     expect(YUMI_SYSTEM).not.toMatch(/\bIA\b|Bitcoin/i);
-    expect(YUMI_SYSTEM).toContain('Ninguém é atendido e nenhuma doação é recebida hoje.');
+    expect(YUMI_SYSTEM).toContain('Ninguém é atendido e doação em dinheiro não é recebida hoje.');
+    expect(YUMI_SYSTEM).toContain('Posso doar comida? Sim. Crie uma conta de doador na Rede Alimenta');
   });
 });

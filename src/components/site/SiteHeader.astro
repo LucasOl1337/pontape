@@ -5,18 +5,21 @@ import { PROJECT_NAME } from '../../data/site/project';
 import { CONSTRUIR } from '../../data/site/cadernos';
 import { LIVRO } from '../../data/site/livro';
 import { PERGUNTAS } from '../../data/site/perguntas';
+import { ALIMENTA } from '../../data/alimenta/rede';
 
 // `chat={false}` leaves the Yume out: a tool with no place to type keeps it that way.
-interface Props { current?: 'home' | 'transparencia' | 'construir' | 'perguntas' | 'ferramentas' | 'not-found'; chat?: boolean }
+interface Props { current?: 'home' | 'alimenta' | 'transparencia' | 'construir' | 'perguntas' | 'ferramentas' | 'not-found'; chat?: boolean }
 const { current = 'home', chat = true } = Astro.props;
 const onHome = current === 'home';
 // Inside a section the door stays marked: the page itself at its address, the section below it
 // (the cadernos under /construir, the technical page under /transparencia).
 const path = Astro.url.pathname.replace(/\/$/, '');
 const marked = (section: typeof current, href: string) => (current === section ? (path === href ? 'page' as const : 'true' as const) : undefined);
-// Four doors in plain words (F29). The builder words sit behind "Construir junto".
+// Doors in plain words (F29). The builder words sit behind "Construir junto". The Rede Alimenta,
+// open to donors since round 6 (Q8), has its own door.
 const links = [
   { href: onHome ? '#como-funciona' : '/#como-funciona', label: 'Como funciona' },
+  { href: ALIMENTA.href, label: ALIMENTA.name, current: marked('alimenta', ALIMENTA.href) },
   { href: LIVRO.href, label: 'Transparência', current: marked('transparencia', LIVRO.href) },
   { href: onHome ? '#ajudar' : '/#ajudar', label: 'Como ajudar' },
   { href: CONSTRUIR.href, label: CONSTRUIR.name, current: marked('construir', CONSTRUIR.href) },
