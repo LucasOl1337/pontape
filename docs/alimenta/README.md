@@ -2,7 +2,7 @@
 
 > **DEMONSTRAÇÃO · dados simulados.** Nenhum doador, ONG, lote ou entrega deste módulo é real.
 
-Este é o projeto integrador da FIAP "Rede Alimenta IA" (Tecnólogo em Inteligência Artificial, 1º ano, 2026). Dentro do PontaPé, o módulo se chama **Rede Alimenta**. Ele mora no passo 4 da escada, "Comida e roupa", que é o módulo M5 · Ponte inicial do [PRD](../PRD.md). No texto do PontaPé o termo é sempre AI.
+Este é o projeto integrador da FIAP "Rede Alimenta IA" (curso de tecnólogo, 1º ano, 2026). Dentro do PontaPé, o módulo se chama **Rede Alimenta**. Ele mora no passo 4 da escada, "Comida e roupa", que é o módulo M5 · Ponte inicial do [PRD](../PRD.md). No texto do PontaPé o termo é sempre AI.
 
 Outros documentos desta pasta:
 
