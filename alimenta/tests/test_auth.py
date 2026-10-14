@@ -110,18 +110,22 @@ def test_operator_only_from_env(api, monkeypatch):
     assert api.get("/ops/overview", headers=h(OPERATOR)).status_code == 403
 
 
-def test_wrong_role_is_403(api, pair):
-    assert api.get("/offers/mine", headers=pair["d"]).status_code == 403
-    assert api.post("/lots", json={}, headers=pair["n"]).status_code == 403
-    assert api.get("/ops/ngos", headers=pair["n"]).status_code == 403
+def test_wrong_role_is_403(api, donor):
+    assert api.get("/ops/overview", headers=donor["h"]).status_code == 403
+    assert api.post("/ops/test-data/purge", headers=donor["h"]).status_code == 403
+    assert api.post("/donations", json={}, headers=h(OPERATOR)).status_code == 403
 
 
 def test_ops_token_only_on_sweep(api):
     ops = {"X-Alimenta-Ops-Token": OPS}
     assert api.post("/ops/sweep").status_code == 401
     assert api.post("/ops/sweep", headers={"X-Alimenta-Ops-Token": "errado"}).status_code == 401
-    assert api.post("/ops/sweep", headers=ops).json() == {"timed_out": 0, "escalated": 0, "unclaimed": 0, "expired": 0}
-    for method, path in (("get", "/ops/overview"), ("post", "/lots"), ("get", "/me"), ("post", "/ops/ngos/N-x/approve")):
+    assert api.post("/ops/sweep", headers=ops).json() == {
+        "expired": 0, "catalog": {"active": 30, "deactivated": 0},
+        "ledger": {"confirmed": 0, "sent": 0, "failed": 0, "waiting": 0, "disabled": 0, "numbered": 0,
+                   "intake_read": False},
+        "deletions": {"pending": 0, "deleted": 0}}
+    for method, path in (("get", "/ops/overview"), ("post", "/donations"), ("get", "/me"), ("delete", "/me")):
         assert getattr(api, method)(path, headers=ops).status_code == 401, path
 
 

@@ -1,45 +1,36 @@
 """Apaga tudo o que é de conta de teste (`is_test`). Usado no fim do ensaio. Registro real não é tocado.
 
-Lote de teste nunca gerou evento no livro (flow.deliver para antes), então o livro não muda.
+Doação de teste nunca entra na fila do livro público (`ledger_outbox`), então nada a desfazer lá;
+se aparecer linha de fila ligada a doação de teste, a limpeza para e desfaz tudo.
 Ordem: filhos antes dos pais, sem depender de ON DELETE CASCADE.
 """
 
 from __future__ import annotations
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
-from alimenta.db.models import (Account, AuditLog, Confirmation, Consent, Donor, LedgerEvent, Lot, LotOffer,
-                                LotOutcome, Match, Ngo, Notification, PublicLedgerDispatch)
+from alimenta.db.models import (Account, AccountDeletion, AuditLog, Consent, Donor, LedgerOutbox, Lot, LotOutcome,
+                                Recommendation)
 
 
 def purge_test_data(session: Session) -> dict:
-    ledger_before = session.query(LedgerEvent).count()
     lots = select(Lot.id).where(Lot.is_test.is_(True))
-    ngos = select(Ngo.id).where(Ngo.is_test.is_(True))
-    donors = select(Donor.id).where(Donor.is_test.is_(True))
-    matches = select(Match.id).where(Match.lot_id.in_(lots))
-    offers = select(LotOffer.id).where(LotOffer.lot_id.in_(lots))
+    if session.scalar(select(func.count()).select_from(LedgerOutbox).where(LedgerOutbox.lot_id.in_(lots))):
+        raise RuntimeError("doação de teste na fila do livro público: limpeza parada")
     accounts = select(Account.id).where(Account.is_test.is_(True))
     steps = [
-        ("public_ledger_dispatches", delete(PublicLedgerDispatch).where(PublicLedgerDispatch.match_id.in_(matches))),
-        ("confirmations", delete(Confirmation).where(Confirmation.match_id.in_(matches))),
-        ("matches", delete(Match).where(Match.lot_id.in_(lots))),
-        ("notifications", delete(Notification).where(Notification.offer_id.in_(offers) | Notification.ngo_id.in_(ngos))),
-        ("lot_offers", delete(LotOffer).where(LotOffer.lot_id.in_(lots))),
+        ("recommendations", delete(Recommendation).where(Recommendation.lot_id.in_(lots))),
         ("lot_outcomes", delete(LotOutcome).where(LotOutcome.lot_id.in_(lots))),
         ("lots", delete(Lot).where(Lot.is_test.is_(True))),
-        ("ngos", delete(Ngo).where(Ngo.id.in_(ngos))),
-        ("donors", delete(Donor).where(Donor.id.in_(donors))),
+        ("donors", delete(Donor).where(Donor.is_test.is_(True))),
         ("consents", delete(Consent).where(Consent.account_id.in_(accounts))),
         ("audit_log", delete(AuditLog).where(AuditLog.is_test.is_(True))),
+        ("account_deletions", delete(AccountDeletion).where(AccountDeletion.is_test.is_(True))),
         ("accounts", delete(Account).where(Account.is_test.is_(True))),
     ]
     counts = {}
     for name, stmt in steps:
         counts[name] = session.execute(stmt.execution_options(synchronize_session=False)).rowcount
-    if session.query(LedgerEvent).count() != ledger_before:  # o livro nunca muda aqui
-        session.rollback()
-        raise RuntimeError("limpeza de teste mexeu no livro: desfeita")
     session.commit()
     return counts
