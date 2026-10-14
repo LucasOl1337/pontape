@@ -41,6 +41,7 @@ export function donationNumbers(list: DonationEvent[]): DonationNumbers {
 
 const CATEGORY_WORD: Record<string, string> = {
   dry_goods: 'não perecíveis', produce: 'frutas, legumes e verduras', bakery: 'pães', dairy: 'leite e derivados', prepared_meal: 'refeição pronta',
+  meat: 'carnes', beverages: 'bebidas',
 };
 export const kgText = (kg: number) => `${new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(kg)} kg`;
 

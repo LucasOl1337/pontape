@@ -31,7 +31,7 @@ function signup(onlyTerms: boolean) {
   show('al-signup');
   const form = $<HTMLFormElement>('#al-signup-form')!;
   const v = me.current_versions ?? {};
-  $('#al-versions')!.textContent = [v.donation_terms, v.privacy_notice].filter(Boolean).length ? `(${[v.donation_terms, v.privacy_notice].filter(Boolean).join(' e ')})` : '';
+  $('#al-versions')!.textContent = [v.donation_terms && `termo ${v.donation_terms}`, v.privacy_notice && `aviso ${v.privacy_notice}`].filter(Boolean).join(', ').replace(/^(.+)$/, '($1)');
   for (const [kind, target] of [['donation_terms', '#al-terms-text'], ['privacy_notice', '#al-privacy-text']] as const) {
     api<string>(`legal/${kind}`).then(text => { $(target)!.textContent = typeof text === 'string' ? text : ''; })
       .catch(() => { $(target)!.textContent = 'O texto não carregou agora. Tente abrir de novo em um minuto.'; });

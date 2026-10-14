@@ -24,12 +24,12 @@ function row(d: Donation) {
   return el('li', { class: 'al-don' },
     el('span', { class: 'al-state', 'data-s': status }, STATUS[status] ?? status),
     el('h3', {}, `${kg(d.kg)} de ${(CATEGORY[d.category ?? ''] ?? 'comida').toLowerCase()}`),
-    el('p', { class: 'al-hint' }, [d.city, d.expires_at ? `vale até ${day(d.expires_at)}` : '', d.created_at ? `registrada em ${day(d.created_at)}` : ''].filter(Boolean).join(' · ')),
+    el('p', { class: 'al-hint' }, [d.city, d.expires_at ? `comida vale até ${day(d.expires_at)}` : '', d.created_at ? `registrada em ${day(d.created_at)}` : ''].filter(Boolean).join(' · ')),
     to ? el('p', {}, 'Destino: ', el('a', { href: to.contact, rel: 'noopener', target: '_blank' }, `${to.name}, ${to.city}`)) : el('p', { class: 'al-hint' }, open ? 'Ainda sem destino.' : ''),
-    ref ? el('p', { class: 'al-ref' }, 'No livro: ', el('a', { href: `/alimenta#d-${encodeURIComponent(ref)}` }, ref), d.ledger_sequence ? ` · ação nº ${d.ledger_sequence}` : ' · entrando no livro') : null,
+    ref ? el('p', { class: 'al-ref' }, 'Livro público: ', d.ledger_sequence ? el('a', { href: `/alimenta#d-${encodeURIComponent(ref)}` }, `${ref} · ação nº ${d.ledger_sequence}`) : `${ref}, aparece em alguns minutos`) : null,
     open ? el('p', { class: 'al-row' },
-      status === 'destination_chosen' ? act('Marquei entregue', 'btn btn--ink', call('delivered', 'Entrega marcada. Obrigado.')) : el('a', { class: 'btn btn--ink', href: `/alimenta/doar?doacao=${encodeURIComponent(d.id)}` }, 'Escolher destino'),
-      act('Cancelar', 'btn al-quiet', async () => { if (confirm('Cancelar esta doação? No livro ela aparece como cancelada.')) await call('cancel', 'Doação cancelada.')(); })) : null);
+      status === 'destination_chosen' ? act('Já entreguei', 'btn btn--ink', call('delivered', 'Entrega marcada. Obrigado.')) : el('a', { class: 'btn btn--ink', href: `/alimenta/doar?doacao=${encodeURIComponent(d.id)}` }, 'Escolher destino'),
+      act('Cancelar doação', 'btn al-quiet', async () => { if (confirm('Cancelar esta doação? No livro ela aparece como cancelada.')) await call('cancel', 'Doação cancelada.')(); })) : null);
 }
 
 async function load() {

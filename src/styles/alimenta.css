@@ -38,16 +38,17 @@
 .al-msg[data-kind="error"]{ border-left-color:var(--status-bottleneck) }
 .al-msg[data-kind="ok"]{ border-left-color:var(--status-live) }
 .al-legal{ font:400 var(--t-small)/1.5 var(--font-sans) }
-.al-legal summary{ display:inline-flex; min-height:44px; align-items:center; cursor:pointer; font-weight:700; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.18em }
+.al-legal summary{ display:block; padding:.65rem 0; cursor:pointer; font-weight:700; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.18em }
 .al-legal pre{ max-height:18rem; overflow:auto; margin:.25rem 0 0; padding:.8rem; border:1px solid var(--rule); background:var(--paper-2); white-space:pre-wrap; font:400 .875rem/1.5 var(--font-sans) }
 .al-kicker{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
 .al-pick{ margin-top:var(--space-4); padding:var(--space-4); border:3px double var(--ink) }
+@media (max-width:520px){ .al-pick{ margin-inline:calc(-1 * var(--space-2)); padding:var(--space-3) } .al-pick .al-row .btn{ flex:1 1 100% } }
 .al-pick h3{ margin-top:.3rem; font:600 1.35rem/1.2 var(--font-serif) }
 .al-reason{ margin-top:.5rem; font:400 1.0625rem/1.5 var(--font-sans) }
 .al-facts{ display:grid; gap:.4rem; margin-top:var(--space-3); font:400 var(--t-small)/1.5 var(--font-sans) }
 .al-facts dt{ font-weight:700 }
 .al-facts dd{ margin:0; color:var(--ink-2) }
-.al-sources{ display:grid; gap:.3rem; margin-top:var(--space-3); font:400 var(--t-small)/1.4 var(--font-sans) }
+.al-sources{ display:grid; gap:.3rem; margin:var(--space-3) 0 var(--space-4); font:400 var(--t-small)/1.4 var(--font-sans) }
 .al-sources a{ font-weight:700; overflow-wrap:anywhere }
 .al-others{ display:grid; gap:.5rem; margin-top:var(--space-4) }
 .al-done{ border-color:var(--status-live) }
@@ -62,4 +63,5 @@
 .al-don .btn{ min-height:44px; padding:.45rem .9rem; font-size:var(--t-small) }
 .al-ref{ font:400 .8125rem/1.4 var(--font-mono); color:var(--ink-2) }
 .al-account{ max-width:40rem; margin-top:var(--space-12); padding-top:var(--space-4); border-top:2px solid var(--ink); font:400 var(--t-small)/1.5 var(--font-sans) }
+.al-email{ overflow-wrap:anywhere }
 .al-account .al-row{ margin-top:var(--space-3) }

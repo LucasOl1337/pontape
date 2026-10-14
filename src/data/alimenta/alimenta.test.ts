@@ -21,12 +21,12 @@ describe('Rede Alimenta no site', () => {
 
   it('conta registro, destino, entrega e cancelamento pelos eventos donation', () => {
     const list = donationEvents([
-      ev('10', { action: 'donation_registered', donationRef: 'dref-a', category: 'dry_goods', quantityGrams: '12500' }),
-      ev('11', { action: 'donation_registered', donationRef: 'dref-b', category: 'bakery', quantityGrams: '3000' }),
-      ev('12', { action: 'destination_chosen', donationRef: 'dref-a', distributorId: DISTRIBUTORS[0]!.id, choice: 'ai_top' }),
-      ev('13', { action: 'donation_delivered', donationRef: 'dref-a' }),
-      ev('14', { action: 'donation_cancelled', donationRef: 'dref-b' }),
-      ev('15', { action: 'outra_coisa', donationRef: 'dref-c' }),
+      ev('10', { action: 'donation_registered', donationRef: 'ALA1B2C3D4', category: 'dry_goods', quantityGrams: '12500' }),
+      ev('11', { action: 'donation_registered', donationRef: 'ALB1B2C3D4', category: 'bakery', quantityGrams: '3000' }),
+      ev('12', { action: 'destination_chosen', donationRef: 'ALA1B2C3D4', distributorId: DISTRIBUTORS[0]!.id, choice: 'ai_top' }),
+      ev('13', { action: 'donation_delivered', donationRef: 'ALA1B2C3D4' }),
+      ev('14', { action: 'donation_cancelled', donationRef: 'ALB1B2C3D4' }),
+      ev('15', { action: 'outra_coisa', donationRef: 'ALC1B2C3D4' }),
     ]);
     expect(list).toHaveLength(5);
     expect(donationNumbers(list)).toEqual({ registered: 2, kg: 15.5, withDestination: 1, delivered: 1, deliveredKg: 12.5, cancelled: 1, aiTop: 1 });

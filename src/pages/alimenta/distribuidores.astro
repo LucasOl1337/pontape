@@ -9,13 +9,14 @@ import { ALIMENTA, CATEGORY, DISTRIBUTORS, FROM, KIND, REGION, cities, lastAcces
 // day it was read. Static page; the filter is a few lines of JS and without JS the whole list shows.
 const categories = Object.entries(CATEGORY).filter(([id]) => DISTRIBUTORS.some(d => d.accepts.includes(id as never)));
 const newest = DISTRIBUTORS.map(lastAccess).sort().at(-1)!;
+const order = Object.keys(CATEGORY) as (keyof typeof CATEGORY)[];
 ---
 <BaseLayout title={`Distribuidores de alimento · ${ALIMENTA.name} · ${PROJECT_NAME}`}
   description={`${DISTRIBUTORS.length} organizações que já distribuem comida em São Paulo e região, cada uma com a fonte pública e a data em que foi lida.`}
   current="alimenta">
   <Caderno kicker={ALIMENTA.name} title="Quem já distribui" turn="comida."
     lead={`${DISTRIBUTORS.length} bancos de alimentos, redes e organizações que recebem doação e repassam pra quem precisa. Cada um tem a fonte de onde veio.`}>
-    <p class="al-note"><Icon name="search" />Lista lida em sites oficiais em <time datetime={newest}>{formatDay(newest)}</time>. Ninguém aqui pagou pra aparecer. Achou algo errado ou falta alguém? <a href={suggestUrl()} rel="noopener">Sugerir ou corrigir</a>.</p>
+    <p class="al-note"><Icon name="search" /><span>Lista lida em sites oficiais em <time datetime={newest}>{formatDay(newest)}</time>. Ninguém aqui pagou pra aparecer. Achou algo errado ou falta alguém? <a href={suggestUrl()} rel="noopener">Sugerir ou corrigir</a>.</span></p>
 
     <form class="al-filters" id="al-filters" role="search" aria-label="Filtrar distribuidores">
       <label class="al-field"><span>Cidade</span>
@@ -34,7 +35,7 @@ const newest = DISTRIBUTORS.map(lastAccess).sort().at(-1)!;
           <article aria-labelledby={`n-${d.id}`}>
             <p class="al-meta">{KIND[d.kind]} · {d.city}{d.city === 'São Paulo' && d.region !== 'metro' ? `, ${REGION[d.region]}` : ''}</p>
             <h2 class="al-name" id={`n-${d.id}`}>{d.name}</h2>
-            {d.accepts.length > 0 && <p class="al-tags">{d.accepts.map(c => <span>{CATEGORY[c]}</span>)}</p>}
+            {d.accepts.length > 0 && <p class="al-tags">{order.filter(c => d.accepts.includes(c)).map(c => <span>{CATEGORY[c]}</span>)}</p>}
             <dl class="al-facts">
               <div><dt>Recebe de</dt><dd>{d.receives_from.map(r => FROM[r]).join(' e ')}</dd></div>
               {d.how_to_donate && <div><dt>Como doar</dt><dd>{d.how_to_donate}</dd></div>}
@@ -73,7 +74,8 @@ const newest = DISTRIBUTORS.map(lastAccess).sort().at(-1)!;
   .al-count{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2) }
   .al-list{ display:grid; margin-top:var(--space-4); border-top:2px solid var(--ink) }
   @media (min-width:900px){ .al-list{ grid-template-columns:1fr 1fr; column-gap:var(--space-12) } }
-  .al-item{ padding:var(--space-6) 0; border-bottom:1px solid var(--rule) }
+  .al-item{ display:flex; padding:var(--space-6) 0; border-bottom:1px solid var(--rule) }
+  .al-item > article{ display:flex; flex-direction:column; width:100% }
   .al-meta{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.12em; text-transform:uppercase; color:var(--accent) }
   .al-name{ margin-top:.35rem; font:600 1.35rem/1.2 var(--font-serif); text-wrap:balance }
   .al-tags{ display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.6rem }
@@ -82,12 +84,12 @@ const newest = DISTRIBUTORS.map(lastAccess).sort().at(-1)!;
   .al-facts dt{ font-weight:700 }
   .al-facts dd{ margin:0; color:var(--ink-2) }
   .al-sources{ margin-top:var(--space-4); font:400 var(--t-small)/1.5 var(--font-sans) }
-  .al-sources summary{ display:inline-flex; min-height:44px; align-items:center; cursor:pointer; font-weight:700; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.18em }
+  .al-sources summary{ display:block; padding:.65rem 0; cursor:pointer; font-weight:700; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.18em }
   .al-sources ul{ display:grid; gap:.5rem; margin-top:.25rem }
   .al-sources q{ font-style:italic; color:var(--ink-2) }
   .al-sources a{ font-weight:700; overflow-wrap:anywhere }
   .al-sources p{ margin-top:.5rem; color:var(--ink-2) }
-  .al-links{ display:flex; flex-wrap:wrap; gap:.5rem 1.25rem; align-items:center; margin-top:var(--space-3) }
+  .al-links{ display:flex; flex-wrap:wrap; gap:.5rem 1.25rem; align-items:center; margin-top:auto; padding-top:var(--space-3) }
   .al-links a{ min-height:44px; display:inline-flex; align-items:center }
   .al-fix{ font:400 var(--t-small)/1.3 var(--font-sans); color:var(--ink-2) }
   .al-empty{ margin-top:var(--space-6); font:400 1.0625rem/1.5 var(--font-sans) }
