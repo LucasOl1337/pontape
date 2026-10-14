@@ -1,0 +1,77 @@
+{
+ "notice": "Scans reais do código e da imagem da Rede Alimenta (a demo usa dados simulados).",
+ "baseline": {
+  "commit": "996031c",
+  "date": "2026-10-14",
+  "total": 176
+ },
+ "current": {
+  "commit": "5e69874",
+  "date": "2026-10-14",
+  "total": 165
+ },
+ "mitigated": {
+  "total": 11
+ },
+ "gates": {
+  "bandit": "reprova severidade >= MEDIUM e confiança >= MEDIUM",
+  "trivy": "reprova HIGH/CRITICAL com correção disponível (--ignore-unfixed)"
+ },
+ "tools": {
+  "Bandit (código Python)": {
+   "baseline": 1,
+   "current": 1,
+   "mitigated_ids": [],
+   "new_ids": []
+  },
+  "Trivy fs (dependências, segredos, Dockerfile)": {
+   "baseline": 1,
+   "current": 0,
+   "mitigated_ids": [
+    "DS-0013:Dockerfile:MEDIUM"
+   ],
+   "new_ids": []
+  },
+  "Trivy config (IaC do repositório)": {
+   "baseline": 1,
+   "current": 0,
+   "mitigated_ids": [
+    "DS-0013:Dockerfile:MEDIUM"
+   ],
+   "new_ids": []
+  },
+  "Trivy imagem (rede-alimenta)": {
+   "baseline": 173,
+   "current": 164,
+   "mitigated_ids": [
+    "CVE-2025-8869:pip:MEDIUM",
+    "CVE-2026-13346:pip:MEDIUM",
+    "CVE-2026-1703:pip:LOW",
+    "CVE-2026-3219:pip:MEDIUM",
+    "CVE-2026-6357:pip:MEDIUM",
+    "CVE-2026-8643:pip:MEDIUM",
+    "DSA-6549-1:liblzma5:UNKNOWN",
+    "GHSA-2mjx-qc3c-rqvc:rustls:MEDIUM",
+    "TEMP-1147318-639065:liblzma5:UNKNOWN"
+   ],
+   "new_ids": []
+  }
+ },
+ "accepted": [
+  {
+   "id": "bandit:B311",
+   "onde": "alimenta/data/generate.py",
+   "motivo": "random com seed fixa só gera dados simulados reproduzíveis; não é segredo nem token"
+  },
+  {
+   "id": "bandit:B301",
+   "onde": "alimenta/model/predict.py",
+   "motivo": "joblib (pickle) carrega só o artefato local versionado, depois de conferir o sha256 de metrics.json"
+  },
+  {
+   "id": "trivy:os-sem-correcao",
+   "onde": "imagem python:3.12-slim (Debian)",
+   "motivo": "CVEs do Debian sem versão corrigida publicada; o gate usa --ignore-unfixed e a imagem roda apt-get upgrade a cada build"
+  }
+ ]
+}
