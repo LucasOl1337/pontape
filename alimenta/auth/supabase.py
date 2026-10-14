@@ -14,6 +14,8 @@ import httpx
 
 from alimenta.core import config
 
+TOKEN_TYPE = "bearer"  # nosec B105 - tipo do token (RFC 6750), não é segredo
+
 TIMEOUT_S = 8
 EMAIL = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$")
 
@@ -60,5 +62,5 @@ def verify_code(email: str, code: str) -> dict:
     if r.status_code != 200:
         raise BadCode("código errado ou vencido")
     data = r.json()
-    return {"access_token": data["access_token"], "token_type": "bearer",
+    return {"access_token": data["access_token"], "token_type": TOKEN_TYPE,
             "expires_in": data.get("expires_in"), "user": {"id": data["user"]["id"], "email": data["user"]["email"]}}

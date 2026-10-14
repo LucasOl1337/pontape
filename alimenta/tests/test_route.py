@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
-
 import pytest
 
 from alimenta.core.domain import haversine_km
@@ -42,69 +40,3 @@ def test_tie_goes_to_smallest_id_and_empty_route():
     assert [s["id"] for s in route["stops"]] == ["Da", "Db"]
     empty = nearest_neighbor(Point("N", 0.0, 0.0), [])
     assert empty == {"stops": [], "return_leg_km": 0.0, "total_km": 0.0}
-
-
-LOT = {"category": "bakery", "storage": "ambient", "kg": 10.0, "description": "Rota (simulado)"}
-
-
-def in_hours(hours: float) -> str:
-    return (datetime.now(timezone.utc) + timedelta(hours=hours)).isoformat()
-
-
-def confirmed_lot(client, auth, donor_id, ngo_id):
-    lot = client.post("/lots", json={**LOT, "donor_id": donor_id, "expires_at": in_hours(30)}, headers=auth).json()
-    match = client.post(f"/lots/{lot['id']}/matches", json={"ngo_id": ngo_id}, headers=auth)
-    assert match.status_code == 201, match.text
-    assert client.post(f"/matches/{match.json()['id']}/confirm", headers=auth).status_code == 200
-    return lot["id"], match.json()["id"]
-
-
-def test_route_endpoint_orders_confirmed_lots_by_nearest_neighbor(client, auth):
-    ngos = {n["id"]: n for n in client.get("/ngos", headers=auth).json()}
-    donors = {d["id"]: d for d in client.get("/donors", headers=auth).json()}
-    ngo = next(n for n in ngos.values() if "bakery" in n["accepted_categories"] and n["daily_capacity_kg"] >= 40)
-    assert client.get(f"/ngos/{ngo['id']}/route", headers=auth).json()["stops"] == []  # seed não deixa match confirmado
-
-    picked = ["D01", "D07", "D12"]
-    lots = {d: confirmed_lot(client, auth, d, ngo["id"]) for d in picked}
-    extra, _ = confirmed_lot(client, auth, "D07", ngo["id"])  # 2º lote do mesmo doador: mesma parada
-
-    # Ordem esperada calculada à mão, pela mesma regra: sempre o doador mais perto do ponto atual.
-    here, left, expected, total = (ngo["lat"], ngo["lon"]), set(picked), [], 0.0
-    while left:
-        nxt = min(left, key=lambda d: (haversine_km(*here, donors[d]["lat"], donors[d]["lon"]), d))
-        leg = haversine_km(*here, donors[nxt]["lat"], donors[nxt]["lon"])
-        expected.append((nxt, round(leg, 2)))
-        total += leg
-        here = (donors[nxt]["lat"], donors[nxt]["lon"])
-        left.remove(nxt)
-    total += haversine_km(*here, ngo["lat"], ngo["lon"])
-
-    body = client.get(f"/ngos/{ngo['id']}/route", headers=auth).json()
-    assert [(s["donor_id"], s["leg_km"]) for s in body["stops"]] == expected
-    assert body["total_km"] == round(total, 2)
-    assert body["lots"] == 4 and body["include_open"] is False and body["exact"] is True
-    assert "vizinho mais próximo" in body["method"] and "heurística" in body["method"]
-    d07 = next(s for s in body["stops"] if s["donor_id"] == "D07")
-    assert sorted(i["lot_id"] for i in d07["items"]) == sorted([lots["D07"][0], extra])
-    assert d07["kg"] == 20.0 and all(i["kind"] == "confirmed" for i in d07["items"])
-
-    # Coletado sai da rota.
-    client.post(f"/matches/{lots['D01'][1]}/collect", headers=auth)
-    after = client.get(f"/ngos/{ngo['id']}/route", headers=auth).json()
-    assert "D01" not in [s["donor_id"] for s in after["stops"]] and after["lots"] == 3
-
-
-def test_route_include_open_adds_only_compatible_open_lots(client, auth):
-    ngo = client.get("/ngos").json()[0]
-    route = client.get(f"/ngos/{ngo['id']}/route", params={"include_open": "true"}).json()
-    opened = [i for s in route["stops"] for i in s["items"]]
-    assert opened and all(i["kind"] == "open" for i in opened)
-    assert all(i["category"] in ngo["accepted_categories"] for i in opened)
-    open_ids = {lot["id"] for lot in client.get("/lots", params={"status": "open"}).json()}
-    assert {i["lot_id"] for i in opened} <= open_ids
-    assert route["total_km"] >= sum(s["leg_km"] for s in route["stops"])
-
-
-def test_route_unknown_ngo_is_404(client):
-    assert client.get("/ngos/N-naoexiste/route").status_code == 404

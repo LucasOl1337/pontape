@@ -1,7 +1,6 @@
-"""Saída pública sem coordenada exata, nome nem endereço (casos exatos).
+"""Leitura pública: só agregados reais, sem nome, endereço ou coordenada (casos exatos).
 
-Painel (código de operador, token fora do navegador): test_painel_operador.py.
-Seed desligado por padrão: test_seed_padrao.py.
+As listas públicas de doadores, ONGs, lotes e matches saíram. Os KPIs ignoram `is_test`.
 """
 
 from __future__ import annotations
@@ -9,32 +8,28 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from alimenta.core.domain import REGIONS, haversine_km, region_centroid
+from fastapi.testclient import TestClient
+
+from alimenta.api.main import create_app
+from alimenta.core.domain import region_centroid
+from alimenta.tests.conftest import OPERATOR, h, lot_body, make_donor, make_ngo
 
 ROOT = Path(__file__).resolve().parents[2]
 SEED = ROOT / "alimenta" / "data" / "seed"
 DONORS = json.loads((SEED / "donors.json").read_text(encoding="utf-8"))["donors"]
 NGOS = json.loads((SEED / "ngos.json").read_text(encoding="utf-8"))["ngos"]
-LOT = {"category": "bakery", "storage": "ambient", "kg": 10.0, "description": "Rua Exemplo, 123 (simulado)"}
-
-
-def in_hours(hours: float) -> str:
-    from datetime import datetime, timedelta, timezone
-    return (datetime.now(timezone.utc) + timedelta(hours=hours)).isoformat()
+PUBLIC_GETS = ["/health", "/kpis", "/model", "/ledger", "/ledger/verify", "/openapi.json",
+               "/legal/donation_terms", "/legal/privacy_notice"]
+REAL = "real@empresa-real.com.br"
+REAL_NGO = "real@ong-real.org.br"
 
 
 def secrets_of(rows) -> list[str]:
-    """Textos que nunca podem sair em resposta pública: nome e cada coordenada exata."""
     out = []
     for row in rows:
         out += [row["name"], json.dumps(row["lat"]), json.dumps(row["lon"])]
     return out
 
-
-SENSITIVE = secrets_of(DONORS) + secrets_of(NGOS)
-
-
-# --- (2) saída pública sem coordenada exata nem nome --------------------------------------
 
 def test_region_centroid_exact():
     assert region_centroid("center") == (-23.5475, -46.6425)
@@ -44,116 +39,59 @@ def test_region_centroid_exact():
     assert region_centroid("west") == (-23.5725, -46.73)
 
 
-def test_public_donors_only_region_and_kind(client):
-    body = client.get("/donors").json()
-    assert len(body) == 15
-    assert body[0] == {"id": DONORS[0]["id"], "kind": DONORS[0]["kind"], "region": DONORS[0]["region"]}
-    assert all(set(d) == {"id", "kind", "region"} for d in body)
+def test_old_public_lists_are_gone(api):
+    for path in ("/donors", "/ngos", "/lots", "/matches", "/ngos/N01/route", "/lots/L001/recommendations"):
+        assert api.get(path).status_code in (404, 405), path
 
 
-def test_public_ngos_without_name_or_coordinates(client):
-    body = client.get("/ngos").json()
-    assert len(body) == 20
-    first = NGOS[0]
-    assert body[0] == {"id": first["id"], "region": first["region"],
-                       "accepted_categories": first["accepted_categories"],
-                       "daily_capacity_kg": first["daily_capacity_kg"], "window": first["window"]}
-    assert all(set(n) == {"id", "region", "accepted_categories", "daily_capacity_kg", "window"} for n in body)
+def test_production_starts_with_honest_zero(api):
+    k = api.get("/kpis").json()
+    assert (k["kg_saved"], k["deliveries"], k["meals_estimated"], k["avg_match_minutes"]) == (0.0, 0, 0, None)
+    assert k["heat_points"] == [] and k["alerts"] == [] and k["lots_by_status"] == {}
+    assert api.get("/ledger/verify").json()["events"] == 0
+    assert api.get("/ledger").json()["events"] == []
 
 
-def test_token_reads_full_and_bad_token_is_refused(client, auth, monkeypatch):
-    donor = client.get("/donors", headers=auth).json()[0]
-    assert donor == {k: DONORS[0][k] for k in ("id", "name", "kind", "region", "lat", "lon")}
-    ngo = client.get("/ngos", headers=auth).json()[0]
-    assert (ngo["name"], ngo["lat"], ngo["lon"]) == (NGOS[0]["name"], NGOS[0]["lat"], NGOS[0]["lon"])
-    assert client.get("/donors", headers={"X-Alimenta-Token": "errado"}).status_code == 401
-    monkeypatch.delenv("ALIMENTA_WRITE_TOKEN")
-    assert client.get("/ngos", headers=auth).status_code == 503
-    assert client.get("/ngos").status_code == 200  # sem cabeçalho continua público
+def test_seed_never_loads_outside_local(engine, monkeypatch):
+    monkeypatch.setenv("ALIMENTA_ENV", "production")
+    monkeypatch.setenv("ALIMENTA_SEED_ON_START", "true")
+    with TestClient(create_app(engine)) as prod:
+        assert prod.get("/kpis").json()["deliveries"] == 0
+        assert prod.post("/demo/reset").status_code == 404
 
 
-def test_public_lot_hides_free_text_and_match_hides_distance(client, auth):
-    lot = client.post("/lots", json={**LOT, "donor_id": "D01", "expires_at": in_hours(30)}, headers=auth).json()
-    assert lot["description"] == LOT["description"]  # escrita (com token) devolve completo
-    assert "description" not in client.get(f"/lots/{lot['id']}").json()
-    assert all("description" not in row for row in client.get("/lots").json())
-    assert client.get(f"/lots/{lot['id']}", headers=auth).json()["description"] == LOT["description"]
-    ngo = client.get(f"/lots/{lot['id']}/recommendations", headers=auth).json()["recommendations"][0]
-    client.post(f"/lots/{lot['id']}/matches", json={"ngo_id": ngo["ngo_id"]}, headers=auth)
-    public = client.get("/matches").json()
-    assert all("distance_km" not in m and "score" not in m for m in public)
-    assert "distance_km" in client.get("/matches", headers=auth).json()[0]
+def test_real_delivery_counts_and_test_does_not(api, pair, monkeypatch):
+    """Uma entrega real (fora da lista de teste) entra em KPI e livro; a de teste não."""
+    monkeypatch.setenv("ALIMENTA_SIGNUP_OPEN", "true")
+    make_donor(api, REAL)
+    ngo = make_ngo(api, REAL_NGO)
+    for donor_h, ngo_h in ((h(REAL), h(REAL_NGO)), (pair["d"], pair["n"])):
+        lot = api.post("/lots", json=lot_body(kg=12.5), headers=donor_h).json()
+        offer = next(o for o in api.get("/offers/mine", headers=ngo_h).json() if o["lot_id"] == lot["id"])
+        match = api.post(f"/offers/{offer['id']}/accept", headers=ngo_h).json()
+        api.post(f"/matches/{match['id']}/pickup", headers=donor_h)
+        api.post(f"/matches/{match['id']}/receipt", headers=ngo_h)
+    k = api.get("/kpis").json()
+    assert (k["kg_saved"], k["deliveries"], k["meals_estimated"]) == (12.5, 1, 22)
+    assert k["heat_points"] == [{"region": ngo["region"], "lat": region_centroid(ngo["region"])[0],
+                                 "lon": region_centroid(ngo["region"])[1], "kg": 12.5}]
+    verify = api.get("/ledger/verify").json()
+    assert (verify["ok"], verify["events"], verify["total_grams"], verify["ledger"]) == (True, 1, 12500, "pontape-alimenta")
+    text = json.dumps(api.get("/kpis").json())
+    for leak in (ngo["name"], "Paulista", json.dumps(ngo["lat"]), "11912345678"):
+        assert leak not in text
 
 
-def test_recommendations_require_token(client, auth):
-    lot = client.post("/lots", json={**LOT, "donor_id": "D01", "expires_at": in_hours(30)}, headers=auth).json()
-    assert client.get(f"/lots/{lot['id']}/recommendations").status_code == 401
-    assert client.get(f"/lots/{lot['id']}/recommendations", headers=auth).status_code == 200
+def test_no_public_response_carries_name_or_exact_coordinate(session, engine):
+    with TestClient(create_app(engine)) as api:
+        sensitive = secrets_of(DONORS) + secrets_of(NGOS)
+        for path in PUBLIC_GETS:
+            response = api.get(path)
+            assert response.status_code == 200, path
+            assert [s for s in sensitive if s in response.text] == [], path
+        assert api.get("/kpis").json()["deliveries"] == 119
 
 
-def test_public_heat_map_uses_region_centroids(client):
-    k = client.get("/kpis").json()
-    assert k["heat_points"], "seed tem entregas"
-    for point in k["heat_points"]:
-        assert set(point) == {"region", "lat", "lon", "kg"}
-        assert (point["lat"], point["lon"]) == region_centroid(point["region"])
-    assert round(sum(p["kg"] for p in k["heat_points"]), 1) == k["kg_saved"]
-    by_region = {r["region"]: r["kg_saved"] for r in k["by_region"]}
-    assert {p["region"]: p["kg"] for p in k["heat_points"]} == {r: v for r, v in by_region.items() if v}
-    ngo_points = {(n["lat"], n["lon"]) for n in NGOS}
-    assert not ngo_points & {(p["lat"], p["lon"]) for p in k["heat_points"]}
-
-
-def confirmed(client, auth, donor_id, ngo_id):
-    lot = client.post("/lots", json={**LOT, "donor_id": donor_id, "expires_at": in_hours(30)}, headers=auth).json()
-    match = client.post(f"/lots/{lot['id']}/matches", json={"ngo_id": ngo_id}, headers=auth).json()
-    assert client.post(f"/matches/{match['id']}/confirm", headers=auth).status_code == 200
-    return lot["id"]
-
-
-def test_public_route_uses_centroids_exact_km(client, auth):
-    ngo = next(n for n in NGOS if "bakery" in n["accepted_categories"] and n["daily_capacity_kg"] >= 30)
-    far = [d for d in DONORS if d["region"] != ngo["region"]]
-    first, second = far[0], next(d for d in far if d["region"] != far[0]["region"])
-    lot_a = confirmed(client, auth, first["id"], ngo["id"])
-    lot_b = confirmed(client, auth, second["id"], ngo["id"])
-
-    body = client.get(f"/ngos/{ngo['id']}/route").json()
-    start = region_centroid(ngo["region"])
-    assert body["exact"] is False and body["start"] == {"lat": start[0], "lon": start[1]}
-    assert body["ngo_region"] == ngo["region"] and "ngo_name" not in body
-    # Ordem esperada calculada à mão entre centroides.
-    a, b = region_centroid(first["region"]), region_centroid(second["region"])
-    order = sorted([(haversine_km(*start, *a), first, a, lot_a), (haversine_km(*start, *b), second, b, lot_b)],
-                   key=lambda t: (t[0], t[1]["region"]))
-    legs = [order[0][0], haversine_km(*order[0][2], *order[1][2])]
-    total = sum(legs) + haversine_km(*order[1][2], *start)
-    assert [(s["region"], s["lat"], s["lon"]) for s in body["stops"]] == [
-        (o[1]["region"], o[2][0], o[2][1]) for o in order]
-    assert [s["leg_km"] for s in body["stops"]] == [round(x, 2) for x in legs]
-    assert body["total_km"] == round(total, 2)
-    assert [i["lot_id"] for s in body["stops"] for i in s["items"]] == [o[3] for o in order]
-    for stop in body["stops"]:
-        assert "donor_id" not in stop and "donor_name" not in stop and "from_id" not in stop
-        assert stop["region_label"] == REGIONS[stop["region"]]["label"]
-
-    exact = client.get(f"/ngos/{ngo['id']}/route", headers=auth).json()
-    assert exact["exact"] is True and exact["start"] == {"lat": ngo["lat"], "lon": ngo["lon"]}
-    assert {s["donor_id"] for s in exact["stops"]} == {first["id"], second["id"]}
-
-
-PUBLIC_GETS = ["/health", "/donors", "/ngos", "/lots", "/matches", "/kpis", "/model", "/ledger",
-               "/ledger/verify", "/openapi.json"]
-
-
-def test_no_public_response_carries_name_or_exact_coordinate(client, auth):
-    ngo = next(n for n in NGOS if "bakery" in n["accepted_categories"] and n["daily_capacity_kg"] >= 30)
-    for donor in ("D01", "D07"):
-        confirmed(client, auth, donor, ngo["id"])
-    lot = client.get("/lots").json()[0]["id"]
-    paths = PUBLIC_GETS + [f"/lots/{lot}"] + [f"/ngos/{n['id']}/route?include_open=true" for n in NGOS]
-    for path in paths:
-        response = client.get(path)
-        assert response.status_code == 200, path
-        leaked = [s for s in SENSITIVE if s in response.text]
-        assert leaked == [], (path, leaked[:3])
+def test_operator_overview_is_not_public(api):
+    assert api.get("/ops/overview").status_code == 401
+    assert api.get("/ops/overview", headers=h(OPERATOR)).status_code == 200

@@ -13,6 +13,8 @@ from functools import lru_cache
 import jwt
 from cryptography.hazmat.primitives.asymmetric import ec
 
+TOKEN_TYPE = "bearer"  # nosec B105 - tipo do token (RFC 6750), não é segredo
+
 ISSUER = "alimenta-local"
 KID = "alimenta-local-1"
 
@@ -39,4 +41,4 @@ def mint(email: str, sub: str | None = None, ttl_s: int = 3600) -> dict:
     claims = {"sub": sub, "email": email.lower(), "aud": "authenticated", "iss": ISSUER,
               "iat": now, "exp": now + ttl_s, "role": "authenticated"}
     token = jwt.encode(claims, _private_key(), algorithm="ES256", headers={"kid": KID})
-    return {"access_token": token, "token_type": "bearer", "expires_in": ttl_s, "user": {"id": sub, "email": email.lower()}}
+    return {"access_token": token, "token_type": TOKEN_TYPE, "expires_in": ttl_s, "user": {"id": sub, "email": email.lower()}}

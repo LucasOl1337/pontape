@@ -40,6 +40,7 @@ def upgrade() -> None:
     sa.Column('target', sa.String(length=80), nullable=False),
     sa.Column('note', sa.Text(), nullable=True),
     sa.Column('at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('is_test', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('ledger_events',

@@ -32,6 +32,12 @@ def _get(path: str) -> dict:
     hit = _cache.get(path)
     if hit and hit[0] > time.monotonic():
         return hit[1]
+    data = _fetch(path)
+    _cache[path] = (time.monotonic() + TTL_S, data)
+    return data
+
+
+def _fetch(path: str) -> dict:
     try:
         r = httpx.get(f"{BASE}{path}", timeout=TIMEOUT_S, headers={"User-Agent": "rede-alimenta/1 (pontape.org)"})
     except httpx.HTTPError as exc:
@@ -44,7 +50,6 @@ def _get(path: str) -> dict:
         data = r.json()
     except ValueError as exc:
         raise Unavailable("BrasilAPI respondeu algo que não é JSON") from exc
-    _cache[path] = (time.monotonic() + TTL_S, data)
     return data
 
 

@@ -1,4 +1,4 @@
-# Rede Alimenta (DEMONSTRAÇÃO · dados simulados): Postgres + API + painel.
+# Rede Alimenta local: Postgres + API + painel, com seed de EXEMPLO e login local de teste.
 # Na raiz do repositório:  docker compose up --build
 # API e Swagger: http://localhost:8000/docs · Painel: http://localhost:8501
 name: rede-alimenta
@@ -25,8 +25,11 @@ services:
     image: rede-alimenta:local
     environment:
       DATABASE_URL: postgresql+psycopg://alimenta:alimenta@db:5432/alimenta
-      ALIMENTA_WRITE_TOKEN: ${ALIMENTA_WRITE_TOKEN:-troque-este-token-local}
-      ALIMENTA_SEED_ON_START: "true"  # local carrega o seed; produção e código: false
+      ALIMENTA_ENV: local  # só aqui: seed de exemplo e login sem e-mail para contas de teste
+      ALIMENTA_SEED_ON_START: "true"
+      ALIMENTA_TEST_EMAILS: "@teste.alimenta"
+      ALIMENTA_OPERATOR_EMAILS: operador@teste.alimenta
+      ALIMENTA_OPS_TOKEN: ${ALIMENTA_OPS_TOKEN:-troque-este-token-local}
       PORT: "8000"
     ports:
       - "8000:8000"
@@ -40,8 +43,6 @@ services:
     environment:
       ALIMENTA_API_URL: http://api:8000
       ALIMENTA_PUBLIC_API_URL: http://localhost:8000
-      ALIMENTA_WRITE_TOKEN: ${ALIMENTA_WRITE_TOKEN:-troque-este-token-local}
-      ALIMENTA_OPERATOR_CODE: ${ALIMENTA_OPERATOR_CODE:-operador-local}
       ALIMENTA_GITHUB_REPO: LucasOl1337/pontape
       PORT: "8501"
     ports:

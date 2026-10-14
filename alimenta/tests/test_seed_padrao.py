@@ -1,4 +1,4 @@
-"""Seed simulado desligado por padrão no código e no render.yaml; o compose local liga."""
+"""Seed de exemplo só com ALIMENTA_ENV=local; produção nunca carrega. Render e compose conferidos."""
 
 from __future__ import annotations
 
@@ -24,8 +24,6 @@ def test_env_true_defaults_to_false(monkeypatch):
 def test_api_without_env_starts_empty(engine, monkeypatch):
     monkeypatch.delenv("ALIMENTA_SEED_ON_START", raising=False)
     with TestClient(create_app(engine)) as api:
-        assert api.get("/donors").json() == []
-        assert api.get("/ngos").json() == []
         k = api.get("/kpis").json()
         assert (k["kg_saved"], k["deliveries"], k["heat_points"]) == (0.0, 0, [])
         assert api.get("/ledger/verify").json()["events"] == 0
@@ -41,15 +39,21 @@ def env_of(blueprint, name):
     return {e["key"]: e for e in service["envVars"]}
 
 
-def test_render_turns_seed_off_and_operator_code_is_secret(blueprint):
+def test_render_is_production_with_flags_off_and_secrets_unsynced(blueprint):
     api = env_of(blueprint, "rede-alimenta-api")
-    assert api["ALIMENTA_SEED_ON_START"] == {"key": "ALIMENTA_SEED_ON_START", "value": "false"}
+    assert api["ALIMENTA_ENV"] == {"key": "ALIMENTA_ENV", "value": "production"}
+    assert api["ALIMENTA_SIGNUP_OPEN"] == {"key": "ALIMENTA_SIGNUP_OPEN", "value": "false"}
+    assert api["ALIMENTA_PUBLISH_REAL_LEDGER"] == {"key": "ALIMENTA_PUBLISH_REAL_LEDGER", "value": "false"}
+    for secret in ("DATABASE_URL", "SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "ALIMENTA_OPERATOR_EMAILS",
+                   "ALIMENTA_OPS_TOKEN", "ALIMENTA_LEDGER_DISPATCH_TOKEN"):
+        assert api[secret] == {"key": secret, "sync": False}, secret
+    assert "ALIMENTA_SEED_ON_START" not in api and "ALIMENTA_WRITE_TOKEN" not in api
     painel = env_of(blueprint, "rede-alimenta-painel")
-    assert painel["ALIMENTA_OPERATOR_CODE"] == {"key": "ALIMENTA_OPERATOR_CODE", "sync": False}
-    assert "ALIMENTA_SEED_ON_START" not in painel
+    assert set(painel) == {"ALIMENTA_API_URL", "ALIMENTA_PUBLIC_API_URL", "ALIMENTA_GITHUB_REPO"}
 
 
-def test_compose_keeps_seed_on_locally():
+def test_compose_is_local_with_seed():
     compose = yaml.safe_load((ROOT / "docker-compose.yml").read_text(encoding="utf-8"))
-    assert compose["services"]["api"]["environment"]["ALIMENTA_SEED_ON_START"] == "true"
-    assert compose["services"]["painel"]["environment"]["ALIMENTA_OPERATOR_CODE"].startswith("${ALIMENTA_OPERATOR_CODE")
+    env = compose["services"]["api"]["environment"]
+    assert (env["ALIMENTA_ENV"], env["ALIMENTA_SEED_ON_START"]) == ("local", "true")
+    assert "ALIMENTA_OPERATOR_CODE" not in compose["services"]["painel"]["environment"]
