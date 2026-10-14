@@ -11,7 +11,7 @@ import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
@@ -28,7 +28,17 @@ def _load(name: str) -> list[dict]:
 
 
 def create_schema(engine: Engine) -> None:
+    """create_all; no Postgres liga RLS sem políticas em todas as tabelas.
+
+    No Supabase, tabela em `public` sem RLS fica aberta pela Data API com a
+    chave anon. Com RLS e nenhuma política, a Data API não lê nem escreve; a
+    aplicação conecta como dona das tabelas e não é afetada.
+    """
     Base.metadata.create_all(engine)
+    if engine.dialect.name == "postgresql":
+        with engine.begin() as conn:
+            for table in Base.metadata.sorted_tables:
+                conn.execute(text(f'ALTER TABLE "{table.name}" ENABLE ROW LEVEL SECURITY'))
 
 
 def is_seeded(session: Session) -> bool:
