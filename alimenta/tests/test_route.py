@@ -60,10 +60,10 @@ def confirmed_lot(client, auth, donor_id, ngo_id):
 
 
 def test_route_endpoint_orders_confirmed_lots_by_nearest_neighbor(client, auth):
-    ngos = {n["id"]: n for n in client.get("/ngos").json()}
-    donors = {d["id"]: d for d in client.get("/donors").json()}
+    ngos = {n["id"]: n for n in client.get("/ngos", headers=auth).json()}
+    donors = {d["id"]: d for d in client.get("/donors", headers=auth).json()}
     ngo = next(n for n in ngos.values() if "bakery" in n["accepted_categories"] and n["daily_capacity_kg"] >= 40)
-    assert client.get(f"/ngos/{ngo['id']}/route").json()["stops"] == []  # seed não deixa match confirmado
+    assert client.get(f"/ngos/{ngo['id']}/route", headers=auth).json()["stops"] == []  # seed não deixa match confirmado
 
     picked = ["D01", "D07", "D12"]
     lots = {d: confirmed_lot(client, auth, d, ngo["id"]) for d in picked}
@@ -80,10 +80,10 @@ def test_route_endpoint_orders_confirmed_lots_by_nearest_neighbor(client, auth):
         left.remove(nxt)
     total += haversine_km(*here, ngo["lat"], ngo["lon"])
 
-    body = client.get(f"/ngos/{ngo['id']}/route").json()
+    body = client.get(f"/ngos/{ngo['id']}/route", headers=auth).json()
     assert [(s["donor_id"], s["leg_km"]) for s in body["stops"]] == expected
     assert body["total_km"] == round(total, 2)
-    assert body["lots"] == 4 and body["include_open"] is False
+    assert body["lots"] == 4 and body["include_open"] is False and body["exact"] is True
     assert "vizinho mais próximo" in body["method"] and "heurística" in body["method"]
     d07 = next(s for s in body["stops"] if s["donor_id"] == "D07")
     assert sorted(i["lot_id"] for i in d07["items"]) == sorted([lots["D07"][0], extra])
@@ -91,7 +91,7 @@ def test_route_endpoint_orders_confirmed_lots_by_nearest_neighbor(client, auth):
 
     # Coletado sai da rota.
     client.post(f"/matches/{lots['D01'][1]}/collect", headers=auth)
-    after = client.get(f"/ngos/{ngo['id']}/route").json()
+    after = client.get(f"/ngos/{ngo['id']}/route", headers=auth).json()
     assert "D01" not in [s["donor_id"] for s in after["stops"]] and after["lots"] == 3
 
 

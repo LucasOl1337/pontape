@@ -24,6 +24,13 @@ class DonorIn(BaseModel):
     lon: float = Field(ge=-47.0, le=-46.3)
 
 
+class DonorPublic(Orm):
+    """Saída pública: sem nome, endereço ou coordenada. Só tipo e região."""
+    id: str
+    kind: str
+    region: str
+
+
 class DonorOut(Orm):
     id: str
     name: str
@@ -41,6 +48,15 @@ class NgoIn(BaseModel):
     accepted_categories: list[Category] = Field(min_length=1)
     daily_capacity_kg: int = Field(gt=0, le=10000)
     window: str = Field(default="08:00-17:00", pattern=r"^[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9]$")
+
+
+class NgoPublic(Orm):
+    """Saída pública: sem nome, endereço ou coordenada."""
+    id: str
+    region: str
+    accepted_categories: list[str]
+    daily_capacity_kg: int
+    window: str
 
 
 class NgoOut(Orm):
@@ -63,6 +79,21 @@ class LotIn(BaseModel):
     description: str = Field(default="", max_length=280)
 
 
+class LotPublic(Orm):
+    """Saída pública: sem a descrição livre (pode trazer endereço)."""
+    id: str
+    donor_id: str
+    category: str
+    storage: str
+    kg: float
+    published_at: datetime
+    expires_at: datetime
+    discard_proba: float
+    risk_level: str
+    model_version: str
+    status: str
+
+
 class LotOut(Orm):
     id: str
     donor_id: str
@@ -80,6 +111,20 @@ class LotOut(Orm):
 
 class MatchIn(BaseModel):
     ngo_id: str = Field(examples=["N18"])
+
+
+class MatchPublic(Orm):
+    """Saída pública: sem distância nem pontos (a distância deixa triangular endereço)."""
+    id: int
+    lot_id: str
+    ngo_id: str
+    status: str
+    proposed_at: datetime
+    confirmed_at: datetime | None
+    collected_at: datetime | None
+    delivered_at: datetime | None
+    cancelled_at: datetime | None
+    ledger_sequence: int | None
 
 
 class MatchOut(Orm):

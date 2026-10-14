@@ -28,8 +28,10 @@ lot=$(post /lots "{\"donor_id\":\"D03\",\"category\":\"bakery\",\"storage\":\"am
 lot_id=$(echo "$lot" | py 'd["id"]')
 echo "lote $lot_id: risco $(echo "$lot" | py 'd["risk_level"], d["discard_proba"]')"
 
-ngo=$(curl -sS -f "$API/lots/$lot_id/recommendations" | py 'd["recommendations"][0]["ngo_id"]')
-ngo2=$(curl -sS -f "$API/lots/$lot_id/recommendations" | py 'd["recommendations"][1]["ngo_id"]')
+# Ranking traz nome e distância exata: só com token.
+recs=$(curl -sS -f "$API/lots/$lot_id/recommendations" -H "X-Alimenta-Token: $TOKEN")
+ngo=$(echo "$recs" | py 'd["recommendations"][0]["ngo_id"]')
+ngo2=$(echo "$recs" | py 'd["recommendations"][1]["ngo_id"]')
 match=$(post "/lots/$lot_id/matches" "{\"ngo_id\":\"$ngo\"}" | py 'd["id"]')
 echo "match $match com $ngo"
 dup=$(curl -sS -o /dev/null -w '%{http_code}' -X POST "$API/lots/$lot_id/matches" -H "X-Alimenta-Token: $TOKEN" \

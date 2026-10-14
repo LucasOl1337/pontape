@@ -1,10 +1,15 @@
 """Cliente HTTP do painel: lê e escreve PELA API (mesmas regras 409/422 para todos).
 
-O token de escrita fica só no servidor do painel (ALIMENTA_WRITE_TOKEN), nunca no navegador.
+O painel público é só leitura e não manda token. O token da API
+(ALIMENTA_WRITE_TOKEN) fica só no servidor do painel, nunca no navegador, e só
+é enviado depois que a sessão digitou o código de operador certo
+(ALIMENTA_OPERATOR_CODE, conferido aqui no servidor com hmac.compare_digest).
+Sem ALIMENTA_OPERATOR_CODE, a escrita fica desligada no painel.
 """
 
 from __future__ import annotations
 
+import hmac
 import json
 import os
 import time
@@ -25,7 +30,26 @@ class ApiError(Exception):
         self.status, self.detail = status, detail
 
 
-def _headers() -> dict:
+class NotOperator(Exception):
+    """Escrita pedida por uma sessão que não é de operador."""
+
+
+def operator_enabled() -> bool:
+    """Há código de operador e token da API configurados no servidor do painel."""
+    return bool(os.environ.get("ALIMENTA_OPERATOR_CODE")) and bool(os.environ.get("ALIMENTA_WRITE_TOKEN"))
+
+
+def check_operator_code(code: str) -> bool:
+    """Compara o código digitado com ALIMENTA_OPERATOR_CODE em tempo constante. Sem env: sempre False."""
+    expected = os.environ.get("ALIMENTA_OPERATOR_CODE", "")
+    if not expected or not code or not os.environ.get("ALIMENTA_WRITE_TOKEN"):
+        return False
+    return hmac.compare_digest(code.encode(), expected.encode())
+
+
+def _headers(operator: bool) -> dict:
+    if not operator:
+        return {}
     token = os.environ.get("ALIMENTA_WRITE_TOKEN", "")
     return {"X-Alimenta-Token": token} if token else {}
 
@@ -40,16 +64,16 @@ def _check(response: httpx.Response):
     return response.json()
 
 
-def get(path: str, **params):
-    return _check(httpx.get(f"{API_URL}{path}", params=params or None, timeout=30))
+def get(path: str, operator: bool = False, **params):
+    """Leitura. Sem `operator`, vai sem token e a API devolve a saída pública."""
+    return _check(httpx.get(f"{API_URL}{path}", params=params or None, headers=_headers(operator), timeout=30))
 
 
-def post(path: str, body: dict | None = None):
-    return _check(httpx.post(f"{API_URL}{path}", json=body, headers=_headers(), timeout=60))
-
-
-def can_write() -> bool:
-    return bool(os.environ.get("ALIMENTA_WRITE_TOKEN"))
+def post(path: str, body: dict | None = None, operator: bool = False):
+    """Escrita: só para sessão de operador; a sessão pública nem chega a chamar a API."""
+    if not operator:
+        raise NotOperator("escrita só para operador")
+    return _check(httpx.post(f"{API_URL}{path}", json=body, headers=_headers(True), timeout=60))
 
 
 _ci_cache: dict = {}

@@ -26,7 +26,7 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://alimenta:alimenta@db:5432/alimenta
       ALIMENTA_WRITE_TOKEN: ${ALIMENTA_WRITE_TOKEN:-troque-este-token-local}
-      ALIMENTA_SEED_ON_START: "true"
+      ALIMENTA_SEED_ON_START: "true"  # local carrega o seed; produção e código: false
       PORT: "8000"
     ports:
       - "8000:8000"
@@ -41,6 +41,7 @@ services:
       ALIMENTA_API_URL: http://api:8000
       ALIMENTA_PUBLIC_API_URL: http://localhost:8000
       ALIMENTA_WRITE_TOKEN: ${ALIMENTA_WRITE_TOKEN:-troque-este-token-local}
+      ALIMENTA_OPERATOR_CODE: ${ALIMENTA_OPERATOR_CODE:-operador-local}
       ALIMENTA_GITHUB_REPO: LucasOl1337/pontape
       PORT: "8501"
     ports:

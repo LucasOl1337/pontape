@@ -13,6 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from alimenta.core.clock import aware, local, model_features, utcnow
+from alimenta.core.domain import REGIONS, region_centroid
 from alimenta.core.matching import MAX_KM, LotExpired, LotView, NgoView, recommend, score_ngo
 from alimenta.core.route import DISTANCE, METHOD, Point, Stop, nearest_neighbor
 from alimenta.db.models import Donor, Lot, Match, Ngo
@@ -156,24 +157,35 @@ def cancel(session: Session, match_id: int, now: datetime | None = None) -> Matc
 
 
 def collection_route(session: Session, ngo_id: str, include_open: bool = False,
-                     now: datetime | None = None) -> dict:
+                     now: datetime | None = None, exact: bool = False) -> dict:
     """Ordem de coleta da ONG por vizinho mais próximo (heurística, ver core/route.py).
 
     Entram os lotes com match `confirmed` dessa ONG (confirmados e ainda não
     coletados). Com `include_open`, entram também os lotes abertos compatíveis:
     não vencidos, de categoria aceita, que cabem na capacidade livre de hoje e
-    a até MAX_KM da ONG. Lotes do mesmo doador viram uma parada.
+    a até MAX_KM da ONG (filtro pela distância exata, que não sai na resposta).
+
+    `exact=True` (só com token): uma parada por doador, com nome e coordenada.
+    `exact=False` (público): uma parada por região, no centroide da região, sem
+    nome de doador nem de ONG; a ONG também sai no centroide da região dela e os
+    km são entre centroides.
     """
     now = now or utcnow()
     ngo = get(session, Ngo, ngo_id)
     stops: dict[str, Stop] = {}
+    labels: dict[str, dict] = {}
 
     def add(lot: Lot, kind: str, match_id: int | None) -> None:
         donor = session.get(Donor, lot.donor_id)
-        stop = stops.setdefault(donor.id, Stop(Point(donor.id, donor.lat, donor.lon)))
-        stop.items.append({"lot_id": lot.id, "kind": kind, "match_id": match_id, "kg": lot.kg,
-                           "category": lot.category, "expires_at": aware(lot.expires_at).isoformat(),
-                           "donor_name": donor.name, "donor_region": donor.region})
+        if exact:
+            key, point = donor.id, Point(donor.id, donor.lat, donor.lon)
+            labels[key] = {"donor_id": donor.id, "donor_name": donor.name, "region": donor.region}
+        else:
+            key, point = donor.region, Point(donor.region, *region_centroid(donor.region))
+            labels[key] = {"region": donor.region}
+        stops.setdefault(key, Stop(point)).items.append(
+            {"lot_id": lot.id, "kind": kind, "match_id": match_id, "kg": lot.kg,
+             "category": lot.category, "expires_at": aware(lot.expires_at).isoformat()})
 
     confirmed = session.execute(
         select(Match, Lot).join(Lot, Lot.id == Match.lot_id)
@@ -189,13 +201,20 @@ def collection_route(session: Session, ngo_id: str, include_open: bool = False,
             scored = score_ngo(lv, view, now)
             if scored["eligible"] and scored["distance_km"] <= MAX_KM:
                 add(lot, "open", None)
-    result = nearest_neighbor(Point(ngo.id, ngo.lat, ngo.lon), list(stops.values()))
+    start = (ngo.lat, ngo.lon) if exact else region_centroid(ngo.region)
+    result = nearest_neighbor(Point(ngo.id, *start), list(stops.values()))
     for stop in result["stops"]:
-        first = stop["items"][0]
-        stop.update(donor_id=stop.pop("id"), donor_name=first["donor_name"], donor_region=first["donor_region"],
+        info = labels[stop.pop("id")]
+        stop.update(info, region_label=REGIONS[info["region"]]["label"],
                     kg=round(sum(i["kg"] for i in stop["items"]), 1))
-        for item in stop["items"]:
-            item.pop("donor_name"), item.pop("donor_region")
-    return {"ngo_id": ngo.id, "ngo_name": ngo.name, "start": {"lat": ngo.lat, "lon": ngo.lon},
-            "include_open": include_open, "method": METHOD, "distance": DISTANCE,
+        if not exact:
+            stop.pop("from_id")  # id da ONG ou região anterior: nada a acrescentar no público
+    body = {"ngo_id": ngo.id, "ngo_region": ngo.region, "start": {"lat": start[0], "lon": start[1]},
+            "exact": exact, "include_open": include_open, "method": METHOD, "distance": DISTANCE,
             "lots": sum(len(s["items"]) for s in result["stops"]), **result}
+    if exact:
+        body["ngo_name"] = ngo.name
+    else:
+        body["precision"] = ("centroide da região: sem token, nenhum ponto é a coordenada de doador ou ONG; "
+                             "os km são entre centroides")
+    return body
