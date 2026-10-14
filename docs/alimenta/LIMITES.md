@@ -52,7 +52,7 @@ O modelo de AI faz uma coisa: estima a probabilidade de descarte. O resto é reg
 | Lote vencido bloqueado | Regra fixa | `alimenta/core/service.py`, `alimenta/core/matching.py` |
 | ONG aprovada, tipo aceito, refrigeração, raio, janela, capacidade | Regra fixa | `alimenta/core/matching.py` |
 | Ordem das ONGs | Pontos das regras, com urgência | `alimenta/core/matching.py` |
-| Prazo da oferta e escalonamento | Regra fixa | [a confirmar: módulo das ofertas] |
+| Prazo da oferta e escalonamento | Regra fixa | `alimenta/core/offers.py` |
 | Rota de coleta | Heurística de vizinho mais próximo | `alimenta/core/route.py` |
 | Aprovação de ONG | Decisão humana do operador | Rotas `/ops/ngos/...` |
 
@@ -60,7 +60,7 @@ A previsão não é certificado sanitário. Quem decide se a comida está boa é
 
 ## Onde o dado fica
 
-**Banco em São Paulo.** O Supabase do sistema real fica em sa-east-1, porque o dado é de brasileiros. O projeto antigo `rede-alimenta` (us-east-1) só teve seed simulado e sai depois. [a confirmar: projeto sa-east-1 criado pelo regente. Se o pooler de sa-east-1 falhar de novo, como falhou na primeira criação, a FIAP usa o projeto us-east-1 **vazio**, e esta linha passa a dizer isso]
+**Banco em São Paulo.** O Supabase do sistema real fica em sa-east-1, porque o dado é de brasileiros. O projeto antigo `rede-alimenta` (us-east-1) só teve seed simulado e sai depois. Confirmado em 14/10/2026: projeto `rede-alimenta-sp` em sa-east-1, Postgres 17, migração `0001_corte_real` aplicada pelo pooler de sessão e fumaça verde (13 tabelas, RLS ligado em todas, zero política).
 
 **API e painel nos Estados Unidos.** Os dois serviços rodam no Render na região Virginia. O Render só tem Oregon, Ohio, Virginia, Frankfurt e Singapore ([Render regions](https://render.com/docs/regions), acesso em 14/10/2026). Consequências:
 
@@ -75,7 +75,7 @@ O código de login sai pelo SMTP padrão do Supabase. Ele só envia para membros
 
 - Hoje só o time consegue entrar. Isso combina com o cadastro fechado.
 - Na banca, as contas de teste entram antes e mantêm a sessão aberta.
-- Para abrir a doadores e ONGs, falta SMTP próprio (Resend ou Brevo, remetente `@pontape.org`). Conta e DNS ficam com o regente e o Lucas. [a confirmar: config de SMTP documentada no `.env.example` ou no runbook]
+- Para abrir a doadores e ONGs, falta SMTP próprio (Resend ou Brevo, remetente `@pontape.org`). Conta e DNS ficam com o regente e o Lucas. O passo está no fim de `alimenta/.env.example`.
 
 ## O que não está pronto
 
@@ -83,9 +83,9 @@ O código de login sai pelo SMTP padrão do Supabase. Ele só envia para membros
 |---|---|
 | Análise semântica de validade e tipo com Hugging Face | Fora deste corte. A categoria vem de uma lista, não de texto livre |
 | Retreino com dado real | Espera volume. O código grava os desfechos desde o primeiro lote |
-| Publicação no livro real de pontape.org | Pronta no código e desligada (`ALIMENTA_PUBLISH_REAL_LEDGER=false`) até o Lucas autorizar a primeira. [a confirmar: é o primeiro item cortado se faltar tempo] |
+| Publicação no livro real de pontape.org | Pronta no código e desligada (`ALIMENTA_PUBLISH_REAL_LEDGER=false`) até o Lucas autorizar a primeira. Feito: cliente em `alimenta/ledger/public.py`, fonte `alimenta` aceita em `src/lib/ledger/ingest.ts` e `test_livro.py::test_flag_off_makes_no_network_call`. |
 | E-mail automático de oferta | Depende do SMTP próprio. Hoje o aviso é a caixa de ofertas e o link de WhatsApp |
-| Tela do operador no painel | [a confirmar: se faltar tempo, a operação fica pela API e pelo Swagger] |
+| Tela do operador no painel | Pronta: aba "Operação" no painel (aprovar ou recusar ONG, reoferecer lote sem ONG). O resto da operação (suspender doador, auditoria) fica pela API e pelo Swagger. |
 | Foto do lote | Na fila. Precisa de armazenamento privado com quarentena |
 | Doador pessoa física (CPF, produtor rural) | Na fila. Lançamento só com CNPJ |
 | Área fora da cidade de São Paulo | Na fila. O modelo conhece 5 macrorregiões da capital |

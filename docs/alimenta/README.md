@@ -9,7 +9,7 @@ Estado em 14/10/2026:
 - O cadastro de doadores e ONGs reais está **fechado** (`ALIMENTA_SIGNUP_OPEN=false`). Motivo: a D012 proíbe guardar dado pessoal antes de existir um controlador legal dos dados ([DECISOES.md](../DECISOES.md)). O sistema fica pronto e fechado até o Lucas aprovar os textos legais.
 - O operador e as contas de teste do time continuam funcionando.
 - Dado sintético só existe em três lugares: a partida a frio do modelo, os testes e o `docker compose` local. Nunca na produção.
-- Partes do corte real ainda estão em construção na branch `alimenta/real`. Onde o código ainda não existe, este documento escreve `[a confirmar: ...]`.
+- O corte real está na branch `alimenta/real`. Cada afirmação aponta para o teste em `alimenta/tests/` que a prova.
 
 Outros documentos desta pasta:
 
@@ -52,7 +52,7 @@ Código e não link: o Streamlit não consegue ler o fragmento `#access_token` d
 
 O e-mail do código sai pelo SMTP padrão do Supabase. Ele só envia para membros do time do projeto e tem limite de cerca de 2 e-mails por hora ([Custom SMTP](https://supabase.com/docs/guides/auth/auth-smtp) e [Rate limits](https://supabase.com/docs/guides/auth/rate-limits), acesso em 14/10/2026). Para abrir a doadores e ONGs de fora, falta um SMTP próprio (Resend ou Brevo, remetente `@pontape.org`). Ver [LIMITES.md](LIMITES.md).
 
-O antigo token único de escrita (`X-Alimenta-Token`) deixa de ser caminho de usuário. Ele vira `ALIMENTA_OPS_TOKEN` e só vale em `POST /ops/sweep`, a rota da automação. [a confirmar: teste que prova que o token não escreve em nenhuma outra rota]
+O antigo token único de escrita (`X-Alimenta-Token`) deixa de ser caminho de usuário. Ele vira `ALIMENTA_OPS_TOKEN` e só vale em `POST /ops/sweep`, a rota da automação. Prova: `test_auth.py::test_ops_token_only_on_sweep`.
 
 ## Cadastro e verificação
 
@@ -109,7 +109,7 @@ O prazo de resposta de cada oferta é `respond_by = agora + 25% das horas até v
 - Se não há próxima, o lote fica `unclaimed` e o operador é avisado.
 - Se o lote passa da validade, ele fica `expired`.
 
-A checagem roda a cada leitura e na rota `POST /ops/sweep`. Um workflow agendado do GitHub Actions chama a varredura a cada 30 minutos, das 7h às 22h. Fora desse horário a checagem só acontece quando alguém abre o sistema. Motivo: no Render free, 750 horas por mês valem para o workspace inteiro ([Render Free](https://render.com/docs/free), acesso em 14/10/2026). [a confirmar: nome do workflow do sweep e teste do escalonamento]
+A checagem roda a cada leitura e na rota `POST /ops/sweep`. Um workflow agendado do GitHub Actions chama a varredura a cada 30 minutos, das 7h às 22h. Fora desse horário a checagem só acontece quando alguém abre o sistema. Motivo: no Render free, 750 horas por mês valem para o workspace inteiro ([Render Free](https://render.com/docs/free), acesso em 14/10/2026). Workflow `.github/workflows/alimenta-varredura.yml`. Provas: `test_fluxo.py::test_timeout_escalates_by_sweep` e `test_fluxo.py::test_decline_escalates_then_unclaimed`.
 
 ### Aviso às ONGs
 
@@ -123,7 +123,7 @@ O aviso traz categoria, kg, prazo e bairro. Nunca traz beneficiário. Cada aviso
 
 A rota já está no ar em `GET /ngos/{id}/route` (merge `f57f4b0`, testes em `alimenta/tests/test_route.py`). Ela sai da ONG, vai sempre ao doador mais perto ainda não visitado e volta à ONG. Lotes do mesmo doador viram uma parada. A distância é haversine, em linha reta. É uma heurística gulosa de vizinho mais próximo e não garante a menor rota.
 
-No corte real, a ONG logada vê a própria rota em `GET /ngos/me/route`. [a confirmar: rota `/ngos/me/route` com papel `ngo`]
+No corte real, a ONG logada vê a própria rota em `GET /ngos/me/route`. Prova: `test_fluxo.py::test_full_flow_double_confirmation`.
 
 ## Livro público
 
@@ -149,7 +149,7 @@ O conferidor é o mesmo do livro público, em Python, só com biblioteca padrão
 - Cada envio vira uma linha em `public_ledger_dispatches`.
 - Registro de teste (`is_test=true`) nunca entra em nenhum dos dois livros.
 
-[a confirmar: `source: "alimenta"` em `src/lib/ledger/ingest.ts`, cliente de dispatch e teste com a flag desligada. É o primeiro corte se faltar tempo]
+Feito: fonte `alimenta` em `src/lib/ledger/ingest.ts` (com teste em `ingest.test.ts`) e cliente em `alimenta/ledger/public.py`. Provas: `test_livro.py::test_flag_off_makes_no_network_call` e `test_livro.py::test_flag_on_dispatches_workflow_once`.
 
 ## Modelo de AI
 
@@ -167,7 +167,7 @@ O gerador `alimenta/data/generate.py` (seed fixa `20261015`) calcula, para cada 
 
 Cada lote real grava as entradas do modelo congeladas (`lots.features`) e, no fim, o desfecho em `lot_outcomes`: `delivered`, `expired`, `unclaimed` ou `cancelled`. O rótulo de retreino é `discarded = desfecho em (expired, unclaimed)`. Lote `cancelled` não entra no rótulo.
 
-O retreino com dado real (`python -m alimenta.model.train --source real`) só roda quando houver volume. Proposta: 300 desfechos e as duas classes com 50 ou mais. Registros `is_test=true` ficam de fora. [a confirmar: tabela `lot_outcomes` gravada no fechamento do lote, com teste]
+O retreino com dado real (`python -m alimenta.model.train --source real`) só roda quando houver volume. Proposta: 300 desfechos e as duas classes com 50 ou mais. Registros `is_test=true` ficam de fora. A tabela é `lot_outcomes`, gravada em `delivered`, `unclaimed` e `expired`. Provas: `test_fluxo.py::test_full_flow_double_confirmation` e `test_fluxo.py::test_expired_lot_closes_on_sweep`.
 
 ### Como treina
 
@@ -234,7 +234,7 @@ No sistema isso vira: termo de doação versionado aceito no cadastro, caixa de 
 - Nenhum dado de beneficiário final, em lugar nenhum.
 - Endereço e coordenada nunca saem em rota pública. Só o próprio dono, a ONG com oferta daquele lote e o operador veem.
 - Dado pessoal real nunca vai para Git, CI, seed ou print ([ARQUITETURA.md](../arquitetura/ARQUITETURA.md) §6).
-- **D012:** sem controlador legal definido, nenhum cadastro real é aceito. Por isso `ALIMENTA_SIGNUP_OPEN=false` em produção. Os textos `termo-de-doacao-v1` e `aviso-de-privacidade-v1` estão marcados "rascunho para revisão". [a confirmar: caminho dos dois textos no repositório]
+- **D012:** sem controlador legal definido, nenhum cadastro real é aceito. Por isso `ALIMENTA_SIGNUP_OPEN=false` em produção. Os textos `termo-de-doacao-v1` e `aviso-de-privacidade-v1` estão marcados "rascunho para revisão". Os arquivos são `alimenta/legal/termo-de-doacao-v1.md` e `alimenta/legal/aviso-de-privacidade-v1.md`, servidos em `GET /legal/donation_terms` e `GET /legal/privacy_notice`.
 
 A matriz de ameaças e o tratamento de cada dado estão em [STRIDE.md](STRIDE.md).
 
@@ -249,7 +249,7 @@ Streamlit, um serviço só, com quatro visões. O painel nunca fala direto com o
 | ONG | Conta `ngo` | Cadastro (CNPJ conferido na hora, aguarda aprovação), ofertas com prazo, aceitar ou recusar com motivo, rota de coleta, confirmar recebimento |
 | Operador | Conta `operator` | ONGs pendentes com o retrato do CNPJ, aprovar, recusar ou suspender, visão geral, lotes sem ONG, reoferta, auditoria |
 
-[a confirmar: visões por papel no painel com login por código. Se faltar tempo, a parte do operador fica só pela API e pelo Swagger]
+O painel tem as três telas. Provas: `test_painel.py::test_full_flow_through_panel` e `test_painel.py::test_operator_approves_pending_ngo`.
 
 ## Como rodar
 
@@ -284,7 +284,7 @@ uv run --project alimenta uvicorn alimenta.api.main:app --port 8000
 uv run --project alimenta streamlit run alimenta/painel/app.py --server.port 8501
 ```
 
-Os testes não falam com o Supabase. Eles geram um par de chaves ES256 local e servem um JWKS falso para validar o login. [a confirmar: fixture de JWKS local em `alimenta/tests/`]
+Os testes não falam com o Supabase. Eles geram um par de chaves ES256 local e servem um JWKS falso para validar o login. Ficam em `alimenta/tests/test_auth.py`; os outros testes usam o emissor local `alimenta/auth/dev.py`, que só funciona com `ALIMENTA_ENV=local`.
 
 ### Variáveis de ambiente
 
@@ -305,7 +305,7 @@ Documentadas em `alimenta/.env.example`. Segredo nunca entra no git.
 | `ALIMENTA_MODEL_PATH` | Caminho do artefato do modelo | Padrão |
 | `ALIMENTA_GITHUB_REPO` | Repositório lido para a saúde do CI | `LucasOl1337/pontape` |
 
-[a confirmar: nomes finais no `.env.example` e no `render.yaml` da branch `alimenta/real`. Hoje a main ainda tem `ALIMENTA_WRITE_TOKEN` e `ALIMENTA_SEED_ON_START=true`]
+Os nomes finais estão em `alimenta/.env.example` e no `render.yaml`. Prova: `test_seed_padrao.py::test_render_is_production_with_flags_off_and_secrets_unsynced`.
 
 ## Arquitetura
 
@@ -363,15 +363,15 @@ Saíram do público `GET /donors`, `GET /ngos`, `GET /lots` e `GET /matches`, po
 
 ## Requisito FIAP e onde está a prova
 
-URLs públicas: API e Swagger em https://rede-alimenta-api-u5q4.onrender.com/docs e painel em https://rede-alimenta-painel.onrender.com (acesso em 14/10/2026). Linhas com `[a confirmar]` dependem do corte real em construção.
+URLs públicas: API e Swagger em https://rede-alimenta-api-u5q4.onrender.com/docs e painel em https://rede-alimenta-painel.onrender.com (acesso em 14/10/2026). Cada linha aponta para o teste que a prova.
 
 | Requisito FIAP | Arquivo ou rota | Prova |
 |---|---|---|
 | Dataset estruturado | `alimenta/data/lots_history.csv` (sintético, partida a frio), `alimenta/data/DICIONARIO.md`; desfechos reais em `lot_outcomes` | `python -m alimenta.data.generate --check` |
 | Modelo funcional local (scikit-learn) | `alimenta/model/train.py`, `discard_risk-v1.joblib`, `metrics.json` | `python -m alimenta.model.train --check`; `GET /model` |
 | Priorização de lotes | `discard_proba` e `risk_level` do lote; urgência no ranking | `POST /lots` devolve os dois campos |
-| Recomendação geográfica, Doador × ONG | `alimenta/core/matching.py`, ofertas em `lot_offers` | `GET /offers/mine` da ONG [a confirmar: teste do ranking com ONG não aprovada fora] |
-| Cruzamento em tempo real | Oferta com prazo e escalonamento, `POST /ops/sweep` | [a confirmar: teste do escalonamento] |
+| Recomendação geográfica, Doador × ONG | `alimenta/core/matching.py`, ofertas em `lot_offers` | `GET /offers/mine` da ONG Prova: `test_fluxo.py::test_pending_ngo_never_gets_offer_and_test_never_mixes_with_real`. |
+| Cruzamento em tempo real | Oferta com prazo e escalonamento, `POST /ops/sweep` | Prova: `test_fluxo.py::test_decline_escalates_then_unclaimed`. |
 | Otimização de rotas de coleta | `GET /ngos/{id}/route`, `alimenta/core/route.py` | `alimenta/tests/test_route.py`; Swagger público |
 | Análise semântica de validade e tipo (Hugging Face) | Não implementada | Ver [LIMITES.md](LIMITES.md) |
 | FastAPI com Swagger | `alimenta/api/main.py` | https://rede-alimenta-api-u5q4.onrender.com/docs |
@@ -381,13 +381,13 @@ URLs públicas: API e Swagger em https://rede-alimenta-api-u5q4.onrender.com/doc
 | Pipeline GitHub Actions CI/CD | `.github/workflows/alimenta.yml` | Execução verde na main, run [38602747845](https://github.com/LucasOl1337/pontape/actions/runs/38602747845), merge `f57f4b0`, 14/10/2026 |
 | Relatórios SAST Bandit e Trivy | Artefatos do workflow; `alimenta/seguranca/` | Jobs `bandit`, `trivy-fs` e `imagem`; `alimenta/seguranca/resumo.json` |
 | URL pública (Render) | `render.yaml` | As duas URLs acima |
-| Banco em nuvem (Supabase) | `DATABASE_URL` com o pooler do Supabase | `GET /health` mostra `postgresql` [a confirmar: projeto em sa-east-1] |
+| Banco em nuvem (Supabase) | `DATABASE_URL` com o pooler do Supabase | `GET /health` mostra `postgresql` (sa-east-1, `rede-alimenta-sp`) |
 | Persistência após recarga | Postgres | Ensaio com conta de teste: publicar lote, recarregar o painel, o lote continua lá |
-| Login e papéis | Supabase Auth com código por e-mail; JWT validado no FastAPI | [a confirmar: testes de 401 sem JWT e 403 com papel errado] |
+| Login e papéis | Supabase Auth com código por e-mail; JWT validado no FastAPI | Provas: `test_auth.py::test_missing_and_malformed_header_are_401` e `test_auth.py::test_wrong_role_is_403`. |
 | Proteção dos dados de doadores e ONGs | Rotas públicas sem endereço; papel por rota; D012 | [STRIDE.md](STRIDE.md) |
-| Impedir dupla atribuição | Índice único parcial de oferta `pending` e de match ativo por lote | Segundo aceite do mesmo lote volta 409 [a confirmar: teste com `lot_offers`] |
+| Impedir dupla atribuição | Índice único parcial de oferta `pending` e de match ativo por lote | Segundo aceite do mesmo lote volta 409 Prova: `test_fluxo.py::test_pending_offer_unique_index_blocks_second`. |
 | Bloquear lote vencido | `POST /lots` e fechamento `expired` | `POST /lots` com validade no passado volta 422 |
-| Dupla confirmação | `confirmations` | [a confirmar: teste que só vira `delivered` com retirada e recebimento] |
+| Dupla confirmação | `confirmations` | Provas: `test_fluxo.py::test_receipt_alone_is_not_delivery` e `test_fluxo.py::test_full_flow_double_confirmation`. |
 | Dashboard com KPIs | `alimenta/painel/app.py`, `GET /kpis` | Seção KPIs abaixo |
 | Mapa de calor por região | Painel público | Zero honesto em produção vazia |
 | Alertas de validade crítica | Painel | Agregado no público, lista completa para doador, ONG e operador |
@@ -397,7 +397,7 @@ URLs públicas: API e Swagger em https://rede-alimenta-api-u5q4.onrender.com/doc
 
 ## KPIs e como cada um é calculado
 
-Todo KPI público conta só registros reais. Registro de conta de teste (`is_test=true`) fica fora. Em produção vazia, todos mostram zero ou "sem dados". [a confirmar: filtro `is_test` em `alimenta/core/kpis.py`, com teste]
+Todo KPI público conta só registros reais. Registro de conta de teste (`is_test=true`) fica fora. Em produção vazia, todos mostram zero ou "sem dados". Prova: `test_publico.py::test_real_delivery_counts_and_test_does_not`.
 
 | KPI | Definição exata | Quando vazio |
 |---|---|---|
@@ -441,7 +441,7 @@ Proteções do sistema real:
 
 Render (API e painel, dois web services da mesma imagem, `render.yaml`) e Supabase Postgres.
 
-- O Supabase do sistema real fica em **sa-east-1** (São Paulo), porque o dado é de brasileiros. O projeto antigo em us-east-1 só tinha seed simulado e sai depois. [a confirmar: projeto sa-east-1 criado pelo regente. Se o pooler de sa-east-1 falhar de novo, fica us-east-1 vazio, declarado em LIMITES]
+- O Supabase do sistema real fica em **sa-east-1** (São Paulo), porque o dado é de brasileiros. O projeto antigo em us-east-1 só tinha seed simulado e sai depois. Confirmado em 14/10/2026: projeto `rede-alimenta-sp`, migração aplicada e fumaça verde.
 - A API e o painel ficam no Render em **Virginia**, nos Estados Unidos. O Render não tem região na América do Sul ([Render regions](https://render.com/docs/regions), acesso em 14/10/2026). O dado passa por servidor fora do Brasil. Ver [LIMITES.md](LIMITES.md).
 - A API conecta pelo pooler Supavisor em modo sessão, porta 5432, porque Render e GitHub Actions só têm IPv4 ([Supabase, IPv4 e IPv6](https://supabase.com/docs/guides/troubleshooting/supabase--your-network-ipv4-and-ipv6-compatibility-cHe3BP), acesso em 14/10/2026).
 - Quem cria conta, segredo e serviço é o regente.

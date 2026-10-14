@@ -1,5 +1,8 @@
 """Ensaio do fluxo inteiro contra um alvo dado, só com contas de teste, apagando tudo no fim.
 
+Modos: `completo` (padrão: fluxo e limpeza), `preparar` (cadastra doador e ONG de teste e aprova a ONG,
+para a banca) e `limpar` (apaga tudo de teste e confere o KPI público).
+
 Passos: saúde → login das 3 contas → cadastro do doador e da ONG → aprovação pelo operador →
 lote com termo → oferta → recusa de um segundo lote (sem ONG) → aceite → rota → retirada →
 recebimento (entrega) → KPI público e livro sem mudança → varredura → apaga os dados de teste.
@@ -58,7 +61,7 @@ class Ensaio:
         r = self.http.post("/auth/verify", json={"email": EMAILS[who], "code": "000000"})
         self.tokens[who] = self.check(f"login local {who}", r, 200)["access_token"]
 
-    def run(self) -> None:
+    def run(self, mode: str = "completo") -> None:
         health = self.check("saúde", self.http.get("/health"), 200)
         print(f"   alvo: env={health['env']} banco={health['database']} cadastro_aberto={health['signup_open']}")
         before = self.http.get("/kpis").json()
@@ -70,17 +73,27 @@ class Ensaio:
                 raise SystemExit(f"   {who} não é conta de teste no alvo: ensaio parado sem escrever nada")
             if who == "operador" and me["role"] != "operator":
                 raise SystemExit("   a conta de operador não está em ALIMENTA_OPERATOR_EMAILS do alvo")
+        if mode == "preparar":
+            self.register()
+            print("PREPARO OK (contas de teste prontas; rode o modo limpar depois)")
+            return
+        if mode == "limpar":
+            self.purge(before)
+            return
         try:
             self.flow(before, ledger_before)
         finally:
-            r = self.http.post("/ops/test-data/purge", headers=self.h("operador"))
-            print(f"   apagado: {self.check('apaga os dados de teste', r, 200)['deleted']}")
+            self.purge(before)
+        print("ENSAIO OK")
+
+    def purge(self, before: dict) -> None:
+        r = self.http.post("/ops/test-data/purge", headers=self.h("operador"))
+        print(f"   apagado: {self.check('apaga os dados de teste', r, 200)['deleted']}")
         after = self.http.get("/kpis").json()
         same = (after["deliveries"], after["kg_saved"]) == (before["deliveries"], before["kg_saved"])
         self.check("KPI público igual ao de antes", httpx.Response(200 if same else 500), 200)
-        print("ENSAIO OK")
 
-    def flow(self, before: dict, ledger_before: dict) -> None:
+    def register(self) -> tuple[dict, dict]:
         consent = {"donation_terms_version": TERMS, "privacy_notice_version": PRIVACY,
                    "contact_name": "Ensaio", "phone": "11 90000-0000"}
         donor = self.check("cadastro do doador", self.http.post("/donors", headers=self.h("doador"), json={
@@ -94,6 +107,10 @@ class Ensaio:
         self.check("ONG pendente não vê ofertas", self.http.get("/offers/mine", headers=self.h("ong")), 403)
         self.check("operador aprova a ONG", self.http.post(f"/ops/ngos/{ngo['id']}/approve", headers=self.h("operador"),
                                                            json={"note": "ensaio"}), 200)
+        return donor, ngo
+
+    def flow(self, before: dict, ledger_before: dict) -> None:
+        self.register()
         expires = (datetime.now(timezone.utc) + timedelta(hours=30)).isoformat()
         lot_body = {"category": "bakery", "storage": "ambient", "kg": 8.0, "expires_at": expires, "terms_version": TERMS}
         self.check("lote sem termo é recusado", self.http.post("/lots", headers=self.h("doador"),
@@ -132,10 +149,10 @@ class Ensaio:
 
 
 def main(argv: list[str]) -> int:
-    if not argv:
-        print("uso: ensaio.sh <URL da API>")
+    if not argv or (len(argv) > 1 and argv[1] not in ("completo", "preparar", "limpar")):
+        print("uso: ensaio.sh <URL da API> [completo|preparar|limpar]")
         return 2
-    Ensaio(argv[0]).run()
+    Ensaio(argv[0]).run(argv[1] if len(argv) > 1 else "completo")
     return 0
 
 

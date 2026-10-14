@@ -10,7 +10,7 @@ A Rede Alimenta é um sistema real, com o banco de produção vazio até a prime
 
 - [ ] Abrir o painel https://rede-alimenta-painel.onrender.com e o Swagger https://rede-alimenta-api-u5q4.onrender.com/docs. O Render free dorme após 15 minutos parado e leva cerca de 1 minuto para acordar ([Render](https://render.com/docs/free), acesso em 14/10/2026).
 - [ ] Conferir que o painel público mostra zero ou só entregas reais. Nada de seed.
-- [ ] Rodar `alimenta/scripts/ensaio.sh` na parte de preparo: cria a conta de doador de teste e a conta de ONG de teste, aprovada pelo operador, todas `is_test=true`. [a confirmar: nome e opções do script]
+- [ ] Rodar `alimenta/scripts/ensaio.sh` na parte de preparo: cria a conta de doador de teste e a conta de ONG de teste, aprovada pelo operador, todas `is_test=true`. Comando: `alimenta/scripts/ensaio.sh <URL da API> preparar`. Contra produção, passe os JWTs das contas de teste em `ENSAIO_TOKEN_DOADOR`, `ENSAIO_TOKEN_ONG` e `ENSAIO_TOKEN_OPERADOR`.
 - [ ] Ter os e-mails das contas de teste abertos. O código de login chega pelo SMTP padrão do Supabase, que só envia a membros do time e tem limite de cerca de 2 por hora. Entrar nas contas **antes** da banca e manter as sessões abertas.
 - [ ] Deixar abertas quatro abas: painel como doador, painel como ONG, Swagger e a última execução verde do workflow "Rede Alimenta".
 - [ ] Ter a gravação de reserva fora da internet e o `docker compose up` local como segunda reserva.
@@ -62,7 +62,7 @@ Fale enquanto clica. As duas contas são de teste do time e o painel mostra a ma
 
 Se sobrar tempo: no Swagger, publicar um lote com validade de ontem. Volta 422. "Comida vencida nem entra."
 
-[a confirmar: telas por papel no painel. Se a tela do operador não ficar pronta, a aprovação da ONG é mostrada pelo Swagger]
+O painel tem as três telas por papel: "Meu estabelecimento", "Minha ONG" e "Operação". A aprovação da ONG pode ser mostrada na aba "Operação".
 
 ### 4. O que é AI e o que é regra (1 min)
 
@@ -118,7 +118,7 @@ Gravação de reserva:
 - Mostra os 8 passos do bloco 3, da publicação até `delivered`, com contas de teste.
 - Duração entre 2 e 3 minutos, sem som. A narração é ao vivo.
 
-Depois da banca: rodar a parte de limpeza do `alimenta/scripts/ensaio.sh` e conferir que os KPIs públicos voltaram ao valor de antes. [a confirmar: limpeza do script e teste que KPI ignora `is_test`]
+Depois da banca: rodar a parte de limpeza do `alimenta/scripts/ensaio.sh` e conferir que os KPIs públicos voltaram ao valor de antes. Comando: `alimenta/scripts/ensaio.sh <URL da API> limpar`. Provas: `test_ensaio.py::test_prepare_then_clean` e `test_publico.py::test_real_delivery_counts_and_test_does_not`.
 
 ## Perguntas prováveis da banca
 
