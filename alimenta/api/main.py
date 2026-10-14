@@ -157,6 +157,17 @@ def create_app(engine: Engine | None = None) -> FastAPI:
     def cancel_match(match_id: int, session: Session = Depends(db)):
         return service.cancel(session, match_id)
 
+    @app.get("/ngos/{ngo_id}/route", tags=["ONGs"],
+             summary="Ordem de coleta da ONG por vizinho mais próximo (heurística, não otimização)",
+             description=(
+                 "Sai da ONG, vai sempre ao doador mais perto ainda não visitado e volta à ONG. "
+                 "Entram os lotes com match confirmado e ainda não coletado dessa ONG; com "
+                 "`include_open=true`, também os lotes abertos compatíveis (não vencidos, categoria aceita, "
+                 "cabem na capacidade de hoje, até 25 km). Distância haversine em km, linha reta. "
+                 "Heurística gulosa: não garante a menor rota."))
+    def ngo_route(ngo_id: str, include_open: bool = False, session: Session = Depends(db)):
+        return service.collection_route(session, ngo_id, include_open)
+
     @app.get("/kpis", tags=["indicadores"])
     def get_kpis(session: Session = Depends(db)):
         return kpis.compute(session)
