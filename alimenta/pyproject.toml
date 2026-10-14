@@ -15,6 +15,8 @@ dependencies = [
     "streamlit",
     "pydeck",
     "httpx",
+    "alembic>=1.20.0",
+    "pyjwt[crypto]>=2.15.1",
 ]
 
 [dependency-groups]

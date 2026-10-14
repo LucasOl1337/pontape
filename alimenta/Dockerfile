@@ -40,7 +40,7 @@ COPY alimenta/ alimenta/
 USER app
 
 ENV PORT=8000 \
-    ALIMENTA_SEED_ON_START=true \
+    ALIMENTA_ENV=production \
     DATABASE_URL=sqlite:////tmp/alimenta.db
 
 EXPOSE 8000 8501

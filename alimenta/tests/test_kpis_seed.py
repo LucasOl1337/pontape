@@ -25,12 +25,12 @@ def test_kg_saved_counts_only_delivered(session):
     assert round(sum(r["kg_saved"] for r in k["by_region"]), 1) == expected
 
 
-def test_avg_match_time_is_publish_to_confirm(session):
+def test_avg_match_time_is_publish_to_accept(session):
     k = kpis.compute(session)
-    rows = [(m, session.get(Lot, m.lot_id)) for m in session.scalars(select(Match)) if m.confirmed_at]
-    expected = sum((m.confirmed_at - lot.published_at).total_seconds() / 60 for m, lot in rows) / len(rows)
+    rows = [(m, session.get(Lot, m.lot_id)) for m in session.scalars(select(Match)) if m.accepted_at]
+    expected = sum((m.accepted_at - lot.published_at).total_seconds() / 60 for m, lot in rows) / len(rows)
     assert k["avg_match_minutes"] == round(expected, 1)
-    assert k["matches_confirmed"] == len(rows)
+    assert k["matches_accepted"] == len(rows)
 
 
 def test_avg_match_time_empty_is_none(engine):

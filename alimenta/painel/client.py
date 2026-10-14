@@ -1,15 +1,12 @@
-"""Cliente HTTP do painel: lê e escreve PELA API (mesmas regras 409/422 para todos).
+"""Cliente HTTP do painel: tudo passa PELA API (mesmas regras 401/403/409/422 para todos).
 
-O painel público é só leitura e não manda token. O token da API
-(ALIMENTA_WRITE_TOKEN) fica só no servidor do painel, nunca no navegador, e só
-é enviado depois que a sessão digitou o código de operador certo
-(ALIMENTA_OPERATOR_CODE, conferido aqui no servidor com hmac.compare_digest).
-Sem ALIMENTA_OPERATOR_CODE, a escrita fica desligada no painel.
+Login por código de e-mail: o painel pede o código (POST /auth/code), troca pelo JWT
+(POST /auth/verify) e guarda o JWT só na sessão do servidor do Streamlit (st.session_state
+vive no servidor). O painel não tem segredo nenhum: sem login, só lê o público.
 """
 
 from __future__ import annotations
 
-import hmac
 import json
 import os
 import time
@@ -30,28 +27,8 @@ class ApiError(Exception):
         self.status, self.detail = status, detail
 
 
-class NotOperator(Exception):
-    """Escrita pedida por uma sessão que não é de operador."""
-
-
-def operator_enabled() -> bool:
-    """Há código de operador e token da API configurados no servidor do painel."""
-    return bool(os.environ.get("ALIMENTA_OPERATOR_CODE")) and bool(os.environ.get("ALIMENTA_WRITE_TOKEN"))
-
-
-def check_operator_code(code: str) -> bool:
-    """Compara o código digitado com ALIMENTA_OPERATOR_CODE em tempo constante. Sem env: sempre False."""
-    expected = os.environ.get("ALIMENTA_OPERATOR_CODE", "")
-    if not expected or not code or not os.environ.get("ALIMENTA_WRITE_TOKEN"):
-        return False
-    return hmac.compare_digest(code.encode(), expected.encode())
-
-
-def _headers(operator: bool) -> dict:
-    if not operator:
-        return {}
-    token = os.environ.get("ALIMENTA_WRITE_TOKEN", "")
-    return {"X-Alimenta-Token": token} if token else {}
+def _headers(token: str | None) -> dict:
+    return {"Authorization": f"Bearer {token}"} if token else {}
 
 
 def _check(response: httpx.Response):
@@ -61,19 +38,19 @@ def _check(response: httpx.Response):
         except ValueError:
             detail = response.text
         raise ApiError(response.status_code, detail if isinstance(detail, str) else json.dumps(detail, ensure_ascii=False))
-    return response.json()
+    return response.json() if response.headers.get("content-type", "").startswith("application/json") else response.text
 
 
-def get(path: str, operator: bool = False, **params):
-    """Leitura. Sem `operator`, vai sem token e a API devolve a saída pública."""
-    return _check(httpx.get(f"{API_URL}{path}", params=params or None, headers=_headers(operator), timeout=30))
+def get(path: str, token: str | None = None, **params):
+    return _check(httpx.get(f"{API_URL}{path}", params=params or None, headers=_headers(token), timeout=30))
 
 
-def post(path: str, body: dict | None = None, operator: bool = False):
-    """Escrita: só para sessão de operador; a sessão pública nem chega a chamar a API."""
-    if not operator:
-        raise NotOperator("escrita só para operador")
-    return _check(httpx.post(f"{API_URL}{path}", json=body, headers=_headers(True), timeout=60))
+def post(path: str, body: dict | None = None, token: str | None = None):
+    return _check(httpx.post(f"{API_URL}{path}", json=body, headers=_headers(token), timeout=60))
+
+
+def patch(path: str, body: dict, token: str):
+    return _check(httpx.patch(f"{API_URL}{path}", json=body, headers=_headers(token), timeout=30))
 
 
 _ci_cache: dict = {}

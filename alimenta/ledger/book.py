@@ -1,7 +1,7 @@
-"""Livro da DEMO `pontape-alimenta-demo` (DEMONSTRAÇÃO · dados simulados).
+"""Livro próprio `pontape-alimenta`: uma linha por entrega real com dupla confirmação.
 
-Separado do livro real do PontaPé (D040: doação fictícia não entra no livro
-real). Cada entrega da demo vira um evento no formato v1 exato do contrato
+Registro de conta de teste (`is_test`) nunca entra. Separado do livro do pontape.org
+(a publicação lá é `ledger/public.py`, desligada por flag). Cada entrega vira um evento no formato v1 exato do contrato
 (`docs/transparencia/CONTRATO.md`): família `field`, ação `food_delivered`,
 `quantity` em GRAMAS. Sem região, lote, ONG ou doador no evento (o contrato
 proíbe localização e estabelecimento); kg por região fica só no banco.
@@ -24,12 +24,12 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from alimenta.db.models import DemoLedgerEvent
+from alimenta.db.models import LedgerEvent
 
-LEDGER_NAME = "pontape-alimenta-demo"
+LEDGER_NAME = "pontape-alimenta"
 NOTICE = (
-    "DEMONSTRAÇÃO · dados simulados · Rede Alimenta · livro pontape-alimenta-demo · "
-    "quantity em gramas · não é o livro real do PontaPé"
+    "Rede Alimenta · livro pontape-alimenta · uma linha por entrega com dupla confirmação · "
+    "quantity em gramas · contas de teste nunca entram"
 )
 SAO_PAULO = ZoneInfo("America/Sao_Paulo")
 ZERO_HASH = "0" * 64
@@ -87,23 +87,23 @@ def build_event(sequence: int, previous_hash: str, recorded_at: datetime,
 
 
 def head(session: Session) -> tuple[int, str]:
-    last = session.scalars(select(DemoLedgerEvent).order_by(DemoLedgerEvent.sequence.desc()).limit(1)).first()
+    last = session.scalars(select(LedgerEvent).order_by(LedgerEvent.sequence.desc()).limit(1)).first()
     return (last.sequence, last.hash) if last else (0, ZERO_HASH)
 
 
 def append_delivery(session: Session, delivered_at: datetime, kg: float,
-                    recorded_at: datetime | None = None) -> DemoLedgerEvent:
+                    recorded_at: datetime | None = None) -> LedgerEvent:
     """Anexa um evento na mesma transação da entrega. Não faz commit."""
     sequence, previous = head(session)
     event = build_event(sequence + 1, previous, recorded_at or datetime.now(timezone.utc), delivered_at, kg)
-    row = DemoLedgerEvent(sequence=sequence + 1, hash=event["hash"], body=conferir().jcs(event))
+    row = LedgerEvent(sequence=sequence + 1, hash=event["hash"], body=conferir().jcs(event))
     session.add(row)
     session.flush()
     return row
 
 
 def export(session: Session) -> dict:
-    rows = session.scalars(select(DemoLedgerEvent).order_by(DemoLedgerEvent.sequence)).all()
+    rows = session.scalars(select(LedgerEvent).order_by(LedgerEvent.sequence)).all()
     return {"notice": NOTICE, "events": [json.loads(r.body) for r in rows]}
 
 

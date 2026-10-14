@@ -41,4 +41,13 @@ describe('recibo do livro (F42 E2)', () => {
     expect(twice.duplicate).toBe(true);
     expect(twice.seen.size).toBe(1);
   });
+
+  it('aceita a entrega da Rede Alimenta como field.food_delivered com quantity 1', () => {
+    const delivery = { occurredOn: '2000-01-01', correctionOf: null, type: 'field', action: 'food_delivered', quantity: '1' };
+    const result = acceptIngest({ source: 'alimenta', eventId: 'delivery-1', payload: delivery });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.receipt.key).toBe('alimenta:delivery-1');
+    expect(acceptIngest({ source: 'alimenta', eventId: 'delivery-1', payload: { ...delivery, ngo: 'x' } }).ok).toBe(false);
+  });
 });
