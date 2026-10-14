@@ -56,7 +56,7 @@ O envelope de cada evento tem exatamente estas seis chaves:
 
 | Chave | Tipo/valor |
 |---|---|
-| `type` | Literal da família: `"project"`, `"finance"`, `"field"` ou `"candidate"` |
+| `type` | Literal da família: `"project"`, `"finance"`, `"field"`, `"candidate"` ou `"donation"` |
 | `action` | Um dos literais da variante, listados abaixo |
 | `occurredOn` | `Date` em America/Sao_Paulo |
 | `correctionOf` | `null` num fato original ou `PositiveDecimal` da sequência anterior corrigida; regras do §6 |
@@ -111,6 +111,25 @@ Essas cinco chaves são a lista completa. Sem pessoa, endereço, estabelecimento
 | `count` | `PositiveDecimal`; contagem agregada da ação |
 
 Essas cinco chaves são a lista completa. Não existe identificador ou pseudônimo de candidato, nem ligação de trajetória individual. O schema não autoriza coleta/atendimento e não substitui revisão humana do risco de identificação por combinação de dia e contagem.
+
+### Família donation (emenda de 14/10/2026, Rede Alimenta)
+
+Doação de comida registrada por uma conta de doador da Rede Alimenta e levada a um distribuidor público do catálogo. Eventos já publicados não mudam; a emenda só acrescenta esta família. `schemaVersion` continua `1`.
+
+| `action` | Lista completa de chaves | Restrição dos campos específicos |
+|---|---|---|
+| `"donation_registered"` | comuns + `donationRef`, `category`, `quantityGrams` | `category` é **somente** `"produce"`, `"bakery"`, `"dairy"`, `"meat"`, `"prepared_meal"`, `"dry_goods"`, `"beverages"`; `quantityGrams` é `PositiveDecimal` |
+| `"destination_chosen"` | comuns + `donationRef`, `distributorId`, `choice` | `distributorId` corresponde a `^[a-z0-9]{1,30}(-[a-z0-9]{1,30}){0,7}$`, até 64 caracteres; `choice` é **somente** `"ai_top"` (a pessoa aceitou a primeira sugestão da AI) ou `"other"` |
+| `"donation_delivered"` | comuns + `donationRef` | entrega **declarada por quem doou**; o distribuidor não tem conta e não confirma |
+| `"donation_cancelled"` | comuns + `donationRef` | cancelada por quem doou ou vencida sem entrega |
+
+- `donationRef` corresponde a `^AL[0-9A-Z]{8}$`. É aleatório, gerado na hora do registro, e não deriva de pessoa, e-mail, CNPJ ou endereço. Liga os eventos da mesma doação.
+- `distributorId` é o `id` público de uma instituição do catálogo `src/data/alimenta/distribuidores.json` (banco de alimentos, Mesa Brasil, cozinha), nunca de pessoa. O verificador confere o formato; quem publica confere que o id existe no catálogo.
+- `correctionOf` é sempre `null`. Doação errada se cancela e se registra de novo.
+- Sem nome, e-mail, CNPJ, cidade de quem doou, endereço, observação ou texto livre.
+- **Ordem por `donationRef`** (código de falha `donation_order`): exatamente um `donation_registered` e antes de qualquer outra ação da mesma referência; `destination_chosen` pode repetir enquanto a doação estiver aberta (troca de destino); `donation_delivered` exige um `destination_chosen` anterior; depois de `donation_delivered` ou `donation_cancelled`, nada mais com a mesma referência.
+- A idempotência da entrada continua no `intake.json`: o produtor usa `eventId = "<donationRef>:<n>:<ação>"` (n = posição do evento naquela doação, a partir de 1) com `source: "alimenta"`.
+- Conta de teste nunca publica nesta família.
 
 ## 4. Cálculo e validação da cadeia
 
@@ -215,7 +234,7 @@ const result = await verifyDocument(parseCanonicalJson(await response.text()));
 // Para comparar cópia antiga: verifyLedger(document.events, checkpointGuardado).
 ```
 
-`verifyLedger` recebe array desconhecido e checkpoint separado opcional; `verifyDocument` recebe `{events, checkpoint}`. Ambos retornam uma união discriminada por `valid`. Falha: `{valid: false, code, sequence?}`; códigos `invalid_schema`, `sequence`, `previous_hash`, `hash`, `time`, `correction`, `duplicate_source`, `checkpoint`, `crypto_unavailable`. Sucesso: `{valid: true, eventCount, headHash, lastUpdatedAt, balanceCents, totalsByCategory, checkpointMatched}`. `checkpointMatched` indica correspondência ao checkpoint fornecido, não autoria nem prova externa.
+`verifyLedger` recebe array desconhecido e checkpoint separado opcional; `verifyDocument` recebe `{events, checkpoint}`. Ambos retornam uma união discriminada por `valid`. Falha: `{valid: false, code, sequence?}`; códigos `invalid_schema`, `sequence`, `previous_hash`, `hash`, `time`, `correction`, `duplicate_source`, `donation_order`, `checkpoint`, `crypto_unavailable`. Sucesso: `{valid: true, eventCount, headHash, lastUpdatedAt, balanceCents, totalsByCategory, checkpointMatched}`. `checkpointMatched` indica correspondência ao checkpoint fornecido, não autoria nem prova externa.
 
 Web Crypto exige contexto seguro (HTTPS ou localhost); ausência retorna `crypto_unavailable`. Não transformar erro em selo de integridade. A data pública já é uma data brasileira: formatar `occurredOn` como dia/mês/ano sem convertê-la novamente como um instante UTC. `recordedAt`/`lastUpdatedAt` são instantes; podem ser apresentados em America/Sao_Paulo.
 

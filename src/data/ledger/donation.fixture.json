@@ -1,0 +1,88 @@
+{
+  "notice": "DADO FICTÍCIO PARA TESTE DA FAMÍLIA donation. Não é doação realizada.",
+  "events": [
+    {
+      "schemaVersion": 1,
+      "sequence": "1",
+      "previousHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "recordedAt": "2000-01-02T12:00:00.000Z",
+      "payload": {
+        "type": "donation",
+        "occurredOn": "2000-01-01",
+        "correctionOf": null,
+        "action": "donation_registered",
+        "donationRef": "AL0000TEST",
+        "category": "bakery",
+        "quantityGrams": "12500"
+      },
+      "hash": "1dc9919a4739f0d1774f81ce1e57751faea06ab5f0c260759dd057a495209219"
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": "2",
+      "previousHash": "1dc9919a4739f0d1774f81ce1e57751faea06ab5f0c260759dd057a495209219",
+      "recordedAt": "2000-01-02T12:00:00.000Z",
+      "payload": {
+        "type": "donation",
+        "occurredOn": "2000-01-01",
+        "correctionOf": null,
+        "action": "destination_chosen",
+        "donationRef": "AL0000TEST",
+        "distributorId": "sp-municipal-food-bank",
+        "choice": "ai_top"
+      },
+      "hash": "b4f2bc46e931dc95e34b444df012d454e645b00e1f77eeb9c26df0216300abbd"
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": "3",
+      "previousHash": "b4f2bc46e931dc95e34b444df012d454e645b00e1f77eeb9c26df0216300abbd",
+      "recordedAt": "2000-01-02T12:00:00.000Z",
+      "payload": {
+        "type": "donation",
+        "occurredOn": "2000-01-01",
+        "correctionOf": null,
+        "action": "donation_delivered",
+        "donationRef": "AL0000TEST"
+      },
+      "hash": "46532eb07356c2ad76f29ac904defb0ad2f3ee16402d820f4888b10bedf1e2ef"
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": "4",
+      "previousHash": "46532eb07356c2ad76f29ac904defb0ad2f3ee16402d820f4888b10bedf1e2ef",
+      "recordedAt": "2000-01-02T12:00:00.000Z",
+      "payload": {
+        "type": "donation",
+        "occurredOn": "2000-01-01",
+        "correctionOf": null,
+        "action": "donation_registered",
+        "donationRef": "AL0001TEST",
+        "category": "dry_goods",
+        "quantityGrams": "3000"
+      },
+      "hash": "827e65dade572bb0499627b279130d441ac26f29cd9d6e7cfd6f2f758ebfb08b"
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": "5",
+      "previousHash": "827e65dade572bb0499627b279130d441ac26f29cd9d6e7cfd6f2f758ebfb08b",
+      "recordedAt": "2000-01-02T12:00:00.000Z",
+      "payload": {
+        "type": "donation",
+        "occurredOn": "2000-01-01",
+        "correctionOf": null,
+        "action": "donation_cancelled",
+        "donationRef": "AL0001TEST"
+      },
+      "hash": "86db676df96a70381b6d867e7967b0cc28713b531a3b44740fb13707e357d9c2"
+    }
+  ],
+  "checkpoint": {
+    "schemaVersion": 1,
+    "ledger": "vidanova-public-actions",
+    "sequence": "5",
+    "headHash": "86db676df96a70381b6d867e7967b0cc28713b531a3b44740fb13707e357d9c2",
+    "generatedAt": "2000-01-02T12:00:00.000Z"
+  }
+}

@@ -6,7 +6,7 @@ import {
 } from './schema.ts';
 
 export type VerificationCode = 'invalid_schema' | 'sequence' | 'previous_hash' | 'hash'
-  | 'time' | 'correction' | 'duplicate_source' | 'checkpoint' | 'crypto_unavailable';
+  | 'time' | 'correction' | 'duplicate_source' | 'donation_order' | 'checkpoint' | 'crypto_unavailable';
 export type LedgerVerification = {
   valid: true;
   eventCount: number;
@@ -26,6 +26,18 @@ export async function eventHash(event: Omit<LedgerEvent, 'hash'>): Promise<strin
   return sha256(canonicalize(event));
 }
 
+type DonationState = 'registered' | 'destination_chosen' | 'closed';
+type DonationAction = Extract<LedgerEvent['payload'], { type: 'donation' }>['action'];
+
+/** One registration per donationRef first; destination may change; delivered needs a destination; nothing after close. */
+export function nextDonationState(state: DonationState | undefined, action: DonationAction): DonationState | null {
+  if (action === 'donation_registered') return state === undefined ? 'registered' : null;
+  if (state === undefined || state === 'closed') return null;
+  if (action === 'destination_chosen') return 'destination_chosen';
+  if (action === 'donation_delivered') return state === 'destination_chosen' ? 'closed' : null;
+  return 'closed';
+}
+
 /** Both CLI and browser use this function; no filesystem, network or Node imports. */
 export async function verifyLedger(input: unknown, expectedCheckpoint?: unknown): Promise<LedgerVerification> {
   const parsed = ledgerSchema.safeParse(input);
@@ -37,6 +49,7 @@ export async function verifyLedger(input: unknown, expectedCheckpoint?: unknown)
   const totals = new Map<string, bigint>();
   const corrected = new Set<string>();
   const sources = new Set<string>();
+  const donations = new Map<string, DonationState>();
   for (const [index, event] of events.entries()) {
     const fail = (code: VerificationCode): LedgerVerification => ({ valid: false, code, sequence: event.sequence });
     if (event.sequence !== String(index + 1)) return fail('sequence');
@@ -71,6 +84,11 @@ export async function verifyLedger(input: unknown, expectedCheckpoint?: unknown)
           : payload.action === 'signing_key_rotated' ? `signing-key:${payload.publicKey}` : 'repository';
       if (sources.has(source)) return fail('duplicate_source');
       sources.add(source);
+    }
+    if (payload.type === 'donation') {
+      const next = nextDonationState(donations.get(payload.donationRef), payload.action);
+      if (next === null) return fail('donation_order');
+      donations.set(payload.donationRef, next);
     }
     if (payload.type === 'finance') {
       const amount = BigInt(payload.amountCents);

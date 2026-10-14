@@ -36,7 +36,15 @@ SPECIFIC = {
     "interview_completed": {"count"},
     "referral_completed": {"count"},
     "support_completed": {"count"},
+    "donation_registered": {"donationRef", "category", "quantityGrams"},
+    "destination_chosen": {"donationRef", "distributorId", "choice"},
+    "donation_delivered": {"donationRef"},
+    "donation_cancelled": {"donationRef"},
 }
+DONATION_REF = re.compile(r"AL[0-9A-Z]{8}\Z")
+DISTRIBUTOR_ID = re.compile(r"[a-z0-9]{1,30}(?:-[a-z0-9]{1,30}){0,7}\Z")
+DONATION_CATEGORIES = {"produce", "bakery", "dairy", "meat", "prepared_meal", "dry_goods", "beverages"}
+CHOICES = {"ai_top", "other"}
 CATEGORIES = {"donation", "food", "clothing", "hygiene", "operations", "fee", "refund"}
 EVIDENCE = {"pending", "not_published"}
 CHECKPOINT = {"schemaVersion", "ledger", "sequence", "headHash", "generatedAt"}
@@ -45,6 +53,7 @@ ACTIONS = {
     "finance": {"movement_recorded", "reversal"},
     "field": {"food_delivered", "clothing_delivered", "hygiene_delivered"},
     "candidate": {"contact_completed", "interview_completed", "referral_completed", "support_completed"},
+    "donation": {"donation_registered", "destination_chosen", "donation_delivered", "donation_cancelled"},
 }
 MAX_SAFE_INTEGER = 2**53 - 1
 try:
@@ -134,7 +143,43 @@ def utc_milliseconds(value, description):
         raise LedgerError(f"{description} inválido") from exc
 
 
-def check_payload(payload, recorded_at, earlier, corrected_targets, project_sources):
+def next_donation_state(state, action):
+    """Uma doação: registro primeiro e só uma vez; destino pode mudar; entrega exige destino; nada depois de fechar."""
+    if action == "donation_registered":
+        return "registered" if state is None else None
+    if state is None or state == "closed":
+        return None
+    if action == "destination_chosen":
+        return "destination_chosen"
+    if action == "donation_delivered":
+        return "closed" if state == "destination_chosen" else None
+    return "closed"
+
+
+def check_donation(payload, donations):
+    ref = payload["donationRef"]
+    if not isinstance(ref, str) or not DONATION_REF.fullmatch(ref):
+        raise LedgerError("donationRef inválido")
+    if payload["correctionOf"] is not None:
+        raise LedgerError("doação não se corrige: cancela e registra outra")
+    action = payload["action"]
+    if action == "donation_registered":
+        if not isinstance(payload["category"], str) or payload["category"] not in DONATION_CATEGORIES:
+            raise LedgerError("categoria de doação não permitida")
+        decimal_string(payload["quantityGrams"], SEQUENCE, "quantityGrams")
+    if action == "destination_chosen":
+        distributor = payload["distributorId"]
+        if not isinstance(distributor, str) or len(distributor) > 64 or not DISTRIBUTOR_ID.fullmatch(distributor):
+            raise LedgerError("distributorId inválido")
+        if payload["choice"] not in CHOICES:
+            raise LedgerError("choice não permitido")
+    state = next_donation_state(donations.get(ref), action)
+    if state is None:
+        raise LedgerError(f"ordem da doação {ref} não permitida: {action}")
+    donations[ref] = state
+
+
+def check_payload(payload, recorded_at, earlier, corrected_targets, project_sources, donations=None):
     if not isinstance(payload, dict):
         raise LedgerError("payload deve ser objeto")
     if not COMMON.issubset(payload):
@@ -158,6 +203,10 @@ def check_payload(payload, recorded_at, earlier, corrected_targets, project_sour
         raise LedgerError("occurredOn inválido") from exc
     if occurred_date > recorded_at.astimezone(SAO_PAULO).date():
         raise LedgerError("occurredOn posterior a recordedAt")
+
+    if family == "donation":
+        check_donation(payload, {} if donations is None else donations)
+        return 0
 
     reference = payload["correctionOf"]
     if reference is not None:
@@ -255,6 +304,7 @@ def verify(document):
     earlier = {}
     corrected_targets = set()
     project_sources = set()
+    donations = {}
     balance_cents = 0
     latest_recorded_at = None
     for line, event in enumerate(events, 1):
@@ -274,7 +324,7 @@ def verify(document):
             if not isinstance(event["hash"], str) or not HASH.fullmatch(event["hash"]):
                 raise LedgerError("hash inválido")
             balance_cents += check_payload(
-                event["payload"], recorded_at, earlier, corrected_targets, project_sources
+                event["payload"], recorded_at, earlier, corrected_targets, project_sources, donations
             )
             envelope = {key: value for key, value in event.items() if key != "hash"}
             digest = hashlib.sha256(jcs(envelope).encode("utf-8")).hexdigest()
