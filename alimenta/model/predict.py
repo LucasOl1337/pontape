@@ -49,3 +49,14 @@ def predict(features: dict) -> dict:
         "risk_level": risk_level(proba),
         "model_version": load_metrics()["model_version"],
     }
+
+
+def predict_many(rows: list[dict]) -> list[dict]:
+    """Mesma predição de `predict`, em lote (usado pelo seed)."""
+    if not rows:
+        return []
+    frame = pd.DataFrame([{k: r[k] for k in FEATURES} for r in rows])
+    probas = load_model().predict_proba(frame)[:, 1]
+    version = load_metrics()["model_version"]
+    return [{"discard_proba": round(float(p), 4), "risk_level": risk_level(float(p)), "model_version": version}
+            for p in probas]

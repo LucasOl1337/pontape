@@ -193,12 +193,15 @@ def seed_lots(rng, donor_list, ngo_list, days=30, per_day=(3, 7)):
                 ngo = rng.choice(same or fits)
                 confirm = rng.randint(10, 240)
                 collect = confirm + rng.randint(20, 180)
-                lot["outcome"] = {
-                    "ngo_id": ngo["id"],
-                    "confirm_after_min": confirm,
-                    "collect_after_min": collect,
-                    "deliver_after_min": collect + rng.randint(15, 90),
-                }
+                deliver = collect + rng.randint(15, 90)
+                # Entrega só conta se acontece antes da validade; senão o lote venceu em aberto.
+                if deliver < hours * 60:
+                    lot["outcome"] = {
+                        "ngo_id": ngo["id"],
+                        "confirm_after_min": confirm,
+                        "collect_after_min": collect,
+                        "deliver_after_min": deliver,
+                    }
             out.append(lot)
     return out
 

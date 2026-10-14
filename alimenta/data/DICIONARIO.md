@@ -43,7 +43,7 @@ z = -3,6
   + 1,1 se laticínio ou refeição pronta em ambiente
 ```
 
-Consequências que o modelo precisa aprender e que a regra só de prazo não vê: armazenamento, tamanho do lote, horário, dia e procura da região. O sorteio deixa erro irredutível; acurácia perto de 100% seria sinal de vazamento. Taxa de descarte gerada: 41,9%. Quem conhecesse o logito sem ruído acertaria cerca de 78% (teto prático); ver `alimenta/model/artifacts/metrics.json`.
+Consequências que o modelo precisa aprender e que a regra só de prazo não vê: armazenamento, tamanho do lote, horário, dia e procura da região. O sorteio deixa erro irredutível; acurácia perto de 100% seria sinal de vazamento. Taxa de descarte gerada: 41,9%. Quem conhecesse o logito sem ruído acertaria 78,6% no histórico e 79,9% no mesmo teste reservado (teto prático); ver `alimenta/model/artifacts/metrics.json`.
 
 ## 2. `seed/*.json` · seed operacional da demonstração
 

@@ -374,12 +374,7 @@
    "published_offset_h": -618.51,
    "expires_offset_h": -615.51,
    "description": "Lote simulado de refeição pronta",
-   "outcome": {
-    "ngo_id": "N04",
-    "confirm_after_min": 214,
-    "collect_after_min": 247,
-    "deliver_after_min": 300
-   }
+   "outcome": null
   },
   {
    "id": "L0025",
