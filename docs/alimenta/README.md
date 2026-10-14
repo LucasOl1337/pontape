@@ -79,4 +79,107 @@ Documentadas em `alimenta/.env.example`. Segredo nunca entra no git.
 | `ALIMENTA_GITHUB_REPO` | Repositório lido para mostrar a saúde do pipeline | `LucasOl1337/pontape` |
 | `PORT` | Porta do serviço no Render | definida pelo Render |
 
+## Arquitetura
+
+```mermaid
+flowchart LR
+  D[Doador] -->|POST /lots com token| API
+  P[Painel Streamlit :8501] -->|HTTP com X-Alimenta-Token| API[API FastAPI :8000 + Swagger]
+  API -->|predict_proba| M[Modelo discard_risk-v1.joblib<br/>sha256 conferido na carga]
+  API -->|regras| R[core/matching.py<br/>tipo, capacidade, distância, urgência]
+  API -->|SQLAlchemy| DB[(Postgres<br/>Supabase em produção<br/>SQLite nos testes)]
+  API -->|deliver grava evento| L[demo_ledger_events<br/>livro pontape-alimenta-demo]
+  L -->|GET /ledger| C[tools/conferir.py]
+  CI[GitHub Actions alimenta.yml<br/>pytest, Bandit, Trivy, build] -->|deploy hook| RD[Render: api e painel]
+```
+
+O painel nunca fala direto com o banco. Ele chama a API, então passa pelas mesmas regras (409 para lote já atribuído, 422 para lote vencido).
+
+Estrutura do código (pasta `alimenta/` na raiz do repo):
+
+| Caminho | O que tem |
+|---|---|
+| `alimenta/data/generate.py` | Gerador do dataset simulado, seed fixa `20261015` |
+| `alimenta/data/lots_history.csv` | Histórico simulado de cerca de 6.000 lotes, rotulado, para treino |
+| `alimenta/data/seed/` | Doadores, ONGs e lotes fictícios do seed operacional |
+| `alimenta/data/DICIONARIO.md` | Campos, unidades, origem SIMULADO e como o rótulo nasce |
+| `alimenta/model/train.py` | Split antes de ajustar, baselines, métricas |
+| `alimenta/model/predict.py` | Carrega o artefato só depois de conferir o sha256 |
+| `alimenta/model/artifacts/` | `discard_risk-v1.joblib` e `metrics.json` |
+| `alimenta/core/matching.py` | Regras do match Doador × ONG |
+| `alimenta/core/kpis.py` | Cálculo dos KPIs |
+| `alimenta/db/` | Modelos SQLAlchemy e sessão; `create_all` e seed idempotente |
+| `alimenta/ledger/demo_ledger.py` | Livro da demo |
+| `alimenta/api/main.py` | API FastAPI |
+| `alimenta/painel/app.py` | Painel Streamlit |
+| `alimenta/seguranca/` | Relatórios Bandit e Trivy, linha de base e atuais |
+| `alimenta/tests/` | Testes pytest com casos exatos |
+| `alimenta/Dockerfile` | Uma imagem para api e painel, usuário não root |
+| `docker-compose.yml` | `db`, `api` e `painel` |
+| `.github/workflows/alimenta.yml` | Workflow "Rede Alimenta" |
+
+Tabelas: `donors`, `ngos`, `lots`, `matches` e `demo_ledger_events`. Um índice único parcial em `matches.lot_id` (onde `status <> 'cancelled'`) impede no próprio banco que o mesmo lote vá para duas ONGs.
+
+Rotas principais:
+
+| Rota | Faz |
+|---|---|
+| `GET /health` | Saúde |
+| `GET\|POST /donors`, `GET\|POST /ngos` | Cadastro de doadores e ONGs |
+| `GET\|POST /lots`, `GET /lots/{id}` | Lotes. O POST prediz o risco; lote vencido volta 422 |
+| `GET /lots/{id}/recommendations` | Ranking de ONGs com os pontos de cada regra |
+| `POST /lots/{id}/matches` | Escolhe a ONG. Volta 409 se o lote já tem match ativo |
+| `POST /matches/{id}/confirm\|collect\|deliver\|cancel` | Ciclo do match. `deliver` é idempotente e grava o evento no livro da demo |
+| `GET /kpis` | KPIs do painel |
+| `GET /model` | Versão, sha256 e métricas do modelo |
+| `GET /ledger`, `GET /ledger/verify` | Livro da demo e conferência |
+| `POST /demo/reset` | Volta ao seed, com token |
+
+## Requisito FIAP e onde está a prova
+
+Coluna "Prova" diz o que rodar ou abrir. As URLs públicas só existem depois do deploy feito pelo regente.
+
+| Requisito FIAP | Arquivo ou rota | Prova |
+|---|---|---|
+| Dataset estruturado (público ou simulado) | `alimenta/data/lots_history.csv`, `alimenta/data/seed/`, `alimenta/data/DICIONARIO.md` | `uv run --project alimenta python -m alimenta.data.generate` gera o mesmo arquivo com a seed `20261015` |
+| Modelo funcional local (scikit-learn) | `alimenta/model/train.py`, `alimenta/model/artifacts/discard_risk-v1.joblib`, `metrics.json` | `uv run --project alimenta python -m alimenta.model.train`; `GET /model` |
+| Priorização de lotes | Campo `risk_level` do lote, alertas de validade no painel | `POST /lots` devolve `discard_proba` e `risk_level` |
+| Recomendação geográfica, Doador × ONG | `alimenta/core/matching.py` | `GET /lots/{id}/recommendations` |
+| Otimização de rotas de coleta | `GET /ngos/{id}/route` (vizinho mais próximo) | [preencher: entra só se ficar pronto; ver LIMITES.md] |
+| Análise semântica de validade e tipo (Hugging Face) | Não implementada | Ver [LIMITES.md](LIMITES.md) |
+| FastAPI com Swagger | `alimenta/api/main.py` | http://localhost:8000/docs; URL pública [preencher após deploy]/docs |
+| Frontend Streamlit | `alimenta/painel/app.py` | http://localhost:8501; URL pública [preencher após deploy] |
+| Matriz STRIDE | [STRIDE.md](STRIDE.md) | Leitura |
+| Dockerfile e Compose | `alimenta/Dockerfile`, `docker-compose.yml`, `.dockerignore` | `docker compose up --build` na raiz |
+| Pipeline GitHub Actions CI/CD | `.github/workflows/alimenta.yml` | Execução verde na main: [preencher após deploy: link da execução e commit] |
+| Relatórios SAST Bandit e Trivy | Artefatos do workflow; `alimenta/seguranca/` | Jobs `bandit`, `trivy-fs` e `imagem` |
+| URL pública (Render) | `render.yaml` | API: [preencher após deploy]. Painel: [preencher após deploy] |
+| Banco em nuvem (Supabase) | `DATABASE_URL` com o pooler do Supabase | Criar um lote, recarregar o painel, o lote continua lá |
+| Persistência após recarga | Postgres | Mesmo teste acima, no compose e no Render |
+| Impedir dupla atribuição | Índice único parcial em `matches.lot_id` | Segundo `POST /lots/{id}/matches` volta 409; teste em `alimenta/tests/` |
+| Bloquear lote vencido | `alimenta/core/matching.py`, `POST /lots` | `POST /lots` com validade no passado volta 422 |
+| Dashboard com KPIs | `alimenta/painel/app.py`, `GET /kpis` | Seção KPIs abaixo |
+| Mapa de calor por região | Painel | Aba do mapa, legenda "DEMONSTRAÇÃO · dados simulados" |
+| Alertas de validade crítica | Painel | Lista de lotes com validade curta e risco alto |
+| LGPD | [STRIDE.md](STRIDE.md), seção LGPD | Nenhum dado pessoal; tudo fictício |
+| README completo | Este arquivo | Leitura |
+| Pitch final | [PITCH.md](PITCH.md) | Ensaio de 5 a 7 minutos |
+
+## KPIs e como cada um é calculado
+
+Todo número do painel é de demonstração. Nenhum é impacto social real.
+
+| KPI | Definição exata | Quando vazio |
+|---|---|---|
+| kg salvos | Soma do peso dos lotes com match no estado `delivered`. Um lote conta uma vez, mesmo que tenha tido outro match cancelado | 0 |
+| Refeições estimadas por região | kg entregues na região da ONG dividido por 0,544 kg por refeição. Sempre com a palavra "estimadas" | 0 |
+| Acurácia do modelo | Acertos dividido pelo total de exemplos do teste reservado. Aparece com o tamanho da amostra, a versão do modelo e a matriz de confusão | Não se aplica |
+| Tempo médio de match | Média de `match.confirmed_at` menos `lot.published_at`, só para matches confirmados. Mede quanto a ONG demorou para aceitar. Não é a latência da API | "sem dados" |
+| Vulnerabilidades mitigadas | Achados do primeiro scan real (linha de base, commit registrado em `alimenta/seguranca/baseline/`) que não aparecem no scan atual, por identificador | "0 mitigadas, 0 abertas", com data e commit |
+| Saúde do pipeline e gates | Status da última execução do workflow na main: aprovado, reprovado ou não executado, com data e commit. Lido da API pública do GitHub, com cache de 10 min | "não executado" |
+
+O fator de 0,544 kg por refeição vem da Feeding America: "each meal is roughly 1.2 pounds" ([About our claims](https://www.feedingamerica.org/ways-to-give/faq/about-our-claims), acesso em 14/10/2026). É uma estimativa dos Estados Unidos. Ver [LIMITES.md](LIMITES.md).
+
+A região das refeições é a região da ONG, onde a fome foi atendida, e não a do doador.
+
 <!-- continua -->
