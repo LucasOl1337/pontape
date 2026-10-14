@@ -1,0 +1,11 @@
+# Lista branca: a imagem da Rede Alimenta só recebe o pacote Python e o conferidor.
+*
+!alimenta/
+!tools/conferir.py
+alimenta/.venv/
+alimenta/**/__pycache__/
+alimenta/**/.pytest_cache/
+alimenta/.env
+alimenta/*.db
+alimenta/seguranca/
+!alimenta/seguranca/resumo.json

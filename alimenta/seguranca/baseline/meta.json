@@ -1,0 +1,12 @@
+{
+ "commit": "996031c",
+ "date": "2026-10-14",
+ "tools": {"bandit": "1.9.4", "trivy": "0.76.0 (binário oficial, sha256 e24b1c51293c1b15e4ba8d45bbc7891ba053f90278ec2698f3562c993e145fe7)"},
+ "commands": [
+  "bandit -r alimenta -x alimenta/.venv,alimenta/tests -f json -o bandit.json",
+  "trivy fs --scanners vuln,secret,misconfig --skip-dirs alimenta/.venv --format json -o trivy-fs.json alimenta",
+  "trivy config --format json -o trivy-config.json .",
+  "trivy image --input rede-alimenta-local.tar --scanners vuln,secret --format json -o trivy-image.json"
+ ],
+ "note": "Primeiro scan real, feito no commit 996031c (primeira versão do Dockerfile), antes de qualquer correção. Nada foi plantado."
+}

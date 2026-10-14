@@ -1,0 +1,2251 @@
+{
+ "notice": "DEMONSTRAÇÃO · dados simulados · Rede Alimenta · não são pessoas nem entidades reais",
+ "seed": 20261015,
+ "lots": [
+  {
+   "id": "L0001",
+   "donor_id": "D06",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 29.6,
+   "published_offset_h": -706.82,
+   "expires_offset_h": 1388.88,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N01",
+    "confirm_after_min": 48,
+    "collect_after_min": 175,
+    "deliver_after_min": 239
+   }
+  },
+  {
+   "id": "L0002",
+   "donor_id": "D10",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 9.0,
+   "published_offset_h": -702.79,
+   "expires_offset_h": -685.19,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N05",
+    "confirm_after_min": 92,
+    "collect_after_min": 136,
+    "deliver_after_min": 171
+   }
+  },
+  {
+   "id": "L0003",
+   "donor_id": "D09",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 10.7,
+   "published_offset_h": -703.31,
+   "expires_offset_h": -481.21,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N14",
+    "confirm_after_min": 240,
+    "collect_after_min": 359,
+    "deliver_after_min": 430
+   }
+  },
+  {
+   "id": "L0004",
+   "donor_id": "D12",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 28.7,
+   "published_offset_h": -712.29,
+   "expires_offset_h": -668.39,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 151,
+    "collect_after_min": 306,
+    "deliver_after_min": 362
+   }
+  },
+  {
+   "id": "L0005",
+   "donor_id": "D05",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 42.8,
+   "published_offset_h": -710.1,
+   "expires_offset_h": -614.4,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N15",
+    "confirm_after_min": 88,
+    "collect_after_min": 255,
+    "deliver_after_min": 326
+   }
+  },
+  {
+   "id": "L0006",
+   "donor_id": "D13",
+   "category": "bakery",
+   "storage": "frozen",
+   "kg": 2.4,
+   "published_offset_h": -690.08,
+   "expires_offset_h": -651.08,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N18",
+    "confirm_after_min": 20,
+    "collect_after_min": 150,
+    "deliver_after_min": 220
+   }
+  },
+  {
+   "id": "L0007",
+   "donor_id": "D03",
+   "category": "prepared_meal",
+   "storage": "ambient",
+   "kg": 8.7,
+   "published_offset_h": -695.03,
+   "expires_offset_h": -685.83,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N18",
+    "confirm_after_min": 73,
+    "collect_after_min": 225,
+    "deliver_after_min": 301
+   }
+  },
+  {
+   "id": "L0008",
+   "donor_id": "D11",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 23.7,
+   "published_offset_h": -690.94,
+   "expires_offset_h": -683.14,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N06",
+    "confirm_after_min": 104,
+    "collect_after_min": 186,
+    "deliver_after_min": 258
+   }
+  },
+  {
+   "id": "L0009",
+   "donor_id": "D02",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 10.1,
+   "published_offset_h": -693.29,
+   "expires_offset_h": -686.19,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 53,
+    "collect_after_min": 210,
+    "deliver_after_min": 296
+   }
+  },
+  {
+   "id": "L0010",
+   "donor_id": "D05",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 41.3,
+   "published_offset_h": -694.31,
+   "expires_offset_h": -643.91,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N15",
+    "confirm_after_min": 124,
+    "collect_after_min": 211,
+    "deliver_after_min": 231
+   }
+  },
+  {
+   "id": "L0011",
+   "donor_id": "D10",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 44.6,
+   "published_offset_h": -663.71,
+   "expires_offset_h": -652.41,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N15",
+    "confirm_after_min": 41,
+    "collect_after_min": 91,
+    "deliver_after_min": 162
+   }
+  },
+  {
+   "id": "L0012",
+   "donor_id": "D11",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 9.9,
+   "published_offset_h": -655.66,
+   "expires_offset_h": -626.06,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N06",
+    "confirm_after_min": 122,
+    "collect_after_min": 214,
+    "deliver_after_min": 236
+   }
+  },
+  {
+   "id": "L0013",
+   "donor_id": "D10",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 12.2,
+   "published_offset_h": -659.35,
+   "expires_offset_h": -641.85,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N05",
+    "confirm_after_min": 186,
+    "collect_after_min": 260,
+    "deliver_after_min": 310
+   }
+  },
+  {
+   "id": "L0014",
+   "donor_id": "D12",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 42.9,
+   "published_offset_h": -668.22,
+   "expires_offset_h": -567.92,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 235,
+    "collect_after_min": 265,
+    "deliver_after_min": 289
+   }
+  },
+  {
+   "id": "L0015",
+   "donor_id": "D08",
+   "category": "bakery",
+   "storage": "frozen",
+   "kg": 2.5,
+   "published_offset_h": -660.34,
+   "expires_offset_h": -636.44,
+   "description": "Lote simulado de padaria",
+   "outcome": null
+  },
+  {
+   "id": "L0016",
+   "donor_id": "D07",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 159.5,
+   "published_offset_h": -628.71,
+   "expires_offset_h": -608.01,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 155,
+    "collect_after_min": 192,
+    "deliver_after_min": 269
+   }
+  },
+  {
+   "id": "L0017",
+   "donor_id": "D13",
+   "category": "prepared_meal",
+   "storage": "frozen",
+   "kg": 8.7,
+   "published_offset_h": -635.48,
+   "expires_offset_h": -621.98,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 210,
+    "collect_after_min": 292,
+    "deliver_after_min": 324
+   }
+  },
+  {
+   "id": "L0018",
+   "donor_id": "D14",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 52.3,
+   "published_offset_h": -628.58,
+   "expires_offset_h": -589.88,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 236,
+    "collect_after_min": 359,
+    "deliver_after_min": 432
+   }
+  },
+  {
+   "id": "L0019",
+   "donor_id": "D02",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 216.4,
+   "published_offset_h": -630.53,
+   "expires_offset_h": 519.17,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 125,
+    "collect_after_min": 224,
+    "deliver_after_min": 279
+   }
+  },
+  {
+   "id": "L0020",
+   "donor_id": "D10",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 9.4,
+   "published_offset_h": -631.28,
+   "expires_offset_h": -603.28,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N20",
+    "confirm_after_min": 60,
+    "collect_after_min": 126,
+    "deliver_after_min": 174
+   }
+  },
+  {
+   "id": "L0021",
+   "donor_id": "D14",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 80.9,
+   "published_offset_h": -639.75,
+   "expires_offset_h": -610.05,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 15,
+    "collect_after_min": 151,
+    "deliver_after_min": 200
+   }
+  },
+  {
+   "id": "L0022",
+   "donor_id": "D11",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 24.2,
+   "published_offset_h": -644.05,
+   "expires_offset_h": -554.55,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N11",
+    "confirm_after_min": 225,
+    "collect_after_min": 323,
+    "deliver_after_min": 366
+   }
+  },
+  {
+   "id": "L0023",
+   "donor_id": "D05",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 6.7,
+   "published_offset_h": -622.04,
+   "expires_offset_h": -569.84,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N05",
+    "confirm_after_min": 10,
+    "collect_after_min": 182,
+    "deliver_after_min": 229
+   }
+  },
+  {
+   "id": "L0024",
+   "donor_id": "D04",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 23.0,
+   "published_offset_h": -618.51,
+   "expires_offset_h": -615.51,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": null
+  },
+  {
+   "id": "L0025",
+   "donor_id": "D10",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 19.8,
+   "published_offset_h": -622.36,
+   "expires_offset_h": -568.66,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N05",
+    "confirm_after_min": 193,
+    "collect_after_min": 233,
+    "deliver_after_min": 259
+   }
+  },
+  {
+   "id": "L0026",
+   "donor_id": "D11",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 44.4,
+   "published_offset_h": -608.04,
+   "expires_offset_h": -512.54,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N11",
+    "confirm_after_min": 57,
+    "collect_after_min": 110,
+    "deliver_after_min": 173
+   }
+  },
+  {
+   "id": "L0027",
+   "donor_id": "D07",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 22.8,
+   "published_offset_h": -594.69,
+   "expires_offset_h": 1084.91,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 123,
+    "collect_after_min": 268,
+    "deliver_after_min": 329
+   }
+  },
+  {
+   "id": "L0028",
+   "donor_id": "D07",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 11.9,
+   "published_offset_h": -591.78,
+   "expires_offset_h": -561.68,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 94,
+    "collect_after_min": 248,
+    "deliver_after_min": 323
+   }
+  },
+  {
+   "id": "L0029",
+   "donor_id": "D14",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 12.8,
+   "published_offset_h": -588.66,
+   "expires_offset_h": -559.46,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 148,
+    "collect_after_min": 299,
+    "deliver_after_min": 327
+   }
+  },
+  {
+   "id": "L0030",
+   "donor_id": "D07",
+   "category": "dairy",
+   "storage": "ambient",
+   "kg": 28.0,
+   "published_offset_h": -589.22,
+   "expires_offset_h": -421.82,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 210,
+    "collect_after_min": 237,
+    "deliver_after_min": 255
+   }
+  },
+  {
+   "id": "L0031",
+   "donor_id": "D09",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 5.5,
+   "published_offset_h": -589.96,
+   "expires_offset_h": -570.96,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N09",
+    "confirm_after_min": 44,
+    "collect_after_min": 213,
+    "deliver_after_min": 242
+   }
+  },
+  {
+   "id": "L0032",
+   "donor_id": "D15",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 35.1,
+   "published_offset_h": -596.01,
+   "expires_offset_h": -555.31,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N15",
+    "confirm_after_min": 109,
+    "collect_after_min": 230,
+    "deliver_after_min": 285
+   }
+  },
+  {
+   "id": "L0033",
+   "donor_id": "D05",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 31.2,
+   "published_offset_h": -589.26,
+   "expires_offset_h": -538.46,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": null
+  },
+  {
+   "id": "L0034",
+   "donor_id": "D06",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 134.9,
+   "published_offset_h": -561.99,
+   "expires_offset_h": -548.19,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N11",
+    "confirm_after_min": 121,
+    "collect_after_min": 156,
+    "deliver_after_min": 241
+   }
+  },
+  {
+   "id": "L0035",
+   "donor_id": "D09",
+   "category": "dairy",
+   "storage": "ambient",
+   "kg": 11.2,
+   "published_offset_h": -560.2,
+   "expires_offset_h": -409.3,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 201,
+    "collect_after_min": 378,
+    "deliver_after_min": 418
+   }
+  },
+  {
+   "id": "L0036",
+   "donor_id": "D03",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 11.9,
+   "published_offset_h": -573.81,
+   "expires_offset_h": -539.61,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N18",
+    "confirm_after_min": 88,
+    "collect_after_min": 150,
+    "deliver_after_min": 224
+   }
+  },
+  {
+   "id": "L0037",
+   "donor_id": "D13",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 83.1,
+   "published_offset_h": -559.14,
+   "expires_offset_h": -482.24,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 154,
+    "collect_after_min": 216,
+    "deliver_after_min": 275
+   }
+  },
+  {
+   "id": "L0038",
+   "donor_id": "D03",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 45.3,
+   "published_offset_h": -557.03,
+   "expires_offset_h": -552.93,
+   "description": "Lote simulado de padaria",
+   "outcome": null
+  },
+  {
+   "id": "L0039",
+   "donor_id": "D11",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 176.5,
+   "published_offset_h": -539.95,
+   "expires_offset_h": -503.25,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N11",
+    "confirm_after_min": 103,
+    "collect_after_min": 267,
+    "deliver_after_min": 335
+   }
+  },
+  {
+   "id": "L0040",
+   "donor_id": "D10",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 3.1,
+   "published_offset_h": -550.57,
+   "expires_offset_h": -535.37,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N05",
+    "confirm_after_min": 134,
+    "collect_after_min": 205,
+    "deliver_after_min": 235
+   }
+  },
+  {
+   "id": "L0041",
+   "donor_id": "D14",
+   "category": "prepared_meal",
+   "storage": "ambient",
+   "kg": 15.7,
+   "published_offset_h": -533.57,
+   "expires_offset_h": -519.97,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N04",
+    "confirm_after_min": 205,
+    "collect_after_min": 268,
+    "deliver_after_min": 287
+   }
+  },
+  {
+   "id": "L0042",
+   "donor_id": "D07",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 3.4,
+   "published_offset_h": -544.37,
+   "expires_offset_h": -537.07,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 126,
+    "collect_after_min": 263,
+    "deliver_after_min": 325
+   }
+  },
+  {
+   "id": "L0043",
+   "donor_id": "D03",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 24.6,
+   "published_offset_h": -543.29,
+   "expires_offset_h": -524.49,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N08",
+    "confirm_after_min": 54,
+    "collect_after_min": 184,
+    "deliver_after_min": 200
+   }
+  },
+  {
+   "id": "L0044",
+   "donor_id": "D12",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 5.5,
+   "published_offset_h": -535.54,
+   "expires_offset_h": -525.94,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 106,
+    "collect_after_min": 181,
+    "deliver_after_min": 255
+   }
+  },
+  {
+   "id": "L0045",
+   "donor_id": "D12",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 30.0,
+   "published_offset_h": -527.05,
+   "expires_offset_h": -513.15,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 26,
+    "collect_after_min": 111,
+    "deliver_after_min": 153
+   }
+  },
+  {
+   "id": "L0046",
+   "donor_id": "D10",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 26.2,
+   "published_offset_h": -512.94,
+   "expires_offset_h": -457.24,
+   "description": "Lote simulado de laticínios",
+   "outcome": null
+  },
+  {
+   "id": "L0047",
+   "donor_id": "D14",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 8.5,
+   "published_offset_h": -525.13,
+   "expires_offset_h": -10.43,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 199,
+    "collect_after_min": 247,
+    "deliver_after_min": 283
+   }
+  },
+  {
+   "id": "L0048",
+   "donor_id": "D09",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 7.5,
+   "published_offset_h": -512.39,
+   "expires_offset_h": -455.39,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": null
+  },
+  {
+   "id": "L0049",
+   "donor_id": "D07",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 15.4,
+   "published_offset_h": -499.38,
+   "expires_offset_h": -489.28,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 236,
+    "collect_after_min": 392,
+    "deliver_after_min": 418
+   }
+  },
+  {
+   "id": "L0050",
+   "donor_id": "D14",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 10.1,
+   "published_offset_h": -499.12,
+   "expires_offset_h": -491.02,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N09",
+    "confirm_after_min": 98,
+    "collect_after_min": 136,
+    "deliver_after_min": 151
+   }
+  },
+  {
+   "id": "L0051",
+   "donor_id": "D08",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 53.6,
+   "published_offset_h": -500.12,
+   "expires_offset_h": -437.82,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 122,
+    "collect_after_min": 278,
+    "deliver_after_min": 317
+   }
+  },
+  {
+   "id": "L0052",
+   "donor_id": "D05",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 66.2,
+   "published_offset_h": -485.41,
+   "expires_offset_h": -311.11,
+   "description": "Lote simulado de laticínios",
+   "outcome": null
+  },
+  {
+   "id": "L0053",
+   "donor_id": "D11",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 216.7,
+   "published_offset_h": -488.42,
+   "expires_offset_h": 1155.88,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N16",
+    "confirm_after_min": 53,
+    "collect_after_min": 207,
+    "deliver_after_min": 270
+   }
+  },
+  {
+   "id": "L0054",
+   "donor_id": "D07",
+   "category": "prepared_meal",
+   "storage": "ambient",
+   "kg": 5.9,
+   "published_offset_h": -463.33,
+   "expires_offset_h": -451.83,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": null
+  },
+  {
+   "id": "L0055",
+   "donor_id": "D05",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 5.8,
+   "published_offset_h": -467.2,
+   "expires_offset_h": -447.4,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N15",
+    "confirm_after_min": 28,
+    "collect_after_min": 151,
+    "deliver_after_min": 232
+   }
+  },
+  {
+   "id": "L0056",
+   "donor_id": "D15",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 2.9,
+   "published_offset_h": -479.41,
+   "expires_offset_h": -456.81,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N10",
+    "confirm_after_min": 22,
+    "collect_after_min": 76,
+    "deliver_after_min": 95
+   }
+  },
+  {
+   "id": "L0057",
+   "donor_id": "D04",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 22.6,
+   "published_offset_h": -444.0,
+   "expires_offset_h": -427.9,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N14",
+    "confirm_after_min": 150,
+    "collect_after_min": 253,
+    "deliver_after_min": 341
+   }
+  },
+  {
+   "id": "L0058",
+   "donor_id": "D06",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 5.0,
+   "published_offset_h": -436.42,
+   "expires_offset_h": 268.88,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N16",
+    "confirm_after_min": 48,
+    "collect_after_min": 84,
+    "deliver_after_min": 174
+   }
+  },
+  {
+   "id": "L0059",
+   "donor_id": "D03",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 59.5,
+   "published_offset_h": -447.24,
+   "expires_offset_h": 177.26,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N08",
+    "confirm_after_min": 39,
+    "collect_after_min": 142,
+    "deliver_after_min": 227
+   }
+  },
+  {
+   "id": "L0060",
+   "donor_id": "D06",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 7.8,
+   "published_offset_h": -418.3,
+   "expires_offset_h": -408.9,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N06",
+    "confirm_after_min": 195,
+    "collect_after_min": 342,
+    "deliver_after_min": 394
+   }
+  },
+  {
+   "id": "L0061",
+   "donor_id": "D07",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 8.0,
+   "published_offset_h": -429.85,
+   "expires_offset_h": -383.15,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 185,
+    "collect_after_min": 294,
+    "deliver_after_min": 365
+   }
+  },
+  {
+   "id": "L0062",
+   "donor_id": "D12",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 42.1,
+   "published_offset_h": -430.33,
+   "expires_offset_h": -374.03,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 227,
+    "collect_after_min": 342,
+    "deliver_after_min": 404
+   }
+  },
+  {
+   "id": "L0063",
+   "donor_id": "D04",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 124.9,
+   "published_offset_h": -430.71,
+   "expires_offset_h": 1711.99,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N09",
+    "confirm_after_min": 192,
+    "collect_after_min": 341,
+    "deliver_after_min": 389
+   }
+  },
+  {
+   "id": "L0064",
+   "donor_id": "D14",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 6.9,
+   "published_offset_h": -415.67,
+   "expires_offset_h": 1453.83,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N04",
+    "confirm_after_min": 126,
+    "collect_after_min": 227,
+    "deliver_after_min": 242
+   }
+  },
+  {
+   "id": "L0065",
+   "donor_id": "D01",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 32.2,
+   "published_offset_h": -431.7,
+   "expires_offset_h": -420.6,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N06",
+    "confirm_after_min": 137,
+    "collect_after_min": 293,
+    "deliver_after_min": 339
+   }
+  },
+  {
+   "id": "L0066",
+   "donor_id": "D10",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 137.1,
+   "published_offset_h": -404.21,
+   "expires_offset_h": 741.29,
+   "description": "Lote simulado de secos",
+   "outcome": null
+  },
+  {
+   "id": "L0067",
+   "donor_id": "D05",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 6.7,
+   "published_offset_h": -393.07,
+   "expires_offset_h": -377.57,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": null
+  },
+  {
+   "id": "L0068",
+   "donor_id": "D05",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 2.5,
+   "published_offset_h": -403.65,
+   "expires_offset_h": -387.35,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N10",
+    "confirm_after_min": 77,
+    "collect_after_min": 231,
+    "deliver_after_min": 294
+   }
+  },
+  {
+   "id": "L0069",
+   "donor_id": "D10",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 187.7,
+   "published_offset_h": -405.73,
+   "expires_offset_h": 405.57,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N10",
+    "confirm_after_min": 34,
+    "collect_after_min": 150,
+    "deliver_after_min": 220
+   }
+  },
+  {
+   "id": "L0070",
+   "donor_id": "D08",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 6.7,
+   "published_offset_h": -391.06,
+   "expires_offset_h": -368.56,
+   "description": "Lote simulado de padaria",
+   "outcome": null
+  },
+  {
+   "id": "L0071",
+   "donor_id": "D07",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 14.7,
+   "published_offset_h": -404.63,
+   "expires_offset_h": -400.13,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": null
+  },
+  {
+   "id": "L0072",
+   "donor_id": "D05",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 150.3,
+   "published_offset_h": -389.49,
+   "expires_offset_h": -352.09,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": null
+  },
+  {
+   "id": "L0073",
+   "donor_id": "D08",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 9.5,
+   "published_offset_h": -372.58,
+   "expires_offset_h": -330.28,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 147,
+    "collect_after_min": 268,
+    "deliver_after_min": 334
+   }
+  },
+  {
+   "id": "L0074",
+   "donor_id": "D02",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 15.4,
+   "published_offset_h": -373.33,
+   "expires_offset_h": -346.93,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 204,
+    "collect_after_min": 366,
+    "deliver_after_min": 438
+   }
+  },
+  {
+   "id": "L0075",
+   "donor_id": "D09",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 64.6,
+   "published_offset_h": -373.71,
+   "expires_offset_h": -329.31,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 42,
+    "collect_after_min": 66,
+    "deliver_after_min": 147
+   }
+  },
+  {
+   "id": "L0076",
+   "donor_id": "D13",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 30.7,
+   "published_offset_h": -382.67,
+   "expires_offset_h": -357.87,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N08",
+    "confirm_after_min": 193,
+    "collect_after_min": 262,
+    "deliver_after_min": 341
+   }
+  },
+  {
+   "id": "L0077",
+   "donor_id": "D13",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 8.1,
+   "published_offset_h": -369.62,
+   "expires_offset_h": -340.22,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N08",
+    "confirm_after_min": 204,
+    "collect_after_min": 284,
+    "deliver_after_min": 338
+   }
+  },
+  {
+   "id": "L0078",
+   "donor_id": "D02",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 35.8,
+   "published_offset_h": -383.31,
+   "expires_offset_h": -321.51,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 143,
+    "collect_after_min": 164,
+    "deliver_after_min": 250
+   }
+  },
+  {
+   "id": "L0079",
+   "donor_id": "D06",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 60.1,
+   "published_offset_h": -365.88,
+   "expires_offset_h": -149.08,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N16",
+    "confirm_after_min": 131,
+    "collect_after_min": 221,
+    "deliver_after_min": 293
+   }
+  },
+  {
+   "id": "L0080",
+   "donor_id": "D13",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 10.6,
+   "published_offset_h": -353.66,
+   "expires_offset_h": -343.56,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N08",
+    "confirm_after_min": 193,
+    "collect_after_min": 258,
+    "deliver_after_min": 332
+   }
+  },
+  {
+   "id": "L0081",
+   "donor_id": "D12",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 14.1,
+   "published_offset_h": -351.12,
+   "expires_offset_h": -274.42,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 159,
+    "collect_after_min": 267,
+    "deliver_after_min": 317
+   }
+  },
+  {
+   "id": "L0082",
+   "donor_id": "D13",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 16.8,
+   "published_offset_h": -355.93,
+   "expires_offset_h": -335.53,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 82,
+    "collect_after_min": 239,
+    "deliver_after_min": 293
+   }
+  },
+  {
+   "id": "L0083",
+   "donor_id": "D14",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 80.5,
+   "published_offset_h": -350.97,
+   "expires_offset_h": -266.37,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 129,
+    "collect_after_min": 284,
+    "deliver_after_min": 357
+   }
+  },
+  {
+   "id": "L0084",
+   "donor_id": "D12",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 9.8,
+   "published_offset_h": -321.02,
+   "expires_offset_h": -104.32,
+   "description": "Lote simulado de laticínios",
+   "outcome": null
+  },
+  {
+   "id": "L0085",
+   "donor_id": "D13",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 69.0,
+   "published_offset_h": -332.4,
+   "expires_offset_h": -263.6,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 163,
+    "collect_after_min": 199,
+    "deliver_after_min": 283
+   }
+  },
+  {
+   "id": "L0086",
+   "donor_id": "D11",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 14.9,
+   "published_offset_h": -333.09,
+   "expires_offset_h": -311.59,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N06",
+    "confirm_after_min": 75,
+    "collect_after_min": 115,
+    "deliver_after_min": 199
+   }
+  },
+  {
+   "id": "L0087",
+   "donor_id": "D02",
+   "category": "prepared_meal",
+   "storage": "ambient",
+   "kg": 28.2,
+   "published_offset_h": -309.57,
+   "expires_offset_h": -305.57,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": null
+  },
+  {
+   "id": "L0088",
+   "donor_id": "D12",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 31.1,
+   "published_offset_h": -292.04,
+   "expires_offset_h": -169.04,
+   "description": "Lote simulado de laticínios",
+   "outcome": null
+  },
+  {
+   "id": "L0089",
+   "donor_id": "D03",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 10.8,
+   "published_offset_h": -298.11,
+   "expires_offset_h": -236.61,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 109,
+    "collect_after_min": 199,
+    "deliver_after_min": 227
+   }
+  },
+  {
+   "id": "L0090",
+   "donor_id": "D03",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 221.0,
+   "published_offset_h": -302.04,
+   "expires_offset_h": 246.56,
+   "description": "Lote simulado de secos",
+   "outcome": null
+  },
+  {
+   "id": "L0091",
+   "donor_id": "D07",
+   "category": "bakery",
+   "storage": "frozen",
+   "kg": 20.8,
+   "published_offset_h": -311.96,
+   "expires_offset_h": -289.36,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 99,
+    "collect_after_min": 234,
+    "deliver_after_min": 310
+   }
+  },
+  {
+   "id": "L0092",
+   "donor_id": "D09",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 5.4,
+   "published_offset_h": -268.49,
+   "expires_offset_h": -246.49,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N04",
+    "confirm_after_min": 147,
+    "collect_after_min": 279,
+    "deliver_after_min": 308
+   }
+  },
+  {
+   "id": "L0093",
+   "donor_id": "D14",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 15.2,
+   "published_offset_h": -275.39,
+   "expires_offset_h": -258.39,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N09",
+    "confirm_after_min": 170,
+    "collect_after_min": 256,
+    "deliver_after_min": 272
+   }
+  },
+  {
+   "id": "L0094",
+   "donor_id": "D07",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 156.6,
+   "published_offset_h": -268.51,
+   "expires_offset_h": 1131.89,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N02",
+    "confirm_after_min": 73,
+    "collect_after_min": 148,
+    "deliver_after_min": 216
+   }
+  },
+  {
+   "id": "L0095",
+   "donor_id": "D08",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 3.4,
+   "published_offset_h": -283.25,
+   "expires_offset_h": -269.15,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N18",
+    "confirm_after_min": 155,
+    "collect_after_min": 232,
+    "deliver_after_min": 284
+   }
+  },
+  {
+   "id": "L0096",
+   "donor_id": "D06",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 7.5,
+   "published_offset_h": -279.49,
+   "expires_offset_h": 1248.11,
+   "description": "Lote simulado de secos",
+   "outcome": null
+  },
+  {
+   "id": "L0097",
+   "donor_id": "D12",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 154.6,
+   "published_offset_h": -276.21,
+   "expires_offset_h": 1833.39,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N02",
+    "confirm_after_min": 169,
+    "collect_after_min": 241,
+    "deliver_after_min": 287
+   }
+  },
+  {
+   "id": "L0098",
+   "donor_id": "D10",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 2.4,
+   "published_offset_h": -269.29,
+   "expires_offset_h": -222.89,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N10",
+    "confirm_after_min": 93,
+    "collect_after_min": 242,
+    "deliver_after_min": 298
+   }
+  },
+  {
+   "id": "L0099",
+   "donor_id": "D03",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 122.4,
+   "published_offset_h": -262.19,
+   "expires_offset_h": -188.69,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 199,
+    "collect_after_min": 321,
+    "deliver_after_min": 364
+   }
+  },
+  {
+   "id": "L0100",
+   "donor_id": "D04",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 48.0,
+   "published_offset_h": -248.0,
+   "expires_offset_h": -170.0,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N04",
+    "confirm_after_min": 59,
+    "collect_after_min": 152,
+    "deliver_after_min": 220
+   }
+  },
+  {
+   "id": "L0101",
+   "donor_id": "D12",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 11.3,
+   "published_offset_h": -253.69,
+   "expires_offset_h": -138.29,
+   "description": "Lote simulado de laticínios",
+   "outcome": null
+  },
+  {
+   "id": "L0102",
+   "donor_id": "D02",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 157.8,
+   "published_offset_h": -239.74,
+   "expires_offset_h": 1563.96,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N02",
+    "confirm_after_min": 43,
+    "collect_after_min": 69,
+    "deliver_after_min": 117
+   }
+  },
+  {
+   "id": "L0103",
+   "donor_id": "D01",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 6.1,
+   "published_offset_h": -220.93,
+   "expires_offset_h": -189.73,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N06",
+    "confirm_after_min": 91,
+    "collect_after_min": 217,
+    "deliver_after_min": 296
+   }
+  },
+  {
+   "id": "L0104",
+   "donor_id": "D06",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 40.5,
+   "published_offset_h": -220.86,
+   "expires_offset_h": -181.66,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N06",
+    "confirm_after_min": 81,
+    "collect_after_min": 247,
+    "deliver_after_min": 276
+   }
+  },
+  {
+   "id": "L0105",
+   "donor_id": "D05",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 3.8,
+   "published_offset_h": -236.61,
+   "expires_offset_h": -224.91,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N05",
+    "confirm_after_min": 213,
+    "collect_after_min": 372,
+    "deliver_after_min": 447
+   }
+  },
+  {
+   "id": "L0106",
+   "donor_id": "D11",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 35.4,
+   "published_offset_h": -207.16,
+   "expires_offset_h": -187.96,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N16",
+    "confirm_after_min": 101,
+    "collect_after_min": 223,
+    "deliver_after_min": 268
+   }
+  },
+  {
+   "id": "L0107",
+   "donor_id": "D09",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 33.2,
+   "published_offset_h": -214.81,
+   "expires_offset_h": -197.01,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N09",
+    "confirm_after_min": 189,
+    "collect_after_min": 347,
+    "deliver_after_min": 375
+   }
+  },
+  {
+   "id": "L0108",
+   "donor_id": "D14",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 39.5,
+   "published_offset_h": -204.94,
+   "expires_offset_h": -183.04,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N04",
+    "confirm_after_min": 180,
+    "collect_after_min": 219,
+    "deliver_after_min": 308
+   }
+  },
+  {
+   "id": "L0109",
+   "donor_id": "D05",
+   "category": "bakery",
+   "storage": "frozen",
+   "kg": 2.3,
+   "published_offset_h": -206.01,
+   "expires_offset_h": -190.01,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N10",
+    "confirm_after_min": 58,
+    "collect_after_min": 181,
+    "deliver_after_min": 199
+   }
+  },
+  {
+   "id": "L0110",
+   "donor_id": "D10",
+   "category": "prepared_meal",
+   "storage": "frozen",
+   "kg": 7.6,
+   "published_offset_h": -174.1,
+   "expires_offset_h": -165.1,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": null
+  },
+  {
+   "id": "L0111",
+   "donor_id": "D14",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 7.8,
+   "published_offset_h": -178.46,
+   "expires_offset_h": -136.76,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N09",
+    "confirm_after_min": 200,
+    "collect_after_min": 342,
+    "deliver_after_min": 376
+   }
+  },
+  {
+   "id": "L0112",
+   "donor_id": "D04",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 8.7,
+   "published_offset_h": -179.51,
+   "expires_offset_h": 484.19,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 108,
+    "collect_after_min": 181,
+    "deliver_after_min": 240
+   }
+  },
+  {
+   "id": "L0113",
+   "donor_id": "D10",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 3.5,
+   "published_offset_h": -181.34,
+   "expires_offset_h": -160.14,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N05",
+    "confirm_after_min": 114,
+    "collect_after_min": 212,
+    "deliver_after_min": 279
+   }
+  },
+  {
+   "id": "L0114",
+   "donor_id": "D13",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 161.5,
+   "published_offset_h": -174.46,
+   "expires_offset_h": -148.26,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": null
+  },
+  {
+   "id": "L0115",
+   "donor_id": "D06",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 34.9,
+   "published_offset_h": -158.33,
+   "expires_offset_h": -128.23,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N11",
+    "confirm_after_min": 181,
+    "collect_after_min": 227,
+    "deliver_after_min": 277
+   }
+  },
+  {
+   "id": "L0116",
+   "donor_id": "D02",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 127.9,
+   "published_offset_h": -164.97,
+   "expires_offset_h": 469.03,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 239,
+    "collect_after_min": 356,
+    "deliver_after_min": 384
+   }
+  },
+  {
+   "id": "L0117",
+   "donor_id": "D13",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 11.1,
+   "published_offset_h": -159.45,
+   "expires_offset_h": -120.05,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N18",
+    "confirm_after_min": 51,
+    "collect_after_min": 91,
+    "deliver_after_min": 149
+   }
+  },
+  {
+   "id": "L0118",
+   "donor_id": "D02",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 6.2,
+   "published_offset_h": -157.03,
+   "expires_offset_h": -141.83,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": null
+  },
+  {
+   "id": "L0119",
+   "donor_id": "D09",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 4.3,
+   "published_offset_h": -149.84,
+   "expires_offset_h": 77.66,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 195,
+    "collect_after_min": 372,
+    "deliver_after_min": 437
+   }
+  },
+  {
+   "id": "L0120",
+   "donor_id": "D08",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 3.6,
+   "published_offset_h": -126.7,
+   "expires_offset_h": -108.0,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": null
+  },
+  {
+   "id": "L0121",
+   "donor_id": "D07",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 9.5,
+   "published_offset_h": -136.7,
+   "expires_offset_h": -85.1,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 223,
+    "collect_after_min": 297,
+    "deliver_after_min": 334
+   }
+  },
+  {
+   "id": "L0122",
+   "donor_id": "D10",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 3.6,
+   "published_offset_h": -133.99,
+   "expires_offset_h": -99.49,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N10",
+    "confirm_after_min": 48,
+    "collect_after_min": 94,
+    "deliver_after_min": 149
+   }
+  },
+  {
+   "id": "L0123",
+   "donor_id": "D07",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 52.4,
+   "published_offset_h": -134.12,
+   "expires_offset_h": -31.12,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 39,
+    "collect_after_min": 122,
+    "deliver_after_min": 200
+   }
+  },
+  {
+   "id": "L0124",
+   "donor_id": "D05",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 54.1,
+   "published_offset_h": -138.47,
+   "expires_offset_h": -64.17,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N10",
+    "confirm_after_min": 197,
+    "collect_after_min": 258,
+    "deliver_after_min": 324
+   }
+  },
+  {
+   "id": "L0125",
+   "donor_id": "D12",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 12.0,
+   "published_offset_h": -104.35,
+   "expires_offset_h": 574.25,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N17",
+    "confirm_after_min": 39,
+    "collect_after_min": 135,
+    "deliver_after_min": 164
+   }
+  },
+  {
+   "id": "L0126",
+   "donor_id": "D01",
+   "category": "dairy",
+   "storage": "ambient",
+   "kg": 8.3,
+   "published_offset_h": -116.34,
+   "expires_offset_h": -77.84,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N06",
+    "confirm_after_min": 97,
+    "collect_after_min": 248,
+    "deliver_after_min": 300
+   }
+  },
+  {
+   "id": "L0127",
+   "donor_id": "D09",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 5.6,
+   "published_offset_h": -104.27,
+   "expires_offset_h": 108.93,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N09",
+    "confirm_after_min": 76,
+    "collect_after_min": 210,
+    "deliver_after_min": 226
+   }
+  },
+  {
+   "id": "L0128",
+   "donor_id": "D01",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 5.8,
+   "published_offset_h": -102.95,
+   "expires_offset_h": -24.45,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N11",
+    "confirm_after_min": 131,
+    "collect_after_min": 311,
+    "deliver_after_min": 376
+   }
+  },
+  {
+   "id": "L0129",
+   "donor_id": "D09",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 8.9,
+   "published_offset_h": -101.28,
+   "expires_offset_h": 678.62,
+   "description": "Lote simulado de secos",
+   "outcome": null
+  },
+  {
+   "id": "L0130",
+   "donor_id": "D06",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 6.4,
+   "published_offset_h": -106.76,
+   "expires_offset_h": -88.96,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N16",
+    "confirm_after_min": 108,
+    "collect_after_min": 185,
+    "deliver_after_min": 245
+   }
+  },
+  {
+   "id": "L0131",
+   "donor_id": "D11",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 5.5,
+   "published_offset_h": -116.28,
+   "expires_offset_h": -99.28,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N01",
+    "confirm_after_min": 37,
+    "collect_after_min": 104,
+    "deliver_after_min": 127
+   }
+  },
+  {
+   "id": "L0132",
+   "donor_id": "D14",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 17.2,
+   "published_offset_h": -89.53,
+   "expires_offset_h": -71.83,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N04",
+    "confirm_after_min": 216,
+    "collect_after_min": 275,
+    "deliver_after_min": 362
+   }
+  },
+  {
+   "id": "L0133",
+   "donor_id": "D14",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 78.3,
+   "published_offset_h": -88.08,
+   "expires_offset_h": -57.28,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 71,
+    "collect_after_min": 109,
+    "deliver_after_min": 190
+   }
+  },
+  {
+   "id": "L0134",
+   "donor_id": "D03",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 6.8,
+   "published_offset_h": -84.75,
+   "expires_offset_h": 1587.95,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N08",
+    "confirm_after_min": 197,
+    "collect_after_min": 299,
+    "deliver_after_min": 384
+   }
+  },
+  {
+   "id": "L0135",
+   "donor_id": "D03",
+   "category": "prepared_meal",
+   "storage": "ambient",
+   "kg": 8.6,
+   "published_offset_h": -56.34,
+   "expires_offset_h": -54.24,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": null
+  },
+  {
+   "id": "L0136",
+   "donor_id": "D09",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 8.5,
+   "published_offset_h": -69.17,
+   "expires_offset_h": -35.17,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N04",
+    "confirm_after_min": 236,
+    "collect_after_min": 363,
+    "deliver_after_min": 420
+   }
+  },
+  {
+   "id": "L0137",
+   "donor_id": "D08",
+   "category": "dry_goods",
+   "storage": "ambient",
+   "kg": 12.9,
+   "published_offset_h": -53.45,
+   "expires_offset_h": 858.35,
+   "description": "Lote simulado de secos",
+   "outcome": {
+    "ngo_id": "N08",
+    "confirm_after_min": 56,
+    "collect_after_min": 182,
+    "deliver_after_min": 204
+   }
+  },
+  {
+   "id": "L0138",
+   "donor_id": "D08",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 13.4,
+   "published_offset_h": -60.54,
+   "expires_offset_h": -15.14,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 198,
+    "collect_after_min": 263,
+    "deliver_after_min": 339
+   }
+  },
+  {
+   "id": "L0139",
+   "donor_id": "D10",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 6.2,
+   "published_offset_h": -67.26,
+   "expires_offset_h": 88.54,
+   "description": "Lote simulado de laticínios",
+   "outcome": {
+    "ngo_id": "N10",
+    "confirm_after_min": 105,
+    "collect_after_min": 241,
+    "deliver_after_min": 306
+   }
+  },
+  {
+   "id": "L0140",
+   "donor_id": "D03",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 47.2,
+   "published_offset_h": -38.04,
+   "expires_offset_h": -28.24,
+   "description": "Lote simulado de padaria",
+   "outcome": {
+    "ngo_id": "N13",
+    "confirm_after_min": 137,
+    "collect_after_min": 247,
+    "deliver_after_min": 309
+   }
+  },
+  {
+   "id": "L0141",
+   "donor_id": "D12",
+   "category": "produce",
+   "storage": "refrigerated",
+   "kg": 37.3,
+   "published_offset_h": -34.51,
+   "expires_offset_h": 21.79,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N12",
+    "confirm_after_min": 192,
+    "collect_after_min": 215,
+    "deliver_after_min": 304
+   }
+  },
+  {
+   "id": "L0142",
+   "donor_id": "D01",
+   "category": "prepared_meal",
+   "storage": "refrigerated",
+   "kg": 2.8,
+   "published_offset_h": -39.14,
+   "expires_offset_h": -15.54,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": {
+    "ngo_id": "N06",
+    "confirm_after_min": 118,
+    "collect_after_min": 153,
+    "deliver_after_min": 212
+   }
+  },
+  {
+   "id": "L0143",
+   "donor_id": "D09",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 11.4,
+   "published_offset_h": -28.33,
+   "expires_offset_h": 20.67,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N19",
+    "confirm_after_min": 106,
+    "collect_after_min": 153,
+    "deliver_after_min": 235
+   }
+  },
+  {
+   "id": "L0144",
+   "donor_id": "D05",
+   "category": "produce",
+   "storage": "ambient",
+   "kg": 17.2,
+   "published_offset_h": -46.03,
+   "expires_offset_h": -33.23,
+   "description": "Lote simulado de hortifrúti",
+   "outcome": {
+    "ngo_id": "N15",
+    "confirm_after_min": 68,
+    "collect_after_min": 103,
+    "deliver_after_min": 176
+   }
+  },
+  {
+   "id": "L0145",
+   "donor_id": "D07",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 2.1,
+   "published_offset_h": -16.77,
+   "expires_offset_h": 30.43,
+   "description": "Lote simulado de padaria",
+   "outcome": null
+  },
+  {
+   "id": "L0146",
+   "donor_id": "D01",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 7.5,
+   "published_offset_h": -4.19,
+   "expires_offset_h": 199.51,
+   "description": "Lote simulado de laticínios",
+   "outcome": null
+  },
+  {
+   "id": "L0147",
+   "donor_id": "D06",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 7.0,
+   "published_offset_h": -8.46,
+   "expires_offset_h": 23.84,
+   "description": "Lote simulado de padaria",
+   "outcome": null
+  },
+  {
+   "id": "L0148",
+   "donor_id": "D14",
+   "category": "prepared_meal",
+   "storage": "ambient",
+   "kg": 2.6,
+   "published_offset_h": -7.98,
+   "expires_offset_h": -4.08,
+   "description": "Lote simulado de refeição pronta",
+   "outcome": null
+  },
+  {
+   "id": "L0149",
+   "donor_id": "D05",
+   "category": "bakery",
+   "storage": "ambient",
+   "kg": 3.6,
+   "published_offset_h": -15.7,
+   "expires_offset_h": 8.6,
+   "description": "Lote simulado de padaria",
+   "outcome": null
+  },
+  {
+   "id": "L0150",
+   "donor_id": "D06",
+   "category": "dairy",
+   "storage": "refrigerated",
+   "kg": 4.1,
+   "published_offset_h": -20.39,
+   "expires_offset_h": 50.11,
+   "description": "Lote simulado de laticínios",
+   "outcome": null
+  }
+ ]
+}

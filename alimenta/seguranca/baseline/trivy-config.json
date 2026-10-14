@@ -1,0 +1,60 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.76.0"
+  },
+  "ReportID": "01a13b37-cb79-7c32-9e75-394fb35770e6",
+  "CreatedAt": "2026-10-14T13:21:14.745801246-03:00",
+  "ArtifactName": ".",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "alimenta/Dockerfile",
+      "Class": "config",
+      "Type": "dockerfile",
+      "MisconfSummary": {
+        "Successes": 26,
+        "Failures": 1
+      },
+      "Misconfigurations": [
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS-0013",
+          "Title": "'RUN cd ...' to change directory",
+          "Description": "Use WORKDIR instead of proliferating instructions like 'RUN cd … \u0026\u0026 do-something', which are hard to read, troubleshoot, and maintain.",
+          "Message": "RUN should not be used to change directory: 'cd alimenta \u0026\u0026 uv sync --locked --no-dev --no-install-project --python /usr/local/bin/python3.12'. Use 'WORKDIR' statement instead.",
+          "Namespace": "builtin.dockerfile.DS013",
+          "Query": "data.builtin.dockerfile.DS013.deny",
+          "Resolution": "Use WORKDIR to change directory",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ds-0013",
+          "References": [
+            "https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#workdir",
+            "https://avd.aquasec.com/misconfig/ds-0013"
+          ],
+          "Status": "FAIL",
+          "CauseMetadata": {
+            "Provider": "Dockerfile",
+            "Service": "general",
+            "StartLine": 19,
+            "EndLine": 19,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 19,
+                  "Content": "RUN cd alimenta \u0026\u0026 uv sync --locked --no-dev --no-install-project --python /usr/local/bin/python3.12",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "\u001b[38;5;64mRUN\u001b[0m \u001b[38;5;33mcd\u001b[0m alimenta \u001b[38;5;245m\u0026\u0026\u001b[0m uv sync --locked --no-dev --no-install-project --python /usr/local/bin/python3.12",
+                  "FirstCause": true,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

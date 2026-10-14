@@ -1,0 +1,53 @@
+# Rede Alimenta (DEMONSTRAÇÃO · dados simulados): Postgres + API + painel.
+# Na raiz do repositório:  docker compose up --build
+# API e Swagger: http://localhost:8000/docs · Painel: http://localhost:8501
+name: rede-alimenta
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: alimenta
+      POSTGRES_PASSWORD: alimenta  # só local; produção usa DATABASE_URL do Supabase
+      POSTGRES_DB: alimenta
+    volumes:
+      - alimenta-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alimenta -d alimenta"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: alimenta/Dockerfile
+    image: rede-alimenta:local
+    environment:
+      DATABASE_URL: postgresql+psycopg://alimenta:alimenta@db:5432/alimenta
+      ALIMENTA_WRITE_TOKEN: ${ALIMENTA_WRITE_TOKEN:-troque-este-token-local}
+      ALIMENTA_SEED_ON_START: "true"
+      PORT: "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  painel:
+    image: rede-alimenta:local
+    command: ["alimenta/painel/run.sh"]
+    environment:
+      ALIMENTA_API_URL: http://api:8000
+      ALIMENTA_PUBLIC_API_URL: http://localhost:8000
+      ALIMENTA_WRITE_TOKEN: ${ALIMENTA_WRITE_TOKEN:-troque-este-token-local}
+      ALIMENTA_GITHUB_REPO: LucasOl1337/pontape
+      PORT: "8501"
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  alimenta-db:
