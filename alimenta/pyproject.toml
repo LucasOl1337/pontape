@@ -1,0 +1,32 @@
+[project]
+name = "rede-alimenta"
+version = "0.1.0"
+description = "Rede Alimenta (módulo M5 do PontaPé): demonstração com dados simulados."
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy>=2",
+    "psycopg[binary]>=3",
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "joblib",
+    "streamlit",
+    "pydeck",
+    "httpx",
+]
+
+[dependency-groups]
+dev = ["pytest", "bandit"]
+
+[tool.uv]
+# O pacote "alimenta" roda a partir da raiz do repositório (python -m alimenta...);
+# não é instalado como distribuição.
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# O pacote "alimenta" é importado a partir da raiz do repositório.
+pythonpath = [".."]
+addopts = "-q"
