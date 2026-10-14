@@ -21,3 +21,4 @@ scripts/deploy/yumi-knowledge.js
 .venv/
 .pytest_cache/
 alimenta.db
+alimenta/seguranca/atual/

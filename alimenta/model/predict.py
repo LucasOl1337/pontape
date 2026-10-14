@@ -37,7 +37,8 @@ def load_model():
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     if digest != metrics["artifact"]["sha256"]:
         raise ModelIntegrityError(f"sha256 do modelo não confere: {path.name}")
-    return joblib.load(path)  # nosec B301 - artefato local conferido por sha256 acima
+    # Bandit B301 (pickle): aceito, o artefato é local e o sha256 foi conferido acima.
+    return joblib.load(path)  # nosec B301
 
 
 def predict(features: dict) -> dict:
