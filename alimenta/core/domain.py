@@ -52,6 +52,12 @@ def risk_level(proba: float) -> str:
     return "high"
 
 
+def region_centroid(region: str) -> tuple[float, float]:
+    """Centro da caixa da região (lat, lon). É o único ponto que sai em saída pública."""
+    lat_min, lat_max, lon_min, lon_max = REGIONS[region]["box"]
+    return round((lat_min + lat_max) / 2, 5), round((lon_min + lon_max) / 2, 5)
+
+
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """Distância em linha reta (km) entre dois pontos."""
     r = 6371.0

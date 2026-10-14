@@ -49,7 +49,7 @@ def test_full_flow_post_to_deliver(client, auth):
     assert lot.status_code == 201
     lot = lot.json()
     assert 0 <= lot["discard_proba"] <= 1 and lot["risk_level"] in {"low", "medium", "high"}
-    recs = client.get(f"/lots/{lot['id']}/recommendations").json()["recommendations"]
+    recs = client.get(f"/lots/{lot['id']}/recommendations", headers=auth).json()["recommendations"]
     assert recs and all(r["eligible"] and "bakery" for r in recs)
     assert recs == sorted(recs, key=lambda r: -r["score"])
 
@@ -75,7 +75,7 @@ def test_full_flow_post_to_deliver(client, auth):
 
 def test_double_assignment_is_409(client, auth):
     lot = client.post("/lots", json={**LOT, "expires_at": in_hours(8)}, headers=auth).json()
-    ngo = client.get(f"/lots/{lot['id']}/recommendations").json()["recommendations"]
+    ngo = client.get(f"/lots/{lot['id']}/recommendations", headers=auth).json()["recommendations"]
     first = client.post(f"/lots/{lot['id']}/matches", json={"ngo_id": ngo[0]["ngo_id"]}, headers=auth)
     second = client.post(f"/lots/{lot['id']}/matches", json={"ngo_id": ngo[1]["ngo_id"]}, headers=auth)
     assert first.status_code == 201 and second.status_code == 409
@@ -83,7 +83,7 @@ def test_double_assignment_is_409(client, auth):
 
 def test_cancel_frees_the_lot(client, auth):
     lot = client.post("/lots", json={**LOT, "expires_at": in_hours(8)}, headers=auth).json()
-    ngo = client.get(f"/lots/{lot['id']}/recommendations").json()["recommendations"]
+    ngo = client.get(f"/lots/{lot['id']}/recommendations", headers=auth).json()["recommendations"]
     match = client.post(f"/lots/{lot['id']}/matches", json={"ngo_id": ngo[0]["ngo_id"]}, headers=auth).json()
     assert client.post(f"/matches/{match['id']}/cancel", headers=auth).json()["status"] == "cancelled"
     assert client.get(f"/lots/{lot['id']}").json()["status"] == "open"
@@ -93,7 +93,7 @@ def test_cancel_frees_the_lot(client, auth):
 
 def test_deliver_before_collect_is_409(client, auth):
     lot = client.post("/lots", json={**LOT, "expires_at": in_hours(8)}, headers=auth).json()
-    ngo = client.get(f"/lots/{lot['id']}/recommendations").json()["recommendations"]
+    ngo = client.get(f"/lots/{lot['id']}/recommendations", headers=auth).json()["recommendations"]
     match = client.post(f"/lots/{lot['id']}/matches", json={"ngo_id": ngo[0]["ngo_id"]}, headers=auth).json()
     assert client.post(f"/matches/{match['id']}/deliver", headers=auth).status_code == 409
 

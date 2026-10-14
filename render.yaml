@@ -41,5 +41,9 @@ services:
           type: web
           name: rede-alimenta-api
           envVarKey: ALIMENTA_WRITE_TOKEN
+      # Fica só no servidor do painel. O token acima só sai do painel depois que a sessão
+      # digita este código (hmac.compare_digest). Vazio = painel só leitura.
+      - key: ALIMENTA_OPERATOR_CODE
+        sync: false
       - key: ALIMENTA_GITHUB_REPO
         value: LucasOl1337/pontape

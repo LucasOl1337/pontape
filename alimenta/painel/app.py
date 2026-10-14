@@ -2,6 +2,10 @@
 
 Tudo passa pela API (ALIMENTA_API_URL). Rodar, da raiz do repositório:
     streamlit run alimenta/painel/app.py
+
+Visitante: só leitura, sem token, só região (sem nome nem coordenada exata).
+Operador: digita o código (ALIMENTA_OPERATOR_CODE, conferido no servidor) e
+ganha a aba "Novo lote" e as ações de match e entrega. Sem a env, não há operador.
 """
 
 from __future__ import annotations
@@ -33,11 +37,48 @@ def br(value: float, decimals: int = 0) -> str:
 
 
 LEVEL = {"expired": "vencido sem entrega", "critical": "crítico (até 6 h)", "warning": "atenção (até 24 h)"}
+MAX_OPERATOR_TRIES = 5
+
+
+def operator_sidebar() -> bool:
+    """Login do operador por código, conferido no servidor. Devolve se a sessão é de operador."""
+    with st.sidebar:
+        st.subheader("Área do operador")
+        if not client.operator_enabled():
+            st.session_state.pop("operator", None)
+            st.caption("Escrita desligada neste painel. Só leitura.")
+            return False
+        if st.session_state.get("operator"):
+            st.success("Sessão de operador.")
+            if st.button("Sair", key="operator_logout"):
+                for key in ("operator", "lot_id", "match_id"):
+                    st.session_state.pop(key, None)
+                st.rerun()
+            return True
+        tries = st.session_state.get("operator_tries", 0)
+        if tries >= MAX_OPERATOR_TRIES:
+            st.error("Muitas tentativas nesta sessão. Recarregue a página para tentar de novo.")
+            return False
+        with st.form("operator_login"):
+            code = st.text_input("Código de operador", type="password", key="operator_code")
+            entered = st.form_submit_button("Entrar")
+        if entered:
+            if client.check_operator_code(code):
+                st.session_state["operator"] = True
+                st.session_state.pop("operator_tries", None)
+                st.rerun()
+            st.session_state["operator_tries"] = tries + 1
+            st.error("Código inválido.")
+        st.caption("Visitantes veem só leitura. Publicar lote e mover entregas é só para a equipe.")
+    return False
+
 
 st.set_page_config(page_title="Rede Alimenta · DEMONSTRAÇÃO", page_icon="🥖", layout="wide")
 st.warning(f"**{DEMO_LABEL}.** Nenhum doador, ONG ou lote é real. Refeições são estimadas.", icon="⚠️")
 st.title("Rede Alimenta")
 st.caption("Módulo M5 do PontaPé · lote de comida → risco de descarte → ONG recomendada → coleta e entrega")
+
+operator = operator_sidebar()
 
 try:
     kpis = client.get("/kpis")
@@ -46,9 +87,11 @@ except Exception as exc:  # noqa: BLE001 - painel mostra o erro em vez de cair
     st.error(f"A API não respondeu em {client.API_URL}: {exc}")
     st.stop()
 
-tabs = st.tabs(["Visão geral", "Novo lote", "Rota de coleta", "Modelo", "Segurança e CI", "Conferir livro da demo"])
+TAB_NAMES = ["Visão geral"] + (["Novo lote"] if operator else []) + [
+    "Rota de coleta", "Modelo", "Segurança e CI", "Conferir livro da demo"]
+tabs = dict(zip(TAB_NAMES, st.tabs(TAB_NAMES)))
 
-with tabs[0]:
+with tabs["Visão geral"]:
     c = st.columns(5)
     c[0].metric("kg salvos", br(kpis["kg_saved"], 1))
     c[1].metric("Refeições estimadas", br(kpis["meals_estimated"]),
@@ -73,7 +116,8 @@ with tabs[0]:
                                 get_size=14, get_color=[30, 30, 30]))
         st.pydeck_chart(pdk.Deck(layers=layers, map_style="light",
                                  initial_view_state=pdk.ViewState(latitude=-23.57, longitude=-46.63, zoom=9.6)))
-        st.caption("Peso de cada ponto = kg entregues à ONG. Pontos fictícios dentro de cada macrorregião.")
+        st.caption("Um ponto por macrorregião, no centro dela: peso = kg entregues às ONGs da região. "
+                   "Nenhum ponto é endereço de doador ou ONG.")
     with right:
         st.subheader("Por região (da ONG)")
         st.bar_chart(regions.set_index("label")[["kg_saved"]], height=230)
@@ -102,11 +146,11 @@ with tabs[0]:
     s1.caption("Lotes por situação: " + ", ".join(f"{k} {v}" for k, v in kpis["lots_by_status"].items()))
     s2.caption("Lotes por risco: " + ", ".join(f"{RISK.get(k, k)} {v}" for k, v in kpis["lots_by_risk"].items()))
 
-with tabs[1]:
+
+def new_lot_tab() -> None:
+    """Só existe para sessão de operador: o visitante nem vê o formulário."""
     st.subheader("Publicar um lote de demonstração")
-    if not client.can_write():
-        st.info("Escrita desligada neste painel (ALIMENTA_WRITE_TOKEN não configurado). Só leitura.")
-    donors = client.get("/donors")
+    donors = client.get("/donors", operator=True)
     with st.form("new_lot"):
         a, b, c3 = st.columns(3)
         donor = a.selectbox("Doador", donors, format_func=lambda d: f"{d['name']} · {REGIONS[d['region']]['label']}")
@@ -116,12 +160,13 @@ with tabs[1]:
         hours = b.number_input("Vence em quantas horas", min_value=-48.0, max_value=2000.0, value=8.0, step=1.0,
                                help="Valor negativo simula lote vencido (a API recusa com 422).")
         desc = c3.text_input("Descrição", "Lote de demonstração")
-        sent = st.form_submit_button("Publicar lote", disabled=not client.can_write())
+        sent = st.form_submit_button("Publicar lote")
     if sent:
         expires = (datetime.now(timezone.utc) + timedelta(hours=hours)).isoformat()
         try:
-            lot = client.post("/lots", {"donor_id": donor["id"], "category": category, "storage": storage,
-                                        "kg": kg, "expires_at": expires, "description": desc})
+            lot = client.post("/lots", operator=True, body={
+                "donor_id": donor["id"], "category": category, "storage": storage,
+                "kg": kg, "expires_at": expires, "description": desc})
             st.session_state["lot_id"] = lot["id"]
             st.success(f"Lote {lot['id']} publicado.")
         except client.ApiError as exc:
@@ -129,12 +174,12 @@ with tabs[1]:
 
     lot_id = st.session_state.get("lot_id")
     if lot_id:
-        lot = client.get(f"/lots/{lot_id}")
+        lot = client.get(f"/lots/{lot_id}", operator=True)
         st.markdown(f"**Lote {lot_id}** · risco de descarte **{RISK[lot['risk_level']]}** "
                     f"({br(lot['discard_proba'] * 100)}%, modelo {lot['model_version']}) · situação `{lot['status']}`")
         if lot["status"] == "open":
             try:
-                recs = client.get(f"/lots/{lot_id}/recommendations")["recommendations"]
+                recs = client.get(f"/lots/{lot_id}/recommendations", operator=True)["recommendations"]
             except client.ApiError as exc:
                 recs = []
                 st.error(f"{exc.status}: {exc.detail}")
@@ -144,10 +189,10 @@ with tabs[1]:
                 st.dataframe(table, hide_index=True, width="stretch")
                 st.caption("Pontos vêm de regras (distância, mesma região, folga de capacidade, urgência), não do modelo.")
                 choice = st.selectbox("ONG", recs, format_func=lambda r: f"{r['ngo_name']} · {r['score']} pontos")
-                if st.button("Atribuir à ONG", disabled=not client.can_write()):
+                if st.button("Atribuir à ONG"):
                     try:
-                        st.session_state["match_id"] = client.post(f"/lots/{lot_id}/matches",
-                                                                   {"ngo_id": choice["ngo_id"]})["id"]
+                        st.session_state["match_id"] = client.post(f"/lots/{lot_id}/matches", operator=True,
+                                                                   body={"ngo_id": choice["ngo_id"]})["id"]
                         st.rerun()
                     except client.ApiError as exc:
                         st.error(f"{exc.status}: {exc.detail}")
@@ -155,40 +200,50 @@ with tabs[1]:
                 st.warning("Nenhuma ONG elegível para este lote.")
         match_id = st.session_state.get("match_id")
         if match_id and lot["status"] in ("matched", "delivered"):
-            match = next((m for m in client.get("/matches") if m["id"] == match_id), None)
+            match = next((m for m in client.get("/matches", operator=True) if m["id"] == match_id), None)
             if match:
                 st.markdown(f"Match **{match_id}** com **{match['ngo_id']}** · estado `{match['status']}`")
                 cols = st.columns(4)
                 for col, step, label in zip(cols, ("confirm", "collect", "deliver", "cancel"),
                                             ("ONG confirmou", "Coleta feita", "Entrega feita", "Cancelar")):
-                    if col.button(label, key=f"{step}-{match_id}", disabled=not client.can_write()):
+                    if col.button(label, key=f"{step}-{match_id}"):
                         try:
-                            done = client.post(f"/matches/{match_id}/{step}")
+                            done = client.post(f"/matches/{match_id}/{step}", operator=True)
                             if done.get("ledger_sequence"):
                                 st.success(f"Entrega gravada no livro da demo, evento {done['ledger_sequence']}.")
                             st.rerun()
                         except client.ApiError as exc:
                             st.error(f"{exc.status}: {exc.detail}")
 
-with tabs[2]:
+
+if operator:
+    with tabs["Novo lote"]:
+        new_lot_tab()
+
+with tabs["Rota de coleta"]:
     st.subheader("Rota de coleta")
     st.caption("Ordem por vizinho mais próximo: sai da ONG, vai sempre ao doador mais perto ainda não visitado e "
                "volta à ONG. É uma heurística, não garante a menor rota. Distância em linha reta (haversine).")
-    ngos = client.get("/ngos")
+    if not operator:
+        st.caption("Visão pública: cada parada é o centro de uma região, sem nome nem endereço; "
+                   "os km são entre esses centros. A rota exata é só para a equipe.")
+    ngos = client.get("/ngos", operator=operator)
     r1, r2 = st.columns([3, 2])
     ngo = r1.selectbox("ONG", ngos, key="route_ngo",
-                       format_func=lambda n: f"{n['name']} · {REGIONS[n['region']]['label']}")
+                       format_func=lambda n: f"{n.get('name', n['id'])} · {REGIONS[n['region']]['label']}")
     include_open = r2.checkbox("Incluir lotes abertos compatíveis", key="route_open",
                                help="Além dos confirmados e ainda não coletados: lotes abertos não vencidos, "
                                     "de categoria aceita, que cabem na capacidade de hoje, até 25 km.")
-    route = client.get(f"/ngos/{ngo['id']}/route", include_open="true" if include_open else "false")
+    route = client.get(f"/ngos/{ngo['id']}/route", operator=operator,
+                       include_open="true" if include_open else "false")
     if not route["stops"]:
         st.info("Nenhum lote para coletar nesta ONG agora. Marque a opção acima para ver os lotes abertos compatíveis.")
     else:
         st.markdown(f"**{len(route['stops'])} paradas**, {route['lots']} lotes · total "
                     f"**{br(route['total_km'], 2)} km** (com a volta de {br(route['return_leg_km'], 2)} km)")
         st.dataframe(pd.DataFrame([{
-            "Ordem": s["order"], "Doador": s["donor_name"], "Região": REGIONS[s["donor_region"]]["label"],
+            "Ordem": s["order"], **({"Doador": s["donor_name"]} if route["exact"] else {}),
+            "Região": s["region_label"],
             "Lotes": ", ".join(i["lot_id"] + (" (aberto)" if i["kind"] == "open" else "") for i in s["items"]),
             "kg": s["kg"], "Trecho (km)": s["leg_km"], "Acumulado (km)": s["cumulative_km"]}
             for s in route["stops"]]), hide_index=True, width="stretch")
@@ -207,9 +262,10 @@ with tabs[2]:
                       get_color=[20, 20, 20], get_pixel_offset=[0, -18]),
         ], map_style="light", initial_view_state=pdk.ViewState(latitude=route["start"]["lat"],
                                                                longitude=route["start"]["lon"], zoom=10.5)))
-        st.caption("Linha: ONG → paradas na ordem → ONG. Pontos fictícios do seed.")
+        st.caption("Linha: ONG → paradas na ordem → ONG. " + (
+            "Pontos fictícios do seed." if route["exact"] else "Pontos no centro de cada região, não endereços."))
 
-with tabs[3]:
+with tabs["Modelo"]:
     st.subheader("Modelo de risco de descarte")
     st.markdown(f"**Alvo:** {model['target']}  \n**Algoritmo:** {model['algorithm']} · versão `{model['model_version']}`"
                 f" · seed {model['seed']}  \n**Split:** {model['split']['n_train']} treino / "
@@ -233,7 +289,7 @@ with tabs[3]:
                  width="stretch")
     st.caption(f"Artefato `{model['artifact']['file']}` · sha256 `{model['artifact']['sha256'][:16]}…`, conferido ao carregar.")
 
-with tabs[4]:
+with tabs["Segurança e CI"]:
     st.subheader("Saúde do CI (branch main)")
     ci = client.ci_status()
     if ci["error"]:
@@ -267,7 +323,7 @@ with tabs[4]:
             st.markdown("**Aceitos com justificativa**")
             st.dataframe(pd.DataFrame(summary["accepted"]), hide_index=True, width="stretch")
 
-with tabs[5]:
+with tabs["Conferir livro da demo"]:
     st.subheader("Conferir livro da demo")
     st.markdown(
         f"Livro **{demo_ledger.LEDGER_NAME}**, separado do livro real do PontaPé. Cada entrega da demonstração "

@@ -1,7 +1,8 @@
 """API da Rede Alimenta (FastAPI + Swagger em /docs). DEMONSTRAÇÃO · dados simulados.
 
-Leitura aberta. Toda escrita exige o cabeçalho `X-Alimenta-Token` igual a
-`ALIMENTA_WRITE_TOKEN`; sem a variável, a escrita fica desligada (503).
+Leitura pública sem coordenada exata, nome ou endereço: só região e campos não
+sensíveis. Toda escrita, e a leitura com coordenada exata, exige o cabeçalho
+`X-Alimenta-Token` igual a `ALIMENTA_WRITE_TOKEN`; sem a variável, fica desligada (503).
 
 Rodar, da raiz do repositório:
     uvicorn alimenta.api.main:app --port 8000
@@ -32,7 +33,8 @@ from alimenta.model.predict import load_metrics, load_model
 DESCRIPTION = (
     f"**{DEMO_LABEL}.** Rede Alimenta, módulo M5 do PontaPé (projeto integrador FIAP Rede Alimenta IA). "
     "Lote de comida → risco de descarte (modelo) → ONG recomendada (regras) → coleta e entrega → KPIs. "
-    "Escrita exige o cabeçalho `X-Alimenta-Token`. Nenhum dado é de pessoa ou entidade real."
+    "Escrita exige o cabeçalho `X-Alimenta-Token`. Sem o token, as leituras saem só com região: "
+    "sem nome, endereço nem coordenada exata. Nenhum dado é de pessoa ou entidade real."
 )
 
 
@@ -46,6 +48,22 @@ def require_token(x_alimenta_token: str | None = Header(default=None)) -> None:
         raise HTTPException(503, "escrita desligada: ALIMENTA_WRITE_TOKEN não configurado")
     if not x_alimenta_token or not hmac.compare_digest(x_alimenta_token.encode(), expected.encode()):
         raise HTTPException(401, "token de escrita ausente ou inválido")
+
+
+def has_token(x_alimenta_token: str | None = Header(default=None)) -> bool:
+    """Leitura: sem cabeçalho, saída pública; com cabeçalho, ele tem de valer (401/503)."""
+    if x_alimenta_token is None:
+        return False
+    require_token(x_alimenta_token)
+    return True
+
+
+def dump(model, rows) -> list[dict]:
+    return [model.model_validate(row).model_dump(mode="json") for row in rows]
+
+
+def public_doc(model) -> dict:
+    return {200: {"model": list[model], "description": "Sem token: saída pública. Com token: saída completa."}}
 
 
 def create_app(engine: Engine | None = None) -> FastAPI:
@@ -88,9 +106,11 @@ def create_app(engine: Engine | None = None) -> FastAPI:
         return {"status": "ok", "notice": DEMO_LABEL, "database": engine.dialect.name,
                 "model_version": load_metrics()["model_version"]}
 
-    @app.get("/donors", response_model=list[schemas.DonorOut], tags=["doadores"])
-    def list_donors(session: Session = Depends(db)):
-        return session.scalars(select(Donor).order_by(Donor.id)).all()
+    @app.get("/donors", response_model=None, responses=public_doc(schemas.DonorPublic), tags=["doadores"],
+             summary="Doadores: público só com tipo e região; nome e coordenada só com token")
+    def list_donors(full: bool = Depends(has_token), session: Session = Depends(db)):
+        rows = session.scalars(select(Donor).order_by(Donor.id)).all()
+        return dump(schemas.DonorOut if full else schemas.DonorPublic, rows)
 
     @app.post("/donors", response_model=schemas.DonorOut, status_code=201, dependencies=write, tags=["doadores"])
     def create_donor(body: schemas.DonorIn, session: Session = Depends(db)):
@@ -99,9 +119,11 @@ def create_app(engine: Engine | None = None) -> FastAPI:
         session.commit()
         return donor
 
-    @app.get("/ngos", response_model=list[schemas.NgoOut], tags=["ONGs"])
-    def list_ngos(session: Session = Depends(db)):
-        return session.scalars(select(Ngo).order_by(Ngo.id)).all()
+    @app.get("/ngos", response_model=None, responses=public_doc(schemas.NgoPublic), tags=["ONGs"],
+             summary="ONGs: público com região, categorias e capacidade; nome e coordenada só com token")
+    def list_ngos(full: bool = Depends(has_token), session: Session = Depends(db)):
+        rows = session.scalars(select(Ngo).order_by(Ngo.id)).all()
+        return dump(schemas.NgoOut if full else schemas.NgoPublic, rows)
 
     @app.post("/ngos", response_model=schemas.NgoOut, status_code=201, dependencies=write, tags=["ONGs"])
     def create_ngo(body: schemas.NgoIn, session: Session = Depends(db)):
@@ -110,24 +132,27 @@ def create_app(engine: Engine | None = None) -> FastAPI:
         session.commit()
         return ngo
 
-    @app.get("/lots", response_model=list[schemas.LotOut], tags=["lotes"])
-    def list_lots(status: str | None = None, limit: int = 200, session: Session = Depends(db)):
+    @app.get("/lots", response_model=None, responses=public_doc(schemas.LotPublic), tags=["lotes"],
+             summary="Lotes: a descrição livre só sai com token")
+    def list_lots(status: str | None = None, limit: int = 200, full: bool = Depends(has_token),
+                  session: Session = Depends(db)):
         query = select(Lot).order_by(Lot.published_at.desc()).limit(min(max(limit, 1), 1000))
         if status:
             query = query.where(Lot.status == status)
-        return session.scalars(query).all()
+        return dump(schemas.LotOut if full else schemas.LotPublic, session.scalars(query).all())
 
     @app.post("/lots", response_model=schemas.LotOut, status_code=201, dependencies=write, tags=["lotes"],
               summary="Publica um lote e recebe a predição de risco de descarte (lote vencido → 422)")
     def create_lot(body: schemas.LotIn, session: Session = Depends(db)):
         return service.create_lot(session, **body.model_dump())
 
-    @app.get("/lots/{lot_id}", response_model=schemas.LotOut, tags=["lotes"])
-    def get_lot(lot_id: str, session: Session = Depends(db)):
-        return service.get(session, Lot, lot_id)
+    @app.get("/lots/{lot_id}", response_model=None, responses={200: {"model": schemas.LotPublic}}, tags=["lotes"])
+    def get_lot(lot_id: str, full: bool = Depends(has_token), session: Session = Depends(db)):
+        return dump(schemas.LotOut if full else schemas.LotPublic, [service.get(session, Lot, lot_id)])[0]
 
-    @app.get("/lots/{lot_id}/recommendations", tags=["match"],
-             summary="Ranking de ONGs com os pontos de cada regra (lote vencido → 422)")
+    @app.get("/lots/{lot_id}/recommendations", tags=["match"], dependencies=write,
+             summary="Ranking de ONGs com os pontos de cada regra, só com token (lote vencido → 422)",
+             description="Exige token: nome da ONG e distância exata ao doador não são públicos.")
     def recommendations(lot_id: str, limit: int = 5, session: Session = Depends(db)):
         return {"lot_id": lot_id, "rules": "alimenta/core/matching.py",
                 "recommendations": service.recommendations(session, lot_id, min(max(limit, 1), 20))}
@@ -137,9 +162,11 @@ def create_app(engine: Engine | None = None) -> FastAPI:
     def create_match(lot_id: str, body: schemas.MatchIn, session: Session = Depends(db)):
         return service.create_match(session, lot_id, body.ngo_id)
 
-    @app.get("/matches", response_model=list[schemas.MatchOut], tags=["match"])
-    def list_matches(limit: int = 200, session: Session = Depends(db)):
-        return session.scalars(select(Match).order_by(Match.id.desc()).limit(min(max(limit, 1), 1000))).all()
+    @app.get("/matches", response_model=None, responses=public_doc(schemas.MatchPublic), tags=["match"],
+             summary="Matches: distância e pontos só com token")
+    def list_matches(limit: int = 200, full: bool = Depends(has_token), session: Session = Depends(db)):
+        rows = session.scalars(select(Match).order_by(Match.id.desc()).limit(min(max(limit, 1), 1000))).all()
+        return dump(schemas.MatchOut if full else schemas.MatchPublic, rows)
 
     def step_route(step: str):
         def handler(match_id: int, session: Session = Depends(db)):
@@ -164,9 +191,11 @@ def create_app(engine: Engine | None = None) -> FastAPI:
                  "Entram os lotes com match confirmado e ainda não coletado dessa ONG; com "
                  "`include_open=true`, também os lotes abertos compatíveis (não vencidos, categoria aceita, "
                  "cabem na capacidade de hoje, até 25 km). Distância haversine em km, linha reta. "
-                 "Heurística gulosa: não garante a menor rota."))
-    def ngo_route(ngo_id: str, include_open: bool = False, session: Session = Depends(db)):
-        return service.collection_route(session, ngo_id, include_open)
+                 "Heurística gulosa: não garante a menor rota. Sem token, cada ponto é o centroide da "
+                 "região (sem nome nem coordenada exata) e os km são entre centroides; com token, exatos."))
+    def ngo_route(ngo_id: str, include_open: bool = False, full: bool = Depends(has_token),
+                  session: Session = Depends(db)):
+        return service.collection_route(session, ngo_id, include_open, exact=full)
 
     @app.get("/kpis", tags=["indicadores"])
     def get_kpis(session: Session = Depends(db)):
