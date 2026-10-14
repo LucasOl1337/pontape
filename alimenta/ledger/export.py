@@ -1,8 +1,8 @@
-"""Exporta o livro da demo de um banco para JSON `{notice, events}`.
+"""Exporta o livro pontape-alimenta de um banco para JSON `{notice, events}`.
 
 Uso, da raiz do repositório:
-    DATABASE_URL=... python -m alimenta.ledger.export livro-demo.json
-    python3 tools/conferir.py livro-demo.json
+    DATABASE_URL=... python -m alimenta.ledger.export livro.json
+    python3 tools/conferir.py livro.json
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 
 from alimenta.db.session import make_engine, make_sessionmaker
-from alimenta.ledger.demo_ledger import export
+from alimenta.ledger.book import export
 
 
 def main(argv: list[str]) -> int:
