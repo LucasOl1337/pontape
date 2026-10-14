@@ -1,0 +1,45 @@
+# Render Blueprint da Rede Alimenta (DEMONSTRAÇÃO · dados simulados).
+# Dois web services da MESMA imagem (alimenta/Dockerfile): API e painel.
+# Banco: Postgres do Supabase pelo pooler em modo sessão (porta 5432, IPv4).
+# Deploy: autoDeploy desligado; o workflow .github/workflows/alimenta.yml chama
+# os deploy hooks depois de testes e gates verdes na main.
+services:
+  - type: web
+    name: rede-alimenta-api
+    runtime: docker
+    plan: free
+    region: virginia  # perto do Supabase us-east-1 em uso; sa-east-1 é o alvo ideal
+    dockerfilePath: ./alimenta/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: DATABASE_URL
+        sync: false  # string do pooler Supabase (sessão, 5432); o código troca postgresql:// por postgresql+psycopg://
+      - key: ALIMENTA_WRITE_TOKEN
+        generateValue: true
+      - key: ALIMENTA_SEED_ON_START
+        value: "true"
+
+  - type: web
+    name: rede-alimenta-painel
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./alimenta/Dockerfile
+    dockerContext: .
+    dockerCommand: alimenta/painel/run.sh
+    healthCheckPath: /_stcore/health
+    autoDeploy: false
+    envVars:
+      - key: ALIMENTA_API_URL
+        sync: false  # URL pública da API, ex.: https://rede-alimenta-api.onrender.com
+      - key: ALIMENTA_PUBLIC_API_URL
+        sync: false  # mesma URL pública (aparece no rodapé e no link do Swagger)
+      - key: ALIMENTA_WRITE_TOKEN
+        fromService:
+          type: web
+          name: rede-alimenta-api
+          envVarKey: ALIMENTA_WRITE_TOKEN
+      - key: ALIMENTA_GITHUB_REPO
+        value: LucasOl1337/pontape

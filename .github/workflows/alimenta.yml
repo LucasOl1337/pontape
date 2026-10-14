@@ -1,0 +1,108 @@
+name: Rede Alimenta
+
+# Roda em todo PR e push na main, sem filtro de caminho (decisão Q12 da rodada r1):
+# o CI aprovado tem de valer para o mesmo commit que é demonstrado.
+# Push em alimenta/** prova a frente antes do PR (o deploy continua só na main).
+on:
+  pull_request:
+  push:
+    branches: [main, "alimenta/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: alimenta-${{ github.ref }}
+  cancel-in-progress: true
+
+# Actions fixadas por SHA de commit (não por tag móvel).
+# actions/checkout v7.0.1, actions/upload-artifact v7.0.2, astral-sh/setup-uv v10.3.0.
+jobs:
+  testes:
+    name: pytest e retreino reproduzível
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
+        with:
+          version: "0.12.5"
+      - name: Dependências travadas (uv.lock)
+        working-directory: alimenta
+        run: uv sync --locked
+      - name: Dados simulados conferem com a seed
+        run: alimenta/.venv/bin/python -m alimenta.data.generate --check
+      - name: Retreino confere com metrics.json versionado
+        run: alimenta/.venv/bin/python -m alimenta.model.train --check
+      - name: pytest
+        working-directory: alimenta
+        run: .venv/bin/python -m pytest --junitxml=pytest.xml
+      - name: Relatório do pytest
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: pytest
+          path: alimenta/pytest.xml
+          if-no-files-found: ignore
+
+  seguranca:
+    name: Bandit, Trivy (fs, config, imagem) e gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
+        with:
+          version: "0.12.5"
+      - name: Bandit (grupo dev do uv.lock)
+        working-directory: alimenta
+        run: uv sync --locked --only-group dev
+      - name: Trivy v0.76.0 por binário com sha256
+        run: alimenta/seguranca/instalar-trivy.sh "$RUNNER_TEMP/bin"
+      - name: Build da imagem
+        run: docker build -f alimenta/Dockerfile -t rede-alimenta:ci . && docker save rede-alimenta:ci -o "$RUNNER_TEMP/rede-alimenta.tar"
+      - name: Scan e gates
+        env:
+          TRIVY: ${{ runner.temp }}/bin/trivy
+          BANDIT: alimenta/.venv/bin/bandit
+          IMAGE_TAR: ${{ runner.temp }}/rede-alimenta.tar
+          OUT: alimenta/seguranca/atual
+        run: alimenta/seguranca/scan.sh
+      - name: Resumo antes/depois (linha de base x este commit)
+        if: always()
+        run: |
+          python3 -m alimenta.seguranca.resumo alimenta/seguranca/atual "${GITHUB_SHA::7}"
+          cp alimenta/seguranca/resumo.json alimenta/seguranca/atual/resumo.json
+      - name: Relatórios de segurança
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: seguranca
+          path: alimenta/seguranca/atual/
+          if-no-files-found: warn
+
+  deploy:
+    name: Deploy no Render (só na main e só com segredo)
+    needs: [testes, seguranca]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispara os deploy hooks
+        env:
+          HOOK_API: ${{ secrets.RENDER_DEPLOY_HOOK_API }}
+          HOOK_PAINEL: ${{ secrets.RENDER_DEPLOY_HOOK_PAINEL }}
+        run: |
+          if [ -z "$HOOK_API" ] && [ -z "$HOOK_PAINEL" ]; then
+            echo "Deploy não executado: segredos RENDER_DEPLOY_HOOK_API/PAINEL não configurados." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          for name in API PAINEL; do
+            var="HOOK_$name"; url="${!var}"
+            if [ -n "$url" ]; then
+              curl -sS -f -X POST "$url" -o /dev/null && echo "Deploy $name disparado." | tee -a "$GITHUB_STEP_SUMMARY"
+            else
+              echo "Deploy $name não executado: segredo ausente." | tee -a "$GITHUB_STEP_SUMMARY"
+            fi
+          done

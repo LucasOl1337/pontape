@@ -29,7 +29,7 @@ def make_engine(url: str | None = None) -> Engine:
             dbapi_conn.execute("PRAGMA foreign_keys=ON")
 
         return engine
-    return create_engine(url, pool_pre_ping=True, pool_size=5, max_overflow=5)
+    return create_engine(url, pool_pre_ping=True, pool_size=3, max_overflow=2)
 
 
 def make_sessionmaker(engine: Engine) -> sessionmaker:
