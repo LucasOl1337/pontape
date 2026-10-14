@@ -121,7 +121,7 @@ O aviso traz categoria, kg, prazo e bairro. Nunca traz beneficiário. Cada aviso
 
 ### Rota de coleta
 
-A rota já está no ar em `GET /ngos/{id}/route` (merge `f57f4b0`, testes em `alimenta/tests/test_route.py`). Ela sai da ONG, vai sempre ao doador mais perto ainda não visitado e volta à ONG. Lotes do mesmo doador viram uma parada. A distância é haversine, em linha reta. É uma heurística gulosa de vizinho mais próximo e não garante a menor rota.
+A rota nasceu no corte 1 (merge `f57f4b0`, testes em `alimenta/tests/test_route.py`). No corte real ela só existe para a ONG logada. Ela sai da ONG, vai sempre ao doador mais perto ainda não visitado e volta à ONG. Lotes do mesmo doador viram uma parada. A distância é haversine, em linha reta. É uma heurística gulosa de vizinho mais próximo e não garante a menor rota.
 
 No corte real, a ONG logada vê a própria rota em `GET /ngos/me/route`. Prova: `test_fluxo.py::test_full_flow_double_confirmation`.
 
@@ -293,7 +293,7 @@ Documentadas em `alimenta/.env.example`. Segredo nunca entra no git.
 | Variável | Para quê | Produção |
 |---|---|---|
 | `DATABASE_URL` | Banco. SQLite nos testes, Postgres no compose, pooler do Supabase em produção | Pooler sa-east-1, modo sessão, porta 5432 |
-| `ALIMENTA_ENV` | `local` liga o seed de exemplo e o `/demo/reset` | `production` |
+| `ALIMENTA_ENV` | `local` liga o seed de exemplo, o `/demo/reset` e o login local de contas de teste | `production` |
 | `ALIMENTA_SEED_ON_START` | Carrega o seed de exemplo na subida. Padrão `false` | `false` |
 | `ALIMENTA_SIGNUP_OPEN` | Aceita cadastro de doador e ONG de fora do time | `false` até o Lucas aprovar os textos legais (D012) |
 | `SUPABASE_URL` | Projeto Supabase do login e do JWKS | URL do projeto sa-east-1 |
@@ -301,6 +301,8 @@ Documentadas em `alimenta/.env.example`. Segredo nunca entra no git.
 | `ALIMENTA_OPERATOR_EMAILS` | E-mails com papel `operator` | Só o do Lucas |
 | `ALIMENTA_OPS_TOKEN` | Token da automação, só em `POST /ops/sweep` | Gerado no Render |
 | `ALIMENTA_PUBLISH_REAL_LEDGER` | Liga a publicação no livro real de pontape.org | `false` |
+| `ALIMENTA_LEDGER_DISPATCH_TOKEN` | Token GitHub fine-grained (Actions: write, só este repositório) que dispara o `ledger-ingest.yml`. Vazio = não publica | Só quando o Lucas autorizar |
+| `ALIMENTA_TEST_EMAILS` | E-mails ou `@dominio` das contas de teste: fora de KPI e livro, apagadas pelo ensaio | Os e-mails de teste do time |
 | `ALIMENTA_API_URL`, `ALIMENTA_PUBLIC_API_URL` | Onde o painel acha a API e o link que mostra | URL pública da API |
 | `ALIMENTA_MODEL_PATH` | Caminho do artefato do modelo | Padrão |
 | `ALIMENTA_GITHUB_REPO` | Repositório lido para a saúde do CI | `LucasOl1337/pontape` |
@@ -354,7 +356,7 @@ Rotas:
 | Conta | `POST /auth/code`, `POST /auth/verify`, `GET /me`, `POST /me/consents` |
 | Doador | `POST /donors`, `GET\|PATCH /donors/me`, `POST /lots`, `GET /lots/mine`, `POST /lots/{id}/cancel`, `POST /matches/{id}/pickup` |
 | ONG | `POST /ngos`, `GET /ngos/me`, `GET /offers/mine`, `POST /offers/{id}/accept`, `POST /offers/{id}/decline`, `GET /ngos/me/route`, `POST /matches/{id}/receipt` |
-| Operador | `GET /ops/ngos?status=pending`, `POST /ops/ngos/{id}/approve\|reject\|suspend`, `GET /ops/overview`, `POST /ops/lots/{id}/reoffer`, `GET /ops/audit` |
+| Operador | `GET /ops/ngos?status=pending`, `POST /ops/ngos/{id}/approve\|reject\|suspend`, `GET /ops/overview`, `POST /ops/donors/{id}/suspend\|activate`, `POST /ops/lots/{id}/reoffer`, `GET /ops/audit`, `POST /ops/test-data/purge` |
 | Automação | `POST /ops/sweep` (só `ALIMENTA_OPS_TOKEN`) |
 | Apoio | `GET /geo/cep/{cep}` |
 | Só local | `POST /demo/reset` |
@@ -372,7 +374,7 @@ URLs públicas: API e Swagger em https://rede-alimenta-api-u5q4.onrender.com/doc
 | Priorização de lotes | `discard_proba` e `risk_level` do lote; urgência no ranking | `POST /lots` devolve os dois campos |
 | Recomendação geográfica, Doador × ONG | `alimenta/core/matching.py`, ofertas em `lot_offers` | `GET /offers/mine` da ONG Prova: `test_fluxo.py::test_pending_ngo_never_gets_offer_and_test_never_mixes_with_real`. |
 | Cruzamento em tempo real | Oferta com prazo e escalonamento, `POST /ops/sweep` | Prova: `test_fluxo.py::test_decline_escalates_then_unclaimed`. |
-| Otimização de rotas de coleta | `GET /ngos/{id}/route`, `alimenta/core/route.py` | `alimenta/tests/test_route.py`; Swagger público |
+| Otimização de rotas de coleta | `GET /ngos/me/route` (papel `ngo`), `alimenta/core/route.py` | `alimenta/tests/test_route.py`, `test_fluxo.py::test_full_flow_double_confirmation` |
 | Análise semântica de validade e tipo (Hugging Face) | Não implementada | Ver [LIMITES.md](LIMITES.md) |
 | FastAPI com Swagger | `alimenta/api/main.py` | https://rede-alimenta-api-u5q4.onrender.com/docs |
 | Frontend Streamlit | `alimenta/painel/app.py` | https://rede-alimenta-painel.onrender.com |
