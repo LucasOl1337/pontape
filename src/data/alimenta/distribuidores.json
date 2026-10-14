@@ -1,0 +1,1093 @@
+[
+  {
+    "address_public": "Rua Sobral Júnior, 264, Vila Maria, São Paulo/SP",
+    "hours_public": "Segunda a sexta, das 8h às 17h",
+    "capacity_note": "Destinou 826 toneladas a 409 OSCs cadastradas entre jan/2025 e mai/2026; veículos com refrigeração quando necessário.",
+    "accepts_prepared_meals": null,
+    "id": "sp-municipal-food-bank",
+    "name": "Banco de Alimentos da Prefeitura de São Paulo (SESANA)",
+    "kind": "food_bank",
+    "city": "São Paulo",
+    "region": "north",
+    "accepts": [
+      "produce",
+      "dry_goods"
+    ],
+    "receives_from": [
+      "individuals",
+      "companies"
+    ],
+    "how_to_donate": "Pessoa física ou jurídica pode doar. Agendar a captação pelo WhatsApp oficial ou entregar na sede, que faz triagem e repassa às OSCs cadastradas.",
+    "public_contact_url": "https://prefeitura.sp.gov.br/web/sesana/w/banco_de_alimentos",
+    "sources": [
+      {
+        "url": "https://prefeitura.sp.gov.br/web/sesana/w/banco_de_alimentos",
+        "accessed": "2026-10-14",
+        "quote": "Pessoa física ou jurídica, empresa ou órgão público pode se tornar um doador"
+      },
+      {
+        "url": "https://prefeitura.sp.gov.br/web/sesana/w/banco_de_alimentos",
+        "accessed": "2026-10-14",
+        "quote": "Diariamente, toneladas de frutas, legumes, verduras, grãos e outros itens chegam ao equipamento"
+      },
+      {
+        "url": "https://prefeitura.sp.gov.br/w/banco-de-alimentos-da-prefeitura-destina-826-toneladas-a-409-entidades-e-beneficia-16-mil-fam%C3%ADlias",
+        "accessed": "2026-10-14",
+        "quote": "destinou 826 toneladas de produtos a 409 organizações da sociedade civil (OSCs) cadastradas"
+      },
+      {
+        "url": "https://prefeitura.sp.gov.br/w/banco-de-alimentos-da-prefeitura-destina-826-toneladas-a-409-entidades-e-beneficia-16-mil-fam%C3%ADlias",
+        "accessed": "2026-10-14",
+        "quote": "equipados com refrigeração quando necessário, percorrem os estabelecimentos parceiros para recolher os alimentos"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": null,
+    "hours_public": null,
+    "capacity_note": "Atua na cidade inteira; região 'center' é convenção para programa municipal sem sede única.",
+    "accepts_prepared_meals": false,
+    "id": "sp-food-waste-program-street-markets",
+    "name": "Programa Municipal de Combate ao Desperdício e à Perda de Alimentos (feiras e mercados)",
+    "kind": "public_program",
+    "city": "São Paulo",
+    "region": "center",
+    "accepts": [
+      "produce"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Voltado a feirantes, mercados e sacolões municipais. Equipes do programa coletam frutas, legumes e verduras sem valor comercial e levam à entidade cadastrada mais próxima.",
+    "public_contact_url": "https://prefeitura.sp.gov.br/web/sesana/w/combate-ao-desperdicio",
+    "sources": [
+      {
+        "url": "https://prefeitura.sp.gov.br/web/sesana/w/combate-ao-desperdicio",
+        "accessed": "2026-10-14",
+        "quote": "Programa de Combate ao Desperdício e à Perda de Alimentos"
+      },
+      {
+        "url": "https://prefeitura.sp.gov.br/w/noticia/saiba-como-funciona-o-programa-banco-de-alimentos",
+        "accessed": "2026-10-14",
+        "quote": "coleta de frutas, legumes e verduras nas feiras livres e mercados municipais da cidade"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": null,
+    "hours_public": null,
+    "capacity_note": "Também abastece bancos municipais da Grande SP, como o de Itapecerica da Serra.",
+    "accepts_prepared_meals": false,
+    "id": "ceagesp-food-bank",
+    "name": "Banco CEAGESP de Alimentos (BCA), entreposto da Capital",
+    "kind": "food_bank",
+    "city": "São Paulo",
+    "region": "west",
+    "accepts": [
+      "produce"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Voltado principalmente aos comerciantes do entreposto. Cadastro para doar ou receber pelos canais da unidade da Capital publicados no site da CEAGESP.",
+    "public_contact_url": "https://ceagesp.gov.br/bca-2/",
+    "sources": [
+      {
+        "url": "https://ceagesp.gov.br/bca-2/",
+        "accessed": "2026-10-14",
+        "quote": "nossa missão é captar doação de alimentos para proporcionar ao maior número de pessoas em situação vulnerável"
+      },
+      {
+        "url": "https://ceagesp.gov.br/bca-2/",
+        "accessed": "2026-10-14",
+        "quote": "Para obter mais informações sobre como se cadastrar para doar ou receber alimentos do BCA"
+      },
+      {
+        "url": "https://www.itapecerica.sp.gov.br/noticias/desenvolvimento-social-e-relacoes-do-trabalho/banco-de-alimentos-de-itapecerica-da-serra-apresenta-balanco-de-doacoes-do-mes-de-novembro-1",
+        "accessed": "2026-10-14",
+        "quote": "doados pelo Banco de Alimentos da Ceagesp"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Avenida Embaixador Macedo Soares, 10.735, Condomínio Espace Center, Galpão 14, São Paulo/SP",
+    "hours_public": "Segunda a sexta, das 8h às 17h",
+    "capacity_note": "Rede estadual com cerca de 1.150 instituições sociais atendidas (dado de 2021).",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-sp-hub",
+    "name": "Sesc Mesa Brasil São Paulo, Centro de Captação e Armazenagem",
+    "kind": "network",
+    "city": "São Paulo",
+    "region": "west",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício se cadastram como doadoras e a equipe retira na empresa. Pessoas físicas podem levar não perecíveis a unidades do Sesc (campanha publicada em 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Centro de Captação e Armazenagem Sesc Mesa Brasil"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Frutas, verduras e legumes, grãos, cereais, enlatados, conservas, sucos, água, bolos, massas, frios, laticínios, carnes, aves, peixes e ovos"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/tire-suas-duvidas-sobre-o-mesa-brasil/",
+        "accessed": "2026-10-14",
+        "quote": "A equipe do Mesa pode ir até a sua empresa para retirar as doações"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/tire-suas-duvidas-sobre-o-mesa-brasil/",
+        "accessed": "2026-10-14",
+        "quote": "Basta levar qualquer quantidade de alimentos não-perecíveis até uma unidade do Sesc na capital, grande São Paulo, interior e litoral"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Rua Nossa senhora do Bom Conselho, 120, Campo Limpo, São Paulo",
+    "hours_public": "Segunda a sexta, 7h às 16h (atendimento Mesa Brasil)",
+    "capacity_note": "Unidade operadora do programa; repassa a instituições sociais cadastradas e acompanhadas por nutricionistas.",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-campo-limpo",
+    "name": "Sesc Mesa Brasil, unidade Campo Limpo",
+    "kind": "network",
+    "city": "São Paulo",
+    "region": "south",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício combinam a retirada com a equipe Mesa Brasil desta unidade. Pessoa física pode levar não perecíveis à unidade (orientação de 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Rua Nossa senhora do Bom Conselho, 120, Campo Limpo - São Paulo"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Centrais de abastecimento, distribuidoras, supermercados, atacadistas, padarias, confeitarias, feiras, indústrias, cerealistas"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Rua do Carmo, 147, Sé, São Paulo",
+    "hours_public": "Segunda a sexta, 7h às 16h (atendimento Mesa Brasil)",
+    "capacity_note": "Unidade operadora do programa; repassa a instituições sociais cadastradas e acompanhadas por nutricionistas.",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-carmo",
+    "name": "Sesc Mesa Brasil, unidade Carmo",
+    "kind": "network",
+    "city": "São Paulo",
+    "region": "center",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício combinam a retirada com a equipe Mesa Brasil desta unidade. Pessoa física pode levar não perecíveis à unidade (orientação de 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Rua do Carmo, 147, Sé - São Paulo"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Centrais de abastecimento, distribuidoras, supermercados, atacadistas, padarias, confeitarias, feiras, indústrias, cerealistas"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Avenida Casa Verde, 327, Jardim São Bento, São Paulo",
+    "hours_public": "Segunda a sexta, 8h às 17h (atendimento Mesa Brasil)",
+    "capacity_note": "Unidade operadora do programa; repassa a instituições sociais cadastradas e acompanhadas por nutricionistas.",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-casa-verde",
+    "name": "Sesc Mesa Brasil, unidade Casa Verde",
+    "kind": "network",
+    "city": "São Paulo",
+    "region": "north",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício combinam a retirada com a equipe Mesa Brasil desta unidade. Pessoa física pode levar não perecíveis à unidade (orientação de 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Avenida Casa Verde, 327, Jardim São Bento - São Paulo"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Centrais de abastecimento, distribuidoras, supermercados, atacadistas, padarias, confeitarias, feiras, indústrias, cerealistas"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Avenida Manuel Alves Soares, 1100, Parque Colonial, São Paulo",
+    "hours_public": "Segunda a sexta, 7h às 16h (atendimento Mesa Brasil)",
+    "capacity_note": "Unidade operadora do programa; repassa a instituições sociais cadastradas e acompanhadas por nutricionistas.",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-interlagos",
+    "name": "Sesc Mesa Brasil, unidade Interlagos",
+    "kind": "network",
+    "city": "São Paulo",
+    "region": "south",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício combinam a retirada com a equipe Mesa Brasil desta unidade. Pessoa física pode levar não perecíveis à unidade (orientação de 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Avenida Manuel Alves Soares, 1100, Parque Colonial - São Paulo"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Centrais de abastecimento, distribuidoras, supermercados, atacadistas, padarias, confeitarias, feiras, indústrias, cerealistas"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Rua Bom Pastor, 822, Ipiranga, São Paulo",
+    "hours_public": "Segunda a sexta, 7h às 16h (atendimento Mesa Brasil)",
+    "capacity_note": "Unidade operadora do programa; repassa a instituições sociais cadastradas e acompanhadas por nutricionistas.",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-ipiranga",
+    "name": "Sesc Mesa Brasil, unidade Ipiranga",
+    "kind": "network",
+    "city": "São Paulo",
+    "region": "south",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício combinam a retirada com a equipe Mesa Brasil desta unidade. Pessoa física pode levar não perecíveis à unidade (orientação de 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Rua Bom Pastor, 822, Ipiranga - São Paulo"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Centrais de abastecimento, distribuidoras, supermercados, atacadistas, padarias, confeitarias, feiras, indústrias, cerealistas"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Avenida Fernando Espírito Santo Alves de Mattos, 1000, Itaquera, São Paulo",
+    "hours_public": "Segunda a sexta, 7h30 às 16h30 (atendimento Mesa Brasil)",
+    "capacity_note": "Unidade operadora do programa; repassa a instituições sociais cadastradas e acompanhadas por nutricionistas.",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-itaquera",
+    "name": "Sesc Mesa Brasil, unidade Itaquera",
+    "kind": "network",
+    "city": "São Paulo",
+    "region": "east",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício combinam a retirada com a equipe Mesa Brasil desta unidade. Pessoa física pode levar não perecíveis à unidade (orientação de 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Avenida Fernando Espírito Santo Alves de Mattos, 1000, Itaquera - São Paulo"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Centrais de abastecimento, distribuidoras, supermercados, atacadistas, padarias, confeitarias, feiras, indústrias, cerealistas"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Rua Rogerio Tacola, 118, Socorro, Mogi das Cruzes",
+    "hours_public": "Segunda a sexta, 8h30 às 17h30 (atendimento Mesa Brasil)",
+    "capacity_note": "Unidade operadora do programa; repassa a instituições sociais cadastradas e acompanhadas por nutricionistas.",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-mogi-das-cruzes",
+    "name": "Sesc Mesa Brasil, unidade Mogi das Cruzes",
+    "kind": "network",
+    "city": "Mogi das Cruzes",
+    "region": "metro",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício combinam a retirada com a equipe Mesa Brasil desta unidade. Pessoa física pode levar não perecíveis à unidade (orientação de 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Rua Rogerio Tacola, 118, Socorro - Mogi das Cruzes"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Centrais de abastecimento, distribuidoras, supermercados, atacadistas, padarias, confeitarias, feiras, indústrias, cerealistas"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Avenida Sport Club Corinthians Paulista, 1.300, Jardim das Flores, Osasco",
+    "hours_public": "Segunda a sexta, 7h às 16h (atendimento Mesa Brasil)",
+    "capacity_note": "Unidade operadora do programa; repassa a instituições sociais cadastradas e acompanhadas por nutricionistas.",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-osasco",
+    "name": "Sesc Mesa Brasil, unidade Osasco",
+    "kind": "network",
+    "city": "Osasco",
+    "region": "metro",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício combinam a retirada com a equipe Mesa Brasil desta unidade. Pessoa física pode levar não perecíveis à unidade (orientação de 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Avenida Sport Club Corinthians Paulista, 1.300, Jardim das Flores - Osasco"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Centrais de abastecimento, distribuidoras, supermercados, atacadistas, padarias, confeitarias, feiras, indústrias, cerealistas"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Rua Tamarutaca, 302, Vila Guiomar, Santo André",
+    "hours_public": "Segunda a sexta, 7h às 16h (atendimento Mesa Brasil)",
+    "capacity_note": "Unidade operadora do programa; repassa a instituições sociais cadastradas e acompanhadas por nutricionistas.",
+    "accepts_prepared_meals": null,
+    "id": "mesa-brasil-sesc-santo-andre",
+    "name": "Sesc Mesa Brasil, unidade Santo André",
+    "kind": "network",
+    "city": "Santo André",
+    "region": "metro",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies",
+      "individuals"
+    ],
+    "how_to_donate": "Empresas do ramo alimentício combinam a retirada com a equipe Mesa Brasil desta unidade. Pessoa física pode levar não perecíveis à unidade (orientação de 2021, confirmar).",
+    "public_contact_url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+    "sources": [
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/fale-conosco/",
+        "accessed": "2026-10-14",
+        "quote": "Rua Tamarutaca, 302, Vila Guiomar - Santo André"
+      },
+      {
+        "url": "https://sescmesabrasil.sescsp.org.br/seja-uma-empresa-doadora/",
+        "accessed": "2026-10-14",
+        "quote": "Centrais de abastecimento, distribuidoras, supermercados, atacadistas, padarias, confeitarias, feiras, indústrias, cerealistas"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Rua Atibaia, 218, Pacaembu, São Paulo/SP",
+    "hours_public": "Atendimento segunda a sexta, das 9h às 18h",
+    "capacity_note": "Distribui a 65 instituições cadastradas; no momento não cadastra novas instituições receptoras e não doa a pessoas físicas.",
+    "accepts_prepared_meals": false,
+    "id": "ong-banco-de-alimentos",
+    "name": "ONG Banco de Alimentos (OBA)",
+    "kind": "food_bank",
+    "city": "São Paulo",
+    "region": "center",
+    "accepts": [
+      "produce",
+      "dry_goods"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Indústria, comércio e produtores doam excedentes ainda próprios para consumo pela Colheita Urbana; contato pelo canal de parcerias do site.",
+    "public_contact_url": "https://bancodealimentos.org.br/contato",
+    "sources": [
+      {
+        "url": "https://bancodealimentos.org.br/quem-somos",
+        "accessed": "2026-10-14",
+        "quote": "recolhe alimentos que já perderam valor de prateleira no comércio e indústria, mas ainda estão aptos para consumo"
+      },
+      {
+        "url": "https://bancodealimentos.org.br/",
+        "accessed": "2026-10-14",
+        "quote": "a OBA distribui esses alimentos para 65 instituições sociais cadastradas"
+      },
+      {
+        "url": "https://bancodealimentos.org.br/contato",
+        "accessed": "2026-10-14",
+        "quote": "no momento, não está realizando o cadastro de novas instituições para o recebimento de doações"
+      },
+      {
+        "url": "https://bancodealimentos.org.br/parceiros-contra-o-desperdicio",
+        "accessed": "2026-10-14",
+        "quote": "Rua Atibaia, 218 - Pacaembu"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "R. Nestor Pestana, 101, Consolação, São Paulo/SP, 01303-010",
+    "hours_public": null,
+    "capacity_note": "70 entidades atendidas e mais de 816 toneladas distribuídas em 2025, segundo o site.",
+    "accepts_prepared_meals": false,
+    "id": "associacao-prato-cheio",
+    "name": "Associação Prato Cheio",
+    "kind": "ngo",
+    "city": "São Paulo",
+    "region": "center",
+    "accepts": [
+      "produce"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Colheita Urbana coleta alimentos frescos que seriam descartados e repassa a instituições; empresas entram em contato para parceria.",
+    "public_contact_url": "https://pratocheio.org.br/",
+    "sources": [
+      {
+        "url": "https://pratocheio.org.br/",
+        "accessed": "2026-10-14",
+        "quote": "Colheita Urbana , tem como base a coleta de alimentos frescos que seriam descartados de forma segura e seu repasse a instituições de assistência social"
+      },
+      {
+        "url": "https://pratocheio.org.br/",
+        "accessed": "2026-10-14",
+        "quote": "R. Nestor Pestana, 101, SP, 01303-010, Consolação"
+      },
+      {
+        "url": "https://pratocheio.org.br/",
+        "accessed": "2026-10-14",
+        "quote": "70 ENTIDADES ATENDIDAS"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "R. Doutor Almeida Lima, 900, Mooca, São Paulo/SP, 03164-000",
+    "hours_public": null,
+    "capacity_note": "Centro de acolhida que recebe diariamente 1.200 homens em situação de rua; alimento é consumido no próprio serviço.",
+    "accepts_prepared_meals": null,
+    "id": "arsenal-da-esperanca",
+    "name": "Arsenal da Esperança (Associação Assindes Sermig)",
+    "kind": "ngo",
+    "city": "São Paulo",
+    "region": "east",
+    "accepts": [
+      "dry_goods"
+    ],
+    "receives_from": [
+      "individuals",
+      "companies"
+    ],
+    "how_to_donate": "Entregar alimentos não perecíveis no endereço indicado em 'Onde entregar' na página oficial de doações.",
+    "public_contact_url": "https://br.sermig.org/o-que-fazer-juntos/apoie-os-arsenais/como-ajudar-5.html",
+    "sources": [
+      {
+        "url": "https://br.sermig.org/o-que-fazer-juntos/apoie-os-arsenais/como-ajudar-5.html",
+        "accessed": "2026-10-14",
+        "quote": "R. Doutor Almeida Lima, 900 - 03164-000 - Mooca - SP"
+      },
+      {
+        "url": "https://br.sermig.org/o-que-fazer-juntos/apoie-os-arsenais/como-ajudar-5.html",
+        "accessed": "2026-10-14",
+        "quote": "O Arsenal da Esperança, desde 1996, acolhe diariamente 1.200 homens em situação de rua"
+      },
+      {
+        "url": "https://br.sermig.org/o-que-fazer-juntos/apoie-os-arsenais/como-ajudar-5.html",
+        "accessed": "2026-10-14",
+        "quote": "Alimentos não perecíveis; Máscaras e luvas descartáveis (tamanho G)",
+        "note": "texto da imagem da lista de itens (atributo alt) na seção de doações"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": "Rua Rodrigues dos Santos, 831, Brás (Paróquia Santo Antônio do Pari), São Paulo/SP",
+    "hours_public": "Segunda a sexta, das 10h às 17h (publicado em 2021)",
+    "capacity_note": "Orientação publicada em 2021; confirmar horário antes de enviar. Brás pertence à Subprefeitura Mooca (zona leste).",
+    "accepts_prepared_meals": false,
+    "id": "sefras-pari-collection-point",
+    "name": "Sefras, Ação Social Franciscana (posto do Pari)",
+    "kind": "ngo",
+    "city": "São Paulo",
+    "region": "east",
+    "accepts": [
+      "dry_goods"
+    ],
+    "receives_from": [
+      "individuals",
+      "companies"
+    ],
+    "how_to_donate": "Levar alimentos e cestas básicas ao posto de coleta na Paróquia Santo Antônio do Pari.",
+    "public_contact_url": "https://www.sefras.org.br/",
+    "sources": [
+      {
+        "url": "https://www.sefras.org.br/blog/ser-franciscano-acolher-cuidar-e-defender-a-vida",
+        "accessed": "2026-10-14",
+        "quote": "Para doação de produtos de higiene, roupas, alimentos e cestas básicas"
+      },
+      {
+        "url": "https://www.sefras.org.br/blog/ser-franciscano-acolher-cuidar-e-defender-a-vida",
+        "accessed": "2026-10-14",
+        "quote": "na Paróquia Santo Antônio do Pari"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": "Rua Riachuelo, 314, Sé, São Paulo/SP",
+    "hours_public": "10h às 11h (almoço) e 15h às 16h (jantar), publicado em 2021",
+    "capacity_note": "Um dos poucos pontos com fonte que aceita refeição pronta; orientação de 2021, confirmar janelas.",
+    "accepts_prepared_meals": true,
+    "id": "sefras-cha-do-padre",
+    "name": "Sefras, Tenda Franciscana Chá do Padre (marmitas e lanches)",
+    "kind": "community_kitchen",
+    "city": "São Paulo",
+    "region": "center",
+    "accepts": [
+      "prepared"
+    ],
+    "receives_from": [
+      "individuals",
+      "companies"
+    ],
+    "how_to_donate": "Entregar marmitas e lanches prontos na Tenda Franciscana, nas janelas antes do almoço e do jantar.",
+    "public_contact_url": "https://www.sefras.org.br/",
+    "sources": [
+      {
+        "url": "https://www.sefras.org.br/blog/ser-franciscano-acolher-cuidar-e-defender-a-vida",
+        "accessed": "2026-10-14",
+        "quote": "Para doação de marmitas e lanches"
+      },
+      {
+        "url": "https://www.sefras.org.br/blog/ser-franciscano-acolher-cuidar-e-defender-a-vida",
+        "accessed": "2026-10-14",
+        "quote": "das 10h às 11 horas (para almoço) e das 15h às 16h (para jantar)"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": "Rua Desembargador Rocha Portela, 634, Artur Alvim, São Paulo/SP",
+    "hours_public": null,
+    "capacity_note": "Produz cerca de 800 quentinhas por semana para pessoas em situação de rua.",
+    "accepts_prepared_meals": null,
+    "id": "anjos-da-noite",
+    "name": "Anjos da Noite",
+    "kind": "ngo",
+    "city": "São Paulo",
+    "region": "east",
+    "accepts": [
+      "dry_goods"
+    ],
+    "receives_from": [
+      "individuals"
+    ],
+    "how_to_donate": "Levar alimentos não perecíveis e insumos para marmitas à sede.",
+    "public_contact_url": "https://www.anjosdanoite.org.br/doacoes.cfm",
+    "sources": [
+      {
+        "url": "https://www.anjosdanoite.org.br/doacoes.cfm",
+        "accessed": "2026-10-14",
+        "quote": "Necessitamos semanalmente de alimentos não perecíveis, material de limpeza e insumos para as marmitas"
+      },
+      {
+        "url": "https://www.anjosdanoite.org.br/doacoes.cfm",
+        "accessed": "2026-10-14",
+        "quote": "Semanalmente produzimos cerca de 800 quentinhas"
+      },
+      {
+        "url": "https://www.anjosdanoite.org.br/",
+        "accessed": "2026-10-14",
+        "quote": "Rua Desembargador Rocha Portela, 634 - ARTUR ALVIM - São Paulo - SP"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": "Avenida Marechal Mário Guedes, 301, Jaguaré, São Paulo/SP",
+    "hours_public": "Entrega de segunda a sexta, das 8h às 16h",
+    "capacity_note": null,
+    "accepts_prepared_meals": false,
+    "id": "fundo-social-sp-state",
+    "name": "Fundo Social de São Paulo (FUSSP), Centro de Distribuição",
+    "kind": "public_program",
+    "city": "São Paulo",
+    "region": "west",
+    "accepts": [
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "individuals",
+      "companies"
+    ],
+    "how_to_donate": "Entregar não perecíveis e água no Centro de Distribuição. Pessoa física ou jurídica privada deve agendar a entrega antes.",
+    "public_contact_url": "https://www.fundosocial.sp.gov.br/doacoes/",
+    "sources": [
+      {
+        "url": "https://www.fundosocial.sp.gov.br/doacoes/",
+        "accessed": "2026-10-14",
+        "quote": "Alimentos não perecíveis;"
+      },
+      {
+        "url": "https://www.fundosocial.sp.gov.br/doacoes/",
+        "accessed": "2026-10-14",
+        "quote": "Avenida Marechal Mário Guedes, nº 301, Jaguaré, São Paulo"
+      },
+      {
+        "url": "https://www.fundosocial.sp.gov.br/doacoes/",
+        "accessed": "2026-10-14",
+        "quote": "A entrega da doação deve ser agendada previamente"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": null,
+    "hours_public": null,
+    "capacity_note": "Categoria aceita não detalhada na fonte; 'dry_goods' é inferência conservadora. Região pela sede (Saúde).",
+    "accepts_prepared_meals": null,
+    "id": "exercito-de-salvacao-sp",
+    "name": "Exército de Salvação (obra social)",
+    "kind": "ngo",
+    "city": "São Paulo",
+    "region": "south",
+    "accepts": [
+      "dry_goods"
+    ],
+    "receives_from": [
+      "individuals",
+      "companies"
+    ],
+    "how_to_donate": "Alimentos não vão para o bazar nem são retirados pelos caminhões; falar com a obra social pelo telefone publicado na FAQ.",
+    "public_contact_url": "https://www.exercitodoacoes.org.br/faq",
+    "sources": [
+      {
+        "url": "https://www.exercitodoacoes.org.br/faq",
+        "accessed": "2026-10-14",
+        "quote": "Nossos caminhões não retiram doações de alimentos"
+      },
+      {
+        "url": "https://www.exercitodoacoes.org.br/faq",
+        "accessed": "2026-10-14",
+        "quote": "Doações de alimentos podem ser efetuadas diretamente à obra social do Exército de Salvação"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": "Rua Sérgio Tomás, 740, Bom Retiro, São Paulo/SP",
+    "hours_public": null,
+    "capacity_note": "Campanhas sazonais; não é ponto permanente comprovado.",
+    "accepts_prepared_meals": null,
+    "id": "lbv-sao-paulo",
+    "name": "Legião da Boa Vontade (LBV), sede São Paulo",
+    "kind": "ngo",
+    "city": "São Paulo",
+    "region": "center",
+    "accepts": [
+      "dry_goods"
+    ],
+    "receives_from": [
+      "individuals",
+      "companies"
+    ],
+    "how_to_donate": "Campanhas de arrecadação de alimentos em épocas do ano e emergências; confirmar campanha ativa pelo site.",
+    "public_contact_url": "https://lbv.org/",
+    "sources": [
+      {
+        "url": "https://lbv.org/campanha-de-doacao-de-alimentos/",
+        "accessed": "2026-10-14",
+        "quote": "Nós também fazemos a nossa campanha de doação de alimentos em épocas específicas do ano e em situações de emergência"
+      },
+      {
+        "url": "https://lbv.org/campanha-de-doacao-de-alimentos/",
+        "accessed": "2026-10-14",
+        "quote": "Rua Sérgio Tomás, 740"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": null,
+    "hours_public": null,
+    "capacity_note": "Sede da Av. General Pedro Pinho, 1340 em reforma com entrega prevista para mar/2025; operação temporária em Quitaúna. Endereço atual não confirmado.",
+    "accepts_prepared_meals": null,
+    "id": "osasco-municipal-food-bank",
+    "name": "Banco de Alimentos de Osasco (Prefeitura)",
+    "kind": "food_bank",
+    "city": "Osasco",
+    "region": "metro",
+    "accepts": [
+      "produce",
+      "dry_goods"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Contato pelo e-mail institucional do Banco de Alimentos publicado pela Prefeitura.",
+    "public_contact_url": "https://osasco.sp.gov.br/banco-de-alimentos-de-osasco-beneficia-mais-de-20-mil-pessoas-em-2024/",
+    "sources": [
+      {
+        "url": "https://osasco.sp.gov.br/banco-de-alimentos-de-osasco-beneficia-mais-de-20-mil-pessoas-em-2024/",
+        "accessed": "2026-10-14",
+        "quote": "A sede do Banco de Alimentos (Avenida General Pedro Pinho, 1340, Jardim Pestana) passa por reforma"
+      },
+      {
+        "url": "https://osasco.sp.gov.br/banco-de-alimentos-de-osasco-bate-recorde-de-captacao-de-doacao-projetos-e-parcerias/",
+        "accessed": "2026-10-14",
+        "quote": "arrecadou 1.427.440,40 kg de alimentos perecíveis, não perecíveis e produtos diversos"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": null,
+    "hours_public": null,
+    "capacity_note": null,
+    "accepts_prepared_meals": false,
+    "id": "santo-andre-municipal-food-bank",
+    "name": "Banco de Alimentos de Santo André (Prefeitura)",
+    "kind": "food_bank",
+    "city": "Santo André",
+    "region": "metro",
+    "accepts": [
+      "dry_goods",
+      "dairy",
+      "beverages"
+    ],
+    "receives_from": [
+      "individuals",
+      "companies"
+    ],
+    "how_to_donate": "Para ser doador, contato pelo telefone indicado na página oficial; doa a entidades assistenciais cadastradas.",
+    "public_contact_url": "https://web.santoandre.sp.gov.br/banco-de-alimentos/",
+    "sources": [
+      {
+        "url": "https://web.santoandre.sp.gov.br/banco-de-alimentos/",
+        "accessed": "2026-10-14",
+        "quote": "Alimentos enlatados, conservados em vidros, leites e derivados, sucos e bebidas não alcoólicas"
+      },
+      {
+        "url": "https://web.santoandre.sp.gov.br/banco-de-alimentos/",
+        "accessed": "2026-10-14",
+        "quote": "Para ser um doador, entre em contato pelo telefone"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": null,
+    "hours_public": "Segunda a sexta, das 8h às 17h (expediente da Secretaria)",
+    "capacity_note": "Categorias inferidas do modelo 'fora dos padrões de comercialização'; endereço publicado é o da Secretaria, não o do galpão.",
+    "accepts_prepared_meals": null,
+    "id": "guarulhos-municipal-food-bank",
+    "name": "Banco de Alimentos de Guarulhos (Prefeitura)",
+    "kind": "food_bank",
+    "city": "Guarulhos",
+    "region": "metro",
+    "accepts": [
+      "produce",
+      "dry_goods"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Arrecada alimentos fora do padrão comercial e repassa a 31 instituições cadastradas; contato pela Secretaria de Desenvolvimento Social.",
+    "public_contact_url": "https://www.guarulhos.sp.gov.br/banco-de-alimentos",
+    "sources": [
+      {
+        "url": "https://www.guarulhos.sp.gov.br/banco-de-alimentos",
+        "accessed": "2026-10-14",
+        "quote": "arrecadar alimentos fora dos padrões de comercialização, mas que estejam em condições adequadas para o consumo"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": null,
+    "hours_public": "Agendamento de busca de segunda a sexta, das 8h às 16h (publicado em 2022)",
+    "capacity_note": "Endereço da sede aparece só em imprensa e redes; não incluído por regra.",
+    "accepts_prepared_meals": false,
+    "id": "diadema-municipal-food-bank",
+    "name": "Banco de Alimentos de Diadema (Prefeitura)",
+    "kind": "food_bank",
+    "city": "Diadema",
+    "region": "metro",
+    "accepts": [
+      "dry_goods",
+      "produce"
+    ],
+    "receives_from": [
+      "individuals",
+      "companies"
+    ],
+    "how_to_donate": "Ligar para o Banco, que busca a doação. Aceita itens da cesta básica e alimentos in natura.",
+    "public_contact_url": "https://portal.diadema.sp.gov.br/banco-de-alimentos-de-diadema-distribuiu-274-toneladas-de-comida/",
+    "sources": [
+      {
+        "url": "https://portal.diadema.sp.gov.br/banco-de-alimentos-de-diadema-distribuiu-274-toneladas-de-comida/",
+        "accessed": "2026-10-14",
+        "quote": "O serviço municipal aceita produtos não perecíveis (todos que compõem a cesta básica) e, ainda, se vier alimentos in natura, a ajuda também é bem-vinda"
+      },
+      {
+        "url": "https://portal.diadema.sp.gov.br/banco-de-alimentos-de-diadema-distribuiu-274-toneladas-de-comida/",
+        "accessed": "2026-10-14",
+        "quote": "O Banco faz a busca dos produtos doados"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": "Rua Nazareth, 181, Bairro Barcelona, São Caetano do Sul/SP",
+    "hours_public": null,
+    "capacity_note": "Fonte é a notícia de inauguração (2019); confirmar funcionamento atual.",
+    "accepts_prepared_meals": null,
+    "id": "sao-caetano-municipal-food-bank",
+    "name": "Banco de Alimentos de São Caetano do Sul (Fundo Social)",
+    "kind": "food_bank",
+    "city": "São Caetano do Sul",
+    "region": "metro",
+    "accepts": [
+      "dry_goods"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Recebe doações de redes varejistas, atacadistas e empresas e distribui a entidades cadastradas no Fundo Social.",
+    "public_contact_url": "https://www.saocaetanodosul.sp.gov.br/noticia/1158",
+    "sources": [
+      {
+        "url": "https://www.saocaetanodosul.sp.gov.br/noticia/1158",
+        "accessed": "2026-10-14",
+        "quote": "arrecadados por meio de doações das redes varejistas e atacadistas, além de empresas"
+      },
+      {
+        "url": "https://www.saocaetanodosul.sp.gov.br/noticia/1158",
+        "accessed": "2026-10-14",
+        "quote": "na Rua Nazareth, 181, Bairro Barcelona"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": "Rua Fazenda Paraíso, 251, Parque Paraíso, Itapecerica da Serra/SP",
+    "hours_public": null,
+    "capacity_note": "Cerca de 12 toneladas repassadas a OSCs em um mês (nov/2024), majoritariamente hortifrúti.",
+    "accepts_prepared_meals": null,
+    "id": "itapecerica-municipal-food-bank",
+    "name": "Banco de Alimentos de Itapecerica da Serra (Prefeitura)",
+    "kind": "food_bank",
+    "city": "Itapecerica da Serra",
+    "region": "metro",
+    "accepts": [
+      "produce"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Contatar o Banco de Alimentos no endereço publicado pela Prefeitura para doar ou cadastrar instituição.",
+    "public_contact_url": "https://www.itapecerica.sp.gov.br/noticias/desenvolvimento-social-e-relacoes-do-trabalho/banco-de-alimentos-de-itapecerica-da-serra-apresenta-balanco-de-doacoes-do-mes-de-novembro-1",
+    "sources": [
+      {
+        "url": "https://www.itapecerica.sp.gov.br/noticias/desenvolvimento-social-e-relacoes-do-trabalho/banco-de-alimentos-de-itapecerica-da-serra-apresenta-balanco-de-doacoes-do-mes-de-novembro-1",
+        "accessed": "2026-10-14",
+        "quote": "Para doar ao Banco de Alimentos ou cadastrar uma instituição para receber doações, entre em contato com o Banco de Alimentos localizado na Rua Fazenda Paraíso, 251, Parque Paraíso"
+      },
+      {
+        "url": "https://www.itapecerica.sp.gov.br/noticias/desenvolvimento-social-e-relacoes-do-trabalho/banco-de-alimentos-de-itapecerica-da-serra-apresenta-balanco-de-doacoes-do-mes-de-novembro-1",
+        "accessed": "2026-10-14",
+        "quote": "foram entregues às Organizações da Sociedade Civil (OSC’s) de Itapecerica da Serra, aproximadamente 12 toneladas de alimentos"
+      }
+    ],
+    "confidence": "high"
+  },
+  {
+    "address_public": null,
+    "hours_public": null,
+    "capacity_note": "Intermediário, não recebe fisicamente; categorias não detalhadas na fonte (inferência).",
+    "accepts_prepared_meals": null,
+    "id": "connecting-food",
+    "name": "Connecting Food",
+    "kind": "network",
+    "city": "São Paulo",
+    "region": "metro",
+    "accepts": [
+      "produce",
+      "bakery",
+      "dairy",
+      "meat",
+      "dry_goods",
+      "beverages"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Para indústria e varejo: a plataforma coordena o fluxo de doação de excedentes entre a empresa e organizações sociais.",
+    "public_contact_url": "https://connectingfood.com/",
+    "sources": [
+      {
+        "url": "https://connectingfood.com/",
+        "accessed": "2026-10-14",
+        "quote": "conectar os alimentos que seriam descartados por empresas, mas ainda bons para o consumo, às organizações sociais"
+      },
+      {
+        "url": "https://connectingfood.com/o-que-fazemos/",
+        "accessed": "2026-10-14",
+        "quote": "Coordenação e monitoramento do fluxo de doações entre doadores e organizações sociais"
+      }
+    ],
+    "confidence": "medium"
+  },
+  {
+    "address_public": null,
+    "hours_public": null,
+    "capacity_note": "Intermediário; fonte principal é reportagem de 2021. Categorias são inferência.",
+    "accepts_prepared_meals": null,
+    "id": "comida-invisivel",
+    "name": "Comida Invisível (plataforma)",
+    "kind": "network",
+    "city": "São Paulo",
+    "region": "metro",
+    "accepts": [
+      "prepared",
+      "bakery",
+      "produce",
+      "dry_goods"
+    ],
+    "receives_from": [
+      "companies"
+    ],
+    "how_to_donate": "Empresa cadastra o excedente na plataforma e uma ONG próxima, também cadastrada, faz a retirada.",
+    "public_contact_url": "https://app.comidainvisivel.com.br/",
+    "sources": [
+      {
+        "url": "https://forbes.com.br/forbes-esg/2021/11/haroldo-rodrigues-como-a-startup-comida-invisivel-esta-mudando-o-paradigma-do-desperdicio-de-alimentos/",
+        "accessed": "2026-10-14",
+        "quote": "a plataforma Comida Invisível utiliza geolocalização para aproximar empresas que possuem alimentos bons e adequados para doação com ONGs"
+      }
+    ],
+    "confidence": "medium"
+  }
+]
