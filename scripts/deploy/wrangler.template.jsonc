@@ -1,5 +1,6 @@
 // Copiado pra uma pasta temporária por scripts/deploy/publicar.sh. Fica fora da raiz de propósito:
 // na raiz, o wrangler tenta "converter" o projeto Astro e reescreve astro.config, package.json e tsconfig.
+// ALIMENTA_API_ORIGIN: /api/alimenta/* do Worker vai pra esta API (Render). keep_vars mantém as vars do painel que não estão aqui.
 {
   "name": "pontape",
   "main": "./worker.js",
@@ -19,7 +20,6 @@
     { "name": "HIT_RATE_LIMITER", "namespace_id": "4301", "simple": { "limit": 60, "period": 60 } }
   ],
   "triggers": { "crons": ["17 3 * * *"] },
-  // Rede Alimenta: /api/alimenta/* vai pra esta API (Render). keep_vars mantém as vars do painel que não estão aqui.
   "vars": { "ALIMENTA_API_ORIGIN": "https://rede-alimenta-api-u5q4.onrender.com" },
   "keep_vars": true,
   "workers_dev": false,
