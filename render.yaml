@@ -19,7 +19,7 @@ services:
       - key: ALIMENTA_WRITE_TOKEN
         generateValue: true
       - key: ALIMENTA_SEED_ON_START
-        value: "true"
+        value: "false"  # produção não carrega dado simulado; o código também tem padrão false
 
   - type: web
     name: rede-alimenta-painel

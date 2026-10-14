@@ -3,6 +3,7 @@
 Leitura pública sem coordenada exata, nome ou endereço: só região e campos não
 sensíveis. Toda escrita, e a leitura com coordenada exata, exige o cabeçalho
 `X-Alimenta-Token` igual a `ALIMENTA_WRITE_TOKEN`; sem a variável, fica desligada (503).
+O seed simulado só carrega com `ALIMENTA_SEED_ON_START=true` (padrão: desligado).
 
 Rodar, da raiz do repositório:
     uvicorn alimenta.api.main:app --port 8000
@@ -38,7 +39,7 @@ DESCRIPTION = (
 )
 
 
-def env_true(name: str, default: str = "true") -> bool:
+def env_true(name: str, default: str = "false") -> bool:
     return os.environ.get(name, default).strip().lower() in {"1", "true", "yes", "sim"}
 
 
