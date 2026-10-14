@@ -13,7 +13,8 @@ from functools import lru_cache
 import jwt
 from cryptography.hazmat.primitives.asymmetric import ec
 
-TOKEN_TYPE = "bearer"  # nosec B105 - tipo do token (RFC 6750), não é segredo
+# Tipo do token (RFC 6750), não é segredo.
+TOKEN_TYPE = "bearer"  # nosec B105
 
 ISSUER = "alimenta-local"
 KID = "alimenta-local-1"

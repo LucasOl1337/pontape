@@ -38,6 +38,8 @@ def purge_test_data(session: Session) -> dict:
     counts = {}
     for name, stmt in steps:
         counts[name] = session.execute(stmt.execution_options(synchronize_session=False)).rowcount
-    assert session.query(LedgerEvent).count() == ledger_before  # nosec B101 - o livro nunca muda aqui
+    if session.query(LedgerEvent).count() != ledger_before:  # o livro nunca muda aqui
+        session.rollback()
+        raise RuntimeError("limpeza de teste mexeu no livro: desfeita")
     session.commit()
     return counts

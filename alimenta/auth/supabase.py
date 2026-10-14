@@ -14,7 +14,8 @@ import httpx
 
 from alimenta.core import config
 
-TOKEN_TYPE = "bearer"  # nosec B105 - tipo do token (RFC 6750), não é segredo
+# Tipo do token (RFC 6750), não é segredo.
+TOKEN_TYPE = "bearer"  # nosec B105
 
 TIMEOUT_S = 8
 EMAIL = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$")
