@@ -60,4 +60,83 @@ Escala usada. Impacto: baixo (atrapalha a demo), médio (número errado no paine
 | F2 | Ação feita pelo painel sem saber quem fez | Baixo | Média | Matches guardam `proposed_at`, `confirmed_at`, `collected_at`, `delivered_at` | Tabela `matches` | Médio. Um token só: não identifica pessoa. Aceito numa demo sem usuários reais |
 | F5 | Discussão sobre qual código estava no ar | Médio | Baixa | Workflow roda em todo PR e push na main; relatórios ficam como artefato da execução, com commit | Aba Actions do GitHub; painel mostra data e commit do último run | Baixo |
 
-<!-- continua -->
+## I · Information disclosure
+
+| Ativo | Ameaça | Impacto | Prob. | Mitigação implementada | Evidência | Risco residual |
+|---|---|---|---|---|---|---|
+| F3 | `DATABASE_URL` com senha vaza em log, commit ou resposta | Alto | Média | Segredo só em variável de ambiente; `.env` ignorado no git; `.env.example` sem valor; a string nunca é impressa | `.gitignore`; `alimenta/.env.example` | Médio. O projeto ainda usa o papel padrão do banco; papel próprio com permissão mínima está na fila |
+| F2 | Token de escrita aparece no navegador | Médio | Média | O painel chama a API pelo servidor; o token não vai para o HTML | `alimenta/painel/app.py` | Baixo |
+| F1, F3 | Dado pessoal de doador ou ONG exposto | Alto | Baixa | Não existe dado pessoal: nomes inventados ("Doador Exemplo 03"), pontos sorteados dentro de 5 macrorregiões, nunca endereço real | `alimenta/data/generate.py`; `alimenta/data/DICIONARIO.md` | Baixo. Ver LGPD abaixo |
+| F4 | Livro da demo revela onde ou para quem foi a comida | Baixo | Baixa | Evento v1 da família `field` não tem pessoa, endereço, estabelecimento nem localização | [CONTRATO.md](../transparencia/CONTRATO.md), família field | Baixo |
+| F5 | Segredo do CI vaza por Action comprometida | Alto | Média | `permissions: contents: read`; Trivy por binário fixo com checksum; jobs de PR não recebem segredo de deploy | `alimenta.yml` | Médio |
+| F5 | Imagem leva arquivo que não devia (`.env`, venv, banco local) | Médio | Baixa | `.dockerignore` em lista branca: só `alimenta/` e `tools/conferir.py` | `.dockerignore` na raiz; `trivy image` | Baixo |
+
+## D · Denial of service
+
+| Ativo | Ameaça | Impacto | Prob. | Mitigação implementada | Evidência | Risco residual |
+|---|---|---|---|---|---|---|
+| F6 | Render free dorme após 15 min parado; a primeira abertura leva cerca de 1 min | Médio | Alta | Abrir as duas URLs alguns minutos antes da banca; gravação de reserva | [PITCH.md](PITCH.md), plano B | Médio. É limite do plano free ([Render](https://render.com/docs/free), acesso em 14/10/2026) |
+| F3 | Supabase free pausa o projeto após 1 semana sem uso | Alto | Média | Abrir a demo na véspera e no dia; `docker compose up` local como reserva | [LIMITES.md](LIMITES.md) | Médio ([Supabase, preços](https://supabase.com/pricing), acesso em 14/10/2026) |
+| F1 | Enxurrada de requisições derruba a API | Médio | Baixa | Escrita só com token. Sem limite de taxa por IP | `alimenta/api/main.py` | Médio. Aceito para a demo |
+| F1 | Dados de teste lotam a demo e confundem o painel | Baixo | Média | `POST /demo/reset` com token volta ao seed | Rota `/demo/reset` | Baixo |
+| F5 | CI quebra e bloqueia o deploy na véspera | Médio | Média | Deploy só roda depois de testes e gates verdes; o compose local não depende do CI | `alimenta.yml` | Baixo |
+
+## E · Elevation of privilege
+
+| Ativo | Ameaça | Impacto | Prob. | Mitigação implementada | Evidência | Risco residual |
+|---|---|---|---|---|---|---|
+| F1 | Quem só lê consegue escrever | Médio | Média | Rotas de escrita checam o token antes de qualquer outra coisa | `alimenta/api/main.py`; teste sem token | Baixo |
+| F5 | Processo dentro do container vira root no host | Alto | Baixa | Imagem `python:3.12-slim` com usuário não root | `alimenta/Dockerfile`; `trivy config` | Baixo |
+| F3 | API com papel `postgres` pode tudo no banco | Alto | Baixa | Nenhum SQL dinâmico; SQLAlchemy com parâmetros | `alimenta/db/`; Bandit | Médio. Papel próprio com permissão mínima ainda não criado |
+| F7 | Arquivo `.joblib` malicioso executa código ao carregar (pickle) | Alto | Baixa | Carga só depois de conferir o sha256 do artefato versionado | `alimenta/model/predict.py` | Baixo |
+| F5 | Workflow ganha permissão de escrita no repositório | Alto | Baixa | `permissions: contents: read` no workflow | `alimenta.yml` | Baixo |
+
+## Incidente de cadeia do Trivy (19/03/2026)
+
+Em 19/03/2026, alguém com credenciais roubadas publicou uma release maliciosa do Trivy (v0.69.4). Também repontou 76 de 77 tags do `aquasecurity/trivy-action` e as 7 tags do `aquasecurity/setup-trivy` para código que roubava credenciais. Em 22/03/2026 saíram imagens maliciosas v0.69.5 e v0.69.6 no Docker Hub. Fonte: [GHSA-69fq-xp46-6x23](https://github.com/aquasecurity/trivy/security/advisories/GHSA-69fq-xp46-6x23), acesso em 14/10/2026.
+
+O que isso ensina: a ferramenta de segurança também é ativo. Um `uses: aquasecurity/trivy-action@v0.x` rodaria qualquer código que a tag apontasse naquele dia, com acesso aos segredos do job.
+
+Mitigação aplicada no workflow `alimenta.yml`:
+
+- O Trivy é baixado como binário da versão fixa v0.76.0.
+- O checksum SHA-256 do arquivo é conferido antes de rodar. Se não bate, o job falha.
+- Nenhuma Action do Trivy é usada.
+- O workflow tem `permissions: contents: read` e os jobs de scan não recebem segredo de deploy.
+
+Evidência: passos de instalação nos jobs `trivy-fs` e `imagem` de `.github/workflows/alimenta.yml`.
+
+Risco residual: as outras Actions do workflow (checkout, setup do uv) ainda usam tag de versão. Fixar por SHA de commit é o próximo passo.
+
+## Achados aceitos
+
+Achado que o time decide aceitar vai para `.trivyignore` ou `# nosec`, sempre com motivo, e é listado aqui.
+
+| Ferramenta | Identificador | Onde | Motivo | Data |
+|---|---|---|---|---|
+| [preencher após o scan final] | | | | |
+
+Se a tabela ficar vazia, é porque nenhum achado foi aceito. Isso não quer dizer zero vulnerabilidade: quer dizer que nenhum achado passou do gate sem correção.
+
+## LGPD
+
+A Rede Alimenta não trata dado pessoal.
+
+- Doadores e ONGs são fictícios, com nomes como "Doador Exemplo 03" e "ONG Exemplo 07".
+- Coordenadas são pontos sorteados dentro da caixa de 5 macrorregiões de São Paulo (Centro, Norte, Sul, Leste, Oeste). Nunca são endereço real.
+- Lotes, histórico de 30 dias e rótulos de descarte são gerados pelo `alimenta/data/generate.py` com seed fixa.
+- Não há login de pessoa, e-mail, telefone, CPF ou CNPJ.
+- O livro da demo segue a família `field` do contrato v1: sem pessoa, endereço, estabelecimento nem localização.
+- Todo painel e download traz o rótulo "DEMONSTRAÇÃO · dados simulados".
+
+Isso segue a regra do PontaPé: dado real nunca entra no repositório, seed usa dado fictício marcado como fictício ([AGENTS.md](../../AGENTS.md)). O livro real do PontaPé não recebe evento simulado (D040).
+
+Se um dia a rede operar com doador e ONG reais, a [ARQUITETURA.md](../arquitetura/ARQUITETURA.md) §6 já lista o que falta antes: controlador e base legal definidos, inventário de dados, papéis com acesso mínimo, retenção e plano de incidente. Também seria preciso mover o banco para sa-east-1 (São Paulo). Hoje ele está em us-east-1 porque o pooler de sa-east-1 não respondeu na criação. Com dado simulado isso não pesa; com dado real, transferência internacional exige cuidado próprio ([LGPD, Lei 13.709/2018, art. 33](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm), acesso em 14/10/2026).
+
+## Riscos residuais mais altos
+
+1. Livro da demo sem assinatura nem carimbo externo: quem controla o banco pode reescrever a corrente inteira.
+2. Papel padrão do banco em uso: falta papel próprio com permissão mínima.
+3. Planos free: Render dorme e Supabase pausa. A demo depende de abrir as URLs antes.
+4. Um único token de escrita: não diferencia pessoas.
+5. Actions de terceiros ainda por tag, não por SHA.
