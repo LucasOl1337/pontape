@@ -158,3 +158,23 @@ def test_capacity_checked_on_accept(api, pair):
     api.post(f"/offers/{offer_of(api, pair['n'], big['id'])['id']}/accept", headers=pair["n"])
     second = publish(api, pair, kg=20.0)
     assert second["status"] == "unclaimed"  # 90 + 20 > 100: a única ONG fica fora do ranking
+
+
+def test_purge_removes_only_test_data(api, pair, engine, monkeypatch):
+    monkeypatch.setenv("ALIMENTA_SIGNUP_OPEN", "true")
+    from alimenta.tests.conftest import make_donor
+    real = make_donor(api, "real@empresa-real.com.br")
+    lot = publish(api, pair)
+    match = api.post(f"/offers/{offer_of(api, pair['n'], lot['id'])['id']}/accept", headers=pair["n"]).json()
+    api.post(f"/matches/{match['id']}/pickup", headers=pair["d"])
+    api.post(f"/matches/{match['id']}/receipt", headers=pair["n"])
+    assert api.post("/ops/test-data/purge", headers=pair["d"]).status_code == 403
+    r = api.post("/ops/test-data/purge", headers=h(OPERATOR))
+    assert r.status_code == 200
+    assert r.json()["deleted"] == {"public_ledger_dispatches": 0, "confirmations": 2, "matches": 1, "notifications": 2,
+                                   "lot_offers": 1, "lot_outcomes": 1, "lots": 1, "ngos": 1, "donors": 1,
+                                   "consents": 4, "audit_log": 3, "accounts": 3}
+    from alimenta.db.models import Account, Donor
+    with make_sessionmaker(engine)() as s:
+        assert [d.id for d in s.scalars(select(Donor))] == [real["id"]]
+        assert [a.email for a in s.scalars(select(Account))] == ["real@empresa-real.com.br"]

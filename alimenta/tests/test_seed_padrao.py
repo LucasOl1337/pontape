@@ -57,3 +57,12 @@ def test_compose_is_local_with_seed():
     env = compose["services"]["api"]["environment"]
     assert (env["ALIMENTA_ENV"], env["ALIMENTA_SEED_ON_START"]) == ("local", "true")
     assert "ALIMENTA_OPERATOR_CODE" not in compose["services"]["painel"]["environment"]
+
+
+def test_sweep_workflow_uses_only_ops_token():
+    wf = yaml.safe_load((ROOT / ".github" / "workflows" / "alimenta-varredura.yml").read_text(encoding="utf-8"))
+    assert wf[True]["schedule"] == [{"cron": "*/10 * * * *"}]  # `on:` vira True no YAML 1.1
+    assert wf["permissions"] == {}
+    step = wf["jobs"]["sweep"]["steps"][0]
+    assert set(step["env"]) == {"API_URL", "OPS_TOKEN"}
+    assert "/ops/sweep" in step["run"] and "X-Alimenta-Ops-Token" in step["run"]

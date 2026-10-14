@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from alimenta.api import schemas
 from alimenta.api.deps import db, ops_token, role
-from alimenta.core import accounts, offers
+from alimenta.core import accounts, offers, purge
 from alimenta.core.accounts import Actor
 from alimenta.core.clock import utcnow
 from alimenta.core.service import Conflict, get
@@ -98,3 +98,9 @@ def audit(_who: Actor = Depends(operator), session: Session = Depends(db)):
              summary="Varredura agendada: vence ofertas e lotes e escala (só X-Alimenta-Ops-Token)")
 def sweep(session: Session = Depends(db)):
     return offers.tick(session)
+
+
+@router.post("/test-data/purge", summary="Apaga tudo de contas de teste (is_test). Registro real e livro não mudam")
+def purge_test_data(who: Actor = Depends(operator), session: Session = Depends(db)):
+    counts = purge.purge_test_data(session)
+    return {"deleted": counts, "by": who.email}
