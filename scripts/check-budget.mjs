@@ -19,6 +19,8 @@ const PAGES = [
   'ferramentas/curriculo/index.html',
   // The benefits check: questions and rules run in the page, with no library.
   'ferramentas/direitos/index.html',
+  // Rede Alimenta (round 6): the page, the catalog and the donor flow, with no library.
+  'alimenta/index.html', 'alimenta/distribuidores/index.html', 'alimenta/doar/index.html', 'alimenta/minhas-doacoes/index.html',
 ];
 
 const gz = buffer => gzipSync(buffer, { level: 9 }).length;

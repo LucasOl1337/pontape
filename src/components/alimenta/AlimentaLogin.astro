@@ -1,0 +1,19 @@
+---
+// The donor login of the Rede Alimenta: e-mail, then the 6-digit code. Same markup on /alimenta/doar
+// and /alimenta/minhas-doacoes; src/scripts/alimenta-login.ts drives it. No password, no cookie.
+---
+<section class="al-card" id="al-login" aria-labelledby="al-login-title" hidden>
+  <h2 class="al-card-title" id="al-login-title">Entre com seu e-mail</h2>
+  <p class="al-hint">Mandamos um código de 6 números. Sem senha. O e-mail fica guardado só pra você entrar e não aparece em lugar nenhum.</p>
+  <form id="al-email-form" class="al-form" novalidate>
+    <label class="al-field"><span>Seu e-mail</span><input type="email" id="al-email" autocomplete="email" inputmode="email" maxlength="254" required /></label>
+    <button class="btn btn--ink" type="submit">Receber o código</button>
+  </form>
+  <form id="al-code-form" class="al-form" novalidate hidden>
+    <p class="al-hint" id="al-code-sent"></p>
+    <label class="al-field"><span>Código de 6 números</span><input type="text" id="al-code" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required /></label>
+    <div class="al-row"><button class="btn btn--ink" type="submit">Entrar</button><button class="btn al-quiet" type="button" id="al-other-email">Usar outro e-mail</button></div>
+  </form>
+</section>
+<p class="al-wake" id="al-wake" role="status" aria-live="polite" hidden></p>
+<p class="al-msg" id="al-msg" role="alert" hidden></p>

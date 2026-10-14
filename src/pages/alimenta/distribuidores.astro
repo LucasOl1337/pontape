@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Caderno from '../../components/cronica/Caderno.astro';
+import Icon from '../../components/site/Icon.astro';
+import { PROJECT_NAME, formatDay } from '../../data/site/project';
+import { ALIMENTA, CATEGORY, DISTRIBUTORS, FROM, KIND, REGION, cities, lastAccess, suggestUrl } from '../../data/alimenta/rede';
+
+// The public catalog (Q6): organizations that already hand out food, each with its source and the
+// day it was read. Static page; the filter is a few lines of JS and without JS the whole list shows.
+const categories = Object.entries(CATEGORY).filter(([id]) => DISTRIBUTORS.some(d => d.accepts.includes(id as never)));
+const newest = DISTRIBUTORS.map(lastAccess).sort().at(-1)!;
+const order = Object.keys(CATEGORY) as (keyof typeof CATEGORY)[];
+---
+<BaseLayout title={`Distribuidores de alimento · ${ALIMENTA.name} · ${PROJECT_NAME}`}
+  description={`${DISTRIBUTORS.length} organizações que já distribuem comida em São Paulo e região, cada uma com a fonte pública e a data em que foi lida.`}
+  current="alimenta">
+  <Caderno kicker={ALIMENTA.name} title="Quem já distribui" turn="comida."
+    lead={`${DISTRIBUTORS.length} bancos de alimentos, redes e organizações que recebem doação e repassam pra quem precisa. Cada um tem a fonte de onde veio.`}>
+    <p class="al-note"><Icon name="search" /><span>Lista lida em sites oficiais em <time datetime={newest}>{formatDay(newest)}</time>. Ninguém aqui pagou pra aparecer. Achou algo errado ou falta alguém? <a href={suggestUrl()} rel="noopener">Sugerir ou corrigir</a>.</span></p>
+
+    <form class="al-filters" id="al-filters" role="search" aria-label="Filtrar distribuidores">
+      <label class="al-field"><span>Cidade</span>
+        <select id="al-city"><option value="">Todas as cidades</option>{cities().map(c => <option value={c}>{c}</option>)}</select>
+      </label>
+      <div class="filters" role="group" aria-label="O que aceita">
+        <button class="filter" type="button" data-cat="" aria-pressed="true">Tudo</button>
+        {categories.map(([id, label]) => <button class="filter" type="button" data-cat={id} aria-pressed="false">{label}</button>)}
+      </div>
+      <p class="al-count" id="al-count" aria-live="polite">{DISTRIBUTORS.length} distribuidores</p>
+    </form>
+
+    <ol class="al-list" id="al-list">
+      {DISTRIBUTORS.map(d => (
+        <li class="al-item" id={d.id} data-city={d.city} data-cats={d.accepts.join(' ')}>
+          <article aria-labelledby={`n-${d.id}`}>
+            <p class="al-meta">{KIND[d.kind]} · {d.city}{d.city === 'São Paulo' && d.region !== 'metro' ? `, ${REGION[d.region]}` : ''}</p>
+            <h2 class="al-name" id={`n-${d.id}`}>{d.name}</h2>
+            {d.accepts.length > 0 && <p class="al-tags">{order.filter(c => d.accepts.includes(c)).map(c => <span>{CATEGORY[c]}</span>)}</p>}
+            <dl class="al-facts">
+              <div><dt>Recebe de</dt><dd>{d.receives_from.map(r => FROM[r]).join(' e ')}</dd></div>
+              {d.how_to_donate && <div><dt>Como doar</dt><dd>{d.how_to_donate}</dd></div>}
+              {d.hours_public && <div><dt>Horário</dt><dd>{d.hours_public}</dd></div>}
+              {d.address_public && <div><dt>Endereço</dt><dd>{d.address_public}</dd></div>}
+            </dl>
+            <details class="al-sources">
+              <summary>Fonte{d.sources.length > 1 ? `s (${d.sources.length})` : ''}, lida em <time datetime={lastAccess(d)}>{formatDay(lastAccess(d))}</time>{d.confidence === 'medium' && ', confirmar antes de levar'}</summary>
+              <ul>{d.sources.map(s => <li><q>{s.quote}</q> <a href={s.url} rel="noopener" target="_blank">{new URL(s.url).hostname.replace(/^www\./, '')}</a></li>)}</ul>
+              {d.capacity_note && <p>{d.capacity_note}</p>}
+            </details>
+            <p class="al-links"><a class="more-link" href={d.public_contact_url} rel="noopener" target="_blank">Contato oficial<Icon name="arrow-right" /></a><a class="al-fix" href={suggestUrl(d)} rel="noopener">Corrigir</a></p>
+          </article>
+        </li>
+      ))}
+    </ol>
+    <p class="al-empty" id="al-empty" hidden>Nenhum distribuidor com esse filtro ainda. <a href={suggestUrl()} rel="noopener">Sugira um</a> com a fonte pública.</p>
+
+    <section class="al-next" aria-labelledby="al-next-title">
+      <h2 id="al-next-title" class="kicker">Tem comida pra doar?</h2>
+      <p class="prose-p">Registre a doação. A AI compara esta lista e sugere quem combina mais com o que você tem.</p>
+      <p class="actions"><a class="btn btn--ink" href={ALIMENTA.doar}>Registrar uma doação<Icon name="arrow-right" /></a><a class="btn" href={ALIMENTA.href}>Como funciona</a></p>
+    </section>
+  </Caderno>
+</BaseLayout>
+<script>import '../../scripts/alimenta-distribuidores';</script>
+
+<style>
+  .al-note{ display:flex; gap:.6rem; align-items:flex-start; max-width:46rem; padding:.85rem 1rem; border-left:3px solid var(--accent); background:var(--paper-2); font:400 var(--t-small)/1.5 var(--font-sans) }
+  .al-note .icon{ margin-top:.15rem; color:var(--accent) }
+  .al-note a{ font-weight:700 }
+  .al-filters{ display:grid; gap:var(--space-4); margin-top:var(--space-8) }
+  .al-filters .filters{ margin-top:0 }
+  .al-field{ display:grid; gap:.35rem; max-width:22rem; font:700 var(--t-small)/1.3 var(--font-sans) }
+  .al-field select{ min-height:48px; padding:.6rem .7rem; border:1.5px solid var(--ink); border-radius:0; background:var(--paper); color:var(--ink); font:400 1.0625rem/1.4 var(--font-sans) }
+  .al-count{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2) }
+  .al-list{ display:grid; margin-top:var(--space-4); border-top:2px solid var(--ink) }
+  @media (min-width:900px){ .al-list{ grid-template-columns:1fr 1fr; column-gap:var(--space-12) } }
+  .al-item{ display:flex; padding:var(--space-6) 0; border-bottom:1px solid var(--rule) }
+  .al-item > article{ display:flex; flex-direction:column; width:100% }
+  .al-meta{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.12em; text-transform:uppercase; color:var(--accent) }
+  .al-name{ margin-top:.35rem; font:600 1.35rem/1.2 var(--font-serif); text-wrap:balance }
+  .al-tags{ display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.6rem }
+  .al-tags span{ padding:.15rem .45rem; border:1px solid var(--rule); font:400 .8125rem/1.3 var(--font-sans); color:var(--ink-2) }
+  .al-facts{ display:grid; gap:.5rem; margin-top:var(--space-4); font:400 var(--t-small)/1.5 var(--font-sans) }
+  .al-facts dt{ font-weight:700 }
+  .al-facts dd{ margin:0; color:var(--ink-2) }
+  .al-sources{ margin-top:var(--space-4); font:400 var(--t-small)/1.5 var(--font-sans) }
+  .al-sources summary{ display:block; padding:.65rem 0; cursor:pointer; font-weight:700; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.18em }
+  .al-sources ul{ display:grid; gap:.5rem; margin-top:.25rem }
+  .al-sources q{ font-style:italic; color:var(--ink-2) }
+  .al-sources a{ font-weight:700; overflow-wrap:anywhere }
+  .al-sources p{ margin-top:.5rem; color:var(--ink-2) }
+  .al-links{ display:flex; flex-wrap:wrap; gap:.5rem 1.25rem; align-items:center; margin-top:auto; padding-top:var(--space-3) }
+  .al-links a{ min-height:44px; display:inline-flex; align-items:center }
+  .al-fix{ font:400 var(--t-small)/1.3 var(--font-sans); color:var(--ink-2) }
+  .al-empty{ margin-top:var(--space-6); font:400 1.0625rem/1.5 var(--font-sans) }
+  .al-next{ margin-top:var(--space-12); padding-top:var(--space-6); border-top:2px solid var(--ink) }
+  .al-next .prose-p{ max-width:40rem; margin-top:.5rem }
+  .al-next .actions{ margin-top:var(--space-4) }
+</style>

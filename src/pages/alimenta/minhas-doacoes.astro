@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Caderno from '../../components/cronica/Caderno.astro';
+import AlimentaLogin from '../../components/alimenta/AlimentaLogin.astro';
+import { PROJECT_NAME } from '../../data/site/project';
+import { ALIMENTA, browserCatalog } from '../../data/alimenta/rede';
+import '../../styles/alimenta.css';
+
+// The donor's own list (round 6): state, destination, mark delivered, cancel, the link to the public
+// book and "delete my account". Private page: out of the sitemap and noindex.
+---
+<BaseLayout title={`Minhas doações · ${ALIMENTA.name} · ${PROJECT_NAME}`}
+  description="Suas doações na Rede Alimenta: o estado de cada uma, o destino e o registro no livro público." current="alimenta" noindex>
+  <Caderno kicker={ALIMENTA.name} title="Minhas" turn="doações."
+    lead="O estado de cada doação, pra onde vai e o registro no livro público. Só você vê esta lista.">
+    <noscript><p class="al-msg" data-kind="error">Esta página precisa de JavaScript ligado.</p></noscript>
+    <AlimentaLogin />
+    <section id="al-mine" class="al-mine" aria-labelledby="al-mine-title" hidden>
+      <h2 class="kicker" id="al-mine-title">Suas doações</h2>
+      <p class="al-hint" id="al-mine-empty" hidden>Você ainda não registrou doação. <a href={ALIMENTA.doar}>Registrar a primeira</a>.</p>
+      <ol class="al-list" id="al-mine-list"></ol>
+      <p class="al-row al-new"><a class="btn btn--ink" href={ALIMENTA.doar}>Registrar outra doação</a></p>
+
+      <section class="al-account" aria-labelledby="al-account-title">
+        <h2 class="kicker" id="al-account-title">Sua conta</h2>
+        <p>Você entrou como <b id="al-who" class="al-email"></b>. Apagar a conta apaga seu e-mail e seus dados. No livro público fica só o código de cada doação, sem nada que leve até você.</p>
+        <p class="al-row"><button class="btn al-quiet" type="button" id="al-logout">Sair</button><button class="btn al-danger" type="button" id="al-delete">Apagar minha conta</button></p>
+      </section>
+    </section>
+  </Caderno>
+  <script type="application/json" id="al-catalog" set:html={JSON.stringify(browserCatalog().map(d => ({ id: d.id, name: d.name, city: d.city, contact: d.contact }))).replaceAll('<', '\\u003c')} />
+</BaseLayout>
+<script>import '../../scripts/alimenta-minhas';</script>
+<style>.al-new{ margin-top:var(--space-6) } .al-mine{ margin-top:var(--space-8) }</style>
