@@ -138,3 +138,17 @@ def test_api_refusal_is_shown(api, pair, monkeypatch):
     at = login(f"ong{TEST_DOMAIN}")
     assert not at.exception and [t.label for t in at.tabs][0] == "Minha ONG"
     assert at.info[0].value == "Nenhuma oferta esperando resposta."
+
+
+def test_jwt_never_rendered_on_page(api, monkeypatch):
+    """O JWT vive em st.session_state (servidor). Nenhum elemento da página traz o token."""
+    calls = []
+    wire(monkeypatch, api, calls)
+    at = login(OPERATOR)
+    token = at.session_state["token"]
+    assert token.count(".") == 2
+    rendered = [str(getattr(e, "value", "")) for kind in ("markdown", "caption", "success", "info", "warning", "error",
+                                                         "text", "json", "code")
+                for e in getattr(at, kind)]
+    rendered += [str(t.value) for t in at.text_input]
+    assert not [r for r in rendered if token in r or token[:40] in r]

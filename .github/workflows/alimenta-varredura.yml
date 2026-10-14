@@ -1,13 +1,16 @@
 name: Rede Alimenta · varredura de ofertas
 
-# A cada 10 minutos: vence ofertas sem resposta, passa o lote para a próxima ONG e fecha
+# A cada 30 minutos, das 7h às 22h de São Paulo (10h–01h UTC): vence ofertas sem resposta, passa o lote para a próxima ONG e fecha
 # lotes vencidos (POST /ops/sweep). O token só serve para essa rota.
 # Segredos: ALIMENTA_API_URL e ALIMENTA_OPS_TOKEN (o mesmo valor da env da API no Render).
-# Sem segredo, o job termina verde e avisa. O GitHub pode atrasar agendamentos; a API também
+# Fora do horário, a varredura só acontece quando alguém abre o sistema (Render free: 750 h/mês
+# para o workspace inteiro). Sem segredo, o job termina verde e avisa. O GitHub pode atrasar agendamentos; a API também
 # varre a cada leitura de doador, ONG e operador, então o atraso não trava ninguém.
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/30 10-23 * * *'
+    - cron: '0,30 0 * * *'
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
 permissions: {}

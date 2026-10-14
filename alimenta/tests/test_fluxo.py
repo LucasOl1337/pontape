@@ -178,3 +178,36 @@ def test_purge_removes_only_test_data(api, pair, engine, monkeypatch):
     with make_sessionmaker(engine)() as s:
         assert [d.id for d in s.scalars(select(Donor))] == [real["id"]]
         assert [a.email for a in s.scalars(select(Account))] == ["real@empresa-real.com.br"]
+
+
+def test_pending_offer_unique_index_blocks_second(api, pair, engine):
+    """Índice único parcial: o banco recusa uma segunda oferta `pending` para o mesmo lote."""
+    import pytest
+    from sqlalchemy.exc import IntegrityError
+    lot = publish(api, pair)
+    with make_sessionmaker(engine)() as s:
+        first = s.scalar(select(LotOffer).where(LotOffer.lot_id == lot["id"]))
+        s.add(LotOffer(lot_id=lot["id"], ngo_id=first.ngo_id, rank=2, score=1.0, distance_km=1.0, status="pending",
+                       offered_at=first.offered_at, respond_by=first.respond_by))
+        with pytest.raises(IntegrityError):
+            s.flush()
+
+
+def test_lot_has_no_patch_after_offer(api, pair):
+    lot = publish(api, pair)
+    # Não existe PATCH de lote: depois de publicado, só cancelar. Entradas do modelo ficam congeladas.
+    assert api.patch(f"/lots/{lot['id']}", json={"kg": 1}, headers=pair["d"]).status_code in (404, 405)
+    assert lot["kg"] == 10.0
+
+
+def test_notification_records_channel_and_wa_link(api, pair, engine):
+    lot = publish(api, pair)
+    offer = offer_of(api, pair["n"], lot["id"])
+    with make_sessionmaker(engine)() as s:
+        rows = s.scalars(select(Notification).where(Notification.offer_id == offer["id"])).all()
+        assert sorted((n.channel, n.ngo_id) for n in rows) == [("inbox", pair["ngo"]["id"]),
+                                                               ("whatsapp_link", pair["ngo"]["id"])]
+    from alimenta.core import notify
+    text = notify.offer_text("bakery", 10.0, datetime(2026, 10, 15, 15, 0, tzinfo=timezone.utc), "Bela Vista")
+    assert text == "Rede Alimenta: oferta de doação de padaria, 10 kg em Bela Vista. Responda no painel até 15/10 12:00."
+    assert notify.wa_link(None, text) is None

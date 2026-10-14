@@ -61,7 +61,7 @@ def test_compose_is_local_with_seed():
 
 def test_sweep_workflow_uses_only_ops_token():
     wf = yaml.safe_load((ROOT / ".github" / "workflows" / "alimenta-varredura.yml").read_text(encoding="utf-8"))
-    assert wf[True]["schedule"] == [{"cron": "*/10 * * * *"}]  # `on:` vira True no YAML 1.1
+    assert wf[True]["schedule"] == [{"cron": "*/30 10-23 * * *"}, {"cron": "0,30 0 * * *"}, {"cron": "0 1 * * *"}]
     assert wf["permissions"] == {}
     step = wf["jobs"]["sweep"]["steps"][0]
     assert set(step["env"]) == {"API_URL", "OPS_TOKEN"}
