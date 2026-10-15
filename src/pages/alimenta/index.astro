@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Caderno from '../../components/cronica/Caderno.astro';
+import Icon from '../../components/site/Icon.astro';
+import { PROJECT_NAME, formatDay } from '../../data/site/project';
+import { LIVRO } from '../../data/site/livro';
+import { REPO_URL } from '../../data/site/contributions';
+import { ALIMENTA, DISTRIBUTORS, cities } from '../../data/alimenta/rede';
+import { alimentaLedger, donationPhrase, kgText } from '../../data/alimenta/livro';
+
+// The front door of the Rede Alimenta (round 6). Numbers come from the public book at build:
+// nothing is fetched for a visitor, and before the first donation every number is an honest zero.
+const { numbers, latest } = await alimentaLedger();
+const fmt = new Intl.NumberFormat('pt-BR');
+const figures = [
+  { value: fmt.format(numbers.registered), label: numbers.registered === 1 ? 'doação registrada' : 'doações registradas' },
+  { value: kgText(numbers.kg), label: 'de comida oferecida' },
+  { value: fmt.format(numbers.delivered), label: numbers.delivered === 1 ? 'entrega declarada' : 'entregas declaradas' },
+  { value: fmt.format(DISTRIBUTORS.length), label: `distribuidores com fonte, em ${cities().length} cidades` },
+];
+const steps = [
+  { title: 'Entre com seu e-mail', text: 'Chega um código de 6 números. Pedimos só o e-mail, se você é pessoa, empresa ou distribuidor, e a cidade.' },
+  { title: 'Diga o que tem', text: 'Tipo de comida, quantos quilos, até quando vale e em que cidade está.' },
+  { title: 'A AI sugere quem recebe', text: 'Ela lê as fontes dos distribuidores da lista e diz qual combina mais, com o motivo. Você confirma ou escolhe outro.' },
+  { title: 'Você leva e marca entregue', text: 'Cada passo entra no livro público, com a quantidade e o destino. Seu nome e seu e-mail nunca entram.' },
+] as const;
+---
+<BaseLayout title={`${ALIMENTA.name} · ${PROJECT_NAME}`}
+  description="Tem comida sobrando? Registre a doação, a AI sugere um distribuidor que já existe e cada passo aparece no livro público."
+  current="alimenta">
+  <Caderno kicker={PROJECT_NAME} title={ALIMENTA.name} turn="comida que sobra, pra quem precisa."
+    lead="Quem tem comida sobrando registra a doação aqui. A AI sugere um banco de alimentos ou organização que já distribui comida perto de você. Cada passo fica no livro público, sem nome de ninguém.">
+    <p class="actions al-top"><a class="btn btn--ink" href={ALIMENTA.doar}>Registrar uma doação<Icon name="arrow-right" /></a><a class="btn" href={ALIMENTA.distribuidores}>Ver os distribuidores</a></p>
+
+    <section class="al-block" aria-labelledby="al-numbers-title">
+      <h2 id="al-numbers-title" class="kicker">Os números, lidos do livro</h2>
+      <ul class="al-figures">{figures.map(f => <li><strong>{f.value}</strong><span>{f.label}</span></li>)}</ul>
+      <p class="al-small">{numbers.registered === 0
+        ? 'Ainda não há doação no livro. O primeiro número aparece aqui quando alguém registrar.'
+        : `Entrega é declarada por quem doou. ${numbers.cancelled} ${numbers.cancelled === 1 ? 'doação foi cancelada' : 'doações foram canceladas'}.`}</p>
+    </section>
+
+    <section class="al-block" aria-labelledby="al-how-title">
+      <h2 id="al-how-title" class="kicker">Como funciona</h2>
+      <ol class="al-steps">
+        {steps.map((s, i) => <li><span class="al-step-num" aria-hidden="true">{i + 1}</span><div><h3>{s.title}</h3><p>{s.text}</p></div></li>)}
+      </ol>
+      <p class="al-small">O {PROJECT_NAME} não compra, não guarda e não leva comida. Quem doa leva até o distribuidor. A AI nunca inventa destino: só sugere quem está na lista, com fonte. Dinheiro ainda não recebemos.</p>
+    </section>
+
+    <section class="al-block" aria-labelledby="al-latest-title">
+      <h2 id="al-latest-title" class="kicker">Últimas no livro</h2>
+      {latest.length === 0
+        ? <p class="prose-p al-empty">Nenhuma doação no livro ainda. Quando entrar, ela aparece aqui em poucos minutos, com data e marca.</p>
+        : <ol class="al-events">{latest.map(e => (
+          <li id={`d-${e.donationRef}`}><time datetime={e.occurredOn}>{formatDay(e.occurredOn)}</time><span>{donationPhrase(e)}</span><a class="al-ref mono" href={`${LIVRO.tecnico}#acoes`}>nº {e.sequence} · {e.donationRef}</a></li>
+        ))}</ol>}
+    </section>
+
+    <section class="al-block al-check" aria-labelledby="al-check-title">
+      <h2 id="al-check-title" class="kicker">Confira você mesmo</h2>
+      <ul class="al-checks">
+        <li><Icon name="eye" /><p>Toda doação entra no <a href={LIVRO.href}>livro público</a> com uma marca presa à anterior. Toque em Conferir lá e o seu aparelho refaz a conta.</p></li>
+        <li><Icon name="code" /><p>O código é aberto: <a href={ALIMENTA.siteCode} rel="noopener">estas páginas</a>, <a href={ALIMENTA.code} rel="noopener">o servidor e a AI</a> e <a href={ALIMENTA.checker} rel="noopener">o conferidor</a>. Dá pra rodar no seu computador.</p></li>
+        <li><Icon name="pen" /><p>Viu um distribuidor errado ou faltando? <a href={`${REPO_URL}/issues/new?template=distribuidor-alimenta.md`} rel="noopener">Abra um pedido</a> com a fonte pública. Qualquer pessoa pode.</p></li>
+        <li><Icon name="lock" /><p>Nunca aparecem no livro: nome, e-mail, CNPJ ou cidade de quem doou. Aparecem o tipo de comida, os quilos, a data e o distribuidor.</p></li>
+      </ul>
+    </section>
+  </Caderno>
+</BaseLayout>
+
+<style>
+  .al-top{ margin-top:0 }
+  .al-block{ margin-top:var(--space-12); padding-top:var(--space-4); border-top:2px solid var(--ink) }
+  .al-small{ max-width:44rem; margin-top:var(--space-4); font:400 var(--t-small)/1.5 var(--font-sans); color:var(--ink-2) }
+  .al-figures{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-6) var(--space-4); margin-top:var(--space-6) }
+  @media (min-width:900px){ .al-figures{ grid-template-columns:repeat(4, 1fr) } }
+  .al-figures li{ display:grid; gap:.3rem; padding-top:var(--space-3); border-top:1px solid var(--rule) }
+  .al-figures strong{ font:500 clamp(2rem, 1.6rem + 1.6vw, 3rem)/1 var(--font-display); letter-spacing:-.02em }
+  .al-figures span{ font:400 var(--t-small)/1.35 var(--font-sans); color:var(--ink-2) }
+  .al-steps{ display:grid; gap:var(--space-6); margin-top:var(--space-6) }
+  @media (min-width:900px){ .al-steps{ grid-template-columns:repeat(4, 1fr); gap:var(--space-8) } }
+  .al-steps li{ display:grid; grid-template-columns:auto 1fr; gap:.2rem .7rem; align-items:start }
+  .al-step-num{ grid-row:span 2; font:italic 500 2.4rem/1 var(--font-display); color:var(--accent) }
+  .al-steps h3{ font:600 1.25rem/1.2 var(--font-serif) }
+  .al-steps p{ margin-top:.3rem; font:400 1.0625rem/1.45 var(--font-sans); color:var(--ink-2) }
+  .al-empty{ margin-top:var(--space-4); max-width:40rem }
+  .al-events{ display:grid; margin-top:var(--space-4) }
+  .al-events li{ display:grid; grid-template-columns:6.5rem 1fr; gap:.2rem var(--space-4); padding:var(--space-3) 0; border-bottom:1px solid var(--rule); font:400 1.0625rem/1.45 var(--font-sans) }
+  .al-events time{ font:400 var(--t-small)/1.6 var(--font-mono); color:var(--ink-2) }
+  .al-ref{ grid-column:2; font-size:.8125rem; color:var(--ink-2) }
+  .al-checks{ display:grid; gap:var(--space-4); margin-top:var(--space-6) }
+  @media (min-width:900px){ .al-checks{ grid-template-columns:1fr 1fr; gap:var(--space-6) var(--space-12) } }
+  .al-checks li{ display:grid; grid-template-columns:1.6rem 1fr; gap:.7rem; font:400 1.0625rem/1.5 var(--font-sans) }
+  .al-checks .icon{ width:1.4rem; height:1.4rem; margin-top:.15rem; color:var(--accent) }
+  .al-checks a{ font-weight:700 }
+</style>

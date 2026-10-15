@@ -2,7 +2,7 @@ import { checkoutRequest, checkoutUrl, envelopesFromWebhook, ASAAS_SANDBOX_API }
 import { CHAT_MODELS, YUMI_SYSTEM } from './yumi.js';
 import { canonicalPath, handleHit, publicStats, recordView, readAnswer, saveChat, purgeOldData } from './worker-metrics.js';
 import { adminRoute } from './worker-admin.js';
-/* global Response, URL, crypto, TextEncoder, fetch */
+/* global Response, URL, crypto, TextEncoder, fetch, AbortSignal */
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
@@ -163,9 +163,72 @@ async function asaasWebhook(request, env) {
   return json({ ok: true });
 }
 
+// Rede Alimenta: the browser talks to /api/alimenta/* on this origin and the Worker passes the call
+// to the Python API (ALIMENTA_API_ORIGIN). Same origin keeps the CSP at connect-src 'self' and needs
+// no CORS. Closed list of routes; only the headers the API needs go out, never the site cookies.
+const ALIMENTA_HOST = 'alimenta.pontape.org';
+const ALIMENTA_ID = '[A-Za-z0-9_-]{1,64}';
+const ALIMENTA_ROUTES = [
+  ['POST', 'auth/code'], ['POST', 'auth/verify'],
+  ['GET', 'me'], ['DELETE', 'me'], ['POST', 'me/consents'], ['POST', 'donors'],
+  ['POST', 'donations'], ['GET', 'donations/mine'],
+  ['POST', `donations/${ALIMENTA_ID}/(?:recommend|destination|delivered|cancel)`],
+  ['GET', 'distributors'], ['GET', 'health'], ['GET', 'kpis'], ['GET', 'legal/(?:donation_terms|privacy_notice)'],
+].map(([method, path]) => [method, new RegExp(`^${path}$`)]);
+export const ALIMENTA_TIMEOUT_MS = 60_000;
+const ALIMENTA_BODY_LIMIT = 16_000;
+
+async function alimentaProxy(request, env, path) {
+  const allowed = ALIMENTA_ROUTES.filter(([, pattern]) => pattern.test(path));
+  if (allowed.length === 0) return error('Caminho desconhecido.', 404);
+  if (!allowed.some(([method]) => method === request.method)) return error('Método não permitido.', 405);
+  const origin = (env.ALIMENTA_API_ORIGIN ?? '').replace(/\/+$/, '');
+  if (!/^https?:\/\/[^/?#]+$/.test(origin)) return error('A Rede Alimenta ainda não está ligada.', 503);
+
+  const headers = { accept: 'application/json', 'user-agent': 'pontape-alimenta' };
+  const auth = request.headers.get('authorization') ?? '';
+  if (/^Bearer [A-Za-z0-9._~+/=-]{1,4096}$/.test(auth)) headers.authorization = auth;
+  const ip = request.headers.get('CF-Connecting-IP');
+  if (ip) headers['x-forwarded-for'] = ip;
+  let body;
+  if (request.method !== 'GET') {
+    if (Number(request.headers.get('content-length')) > ALIMENTA_BODY_LIMIT) return error('Mensagem grande demais.', 413);
+    body = await request.text();
+    if (body.length > ALIMENTA_BODY_LIMIT) return error('Mensagem grande demais.', 413);
+    if (body) {
+      if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) return error('Envie em JSON.', 415);
+      headers['content-type'] = 'application/json';
+    } else body = undefined;
+  }
+
+  let upstream;
+  try {
+    upstream = await fetch(`${origin}/${path}`, { method: request.method, headers, body, redirect: 'manual', signal: AbortSignal.timeout(ALIMENTA_TIMEOUT_MS) });
+  } catch (cause) {
+    const late = cause?.name === 'TimeoutError' || cause?.name === 'AbortError';
+    return error(late ? 'O servidor da Rede Alimenta demorou demais pra acordar. Tente de novo.' : 'O servidor da Rede Alimenta não respondeu. Tente de novo em um minuto.', 502);
+  }
+  const type = upstream.headers.get('content-type')?.toLowerCase() ?? '';
+  const known = type.startsWith('application/json') || type.startsWith('text/plain');
+  if (upstream.status >= 500 && !type.startsWith('application/json')) {
+    await upstream.body?.cancel();
+    return error('O servidor da Rede Alimenta está fora do ar agora. Tente de novo em um minuto.', 502);
+  }
+  if (upstream.status >= 300 && upstream.status < 400) {
+    await upstream.body?.cancel();
+    return error('O servidor da Rede Alimenta respondeu fora do combinado.', 502);
+  }
+  const out = { 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' };
+  if (known) out['content-type'] = type.startsWith('text/plain') ? 'text/plain; charset=utf-8' : 'application/json; charset=utf-8';
+  if (upstream.status === 204) return new Response(null, { status: 204, headers: out });
+  if (!known) { await upstream.body?.cancel(); return error('O servidor da Rede Alimenta respondeu fora do combinado.', 502); }
+  return new Response(upstream.body, { status: upstream.status, headers: out });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    if (url.pathname.startsWith('/api/alimenta/')) return alimentaProxy(request, env, url.pathname.slice('/api/alimenta/'.length));
     if (url.pathname === '/api/chat/health') {
       return request.method === 'GET' ? json({ ok: true, configured: Boolean(env.NINEROUTER_TOKEN) }) : error('Método não permitido.', 405);
     }
@@ -181,6 +244,17 @@ export default {
     if (url.pathname === '/api/hit') return request.method === 'POST' ? handleHit(request, env) : error('Método não permitido.', 405);
     if (url.pathname === '/api/stats/public') return request.method === 'GET' ? publicStats(env) : error('Método não permitido.', 405);
     if (url.pathname.startsWith('/api/admin/')) return adminRoute(request, env, url.pathname, url.searchParams);
+    // alimenta.pontape.org: endereço da Rede Alimenta (parceria FIAP). A raiz mostra /alimenta/, as páginas
+    // e arquivos da Rede Alimenta seguem no mesmo endereço, e o resto do site volta pro pontape.org.
+    if (url.hostname === ALIMENTA_HOST) {
+      if (url.pathname === '/') return env.ASSETS.fetch(new globalThis.Request(new URL('/alimenta/', url), request));
+      const own = url.pathname === '/alimenta' || url.pathname.startsWith('/alimenta/') || /\.[a-z0-9]{1,8}$/i.test(url.pathname);
+      if (!own || url.protocol === 'http:') {
+        if (own) url.protocol = 'https:';
+        else { url.protocol = 'https:'; url.hostname = 'pontape.org'; }
+        return Response.redirect(url.toString(), 301);
+      }
+    }
     const local = /^localhost(?::\d+)?$/.test(request.headers.get('host') ?? '');
     if (!local && (url.hostname === 'www.pontape.org' || (url.hostname === 'pontape.org' && url.protocol === 'http:'))) {
       url.protocol = 'https:';

@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Caderno from '../../components/cronica/Caderno.astro';
+import Icon from '../../components/site/Icon.astro';
+import AlimentaLogin from '../../components/alimenta/AlimentaLogin.astro';
+import { PROJECT_NAME } from '../../data/site/project';
+import { ALIMENTA, DONATION_CATEGORIES, DONOR_KINDS, STORAGE, browserCatalog, suggestUrl } from '../../data/alimenta/rede';
+import '../../styles/alimenta.css';
+
+// The donor flow (round 6): log in by e-mail code, a one-screen account (kind and city, CNPJ only if
+// you want), the donation, the AI suggestion with its reason and sources, confirm or pick another.
+// Each screen is a block that the script shows in turn; without JS the page says it needs JS.
+const UFS = 'AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO'.split(' ');
+---
+<BaseLayout title={`Doar comida · ${ALIMENTA.name} · ${PROJECT_NAME}`}
+  description="Registre a comida que sobrou. A AI sugere um distribuidor que já existe, você confirma e leva. Cada passo entra no livro público."
+  current="alimenta">
+  <Caderno kicker={ALIMENTA.name} title="Doar" turn="comida."
+    lead="Leva uns 3 minutos. Você diz o que tem, a AI sugere quem recebe e você leva até lá. Seu nome e seu e-mail nunca aparecem no livro.">
+    <noscript><p class="al-msg" data-kind="error">Esta página precisa de JavaScript ligado pra entrar e registrar a doação. A <a href={ALIMENTA.distribuidores}>lista de distribuidores</a> funciona sem ele.</p></noscript>
+    <AlimentaLogin />
+
+    <section class="al-card" id="al-signup" aria-labelledby="al-signup-title" hidden>
+      <h2 class="al-card-title" id="al-signup-title">Sua conta de doador</h2>
+      <p class="al-hint">Só isto. Sem CPF, sem endereço, sem telefone.</p>
+      <form id="al-signup-form" class="al-form" novalidate>
+        <fieldset><legend>Você doa como</legend>
+          <div class="al-choices al-choices--three">{DONOR_KINDS.map((k, i) => <label class="al-choice"><input type="radio" name="kind" value={k.id} checked={i === 0} /><span><b>{k.label}</b><small>{k.hint}</small></span></label>)}</div>
+        </fieldset>
+        <div class="al-grid2">
+          <label class="al-field"><span>Cidade</span><input type="text" name="city" maxlength="80" autocomplete="address-level2" required /></label>
+          <label class="al-field"><span>Estado</span><select name="uf">{UFS.map(uf => <option value={uf} selected={uf === 'SP'}>{uf}</option>)}</select></label>
+        </div>
+        <label class="al-field" id="al-cnpj-field" hidden><span>CNPJ <small>(se quiser)</small></span><input type="text" name="cnpj" inputmode="numeric" maxlength="18" /></label>
+        <details class="al-legal"><summary>Ler o termo de doação</summary><pre id="al-terms-text">Carregando…</pre></details>
+        <details class="al-legal"><summary>Ler o aviso de privacidade</summary><pre id="al-privacy-text">Carregando…</pre></details>
+        <label class="al-check"><input type="checkbox" name="accept" required /><span>Li e aceito o termo de doação e o aviso de privacidade <span id="al-versions"></span>.</span></label>
+        <button class="btn btn--ink" type="submit">Criar minha conta</button>
+      </form>
+    </section>
+
+    <section class="al-card" id="al-closed" aria-labelledby="al-closed-title" hidden>
+      <h2 class="al-card-title" id="al-closed-title">O cadastro ainda está fechado</h2>
+      <p class="al-hint" id="al-closed-text">Estamos ligando o envio de e-mail e revisando os textos. Enquanto isso, a <a href={ALIMENTA.distribuidores}>lista de distribuidores</a> está aberta: dá pra doar direto pra eles.</p>
+    </section>
+
+    <section class="al-card" id="al-donate" aria-labelledby="al-donate-title" hidden>
+      <h2 class="al-card-title" id="al-donate-title">O que você tem pra doar?</h2>
+      <form id="al-donate-form" class="al-form" novalidate>
+        <fieldset><legend>Tipo de comida</legend>
+          <div class="al-choices al-choices--two">{DONATION_CATEGORIES.map((c, i) => <label class="al-choice"><input type="radio" name="category" value={c.id} checked={i === 0} /><span><b>{c.label}</b><small>{c.hint}</small></span></label>)}</div>
+        </fieldset>
+        <fieldset><legend>Onde está guardada</legend>
+          <div class="al-choices al-choices--three">{STORAGE.map((s, i) => <label class="al-choice"><input type="radio" name="storage" value={s.id} checked={i === 0} /><span><b>{s.label}</b></span></label>)}</div>
+        </fieldset>
+        <div class="al-grid2">
+          <label class="al-field"><span>Quantos quilos, mais ou menos</span><input type="text" name="kg" inputmode="decimal" maxlength="7" placeholder="Ex.: 12,5" required /></label>
+          <label class="al-field"><span>Vale até</span><input type="date" name="expires" required /></label>
+        </div>
+        <div class="al-grid2">
+          <label class="al-field"><span>Cidade onde a comida está</span><input type="text" name="city" maxlength="80" autocomplete="address-level2" required /></label>
+          <label class="al-field"><span>Estado</span><select name="uf">{UFS.map(uf => <option value={uf} selected={uf === 'SP'}>{uf}</option>)}</select></label>
+        </div>
+        <label class="al-check"><input type="checkbox" name="declare" required /><span>A comida está na validade, bem guardada e é de graça pra quem recebe, como diz o termo de doação.</span></label>
+        <button class="btn btn--ink" type="submit">Registrar e ver a sugestão da AI<Icon name="arrow-right" /></button>
+      </form>
+    </section>
+
+    <section class="al-card" id="al-reco" aria-labelledby="al-reco-title" aria-live="polite" data-suggest={suggestUrl()} hidden>
+      <h2 class="al-card-title" id="al-reco-title">Quem pode receber</h2>
+      <p class="al-hint" id="al-reco-intro"></p>
+      <div id="al-reco-body"></div>
+    </section>
+
+    <section class="al-card al-done" id="al-done" aria-labelledby="al-done-title" tabindex="-1" hidden>
+      <h2 class="al-card-title" id="al-done-title">Pronto. Agora é levar.</h2>
+      <div id="al-done-body"></div>
+      <p class="al-hint">A doação entra no livro público em alguns minutos. Quando entregar, marque em <a href={ALIMENTA.minhas}>Minhas doações</a>.</p>
+      <p class="al-row"><a class="btn btn--ink" href={ALIMENTA.minhas}>Minhas doações</a><button class="btn al-quiet" type="button" id="al-again">Registrar outra</button></p>
+    </section>
+
+    <p class="al-hint al-foot">Não achou distribuidor na sua cidade? <a href={suggestUrl()} rel="noopener">Sugira um</a> com a fonte pública. <a href={ALIMENTA.minhas}>Minhas doações</a> · <a href={ALIMENTA.href}>Como funciona</a></p>
+  </Caderno>
+  <script type="application/json" id="al-catalog" set:html={JSON.stringify(browserCatalog()).replaceAll('<', '\\u003c')} />
+</BaseLayout>
+<script>import '../../scripts/alimenta-doar';</script>
+<style>.al-foot{ margin-top:var(--space-8) }</style>
