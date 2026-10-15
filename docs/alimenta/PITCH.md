@@ -2,97 +2,90 @@
 
 Projeto integrador FIAP Rede Alimenta IA. Roteiro falado, com tempo e quem fala. Troque `[pessoa A]` etc. pelos nomes do grupo.
 
-Rubrica da FIAP: impacto social 30%, qualidade da AI 30%, DevSecOps 20%, engenharia e defesa 20%.
+Rubrica da FIAP: impacto social 30%, qualidade da AI 30%, DevSecOps 20%, engenharia e defesa 20%. Cada bloco abaixo diz qual critério ele cobre.
 
-A Rede Alimenta é um sistema real, com o banco de produção vazio até a primeira doação de verdade. A banca vê o fluxo inteiro rodado por **contas de teste do time**, marcadas `is_test=true`. Esses registros não entram nos KPIs públicos nem no livro, e o script de ensaio apaga tudo no fim.
+A Rede Alimenta é um sistema real. O banco de produção só conta doação de verdade e está em zero até a primeira, e o painel diz isso. O cenário com números grandes é **simulado e marcado**. A demonstração usa o **modo exemplo** do site, que não envia nada.
 
-## Antes de começar (10 minutos antes)
+## Antes de começar (15 minutos antes)
 
-- [ ] Abrir o painel https://rede-alimenta-painel.onrender.com e o Swagger https://rede-alimenta-api-u5q4.onrender.com/docs. O Render free dorme após 15 minutos parado e leva cerca de 1 minuto para acordar ([Render](https://render.com/docs/free), acesso em 14/10/2026).
-- [ ] Conferir que o painel público mostra zero ou só entregas reais. Nada de seed.
-- [ ] Rodar `alimenta/scripts/ensaio.sh` na parte de preparo: cria a conta de doador de teste e a conta de ONG de teste, aprovada pelo operador, todas `is_test=true`. Comando: `alimenta/scripts/ensaio.sh <URL da API> preparar`. Contra produção, passe os JWTs das contas de teste em `ENSAIO_TOKEN_DOADOR`, `ENSAIO_TOKEN_ONG` e `ENSAIO_TOKEN_OPERADOR`.
-- [ ] Ter os e-mails das contas de teste abertos. O código de login chega pelo SMTP padrão do Supabase, que só envia a membros do time e tem limite de cerca de 2 por hora. Entrar nas contas **antes** da banca e manter as sessões abertas.
-- [ ] Deixar abertas quatro abas: painel como doador, painel como ONG, Swagger e a última execução verde do workflow "Rede Alimenta".
+- [ ] Acordar a API: abrir https://rede-alimenta-api-u5q4.onrender.com/health. O Render free dorme após 15 minutos parado e leva cerca de 1 minuto para acordar.
+- [ ] Deixar abertas cinco abas:
+  1. https://pontape.org (ou a prévia https://pontape-proposta.lucasplays2000.workers.dev se a banca for ver a versão nova)
+  2. `/alimenta/doar/?exemplo=1` no mesmo site
+  3. `/alimenta/painel/` no mesmo site
+  4. Swagger: https://rede-alimenta-api-u5q4.onrender.com/docs
+  5. Última execução verde do workflow "Rede Alimenta": https://github.com/LucasOl1337/pontape/actions/workflows/alimenta.yml
+- [ ] Recarregar o painel e conferir que o bloco "Impacto real" saiu de "…" para números (zero é o esperado).
 - [ ] Ter a gravação de reserva fora da internet e o `docker compose up` local como segunda reserva.
-- [ ] Anotar o commit no ar e conferir que é o mesmo da execução verde.
 
 ## Roteiro
 
-| Bloco | Tempo | Quem fala | O que mostrar |
-|---|---|---|---|
-| 1. PontaPé | 0:00 a 0:40 | [pessoa A] | Site pontape.org, passo 4 "Comida e roupa" |
-| 2. O problema da comida | 0:40 a 1:20 | [pessoa A] | Um slide ou nada |
-| 3. O sistema rodando | 1:20 a 4:00 | [pessoa B] | Painel do doador, painel da ONG, Swagger |
-| 4. O que é AI e o que é regra | 4:00 a 5:00 | [pessoa C] | Aba do modelo no painel |
-| 5. DevSecOps e dados | 5:00 a 6:00 | [pessoa D] | GitHub Actions, relatórios, STRIDE |
-| 6. Transparência e fecho | 6:00 a 6:45 | [pessoa A] | "Conferir livro" e painel público |
+| Bloco | Tempo | Quem fala | O que mostrar | Critério |
+|---|---|---|---|---|
+| 1. O problema | 0:00 a 0:45 | [pessoa A] | Página inicial, porta "Tenho comida sobrando" | Impacto social |
+| 2. O sistema rodando | 0:45 a 3:00 | [pessoa B] | Doar comida em modo exemplo | Impacto, engenharia |
+| 3. A AI e como medimos | 3:00 a 4:15 | [pessoa C] | Painel: Qualidade da AI e Cenário simulado | Qualidade da AI |
+| 4. DevSecOps | 4:15 a 5:30 | [pessoa D] | Painel: Segurança; GitHub Actions; Swagger | DevSecOps |
+| 5. Transparência e fecho | 5:30 a 6:30 | [pessoa A] | Painel: Impacto real (zero honesto); livro | Impacto, defesa |
 
-### 1. PontaPé (40 s)
+### 1. O problema (45 s)
 
-> O PontaPé é um projeto open source sem fins lucrativos. Ele quer achar quem está em situação difícil, dar o básico e ajudar a pessoa a chegar a um trabalho. E mostra em público cada ação, num livro que qualquer um confere.
+> Comida boa vai para o lixo enquanto tem gente passando fome. No nosso cenário simulado de São Paulo, 42% dos lotes acabam descartados. Refeição pronta é a pior: 77%.
 >
-> O passo 4 da escada é "Comida e roupa". A Rede Alimenta é a parte da comida. É um sistema de verdade: recebe doação de mercado, padaria e restaurante, e distribui para ONGs aprovadas.
-
-### 2. O problema da comida (40 s)
-
-> Comida boa vai para o lixo porque ninguém decide a tempo para onde ela vai. Do outro lado, tem ONG que precisa dessa comida e não fica sabendo.
+> O problema não é falta de comida, é tempo e informação. Quem tem comida sobrando não sabe quem aceita aquele tipo de comida, onde e em que horário. A Rede Alimenta resolve isso.
 >
-> O problema é o tempo. Um lote de pão dura um dia. Quem doa precisa saber, rápido, qual ONG aceita pão, tem espaço hoje e está perto. E a ONG precisa receber o aviso a tempo de buscar.
+> Ela faz parte do PontaPé, um projeto open source sem fins lucrativos, que mostra em público tudo o que faz.
 
-### 3. O sistema rodando (2 min 40 s)
+### 2. O sistema rodando (2 min 15 s)
 
-Fale enquanto clica. As duas contas são de teste do time e o painel mostra a marca "teste" nelas.
+Na aba `/alimenta/doar/?exemplo=1`. A faixa amarela "Exemplo" fica visível o tempo todo.
 
-1. **Publicar o lote.** Na aba do doador de teste, publicar 12 kg de pão, vencendo hoje à noite, com janela de retirada até as 20h. Marcar a caixa de validade e conservação.
-   > Sou uma padaria. Publiquei 12 kg de pão que vencem hoje. Confirmei que está na validade e bem guardado, como a Lei 14.016 pede.
-2. **Ver o risco.** O lote aparece com a probabilidade de descarte e a faixa.
-   > O modelo diz que este lote tem risco alto de ir para o lixo. Por isso ele sobe na fila.
-3. **A oferta chega.** Trocar para a aba da ONG de teste. A oferta está na caixa, com prazo.
-   > Do lado da ONG, a oferta chegou. Ela só chegou porque a ONG foi aprovada pelo operador, aceita padaria, tem espaço hoje e o lote está no raio dela. E tem prazo: se ela não responder, a oferta passa para a próxima ONG.
-4. **Aceitar.** A ONG aceita.
-   > Aceitei. Esse tempo, da publicação até o aceite, é o nosso tempo de match.
-5. **Mostrar a trava.** No Swagger, tentar aceitar o mesmo lote com outra conta. Volta 409 ou 403.
-   > Ninguém mais pega este lote. A trava está no banco, não só na tela.
-6. **Rota de coleta.** Abrir a rota da ONG.
-   > A rota sai da ONG, passa pelo doador mais perto primeiro e volta. É uma heurística simples, e a gente diz isso.
-7. **Dupla confirmação.** Doador confirma a retirada. ONG confirma o recebimento.
-   > A entrega só conta quando os dois lados confirmam. Um lado sozinho não basta.
-8. **O lote fecha.** Mostrar o lote como `delivered` na aba do doador.
-   > Fechou. O desfecho fica gravado para treinar o modelo com dado real.
+1. **Dizer o que tem.** Escolher pães, empresa, 12,5 kg, validade amanhã, cidade Osasco. "Ver quem recebe".
+   > Sou uma padaria em Osasco com 12 kilos de pão que vencem amanhã. Não preciso de conta pra isso.
+2. **Ver quem recebe.** A lista mostra só quem aceita pão em Osasco, com endereço, horário e a fonte pública de cada informação.
+   > O sistema filtra por regra quem aceita esse tipo de comida na minha cidade. Cada distribuidor tem a fonte pública: nada é inventado.
+3. **Escolher e ver o passo a passo.** Escolher o primeiro. Mostrar "Pronto": mapa, contato, "precisa agendar?".
+4. **Registrar.** Mostrar que no registro real a AI lê as páginas públicas de cada candidato e ordena, citando a fonte.
+   > Quando a doação é registrada, a AI lê as páginas oficiais de cada distribuidor e explica por que ele é uma boa escolha, sempre com o link. Se a AI responde algo fora das fontes, a resposta inteira é descartada e vale a regra.
+5. **Lista completa.** Abrir "Onde doar": 30 distribuidores com fonte pública, filtro por cidade.
 
-Se sobrar tempo: no Swagger, publicar um lote com validade de ontem. Volta 422. "Comida vencida nem entra."
+Se sobrar tempo, no Swagger: `POST /donations` com validade de ontem volta 422. "Comida vencida nem entra."
 
-O painel tem as três telas por papel: "Meu estabelecimento", "Minha ONG" e "Operação". A aprovação da ONG pode ser mostrada na aba "Operação".
+### 3. A AI e como medimos (1 min 15 s)
 
-### 4. O que é AI e o que é regra (1 min)
+Aba do painel, bloco "Qualidade da AI".
 
-> A AI aqui faz uma coisa: estima a chance de um lote ser descartado. É um modelo do scikit-learn.
+> São duas AIs. A primeira é um modelo nosso, local, do scikit-learn: ele estima a chance de um lote ser descartado, pra quem tem mais risco sair primeiro. A segunda lê as páginas públicas dos distribuidores e recomenda, sempre citando a fonte.
 >
-> Ainda não existe histórico real de doações. Por isso o modelo nasceu treinado com dado sintético. É uma partida a frio, e a tela diz isso. Cada lote real grava o desfecho, entregue, vencido ou sem ONG, e quando houver volume o modelo é retreinado com dado de verdade.
+> O modelo foi treinado com 4.800 lotes simulados e testado em outros 1.200 que ele nunca viu. Acerta 78,9%. Chutar sempre "não descarta" dá 58,1%, e uma regra só de prazo dá 72,2%. Então o modelo ganha da regra.
 >
-> No dado sintético, separamos o teste antes de treinar e comparamos com duas baselines: chutar sempre a classe mais comum, e uma regra só de prazo. O modelo acerta 78,9% em 1.200 lotes de teste. A classe mais comum dá 58,1%, e a regra de prazo dá 72,2%. A matriz de confusão mostra que o modelo ainda deixa passar 153 de 503 lotes que seriam descartados.
+> Acurácia sozinha engana, então mostramos a matriz: ele pega 350 de 503 descartes reais e ainda deixa passar 153. A gente diz isso.
 >
-> O resto é regra, e dizemos isso: ONG aprovada, tipo de comida, refrigeração, raio, capacidade, prazo da oferta e o bloqueio de vencido. Quem aprova uma ONG é uma pessoa, não o modelo.
+> Descer para "Cenário de São Paulo": o mapa de calor mostra a zona Oeste com o maior descarte, 54%. E os alertas de validade: lotes que vencem em menos de 48 horas, ordenados pelo risco do modelo.
 
-### 5. DevSecOps e dados (1 min)
+### 4. DevSecOps (1 min 15 s)
 
-> Todo PR e todo push na main rodam o workflow "Rede Alimenta": testes, Bandit no código Python, Trivy nas dependências e na imagem Docker. Achado alto ou crítico com correção disponível reprova o pipeline e não tem deploy.
+Painel, bloco "Segurança e entrega contínua". Depois a aba do GitHub Actions.
+
+> Todo push roda o pipeline: testes, retreino do modelo conferido, Bandit no código Python e Trivy nas dependências, no Dockerfile e na imagem. Achado alto ou crítico com correção disponível reprova o pipeline e não tem deploy.
 >
-> Em março de 2026, a própria cadeia do Trivy foi atacada. Tags da Action oficial foram trocadas por código que roubava credenciais. Por isso instalamos o Trivy por binário de versão fixa, com checksum, e fixamos as outras Actions por SHA.
+> Desde o primeiro scan, corrigimos 11 vulnerabilidades, por identificador. Seis eram CVEs do pip na imagem. Hoje temos zero achados novos.
 >
-> O sistema guarda dado de organizações, então fizemos a STRIDE das ameaças reais: conta falsa de ONG, doador que publica comida ruim, vazamento de endereço, ONG que segura oferta, sessão roubada e entrega falsa no livro. O endereço nunca sai em rota pública. O login é por código no e-mail, sem senha.
-
-Mostrar: a execução verde no GitHub, com o mesmo commit no ar, os relatórios como artefato e a tabela de ameaças principais da [STRIDE.md](STRIDE.md).
-
-### 6. Transparência e fecho (45 s)
-
-> Cada entrega com dupla confirmação vira uma linha num livro com hash, que qualquer pessoa baixa e confere. O nosso ensaio de hoje usou contas de teste, então ele não entra no livro nem nos números públicos. O painel público continua mostrando só o que é real.
+> Em março de 2026, a própria Action do Trivy foi atacada. Por isso instalamos o Trivy por binário com checksum e fixamos as Actions por SHA.
 >
-> O sistema está pronto e fechado. Pela regra do PontaPé, nenhum cadastro de fora entra antes de existir um responsável legal pelos dados. Quando isso existir, a gente abre para a primeira padaria e a primeira ONG.
->
-> O que falta está escrito em LIMITES.md.
+> E fizemos a análise de ameaças STRIDE: vazamento de dado de quem doa, comida vencida, doação falsa no livro, abuso da AI. A cidade de quem doa nunca aparece em dado público.
 
-Mostrar no bloco 6: em produção, o livro só tem entregas reais e pode estar vazio. Para mostrar a conferência, use o livro do `docker compose` local, que nasce do seed de exemplo, rotulado "Exemplo". Baixe, rode `python3 tools/conferir.py livro.json`, troque um `quantity` e rode de novo para ver a linha apontada.
+Mostrar a execução verde e o Swagger da API FastAPI no Render, com o banco no Supabase.
+
+### 5. Transparência e fecho (1 min)
+
+Voltar ao topo do painel.
+
+> Separamos três tipos de número, com selo: real, modelo e simulado. O impacto real está em zero, porque nenhuma doação de verdade foi registrada ainda. Preferimos mostrar zero a inflar número.
+>
+> Cada doação real vira uma linha num livro público com hash, que qualquer pessoa baixa e confere.
+>
+> A lista de onde doar já funciona hoje, sem conta. O registro abre para todo mundo quando o envio de e-mail próprio estiver ligado. O que falta está escrito em LIMITES.md.
 
 ## Plano B: o sistema não respondeu
 
@@ -100,54 +93,44 @@ Decida em 20 segundos. Não tente consertar ao vivo.
 
 | O que falhou | O que fazer |
 |---|---|
-| URL pública não abre ou demora mais de 1 minuto | Trocar para o `docker compose up` local, já aberto em outra aba |
-| O código de login não chegou | Usar as sessões abertas antes. Sem sessão, ir para o compose local com as contas de exemplo |
-| Local também falhou, ou não há internet | Tocar a gravação de reserva e narrar por cima com o mesmo roteiro |
-| Só o painel caiu, a API responde | Fazer pelo Swagger com o JWT das contas de teste: publicar lote, aceitar oferta, confirmar os dois lados, `GET /kpis`, `GET /ledger/verify` |
-| Só o banco caiu (Supabase pausado) | Ir para o compose local, que tem Postgres próprio |
+| Painel mostra "O servidor não respondeu" | A API está acordando. Seguir com os blocos de AI e segurança, que não dependem dela, e recarregar no fim |
+| Site não abre | Abrir a prévia (ou o oficial, o que estiver de pé) |
+| Swagger não abre | Mostrar `alimenta/api/main.py` e os testes no GitHub |
+| Sem internet | `docker compose up` local, ou a gravação de reserva narrada ao vivo |
 | Sem projetor | Mostrar no notebook e ler os números em voz alta |
 
 Frase para a banca:
 
 > A versão no ar não respondeu agora. Vamos mostrar a mesma coisa rodando localmente [ou: na gravação feita hoje com o mesmo commit].
 
-Gravação de reserva:
-
-- Arquivo: [preencher: caminho ou link da gravação].
-- Gravada em [preencher: data e hora], commit [preencher].
-- Mostra os 8 passos do bloco 3, da publicação até `delivered`, com contas de teste.
-- Duração entre 2 e 3 minutos, sem som. A narração é ao vivo.
-
-Depois da banca: rodar a parte de limpeza do `alimenta/scripts/ensaio.sh` e conferir que os KPIs públicos voltaram ao valor de antes. Comando: `alimenta/scripts/ensaio.sh <URL da API> limpar`. Provas: `test_ensaio.py::test_prepare_then_clean` e `test_publico.py::test_real_delivery_counts_and_test_does_not`.
-
 ## Perguntas prováveis da banca
 
 **1. Os dados são reais?**
-O sistema é real e o banco de produção começa vazio. O que vocês viram hoje foi feito com contas de teste do time, marcadas `is_test`, fora dos números públicos. Dado sintético só existe em três lugares: o treino inicial do modelo, os testes automáticos e o compose local.
+O sistema é real. O impacto real começa em zero e só conta doação de verdade; contas de teste ficam fora. Dado simulado existe em três lugares, sempre marcado: o treino do modelo, o cenário do painel e os testes.
 
-**2. Se o modelo foi treinado com dado sintético, o que a acurácia prova?**
-Prova que o pipeline está certo: split antes do treino, baselines e métricas num teste separado. Não prova desempenho com doação real. Para isso o sistema grava o desfecho de cada lote real e retreina quando houver volume. Quem conhecesse a fórmula escondida do gerador acertaria no máximo 79,9%, por causa do ruído. 99% seria sinal de erro.
+**2. Se o modelo foi treinado com dado simulado, o que a acurácia prova?**
+Prova que o método está certo: teste separado antes do treino, comparação com duas regras simples e matriz de confusão. Não prova desempenho com doação real. Cada doação real grava o desfecho, e o modelo é retreinado quando houver volume. O gerador tem ruído de propósito: quem conhecesse a fórmula escondida acertaria no máximo 79,9%. 99% seria sinal de erro.
 
-**3. Como vocês sabem que a ONG existe?**
-O CNPJ é conferido na BrasilAPI: precisa estar ativo e ter natureza jurídica de entidade sem fins lucrativos. Mesmo assim, quem aprova é uma pessoa, o operador. Até a aprovação, a ONG não vê nenhuma oferta.
+**3. O que é AI e o que é regra?**
+AI: o modelo de risco de descarte e a recomendação que lê as páginas públicas. Regra: cidade, tipo de comida, quem recebe de quem, o bloqueio de vencido e a validação que descarta qualquer resposta da AI fora das fontes.
 
 **4. E se o doador mandar comida estragada?**
-Lote vencido nem entra: a API volta 422. Em todo lote, o doador confirma que a comida está na validade e conservada. A Lei 14.016/2020 diz que o doador só responde se agir com dolo, e que a responsabilidade dele acaba na primeira entrega à ONG (art. 3º). A ONG pode recusar e confere na retirada.
+Validade no passado volta 422. O doador aceita o termo de doação. A Lei 14.016/2020 diz que o doador só responde se agir com dolo. O distribuidor confere na entrega.
 
-**5. Por que ainda não tem doador de verdade?**
-Pela regra do PontaPé (D012), nenhum dado pessoal é guardado antes de existir um responsável legal por ele. O sistema está pronto e fechado. Abrir é mudar uma variável depois que o termo e o aviso de privacidade forem aprovados.
+**5. Por que não tem ONG cadastrada na plataforma?**
+Escolhemos começar só com distribuidores públicos que já existem, como bancos de alimentos e cozinhas solidárias, cada um com fonte. Assim não guardamos dado de ONG antes de ter um responsável legal, e a lista funciona desde o primeiro dia.
 
-**6. Como evitam que o mesmo lote vá para duas ONGs?**
-Uma oferta por vez, com índice único no banco. Mesmo com duas requisições ao mesmo tempo, a segunda é recusada.
+**6. Como calcularam o tempo de match?**
+Minutos entre registrar a doação e escolher o destino, média das doações reais. Está em `GET /kpis` e no painel.
 
-**7. Onde ficam os dados?**
-O banco fica em São Paulo, no Supabase sa-east-1. A API roda no Render, na região Virginia, porque o Render não tem região na América do Sul. Então o dado passa pelos Estados Unidos. Está escrito em LIMITES.md, com a lei.
+**7. Como calcularam as refeições?**
+kg entregues ÷ 0,544 kg por refeição, fator da Feeding America. Por isso a tela diz "estimadas".
 
-**8. Por que não usaram Hugging Face?**
-Para dado em tabela, scikit-learn é a escolha direta. A análise semântica de texto livre ficou fora deste corte: a categoria do lote vem de uma lista.
+**8. Onde ficam os dados?**
+Banco no Supabase em São Paulo. A API roda no Render, na Virginia, porque o Render não tem região na América do Sul. Está em LIMITES.md.
 
-**9. Como calcularam as refeições?**
-kg entregues divididos por 0,544 kg por refeição, fator da Feeding America, dos Estados Unidos. Por isso a tela diz "estimadas".
+**9. Qual vulnerabilidade vocês corrigiram?**
+11 achados do primeiro scan sumiram do atual, por identificador. Um é o `DS-0013` do Trivy no Dockerfile. Seis são CVEs do `pip` na imagem. Os números estão em `alimenta/seguranca/resumo.json` e no painel.
 
-**10. Qual vulnerabilidade vocês corrigiram?**
-11 achados do primeiro scan sumiram do atual, por identificador. Um deles é o `DS-0013` do Trivy no Dockerfile. Seis são CVEs do `pip` na imagem. Os números estão em `alimenta/seguranca/resumo.json`, com os commits.
+**10. Por que não Streamlit?**
+A interface é o próprio site, mais leve no celular e acessível. O painel tem os mesmos indicadores que um dashboard Streamlit teria: impacto, acurácia, mapa de calor, alertas e saúde do pipeline.

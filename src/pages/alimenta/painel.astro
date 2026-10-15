@@ -45,7 +45,7 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
   description="Os números da Rede Alimenta: doações reais, a precisão do modelo de AI, a segurança do código e um cenário simulado, cada um com o rótulo do que é."
   current="alimenta">
   <Caderno trail={serviceTrail('Painel', Astro.site)} title="Painel da" turn="Rede Alimenta."
-    lead="Três tipos de número, sempre separados. Real: doação de verdade, ao vivo. Modelo: medido num teste que o modelo nunca viu. Simulado: dado inventado pra mostrar o sistema funcionando.">
+    lead="A precisão da AI, o desperdício num cenário de São Paulo, a segurança do código e as doações reais. Cada número leva um selo dizendo de onde vem.">
 
     <ul class="pn-legend" aria-label="Legenda">
       <li><span class="pn-tag pn-tag--real">Real</span> vem do banco, ao vivo. Zero até a primeira doação de verdade.</li>
@@ -53,25 +53,10 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
       <li><span class="pn-tag pn-tag--sim">Simulado</span> dado inventado, marcado. Não é impacto real.</li>
     </ul>
 
-    <section class="pn-block" aria-labelledby="pn-real-title">
-      <h2 id="pn-real-title" class="kicker">Impacto real <span class="pn-tag pn-tag--real">Real</span></h2>
-      <div class="pn-kpis" id="pn-live" aria-live="polite">
-        <div class="pn-kpi"><strong data-k="kg_delivered">…</strong><span>kg entregues</span></div>
-        <div class="pn-kpi"><strong data-k="meals_estimated">…</strong><span>refeições estimadas</span></div>
-        <div class="pn-kpi"><strong data-k="donations">…</strong><span>doações registradas</span></div>
-        <div class="pn-kpi"><strong data-k="match">…</strong><span>tempo médio até o destino</span></div>
-      </div>
-      <p class="pn-note" id="pn-live-note">Buscando os números no servidor da Rede Alimenta. Ele pode levar até um minuto pra acordar.</p>
-      <p class="pn-note">Refeições estimadas: kg entregues ÷ {String(painel.kg_per_meal).replace('.', ',')} kg por refeição (<a href="https://www.feedingamerica.org/ways-to-give/faq/about-our-claims" rel="noopener">Feeding America</a>). Tempo até o destino: do registro da doação até a escolha de quem recebe. Contas de teste ficam fora. <a href="/api/alimenta/kpis">Ver os dados crus</a></p>
-      <div id="pn-cities" hidden>
-        <h3 class="pn-sub">Entregas por cidade do distribuidor</h3>
-        <ol class="pn-bars" id="pn-cities-list"></ol>
-      </div>
-    </section>
 
     <section class="pn-block" aria-labelledby="pn-ai-title">
-      <h2 id="pn-ai-title" class="kicker">Qualidade da AI <span class="pn-tag pn-tag--model">Modelo</span></h2>
-      <p class="pn-lead">O modelo <span class="mono">{metrics.model_version}</span> ({metrics.algorithm}) estima a chance de um lote de comida ser descartado. Treinado em {fmt.format(metrics.split.n_train)} lotes simulados e testado em outros {fmt.format(metrics.split.n_test)} que ele nunca viu.</p>
+      <h2 id="pn-ai-title" class="pn-h2">Qualidade da AI <span class="pn-tag pn-tag--model">Modelo</span></h2>
+      <p class="pn-lead">O modelo <span class="mono">{metrics.model_version}</span> ({metrics.algorithm}) estima a chance de um lote de comida ser descartado, pra quem tem mais risco sair primeiro. Treinado com dado simulado: aprendeu em {fmt.format(metrics.split.n_train)} lotes simulados e testado em outros {fmt.format(metrics.split.n_test)} que ele nunca viu.</p>
       <div class="pn-kpis">
         <div class="pn-kpi"><strong>{pct(t.accuracy)}</strong><span>acurácia no teste</span></div>
         <div class="pn-kpi"><strong>{t.roc_auc.toLocaleString('pt-BR')}</strong><span>ROC AUC</span></div>
@@ -104,8 +89,8 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
     </section>
 
     <section class="pn-block" aria-labelledby="pn-sim-title">
-      <h2 id="pn-sim-title" class="kicker">Cenário de São Paulo <span class="pn-tag pn-tag--sim">Simulado</span></h2>
-      <p class="pn-lead">{fmt.format(painel.totals.lots)} lotes simulados, {fmt.format(Math.round(painel.totals.kg))} kg. No histórico simulado, {pct(painel.totals.discard_rate)} foram descartados. O que não foi daria cerca de {fmt.format(painel.totals.meals_estimated)} refeições (estimativa).</p>
+      <h2 id="pn-sim-title" class="pn-h2">Cenário de São Paulo <span class="pn-tag pn-tag--sim">Simulado</span></h2>
+      <p class="pn-lead">{fmt.format(painel.totals.lots)} lotes simulados, {fmt.format(Math.round(painel.totals.kg))} kg. No histórico simulado, {pct(painel.totals.discard_rate)} dos lotes foram descartados. O que não foi daria cerca de {fmt.format(painel.totals.meals_estimated)} refeições (estimativa).</p>
       <div class="pn-two">
         <figure class="pn-map">
           <svg viewBox="0 0 400 300" role="img" aria-labelledby="pn-map-cap">
@@ -147,7 +132,7 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
           <thead><tr><th scope="col">Lote</th><th scope="col">Comida</th><th scope="col">Região</th><th scope="col">kg</th><th scope="col">Vence em</th><th scope="col">Risco de descarte</th></tr></thead>
           <tbody>
             {painel.alerts.top.map(a => (
-              <tr><td class="mono">{a.lot}</td><td>{a.category} · {a.storage.toLowerCase()}</td><td>{a.region}</td><td>{a.kg.toLocaleString('pt-BR')}</td><td>{a.hours_to_expiry.toLocaleString('pt-BR')} h</td>
+              <tr><td class="mono">{a.lot}</td><td>{a.category} · {a.storage.toLowerCase()}</td><td>{a.region}</td><td class="num">{a.kg.toLocaleString('pt-BR')}</td><td class="num">{a.hours_to_expiry.toLocaleString('pt-BR')} h</td>
                 <td><span class={`pn-risk pn-risk--${a.risk_level}`}>{risk[a.risk_level]}</span> {pct(a.discard_proba)}</td></tr>
             ))}
           </tbody>
@@ -157,7 +142,7 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
     </section>
 
     <section class="pn-block" aria-labelledby="pn-sec-title">
-      <h2 id="pn-sec-title" class="kicker">Segurança e entrega contínua <span class="pn-tag pn-tag--real">Real</span></h2>
+      <h2 id="pn-sec-title" class="pn-h2">Segurança e entrega contínua <span class="pn-tag pn-tag--real">Real</span></h2>
       <div class="pn-kpis">
         <div class="pn-kpi"><strong>{fmt.format(security.mitigated.total)}</strong><span>vulnerabilidades corrigidas desde a linha de base</span></div>
         <div class="pn-kpi"><strong>{fmt.format(security.baseline.total)} → {fmt.format(security.current.total)}</strong><span>achados dos scans ({security.baseline.commit} → {security.current.commit})</span></div>
@@ -168,7 +153,7 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
         <div>
           <h3 class="pn-sub">Por ferramenta</h3>
           <ul class="pn-tools">
-            {tools.map(([name, v]) => <li><span>{name}</span><span class="mono">{v.baseline} → {v.current}{v.mitigated_ids.length ? ` (${v.mitigated_ids.length} corrigidas)` : ''}</span></li>)}
+            {tools.map(([name, v]) => <li><span>{name}</span><span class="mono">{v.baseline} → {v.current}{v.mitigated_ids.length ? ` (${v.mitigated_ids.length} ${v.mitigated_ids.length === 1 ? 'corrigida' : 'corrigidas'})` : ''}</span></li>)}
           </ul>
         </div>
         <div>
@@ -184,8 +169,24 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
       <p class="pn-note">{commit ? <>Esta versão do site é do commit <span class="mono">{commit.slice(0, 7)}</span>. </> : null}<a href={workflow} rel="noopener">Ver a última execução do pipeline no GitHub</a>, com os relatórios de cada scan. Riscos aceitos e por quê estão no <a href={`${REPO_URL}/blob/main/alimenta/seguranca/resumo.json`} rel="noopener">resumo</a>; a análise de ameaças está no <a href={`${REPO_URL}/blob/main/docs/alimenta/STRIDE.md`} rel="noopener">STRIDE</a>.</p>
     </section>
 
+    <section class="pn-block" aria-labelledby="pn-real-title">
+      <h2 id="pn-real-title" class="pn-h2">Impacto real <span class="pn-tag pn-tag--real">Real</span></h2>
+      <div class="pn-kpis" id="pn-live" aria-live="polite">
+        <div class="pn-kpi"><strong data-k="kg_delivered">…</strong><span>kg entregues</span></div>
+        <div class="pn-kpi"><strong data-k="meals_estimated">…</strong><span>refeições estimadas</span></div>
+        <div class="pn-kpi"><strong data-k="donations">…</strong><span>doações registradas</span></div>
+        <div class="pn-kpi"><strong data-k="match">…</strong><span>tempo médio até o destino</span></div>
+      </div>
+      <p class="pn-note" id="pn-live-note">Buscando os números no servidor da Rede Alimenta. Ele pode levar até um minuto pra acordar.</p>
+      <p class="pn-note">Refeições estimadas: kg entregues ÷ {String(painel.kg_per_meal).replace('.', ',')} kg por refeição (<a href="https://www.feedingamerica.org/ways-to-give/faq/about-our-claims" rel="noopener">Feeding America</a>). Tempo até o destino: do registro da doação até a escolha de quem recebe. Contas de teste ficam fora. <a href="/api/alimenta/kpis">Ver os dados crus</a></p>
+      <div id="pn-cities" hidden>
+        <h3 class="pn-sub">Entregas por cidade do distribuidor</h3>
+        <ol class="pn-bars" id="pn-cities-list"></ol>
+      </div>
+    </section>
+
     <section class="pn-block" aria-labelledby="pn-api-title">
-      <h2 id="pn-api-title" class="kicker">Por dentro</h2>
+      <h2 id="pn-api-title" class="pn-h2">Por dentro</h2>
       <ul class="pn-links">
         <li><a href="https://rede-alimenta-api-u5q4.onrender.com/docs" rel="noopener">API com Swagger</a> FastAPI no Render, banco Postgres no Supabase.</li>
         <li><a href={`${REPO_URL}/tree/main/alimenta`} rel="noopener">Código do servidor e do modelo</a> Python, scikit-learn, Docker e Compose.</li>
@@ -203,7 +204,8 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
   .pn-tag--real{ color:var(--success) }
   .pn-tag--model{ color:var(--info) }
   .pn-tag--sim{ color:var(--example-ink); background:repeating-linear-gradient(135deg, var(--example-a) 0 6px, var(--example-b) 6px 12px) }
-  .kicker .pn-tag{ margin-left:.5rem }
+  .pn-h2{ font:600 clamp(1.5rem, 1.25rem + 1vw, 2rem)/1.15 var(--font-serif); color:var(--ink) }
+  .pn-h2 .pn-tag{ margin-left:.6rem; vertical-align:.35em }
   .pn-block{ margin-top:var(--space-12); padding-top:var(--space-4); border-top:2px solid var(--ink) }
   .pn-lead{ max-width:46rem; margin-top:var(--space-4); font:400 var(--t-ui)/1.5 var(--font-sans) }
   .pn-kpis{ display:grid; grid-template-columns:repeat(2, 1fr); gap:var(--space-4); margin-top:var(--space-6) }
@@ -220,8 +222,8 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
   .pn-bars li{ display:grid; grid-template-columns:minmax(8.5rem, 13rem) 1fr 4.4rem; gap:.6rem; align-items:center; font:400 var(--t-small)/1.3 var(--font-sans) }
   .pn-bars li.is-main{ font-weight:700 }
   .pn-bar{ height:.9rem; background:var(--paper-2); border:1px solid var(--control-border) }
-  .pn-bar > span{ display:block; height:100%; background:var(--info) }
-  .pn-bars li.is-main .pn-bar > span{ background:var(--ink) }
+  .pn-bar > span{ display:block; height:100%; background:var(--ink-2) }
+  .pn-bars li.is-main .pn-bar > span{ background:var(--accent) }
   .pn-bar--warn > span{ background:var(--warning) }
   .pn-bar-value{ text-align:right; font-family:var(--font-mono) }
   .pn-matrix, .pn-alerts{ width:100%; margin-top:var(--space-3); border-collapse:collapse; font:400 var(--t-small)/1.35 var(--font-sans) }
@@ -231,6 +233,7 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
   .pn-matrix thead th, .pn-alerts thead th{ font-weight:700 }
   .pn-table-wrap{ overflow-x:auto }
   .pn-alerts{ min-width:36rem }
+  .pn-alerts td.num{ text-align:right; font-variant-numeric:tabular-nums }
   .pn-risk{ display:inline-block; padding:.05rem .4rem; font-weight:700; border:2px solid currentColor }
   .pn-risk--high{ color:var(--error) }
   .pn-risk--medium{ color:var(--warning) }

@@ -15,7 +15,7 @@ interface Kpis {
 const set = (key: string, text: string) => { const el = live?.querySelector<HTMLElement>(`[data-k="${key}"]`); if (el) el.textContent = text; };
 
 function minutes(m: number | null | undefined): string {
-  if (m === null || m === undefined) return 'sem dados';
+  if (m === null || m === undefined) return '–';
   if (m < 60) return `${fmt.format(Math.round(m))} min`;
   if (m < 48 * 60) return `${fmt.format(m / 60)} h`;
   return `${fmt.format(m / 1440)} dias`;
