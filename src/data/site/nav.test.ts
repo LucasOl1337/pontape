@@ -46,7 +46,7 @@ describe('links do cabeçalho e do rodapé por host (1.1)', () => {
   });
 
   it('o menu do serviço é curto: onde doar, registrar, minhas doações e voltar', () => {
-    expect(serviceNav(SITE).map(l => l.label)).toEqual(['Onde doar', 'Registrar', 'Minhas doações', 'Voltar ao PontaPé']);
+    expect(serviceNav(SITE).map(l => l.label)).toEqual(['Onde doar', 'Registrar', 'Painel', 'Minhas doações', 'Voltar ao PontaPé']);
   });
 
   it('o rodapé tem 4 grupos: projeto, serviço, ferramentas e contato (2.6)', () => {

@@ -11,6 +11,7 @@ export const ALIMENTA = {
   distribuidores: '/alimenta/distribuidores',
   doar: '/alimenta/doar',
   minhas: '/alimenta/minhas-doacoes',
+  painel: '/alimenta/painel',
   code: `${REPO_URL}/tree/main/alimenta`,
   siteCode: `${REPO_URL}/tree/main/src/pages/alimenta`,
   checker: `${REPO_URL}/blob/main/tools/conferir.py`,

@@ -18,8 +18,8 @@ const onList = Astro.url.pathname.replace(/\/$/, '') === ALIMENTA.distribuidores
   <div class:list={['status-strip', { 'status-strip--preview': preview }]} data-strip-context={context}>
     <p class="status-strip-inner">
       {preview && <span class="strip-preview"><strong>Prévia da proposta.</strong> Não é o site oficial.</span>}
-      {context === 'project' && <span class="strip-context"><strong>Em construção.</strong> Ainda não atende ninguém nem recebe dinheiro. O que já funciona hoje é a lista de onde doar comida. <a href={projectHref('/construir/pecas', site)}>Ver o que já existe</a></span>}
-      {context === 'service' && <span class="strip-context"><strong>Em teste.</strong> A lista de onde doar já funciona, sem conta. O registro no livro abre em breve.{!onList && <> <a href={ALIMENTA.distribuidores}>Ver onde doar</a></>}</span>}
+      {context === 'project' && <span class="strip-context"><strong>No ar:</strong> Rede Alimenta, com AI que indica quem recebe sua doação de comida. <a href={projectHref(ALIMENTA.href, site)}>Doar comida</a></span>}
+      {context === 'service' && <span class="strip-context"><strong>Funciona sem conta:</strong> veja quem recebe, diga o que tem e leve.{!onList && <> <a href={ALIMENTA.distribuidores}>Ver onde doar</a></>}</span>}
       <span class="strip-example" hidden><strong>Exemplo.</strong> Dado inventado pra mostrar o caminho. Não entra no livro nem nos números. <a href={ALIMENTA.doar}>Sair do exemplo</a></span>
     </p>
   </div>

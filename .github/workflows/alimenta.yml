@@ -35,6 +35,8 @@ jobs:
         run: alimenta/.venv/bin/python -m alimenta.data.generate --check
       - name: Retreino confere com metrics.json versionado
         run: alimenta/.venv/bin/python -m alimenta.model.train --check
+      - name: Painel simulado confere com dataset e modelo
+        run: alimenta/.venv/bin/python -m alimenta.scripts.painel --check
       - name: pytest
         working-directory: alimenta
         run: .venv/bin/python -m pytest --junitxml=pytest.xml

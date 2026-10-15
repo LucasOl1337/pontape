@@ -61,6 +61,8 @@ def test_real_donation_full_cycle_goes_to_outbox_in_order(api, real_donor, sessi
     assert (k["donations"], k["deliveries"], k["kg_delivered"], k["meals_estimated"]) == (1, 1, 12.5, 22)
     assert k["by_distributor"] == [{"distributor_id": BANK, "deliveries": 1, "kg": 12.5}]
     assert k["destination_choice"] == {"ai_top": 0, "other": 1}
+    assert k["match"]["count"] == 1 and k["match"]["avg_minutes"] is not None and k["match"]["avg_minutes"] >= 0
+    assert [(c["deliveries"], c["kg"], c["meals_estimated"]) for c in k["by_city"]] == [(1, 12.5, 22)]
 
 
 def test_test_account_never_enters_outbox_nor_kpis(api, donor, sessions):

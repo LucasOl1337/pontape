@@ -21,7 +21,7 @@ const steps = [
   { title: 'Veja quem recebe', text: 'Escolha a cidade e o tipo de comida. A lista mostra quem aceita, como doar, o horário e a fonte. Sem conta.' },
   { title: 'Diga o que tem', text: 'Tipo, quilos, validade e cidade. O site já mostra quem combina, pela mesma regra que a AI usa.' },
   { title: 'Leve até lá', text: 'Com o endereço, o contato e o aviso se precisa agendar. Quem doa leva até o distribuidor.' },
-  { title: 'Registre no livro (em teste)', text: 'Com e-mail, a AI sugere quem recebe e cada passo entra no livro público. Seu nome e seu e-mail nunca entram.' },
+  { title: 'Registre no livro', text: 'Com e-mail, a AI sugere quem recebe e cada passo entra no livro público. Seu nome e seu e-mail nunca entram.' },
 ] as const;
 ---
 <BaseLayout title={`${ALIMENTA.name} · ${PROJECT_NAME}`}
@@ -31,15 +31,15 @@ const steps = [
     lead="Tem comida sobrando? Veja quem recebe perto de você e leve. Sem conta. Cada distribuidor da lista tem a fonte pública de onde veio.">
     <p class="actions al-top">
       <a class="btn btn--ink" href={ALIMENTA.distribuidores}>Ver onde doar perto de você<Icon name="arrow-right" /></a>
-      <a class="btn" href={ALIMENTA.doar}>Registrar no livro (em teste)</a>
+      <a class="btn" href={ALIMENTA.painel}>Ver o painel</a>
     </p>
-    <p class="al-example-link"><a href={`${ALIMENTA.doar}?exemplo=1`}>Ver uma doação de exemplo</a> com dado inventado e marcado. Não entra no livro.</p>
+    <p class="al-example-link"><a href={ALIMENTA.painel}>Ver o painel</a>: doações reais, a precisão da AI e a segurança do código. Ou <a href={`${ALIMENTA.doar}?exemplo=1`}>veja uma doação de exemplo</a>, com dado inventado.</p>
 
     <section class="al-block" aria-labelledby="al-numbers-title">
       <h2 id="al-numbers-title" class="kicker">O que já existe hoje</h2>
       <p class="al-lead-figure"><strong>{fmt.format(DISTRIBUTORS.length)}</strong><span>distribuidores com fonte pública, em {cities().length} cidades de São Paulo e região. <a href={ALIMENTA.distribuidores}>Ver a lista</a></span></p>
       <p class="al-zeros">{numbers.registered === 0
-        ? 'No livro: 0 doações registradas, 0 kg e 0 entregas. É zero porque o registro ainda está em teste, não por erro. O primeiro número aparece aqui quando alguém registrar.'
+        ? 'No livro: 0 doações registradas, 0 kg e 0 entregas. É zero porque nenhuma doação real foi registrada ainda, não por erro. O primeiro número aparece aqui quando alguém registrar.'
         : `No livro: ${fmt.format(numbers.registered)} ${numbers.registered === 1 ? 'doação registrada' : 'doações registradas'}, ${kgText(numbers.kg)} e ${fmt.format(numbers.delivered)} ${numbers.delivered === 1 ? 'entrega declarada' : 'entregas declaradas'}. Entrega é declarada por quem doou. ${numbers.cancelled} ${numbers.cancelled === 1 ? 'doação foi cancelada' : 'doações foram canceladas'}.`}
         {' '}<a href={book}>Conferir no livro</a></p>
     </section>

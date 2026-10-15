@@ -35,6 +35,7 @@ export function serviceNav(site?: URL | string): NavLink[] {
   return [
     { href: ALIMENTA.distribuidores, label: 'Onde doar', path: ALIMENTA.distribuidores },
     { href: ALIMENTA.doar, label: 'Registrar', path: ALIMENTA.doar },
+    { href: ALIMENTA.painel, label: 'Painel', path: ALIMENTA.painel },
     { href: ALIMENTA.minhas, label: 'Minhas doações', path: ALIMENTA.minhas },
     { href: projectHref('/', site), label: 'Voltar ao PontaPé' },
   ];
@@ -52,6 +53,7 @@ export function footerGroups(site?: URL | string): { title: string; links: NavLi
     { title: ALIMENTA.name, links: [
       { href: ALIMENTA.distribuidores, label: 'Onde doar comida' },
       { href: ALIMENTA.doar, label: 'Registrar uma doação' },
+      { href: ALIMENTA.painel, label: 'Painel: impacto, AI e segurança' },
       { href: ALIMENTA.minhas, label: 'Minhas doações' },
     ] },
     { title: 'Ferramentas de graça', links: [

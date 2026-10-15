@@ -11,8 +11,8 @@ import { HOME_IDS } from '../../data/site/nav';
 // per person who arrives. The staircase comes after, for whoever wants the whole path. Each door says
 // whether it works today, in text, never only by colour.
 const doors: { icon: IconName; title: string; text: string; state: string; live: boolean; links: { href: string; label: string }[] }[] = [
-  { icon: 'plate', title: 'Tenho comida sobrando', live: true, state: 'Já funciona, sem conta.',
-    text: `A lista mostra ${DISTRIBUTORS.length} distribuidores com fonte pública, quem aceita o quê e como doar.`,
+  { icon: 'plate', title: 'Tenho comida sobrando', live: true, state: 'Funciona, sem conta.',
+    text: `Diga o que tem e veja quem recebe entre ${DISTRIBUTORS.length} distribuidores com fonte pública, com endereço e horário.`,
     links: [{ href: ALIMENTA.distribuidores, label: 'Ver onde doar' }] },
   { icon: 'eye', title: 'Quero entender', live: true, state: 'Dá pra ler hoje.',
     text: 'Os passos do projeto, cada um dizendo se já funciona, e o livro com tudo que entrou e saiu.',
@@ -20,15 +20,15 @@ const doors: { icon: IconName; title: string; text: string; state: string; live:
   { icon: 'code', title: 'Quero ajudar a construir', live: true, state: 'Dá pra fazer hoje.',
     text: 'Tem tarefa de código, design, pesquisa e texto, cada uma com o que precisa.',
     links: [{ href: CONSTRUIR.href, label: 'Ver as tarefas' }] },
-  { icon: 'people', title: 'Preciso de ajuda', live: false, state: 'Atendimento ainda não abriu.',
-    text: 'Ninguém é atendido ainda. Já dá pra usar, de graça e sem cadastro:',
+  { icon: 'people', title: 'Preciso de ajuda', live: true, state: 'Duas ferramentas de graça.',
+    text: 'Monte seu currículo ou descubra quais direitos você tem, sem cadastro. O atendimento por pessoa é o próximo passo.',
     links: [{ href: CURRICULO.href, label: CURRICULO.name }, { href: DIREITOS.href, label: DIREITOS.name }] },
 ];
 ---
 <section class="hoje" id={HOME_IDS.comecar} aria-labelledby="hoje-title">
   <p class="kicker">PontaPé · caridade inteligente</p>
   <h1 id="hoje-title" class="hoje-title">Doação que chega a quem pode mudar de vida, <em>com tudo à vista.</em></h1>
-  <p class="hoje-state"><Icon name="cone" /><span><strong>Em construção.</strong> Hoje funciona a lista de onde doar comida. Ninguém é atendido ainda e doação em dinheiro não abriu.</span></p>
+  <p class="hoje-state"><Icon name="check-circle" /><span><strong>Funcionando hoje:</strong> a Rede Alimenta, que liga quem tem comida sobrando a {DISTRIBUTORS.length} distribuidores com fonte pública, com AI e <a href={ALIMENTA.painel}>painel aberto</a>. O atendimento a pessoas e a doação em dinheiro são os próximos passos.</span></p>
   <h2 class="sr-only">O que você quer fazer?</h2>
   <ul class="doors-today">
     {doors.map(d => (

@@ -14,6 +14,8 @@ def test_production_starts_with_honest_zero(api):
     k = api.get("/kpis").json()
     assert (k["donations"], k["deliveries"], k["kg_delivered"], k["meals_estimated"]) == (0, 0, 0.0, 0)
     assert k["by_distributor"] == [] and k["destination_choice"] == {"ai_top": 0, "other": 0}
+    assert k["match"] == {"definition": "minutos entre registrar a doação e escolher o destino", "count": 0, "avg_minutes": None}
+    assert k["by_city"] == []
 
 
 def test_old_ngo_and_offer_routes_are_gone(api):
