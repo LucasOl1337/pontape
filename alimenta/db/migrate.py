@@ -21,7 +21,7 @@ from sqlalchemy.engine import Engine
 from alimenta.db.session import make_engine
 
 MIGRATIONS = Path(__file__).resolve().parent / "migrations"
-HEAD = "0001_corte_real"
+HEAD = "0002_somente_doador"
 
 
 def alembic_config() -> Config:

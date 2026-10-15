@@ -74,8 +74,33 @@ const candidatePayloadSchema = z.strictObject({
   count: sequenceSchema,
 });
 
+// Rede Alimenta (emenda de 14/10/2026). One donation is a short random reference, never derived from a person.
+export const DONATION_CATEGORIES = ['produce', 'bakery', 'dairy', 'meat', 'prepared_meal', 'dry_goods', 'beverages'] as const;
+export const donationRefSchema = z.string().check(z.regex(/^AL[0-9A-Z]{8}$/));
+// Public catalog id of a food distributor (an institution, not a person). Format only; the API checks the catalog.
+export const distributorIdSchema = z.string().check(z.regex(/^[a-z0-9]{1,30}(?:-[a-z0-9]{1,30}){0,7}$/), z.maxLength(64));
+const donationCommon = { ...common, type: z.literal('donation'), donationRef: donationRefSchema };
+const donationPayloadSchema = z.discriminatedUnion('action', [
+  z.strictObject({
+    ...donationCommon,
+    action: z.literal('donation_registered'),
+    category: z.enum(DONATION_CATEGORIES),
+    quantityGrams: sequenceSchema,
+  }),
+  z.strictObject({
+    ...donationCommon,
+    action: z.literal('destination_chosen'),
+    distributorId: distributorIdSchema,
+    choice: z.enum(['ai_top', 'other']),
+  }),
+  z.strictObject({ ...donationCommon, action: z.literal('donation_delivered') }),
+  z.strictObject({ ...donationCommon, action: z.literal('donation_cancelled') }),
+]).check(z.refine((event) => event.correctionOf === null, {
+  message: 'Doação não se corrige: cancela e registra outra.',
+}));
+
 export const ledgerPayloadSchema = z.union([
-  projectPayloadSchema, financePayloadSchema, fieldPayloadSchema, candidatePayloadSchema,
+  projectPayloadSchema, financePayloadSchema, fieldPayloadSchema, candidatePayloadSchema, donationPayloadSchema,
 ]);
 
 export const ledgerEventSchema = z.strictObject({

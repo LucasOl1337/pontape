@@ -183,5 +183,43 @@ class ConferirTest(unittest.TestCase):
         self.assertIn("substituto Unicode isolado", result.stdout)
 
 
+    def test_donation_family_fixture_and_order(self):
+        result = run_book(PUBLISHED / "donation.fixture.json")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Tudo certo: 5 ações", result.stdout)
+        document = json.loads((PUBLISHED / "donation.fixture.json").read_text(encoding="utf-8"))
+        unsigned = {key: value for key, value in document["events"][0].items() if key != "hash"}
+        self.assertEqual(hashlib.sha256(jcs(unsigned).encode("utf-8")).hexdigest(),
+                         "1dc9919a4739f0d1774f81ce1e57751faea06ab5f0c260759dd057a495209219")
+
+    def test_donation_rules_reject_exact_cases(self):
+        base = {"type": "donation", "occurredOn": "2000-01-01", "correctionOf": None, "donationRef": "AL0000TEST"}
+        registered = {**base, "action": "donation_registered", "category": "bakery", "quantityGrams": "1000"}
+        chosen = {**base, "action": "destination_chosen", "distributorId": "sp-municipal-food-bank", "choice": "other"}
+        delivered = {**base, "action": "donation_delivered"}
+        cases = {
+            "delivered_before_destination": ([registered, delivered], "Linha 2: ordem da doação AL0000TEST"),
+            "destination_before_register": ([chosen], "Linha 1: ordem da doação AL0000TEST"),
+            "register_twice": ([registered, registered], "Linha 2: ordem da doação AL0000TEST"),
+            "after_delivered": ([registered, chosen, delivered, chosen], "Linha 4: ordem da doação AL0000TEST"),
+            "city": ([{**registered, "city": "São Paulo"}], "Linha 1: payload tem campo ausente ou extra"),
+            "bad_ref": ([{**registered, "donationRef": "al0000test"}], "Linha 1: donationRef inválido"),
+            "bad_category": ([{**registered, "category": "clothing"}], "Linha 1: categoria de doação não permitida"),
+            "url_as_distributor": ([registered, {**chosen, "distributorId": "https://x.org"}], "Linha 2: distributorId inválido"),
+            "correction": ([{**registered, "correctionOf": "1"}], "Linha 1: doação não se corrige"),
+        }
+        for name, (payloads, expected) in cases.items():
+            with self.subTest(name=name):
+                previous, events = "0" * 64, []
+                for number, payload in enumerate(payloads, 1):
+                    event = {"schemaVersion": 1, "sequence": str(number), "previousHash": previous,
+                             "recordedAt": "2000-01-02T12:00:00.000Z", "payload": payload}
+                    event["hash"] = previous = hashlib.sha256(jcs(event).encode("utf-8")).hexdigest()
+                    events.append(event)
+                with self.assertRaises(LedgerError) as caught:
+                    verify(events)
+                self.assertIn(expected, str(caught.exception))
+
+
 if __name__ == "__main__":
     unittest.main()

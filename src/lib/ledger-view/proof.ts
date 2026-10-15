@@ -51,6 +51,7 @@ const BROKEN: Record<VerificationCode, (n: string) => { title: string; text: str
   time: n => ({ title: `A data da ação nº ${n} não bate.`, text: 'O fato aparece com data depois do dia em que foi registrado.' }),
   correction: n => ({ title: `A correção na ação nº ${n} não confere.`, text: 'Ela aponta pra uma linha que não pode corrigir.' }),
   duplicate_source: n => ({ title: `A ação nº ${n} repete outra.`, text: 'A mesma decisão ou mudança foi registrada duas vezes.' }),
+  donation_order: n => ({ title: `A doação da ação nº ${n} está fora de ordem.`, text: 'Uma doação aparece antes do registro ou depois de fechada.' }),
   invalid_schema: () => ({ title: 'O livro saiu do formato.', text: 'Tem campo que não deveria estar ali, ou falta campo.' }),
   checkpoint: () => ({ title: 'O livro não bate com o lacre do fim.', text: 'O livro não confere com o lacre publicado junto com ele.' }),
   crypto_unavailable: () => ({ title: 'Não deu pra conferir aqui.', text: 'Este navegador não faz essa conta. Tente em outro.' }),

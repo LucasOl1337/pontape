@@ -89,20 +89,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Dispara os deploy hooks
+      - name: Dispara o deploy hook da API
         env:
           HOOK_API: ${{ secrets.RENDER_DEPLOY_HOOK_API }}
-          HOOK_PAINEL: ${{ secrets.RENDER_DEPLOY_HOOK_PAINEL }}
         run: |
-          if [ -z "$HOOK_API" ] && [ -z "$HOOK_PAINEL" ]; then
-            echo "Deploy não executado: segredos RENDER_DEPLOY_HOOK_API/PAINEL não configurados." | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ -z "$HOOK_API" ]; then
+            echo "Deploy não executado: segredo RENDER_DEPLOY_HOOK_API não configurado." | tee -a "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          for name in API PAINEL; do
-            var="HOOK_$name"; url="${!var}"
-            if [ -n "$url" ]; then
-              curl -sS -f -X POST "$url" -o /dev/null && echo "Deploy $name disparado." | tee -a "$GITHUB_STEP_SUMMARY"
-            else
-              echo "Deploy $name não executado: segredo ausente." | tee -a "$GITHUB_STEP_SUMMARY"
-            fi
-          done
+          curl -sS -f -X POST "$HOOK_API" -o /dev/null && echo "Deploy da API disparado." | tee -a "$GITHUB_STEP_SUMMARY"

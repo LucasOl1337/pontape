@@ -24,13 +24,6 @@ def test_history_is_labeled_simulated():
     assert set(df["discarded"]) == {0, 1}
 
 
-def test_seed_names_are_fictitious():
-    for name, prefix in (("donors", "Doador Exemplo "), ("ngos", "ONG Exemplo ")):
-        doc = json.loads((generate.DATA_DIR / "seed" / f"{name}.json").read_text(encoding="utf-8"))
-        assert doc["notice"].startswith("DEMONSTRAÇÃO")
-        assert all(item["name"].startswith(prefix) for item in doc[name])
-
-
 def test_metrics_beat_both_baselines():
     m = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
     acc = m["test"]["accuracy"]

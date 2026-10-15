@@ -1,6 +1,8 @@
 """Tabelas da Rede Alimenta (corte real). O esquema muda só por migração (alimenta/db/migrations).
 
-Papéis: `donor`, `ngo`, `operator`. Um usuário Supabase (`sub`) = uma conta = um papel = uma organização.
+Corte r6 (só doador): o papel aberto é `donor`; `operator` vem da env. As tabelas de ONG, oferta, match e
+confirmação continuam no banco, vazias, até uma limpeza futura (migração 0002 é só aditiva).
+Um usuário Supabase (`sub`) = uma conta = um papel = um cadastro.
 `is_test` marca contas de teste do time: tudo o que elas criam herda a marca, fica fora de KPI
 público e do livro, e o ensaio apaga no fim.
 """
@@ -75,11 +77,12 @@ class Donor(OrgMixin, Base):
     __tablename__ = "donors"
     id: Mapped[str] = mapped_column(String(16), primary_key=True)
     account_id: Mapped[str | None] = mapped_column(ForeignKey("accounts.id"), unique=True, nullable=True)
-    name: Mapped[str] = mapped_column(String(80))  # nome fantasia
-    kind: Mapped[str] = mapped_column(String(32))
-    region: Mapped[str] = mapped_column(String(16), index=True)  # derivada: centroide mais perto
-    lat: Mapped[float] = mapped_column(Float)
-    lon: Mapped[float] = mapped_column(Float)
+    name: Mapped[str | None] = mapped_column(String(80), nullable=True)  # nome de exibição, privado e opcional
+    kind: Mapped[str] = mapped_column(String(32))  # person | company | distributor
+    region: Mapped[str | None] = mapped_column(String(16), index=True, nullable=True)
+    lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lon: Mapped[float | None] = mapped_column(Float, nullable=True)
+    distributor_id: Mapped[str | None] = mapped_column(String(64), nullable=True)  # distribuidor do catálogo que doa
     doc_type: Mapped[str] = mapped_column(String(8), default="cnpj")
     doc_number: Mapped[str | None] = mapped_column(String(14), nullable=True)
     doc_check: Mapped[dict | None] = mapped_column(JSON, nullable=True)
@@ -129,9 +132,19 @@ class Lot(Base):
     discard_proba: Mapped[float] = mapped_column(Float)
     risk_level: Mapped[str] = mapped_column(String(8))
     model_version: Mapped[str] = mapped_column(String(32))
-    # open → offered → accepted → collected → delivered; ou expired | unclaimed | cancelled
+    # Doação (r6): registered → destination_chosen → delivered; ou cancelled | expired
     status: Mapped[str] = mapped_column(String(16), default="open", index=True)
     is_test: Mapped[bool] = mapped_column(Boolean, default=False)
+    public_ref: Mapped[str | None] = mapped_column(String(10), nullable=True)  # donationRef do livro
+    city: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    uf: Mapped[str | None] = mapped_column(String(2), nullable=True)
+    distributor_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    destination_choice: Mapped[str | None] = mapped_column(String(8), nullable=True)  # ai_top | other
+    destination_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    delivered_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    closed_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+
+    __table_args__ = (UniqueConstraint("public_ref", name="uq_lots_public_ref"),)
 
 
 class LotOffer(Base):
@@ -242,3 +255,76 @@ class PublicLedgerDispatch(Base):
     status: Mapped[str] = mapped_column(String(16))  # disabled | sent | failed
     dispatched_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
     http_status: Mapped[int | None] = mapped_column(Integer, nullable=True)
+
+
+class Distributor(Base):
+    """Catálogo público (src/data/alimenta/distribuidores.json), sincronizado ao subir. Nunca apaga: `active=false`."""
+    __tablename__ = "distributors"
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(200))
+    kind: Mapped[str] = mapped_column(String(32))
+    city: Mapped[str] = mapped_column(String(80))
+    city_key: Mapped[str] = mapped_column(String(80), index=True)  # cidade sem acento e em minúsculas
+    uf: Mapped[str | None] = mapped_column(String(2), nullable=True)
+    area: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    accepts: Mapped[list] = mapped_column(JSON)
+    receives_from: Mapped[list] = mapped_column(JSON)
+    accepts_prepared_meals: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    hours: Mapped[str | None] = mapped_column(Text, nullable=True)
+    how_to_donate: Mapped[str | None] = mapped_column(Text, nullable=True)
+    capacity_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    address_public: Mapped[str | None] = mapped_column(Text, nullable=True)
+    contact_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    sources: Mapped[list] = mapped_column(JSON)
+    confidence: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    synced_at: Mapped[datetime] = mapped_column(UTCDateTime())
+
+
+class Recommendation(Base):
+    """Cada pedido de recomendação: entrada, páginas lidas, saída e a escolha. Privada; mede a AI depois."""
+    __tablename__ = "recommendations"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    lot_id: Mapped[str] = mapped_column(ForeignKey("lots.id", ondelete="CASCADE"), index=True)
+    mode: Mapped[str] = mapped_column(String(8))  # ai | rule
+    model: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    input: Mapped[dict] = mapped_column(JSON)
+    reads: Mapped[list] = mapped_column(JSON)
+    output: Mapped[dict] = mapped_column(JSON)
+    error: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    choice: Mapped[str | None] = mapped_column(String(16), nullable=True)  # accepted_top | picked_other
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    is_test: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class LedgerOutbox(Base):
+    """Fila de saída para o livro público do pontape.org. Conta de teste nunca entra.
+
+    pending → sent (workflow aceitou) → confirmed (chave apareceu no intake.json da main); failed volta na varredura.
+    """
+    __tablename__ = "ledger_outbox"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    event_id: Mapped[str] = mapped_column(String(80), unique=True)
+    lot_id: Mapped[str] = mapped_column(ForeignKey("lots.id"), index=True)
+    action: Mapped[str] = mapped_column(String(32))
+    envelope: Mapped[str] = mapped_column(Text)  # JSON {source, eventId, payload}
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    http_status: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    sent_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    confirmed_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    ledger_sequence: Mapped[str | None] = mapped_column(String(20), nullable=True)  # nº da ação no livro público
+
+
+class AccountDeletion(Base):
+    """Pedido de apagar conta (DELETE /me). Guarda só o `sub` do Supabase, nunca o e-mail."""
+    __tablename__ = "account_deletions"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    account_sub: Mapped[str] = mapped_column(String(64))
+    requested_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    # deleted | pending (sem chave de serviço) | failed | skipped_local
+    supabase_status: Mapped[str] = mapped_column(String(16))
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    done_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    is_test: Mapped[bool] = mapped_column(Boolean, default=False)

@@ -1,6 +1,6 @@
-# Rede Alimenta local: Postgres + API + painel, com seed de EXEMPLO e login local de teste.
+# Rede Alimenta local: Postgres + API, com login local de teste (corte r6: só doador, sem painel).
 # Na raiz do repositório:  docker compose up --build
-# API e Swagger: http://localhost:8000/docs · Painel: http://localhost:8501
+# API e Swagger: http://localhost:8000/docs · ensaio: alimenta/scripts/ensaio.sh http://localhost:8000
 name: rede-alimenta
 
 services:
@@ -25,8 +25,7 @@ services:
     image: rede-alimenta:local
     environment:
       DATABASE_URL: postgresql+psycopg://alimenta:alimenta@db:5432/alimenta
-      ALIMENTA_ENV: local  # só aqui: seed de exemplo e login sem e-mail para contas de teste
-      ALIMENTA_SEED_ON_START: "true"
+      ALIMENTA_ENV: local  # só aqui: login sem e-mail para contas de teste
       ALIMENTA_TEST_EMAILS: "@teste.alimenta"
       ALIMENTA_OPERATOR_EMAILS: operador@teste.alimenta
       ALIMENTA_OPS_TOKEN: ${ALIMENTA_OPS_TOKEN:-troque-este-token-local}
@@ -35,20 +34,6 @@ services:
       - "8000:8000"
     depends_on:
       db:
-        condition: service_healthy
-
-  painel:
-    image: rede-alimenta:local
-    command: ["alimenta/painel/run.sh"]
-    environment:
-      ALIMENTA_API_URL: http://api:8000
-      ALIMENTA_PUBLIC_API_URL: http://localhost:8000
-      ALIMENTA_GITHUB_REPO: LucasOl1337/pontape
-      PORT: "8501"
-    ports:
-      - "8501:8501"
-    depends_on:
-      api:
         condition: service_healthy
 
 volumes:

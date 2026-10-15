@@ -1,15 +1,18 @@
-import type { LedgerPayload } from '../ledger/schema';
+import type { DONATION_CATEGORIES, LedgerPayload } from '../ledger/schema';
 import type { IconName } from '../../components/site/icon-names';
 
 // The only source of a ledger line's sentence: action (plus closed fields) to PT-BR.
 // The contract has no description field, so nothing here comes from free text.
-export type LedgerType = LedgerPayload['type'];
+export type LedgerFamily = LedgerPayload['type'];
+// Families with their own filter and empty text on /transparencia. `donation` joins when the site adds its filter.
+export type LedgerType = Exclude<LedgerFamily, 'donation'>;
 type FinancePayload = Extract<LedgerPayload, { type: 'finance' }>;
 export type OutCategory = Exclude<FinancePayload['category'], 'donation'>;
 
 // Entregas and Atendimento are the two halves of "As atividades" on the first layer of /transparencia (F32b).
-export const TYPES: Record<LedgerType, { label: string; icon: IconName }> = {
+export const TYPES: Record<LedgerFamily, { label: string; icon: IconName }> = {
   finance: { label: 'Dinheiro', icon: 'coin' },
+  donation: { label: 'Rede Alimenta', icon: 'plate' },
   field: { label: 'Entregas', icon: 'package' },
   candidate: { label: 'Atendimento', icon: 'person' },
   project: { label: 'Projeto', icon: 'flag' },
@@ -40,6 +43,19 @@ export const PROJECT_KIND = {
 
 const plural = (n: string, one: string, many: string) => `${n} ${n === '1' ? one : many}`;
 
+export const DONATION_CATEGORY: Record<(typeof DONATION_CATEGORIES)[number], string> = {
+  produce: 'hortifrúti', bakery: 'pães e bolos', dairy: 'laticínios', meat: 'carnes',
+  prepared_meal: 'refeição pronta', dry_goods: 'não perecíveis', beverages: 'bebidas',
+};
+
+// Grams are a whole number in the book; the sentence shows kg with up to 3 decimals, comma as separator.
+export function formatKg(grams: string): string {
+  const g = BigInt(grams);
+  const kg = g / 1000n;
+  const rest = (g % 1000n).toString().padStart(3, '0').replace(/0+$/, '');
+  return `${kg.toLocaleString('pt-BR')}${rest ? `,${rest}` : ''} kg`;
+}
+
 export function phrase(p: LedgerPayload): string {
   switch (p.type) {
     case 'project':
@@ -55,6 +71,11 @@ export function phrase(p: LedgerPayload): string {
       if (p.action === 'food_delivered') return plural(p.quantity, 'entrega de comida', 'entregas de comida');
       if (p.action === 'clothing_delivered') return plural(p.quantity, 'entrega de roupa', 'entregas de roupa');
       return plural(p.quantity, 'kit de higiene entregue', 'kits de higiene entregues');
+    case 'donation':
+      if (p.action === 'donation_registered') return `Doação de ${formatKg(p.quantityGrams)} de ${DONATION_CATEGORY[p.category]} registrada (${p.donationRef})`;
+      if (p.action === 'destination_chosen') return `${p.donationRef} vai para ${p.distributorId}${p.choice === 'ai_top' ? ', a escolha da AI' : ''}`;
+      if (p.action === 'donation_delivered') return `${p.donationRef} entregue, segundo quem doou`;
+      return `${p.donationRef} cancelada`;
     case 'candidate':
       if (p.action === 'contact_completed') return plural(p.count, 'contato feito', 'contatos feitos');
       if (p.action === 'interview_completed') return plural(p.count, 'entrevista concluída', 'entrevistas concluídas');

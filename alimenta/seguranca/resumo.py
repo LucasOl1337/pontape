@@ -1,4 +1,4 @@
-"""Compara a linha de base com o scan atual e grava resumo.json (lido pelo painel).
+"""Compara a linha de base com o scan atual e grava resumo.json (anexado ao CI).
 
 Mitigado = ID que aparece na linha de base e some no scan atual. Nada é
 plantado para mostrar redução; se a linha de base vier limpa, o resumo

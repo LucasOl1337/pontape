@@ -1,4 +1,4 @@
-"""Conta: login por código de e-mail, quem sou eu, aceites e CEP."""
+"""Conta: login por código de e-mail, quem sou eu, aceites e apagar a conta."""
 
 from __future__ import annotations
 
@@ -8,10 +8,8 @@ from sqlalchemy.orm import Session
 from alimenta.api import schemas
 from alimenta.api.deps import actor, db
 from alimenta.auth import dev, supabase
-from alimenta.core import accounts, config, docs
+from alimenta.core import accounts, config, deletion
 from alimenta.core.accounts import Actor
-from alimenta.core.geo import SERVED_CITY_IBGE, nearest_region
-from alimenta.geo import brasilapi
 
 router = APIRouter()
 SENT = {"sent": True, "message": "Se o e-mail puder entrar, o código chega em alguns minutos."}
@@ -45,11 +43,8 @@ def auth_verify(body: schemas.VerifyIn):
 @router.get("/me", tags=["conta"])
 def me(who: Actor = Depends(actor), session: Session = Depends(db)):
     org = accounts.org_of(session, who)
-    status = None
-    if org is not None:
-        status = getattr(org, "approval_status", None) or getattr(org, "status", None)
     return {"id": who.account.id, "email": who.email, "role": who.role, "org_id": org.id if org else None,
-            "org_status": status, "is_test": who.is_test, "signup_open": config.signup_open() or who.is_test,
+            "org_status": org.status if org else None, "donor_kind": org.kind if org else None, "is_test": who.is_test, "signup_open": config.signup_open() or who.is_test,
             "consents": accounts.consents_of(session, who.account.id), "current_versions": accounts.CURRENT}
 
 
@@ -60,17 +55,8 @@ def me_consents(body: schemas.ConsentIn, who: Actor = Depends(actor), session: S
     return {"kind": row.kind, "version": row.version, "accepted_at": row.accepted_at.isoformat()}
 
 
-@router.get("/geo/cep/{cep}", tags=["conta"], summary="Endereço e região de um CEP (BrasilAPI, com cache)")
-def geo_cep(cep: str, _who: Actor = Depends(actor)):
-    try:
-        code = docs.clean_cep(cep)
-        found = brasilapi.cep(code)
-    except ValueError as exc:
-        raise HTTPException(422, str(exc)) from exc
-    except brasilapi.NotFoundUpstream as exc:
-        raise HTTPException(404, f"CEP {cep} não encontrado") from exc
-    except brasilapi.Unavailable as exc:
-        raise HTTPException(503, f"BrasilAPI indisponível agora: {exc}") from exc
-    served = found["ibge_city"] == SERVED_CITY_IBGE
-    region = nearest_region(found["lat"], found["lon"]) if served and found["lat"] is not None else None
-    return {**found, "served": served, "region": region}
+@router.delete("/me", tags=["conta"], summary="Apaga a conta: e-mail, CNPJ, cidade e login. O livro público fica")
+def delete_me(who: Actor = Depends(actor), session: Session = Depends(db)):
+    if who.role == "operator":
+        raise HTTPException(403, "conta de operador sai pela env ALIMENTA_OPERATOR_EMAILS, não por aqui")
+    return deletion.erase(session, who)

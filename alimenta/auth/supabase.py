@@ -1,6 +1,6 @@
 """Login por código de 6 dígitos no e-mail (OTP do Supabase Auth), chamado pela API.
 
-O painel nunca fala com o Supabase: chama `POST /auth/code` e `POST /auth/verify` da API, que
+O site nunca fala com o Supabase: chama `POST /auth/code` e `POST /auth/verify` da API, que
 usam a chave publicável (SUPABASE_PUBLISHABLE_KEY). O e-mail precisa do modelo com `{{ .Token }}`
 no Supabase (Auth > Email Templates > Magic Link). Fonte: https://supabase.com/docs/guides/auth/auth-email-passwordless
 (acesso 14/10/2026).

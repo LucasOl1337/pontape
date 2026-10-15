@@ -1,4 +1,4 @@
-"""Doador: cadastro, meus dados, lotes, cancelamento e confirmação de retirada."""
+"""Doador: cadastro mínimo, doações, recomendação de destino, entrega declarada e cancelamento."""
 
 from __future__ import annotations
 
@@ -8,84 +8,71 @@ from sqlalchemy.orm import Session
 
 from alimenta.api import schemas
 from alimenta.api.deps import actor, db, role
-from alimenta.core import accounts, flow, notify, offers, signup
+from alimenta.core import donations, recommend, signup
 from alimenta.core.accounts import Actor
-from alimenta.core.service import Forbidden, Invalid, NotFound, get
-from alimenta.db.models import Donor, Lot, LotOffer, Match, Ngo
+from alimenta.db.models import Lot
 
 router = APIRouter(tags=["doador"])
+donor_only = role("donor")
 
 
-def my_donor(session: Session, who: Actor) -> Donor:
-    donor = accounts.org_of(session, who)
-    if donor is None:
-        raise NotFound("esta conta ainda não tem cadastro de doador")
-    return donor
+def donor_out(donor) -> dict:
+    return {"id": donor.id, "kind": donor.kind, "city": donor.city, "uf": donor.uf,
+            "has_cnpj": donor.doc_number is not None, "distributor_id": donor.distributor_id,
+            "status": donor.status, "is_test": donor.is_test}
 
 
 @router.post("/donors", response_model=schemas.DonorOut, status_code=201,
-             summary="Cadastro próprio do doador (CNPJ, CEP, aceites). Fechado com ALIMENTA_SIGNUP_OPEN=false")
+             summary="Cadastro mínimo do doador (tipo, cidade, UF, CNPJ opcional e aceites)")
 def create_donor(body: schemas.DonorIn, who: Actor = Depends(actor), session: Session = Depends(db)):
-    return signup.register_donor(session, who, body.model_dump())
+    return donor_out(signup.register_donor(session, who, body.model_dump()))
 
 
 @router.get("/donors/me", response_model=schemas.DonorOut)
-def donor_me(who: Actor = Depends(role("donor")), session: Session = Depends(db)):
-    return my_donor(session, who)
+def donor_me(who: Actor = Depends(donor_only), session: Session = Depends(db)):
+    return donor_out(donations.my_donor(session, who))
 
 
-@router.patch("/donors/me", response_model=schemas.DonorOut)
-def donor_patch(body: schemas.DonorPatch, who: Actor = Depends(role("donor")), session: Session = Depends(db)):
-    donor = my_donor(session, who)
-    data = body.model_dump(exclude_none=True)
-    if "phone" in data:
-        data["phone"] = signup._phone(data["phone"])  # noqa: SLF001 - mesma regra do cadastro
-    for key, value in data.items():
-        setattr(donor, key, value)
-    session.commit()
-    return donor
+@router.post("/donations", status_code=201, summary="Registra uma doação (entra no livro público, exceto teste)")
+def create_donation(body: schemas.DonationIn, who: Actor = Depends(donor_only), session: Session = Depends(db)):
+    return donations.view(session, donations.register(session, who, body.model_dump()))
 
 
-@router.post("/lots", response_model=schemas.LotOut, status_code=201,
-             summary="Publica um lote: termo reafirmado, risco de descarte e primeira oferta (vencido → 422)")
-def create_lot(body: schemas.LotIn, who: Actor = Depends(role("donor")), session: Session = Depends(db)):
-    return flow.create_lot(session, my_donor(session, who), who, body.model_dump())
+@router.get("/donations/mine", summary="Minhas doações, da mais nova para a mais antiga")
+def my_donations(who: Actor = Depends(donor_only), session: Session = Depends(db)):
+    donor = donations.my_donor(session, who)
+    rows = session.scalars(select(Lot).where(Lot.donor_id == donor.id, Lot.public_ref.is_not(None))
+                           .order_by(Lot.published_at.desc()).limit(200))
+    return [donations.view(session, lot) for lot in rows]
 
 
-@router.get("/lots/mine", summary="Meus lotes com a situação, a ONG e o link de WhatsApp para ela")
-def lots_mine(who: Actor = Depends(role("donor")), session: Session = Depends(db)):
-    offers.tick(session)
-    donor = my_donor(session, who)
-    out = []
-    for lot in session.scalars(select(Lot).where(Lot.donor_id == donor.id).order_by(Lot.published_at.desc())):
-        item = schemas.LotOut.model_validate(lot).model_dump(mode="json")
-        match = session.scalar(select(Match).where(Match.lot_id == lot.id, Match.status != "cancelled"))
-        pending = session.scalar(select(LotOffer).where(LotOffer.lot_id == lot.id, LotOffer.status == "pending"))
-        item["offer"] = schemas.OfferOut.model_validate(pending).model_dump(mode="json") if pending else None
-        item["match"] = schemas.MatchOut.model_validate(match).model_dump(mode="json") if match else None
-        if match is not None:
-            ngo = session.get(Ngo, match.ngo_id)  # depois do aceite, o doador vê a ONG para combinar
-            item["ngo"] = {"id": ngo.id, "name": ngo.name, "contact_name": ngo.contact_name, "phone": ngo.phone,
-                           "whatsapp": notify.wa_link(ngo.phone, f"Rede Alimenta: sobre o lote {lot.id} "
-                                                                 f"({lot.kg:g} kg) que vocês aceitaram.")}
-        out.append(item)
-    return out
+@router.get("/donations/{donation_id}")
+def one_donation(donation_id: str, who: Actor = Depends(donor_only), session: Session = Depends(db)):
+    return donations.view(session, donations.mine(session, who, donation_id))
 
 
-@router.post("/lots/{lot_id}/cancel", response_model=schemas.LotOut)
-def cancel_lot(lot_id: str, who: Actor = Depends(role("donor")), session: Session = Depends(db)):
-    lot = get(session, Lot, lot_id)
-    if lot.donor_id != my_donor(session, who).id:
-        raise Forbidden("este lote é de outro doador")
-    return flow.cancel_lot(session, lot, who)
+@router.post("/donations/{donation_id}/recommend",
+             summary="Ordena distribuidores do catálogo para esta doação (AI com fonte citada, ou regra)")
+def recommend_destination(donation_id: str, _body: schemas.Empty | None = None, who: Actor = Depends(donor_only),
+                          session: Session = Depends(db)):
+    return recommend.recommend(session, donations.mine(session, who, donation_id))
 
 
-@router.post("/matches/{match_id}/pickup", response_model=schemas.MatchOut,
-             summary="Doador confirma que a ONG retirou (ou que entregou). Com o recebimento: entrega")
-def confirm_pickup(match_id: int, who: Actor = Depends(role("donor")), session: Session = Depends(db)):
-    match = get(session, Match, match_id)
-    if get(session, Lot, match.lot_id).donor_id != my_donor(session, who).id:
-        raise Forbidden("esta entrega é de outro doador")
-    if match.status == "cancelled":
-        raise Invalid("entrega cancelada")
-    return flow.confirm(session, match, "pickup", who)
+@router.post("/donations/{donation_id}/destination", summary="Escolhe o distribuidor (pode trocar enquanto aberta)")
+def choose_destination(donation_id: str, body: schemas.DestinationIn, who: Actor = Depends(donor_only),
+                       session: Session = Depends(db)):
+    lot = donations.mine(session, who, donation_id)
+    return donations.view(session, donations.choose(session, who, lot, body.distributor_id,
+                                                    body.from_recommendation))
+
+
+@router.post("/donations/{donation_id}/delivered", summary="Declara que entregou (quem doou declara)")
+def mark_delivered(donation_id: str, _body: schemas.Empty | None = None, who: Actor = Depends(donor_only),
+                   session: Session = Depends(db)):
+    return donations.view(session, donations.deliver(session, donations.mine(session, who, donation_id)))
+
+
+@router.post("/donations/{donation_id}/cancel")
+def cancel_donation(donation_id: str, _body: schemas.Empty | None = None, who: Actor = Depends(donor_only),
+                    session: Session = Depends(db)):
+    return donations.view(session, donations.cancel(session, donations.mine(session, who, donation_id)))
