@@ -22,7 +22,8 @@ const mark = (linkPath?: string, section?: Section) => {
   if (path === linkPath) return 'page' as const;
   return section !== undefined && section === current ? 'true' as const : undefined;
 };
-const links = service ? serviceNav(site) : projectNav(site, current === 'home');
+// Only the home has the staircase: the short #anchor is used there and nowhere else, whatever the page passes.
+const links = service ? serviceNav(site) : projectNav(site, path === '');
 const withYume = chat && !service;
 ---
 <header class:list={['site-header', { 'site-header--service': service }]}>

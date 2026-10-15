@@ -105,7 +105,7 @@ main:focus{ outline:none }
   .status-strip strong{ margin-right:.35rem; font-size:.75rem }
   .status-strip a{ margin-left:.2rem; white-space:nowrap }
 }
-.status-strip a{ display:inline-block; padding:.7rem 0; margin:-.7rem 0 }
+.status-strip a{ display:inline-block; padding:.75rem 0; margin:-.75rem 0 }
 
 .site-header{ position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1px solid var(--rule) }
 .site-header-inner{ max-width:var(--page); margin:auto; padding:0 var(--gutter); height:var(--header-h); display:flex; align-items:center; gap:var(--space-3) }
@@ -940,6 +940,7 @@ body:has(.front){ --content:1120px; --page:calc(var(--content) + 2 * var(--gutte
   .chain-full summary{ min-height:44px; padding-top:.75rem; padding-bottom:.75rem }
   .crumbs a{ padding-top:.85rem; padding-bottom:.85rem }
 }
+.crumbs a, .more-link{ padding-block:.8rem; margin-block:-.8rem }
 
 /* Chrome before 84 (#87, the Android 11 of the studio phone has 83) has no gap in flexbox: the
    pieces that would touch get a margin instead. `revert` came in the same release, so newer
@@ -964,7 +965,7 @@ body:has(.front){ --content:1120px; --page:calc(var(--content) + 2 * var(--gutte
 .contato-ways{ display:grid; gap:0; margin-top:var(--space-3) }
 .contato-ways li{ display:grid; grid-template-columns:1.4rem auto 1fr; align-items:baseline; gap:.3rem .6rem; padding-top:.55rem; padding-bottom:.55rem; border-bottom:1px dotted var(--rule) }
 .contato-ways .icon{ width:1.1rem; height:1.1rem; align-self:center; color:var(--accent) }
-.contato-ways a{ font-weight:700; color:var(--ink) }
+.contato-ways a{ display:inline-block; padding:.65rem 0; margin:-.65rem 0; font-weight:700; color:var(--ink) }
 .contato-ways span{ color:var(--ink-2) }
 .contato-note{ display:flex; align-items:center; gap:.5rem; margin-top:var(--space-4); color:var(--ink-2) }
 .contato-note .icon{ width:1em; height:1em; flex:none }

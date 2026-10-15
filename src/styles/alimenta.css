@@ -84,3 +84,5 @@
 .al-ledger-offer h3{ font:600 var(--t-card)/1.25 var(--font-serif) }
 .al-signup-note .state{ margin-top:var(--space-4) }
 .al-step-card .state{ max-width:none }
+/* The date field keeps its ring while the calendar button inside it has focus (F44, 1.7). */
+.al-field input:focus{ outline:3px solid var(--accent); outline-offset:3px }
