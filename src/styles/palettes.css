@@ -9,6 +9,13 @@
   --status-building-bg:#F7EBC6; --status-ok-icon:#1D6A3A; --status-broken-icon:#AD2A1C;
   --night-ok-icon:#5FC98A; --night-broken-icon:#FF7A6B;
   --inverse-muted:#B5B3AC; --inverse-accent:#9CBEFC; --inverse-rule:rgba(244,241,234,.2);
+  /* Tokens de função (F44): a mesma paleta, separada por função. A cor nunca vem sozinha: todo estado
+     leva ícone e texto. Contraste conferido em palettes.test.ts. */
+  --control-border:#7E7D79; --focus-on-dark:#9CBEFC;
+  --success:#1D6A3A; --success-bg:#E3EFE5; --error:#AD2A1C; --error-bg:#F7E3DF;
+  --info:#294EB2; --info-bg:#E4EAF8; --warning:#825C00; --warning-bg:#F7EBC6;
+  /* Exemplo: listrado neutro e rótulo em texto. Nunca a cor de erro nem a de aviso. */
+  --example-ink:#18191D; --example-a:#EAE6DC; --example-b:#DDD8CB;
 }
 /* The ink in channels, for the translucent washes: rgba() works where color-mix() does not (#87).
    ::backdrop inherits nothing from the page before Chrome 122, so it gets its own copy. */

@@ -32,6 +32,14 @@ const pairs = [
   ['--paper', '--status-live'], ['--paper', '--status-bottleneck'],
   ['--status-ok-icon', '--paper'], ['--status-broken-icon', '--paper'],
   ['--night-ok-icon', '--night'], ['--night-broken-icon', '--night'],
+  ['--success', '--success-bg'], ['--error', '--error-bg'], ['--info', '--info-bg'], ['--warning', '--warning-bg'],
+  ['--example-ink', '--example-a'], ['--example-ink', '--example-b'],
+] as const;
+
+// Borda de controle e foco: componente, não texto. WCAG 1.4.11 pede 3:1 contra o fundo ao lado.
+const components = [
+  ['--control-border', '--paper'], ['--control-border', '--paper-2'],
+  ['--focus-on-dark', '--night'], ['--focus-on-dark', '--night-2'], ['--accent', '--paper'], ['--accent', '--paper-2'],
 ] as const;
 
 describe('paleta Anil', () => {
@@ -43,6 +51,21 @@ describe('paleta Anil', () => {
   it('texto e estados têm contraste mínimo de 4,5:1', () => {
     for (const [foreground, background] of pairs) {
       expect(contrast(colors[foreground]!, colors[background]!), `${foreground} em ${background}`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('borda de controle e anel de foco têm 3:1 no fundo onde aparecem (F44)', () => {
+    for (const [foreground, background] of components) {
+      expect(contrast(colors[foreground]!, colors[background]!), `${foreground} em ${background}`).toBeGreaterThanOrEqual(3);
+    }
+    // O azul do foco no claro não serve no escuro: foi o 2,36:1 da faixa.
+    expect(contrast(colors['--accent']!, colors['--night']!)).toBeLessThan(3);
+  });
+
+  it('o exemplo não usa a cor de erro nem a de aviso (F44)', () => {
+    const example = [colors['--example-a'], colors['--example-b'], colors['--example-ink']];
+    for (const taken of ['--error', '--error-bg', '--warning', '--warning-bg', '--status-bottleneck', '--status-building', '--status-building-bg']) {
+      expect(example).not.toContain(colors[taken]);
     }
   });
 
