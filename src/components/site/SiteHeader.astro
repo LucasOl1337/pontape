@@ -2,44 +2,49 @@
 import Icon from './Icon.astro';
 import LogoMark from './LogoMark.astro';
 import { PROJECT_NAME } from '../../data/site/project';
-import { CONSTRUIR } from '../../data/site/cadernos';
-import { LIVRO } from '../../data/site/livro';
-import { PERGUNTAS } from '../../data/site/perguntas';
 import { ALIMENTA } from '../../data/alimenta/rede';
+import { projectHref, projectNav, serviceNav, type Section } from '../../data/site/nav';
 
 // `chat={false}` leaves the Yume out: a tool with no place to type keeps it that way.
-interface Props { current?: 'home' | 'alimenta' | 'transparencia' | 'construir' | 'perguntas' | 'ferramentas' | 'not-found'; chat?: boolean }
+// Two headers (F44, plano 2.3). The project one, and on the Rede Alimenta the service one: its own
+// name, a short menu (Onde doar, Registrar, Minhas doações) and the way back to the PontaPé. Links to
+// the project use the project address in full, because the same page is served on
+// alimenta.pontape.org, where a relative "/" is the Rede Alimenta (plano 1.1).
+interface Props { current?: Section; chat?: boolean }
 const { current = 'home', chat = true } = Astro.props;
-const onHome = current === 'home';
+const site = Astro.site;
+const service = current === 'alimenta';
 // Inside a section the door stays marked: the page itself at its address, the section below it
 // (the cadernos under /construir, the technical page under /transparencia).
 const path = Astro.url.pathname.replace(/\/$/, '');
-const marked = (section: typeof current, href: string) => (current === section ? (path === href ? 'page' as const : 'true' as const) : undefined);
-// Doors in plain words (F29). The builder words sit behind "Construir junto". The Rede Alimenta,
-// open to donors since round 6 (Q8), has its own door.
-const links = [
-  { href: onHome ? '#como-funciona' : '/#como-funciona', label: 'Como funciona' },
-  { href: ALIMENTA.href, label: ALIMENTA.name, current: marked('alimenta', ALIMENTA.href) },
-  { href: LIVRO.href, label: 'Transparência', current: marked('transparencia', LIVRO.href) },
-  { href: onHome ? '#ajudar' : '/#ajudar', label: 'Como ajudar' },
-  { href: CONSTRUIR.href, label: CONSTRUIR.name, current: marked('construir', CONSTRUIR.href) },
-  { href: PERGUNTAS.href, label: PERGUNTAS.name, current: marked('perguntas', PERGUNTAS.href) },
-];
+const mark = (linkPath?: string, section?: Section) => {
+  if (!linkPath) return undefined;
+  if (path === linkPath) return 'page' as const;
+  return section !== undefined && section === current ? 'true' as const : undefined;
+};
+const links = service ? serviceNav(site) : projectNav(site, current === 'home');
+const withYume = chat && !service;
 ---
-<header class="site-header">
+<header class:list={['site-header', { 'site-header--service': service }]}>
   <div class="site-header-inner">
-    <a class="logo" href="/" aria-label={`${PROJECT_NAME}, início`}><LogoMark /><span>{PROJECT_NAME}</span></a>
-    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><Icon name="menu" /><span>Menu</span></button>
-    <nav class="site-nav" id="site-nav" aria-label="Principal">
+    {service
+      ? <a class="logo logo--service" href={ALIMENTA.href} aria-label={`${ALIMENTA.name}, início do serviço`}><Icon name="plate" /><span>{ALIMENTA.name}<small>um serviço do {PROJECT_NAME}</small></span></a>
+      : <a class="logo" href={projectHref('/', site)} aria-label={`${PROJECT_NAME}, início`}><LogoMark /><span>{PROJECT_NAME}</span></a>}
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><Icon name="menu" class="menu-open-icon" /><Icon name="close" class="menu-close-icon" /><span data-menu-label>Menu</span></button>
+    <nav class="site-nav" id="site-nav" aria-label={service ? `Menu da ${ALIMENTA.name}` : 'Principal'}>
       <ul>
-        {links.map(l => <li><a href={l.href} aria-current={l.current}>{l.label}</a></li>)}
+        {links.map(l => (
+          <li class:list={{ 'nav-back': service && !l.path }}>
+            <a href={l.href} aria-current={mark(l.path, l.section)}>{service && !l.path && <Icon name="arrow-left" />}{l.label}</a>
+          </li>
+        ))}
       </ul>
     </nav>
-    {chat && <button class="icon-btn chat-open-btn" id="yumi-open" type="button" aria-haspopup="dialog" aria-controls="yumi-dialog">Tirar dúvida</button>}
+    {withYume && <button class="icon-btn chat-open-btn" id="yumi-open" type="button" aria-haspopup="dialog" aria-controls="yumi-dialog">Tirar dúvida</button>}
   </div>
   <div class="read-progress" aria-hidden="true"></div>
 </header>
-{chat && <dialog class="yumi-dialog" id="yumi-dialog" aria-labelledby="yumi-title">
+{withYume && <dialog class="yumi-dialog" id="yumi-dialog" aria-labelledby="yumi-title">
   <div class="yumi-head">
     <div><p class="yumi-kicker">PontaPé</p><h2 id="yumi-title">Converse com a Yume</h2></div>
     <button class="icon-btn" type="button" data-close aria-label="Fechar conversa"><Icon name="close" /></button>

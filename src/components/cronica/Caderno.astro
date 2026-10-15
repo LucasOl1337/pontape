@@ -5,16 +5,19 @@ import { CADERNOS, CONSTRUIR, type Caderno } from '../../data/site/cadernos';
 // A caderno is a page of its own (F31): the site header, the same grid as the rest of the site and
 // one scroll. It used to open as a panel over the home, cut on the left and scrolling inside itself.
 // The ones behind the door say where they sit and end with the other doors.
-interface Props { id?: Caderno['id']; kicker?: string; title: string; turn?: string; lead: string }
-const { id, kicker = CONSTRUIR.name, title, turn, lead } = Astro.props;
+// `trail`: the compact "you are here" of the Rede Alimenta (F44, plano 2.3), from the project down.
+interface Props { id?: Caderno['id']; kicker?: string; title: string; turn?: string; lead: string; trail?: { href?: string; label: string }[] }
+const { id, kicker = CONSTRUIR.name, title, turn, lead, trail } = Astro.props;
 const here = id && CADERNOS.find(c => c.id === id);
 const others = CADERNOS.filter(c => c.id !== id);
 ---
 <article class="caderno" aria-labelledby="caderno-title">
   <header class="caderno-head">
-    {here
-      ? <nav class="crumbs" aria-label="Você está em"><ol><li><a href={CONSTRUIR.href}>{CONSTRUIR.name}</a></li><li aria-current="page">{here.short}</li></ol></nav>
-      : <p class="kicker">{kicker}</p>}
+    {trail
+      ? <nav class="crumbs" aria-label="Você está em"><ol>{trail.map(t => (t.href ? <li><a href={t.href}>{t.label}</a></li> : <li aria-current="page">{t.label}</li>))}</ol></nav>
+      : here
+        ? <nav class="crumbs" aria-label="Você está em"><ol><li><a href={CONSTRUIR.href}>{CONSTRUIR.name}</a></li><li aria-current="page">{here.short}</li></ol></nav>
+        : <p class="kicker">{kicker}</p>}
     <h1 id="caderno-title" class="caderno-title">{title}{turn && <> <em>{turn}</em></>}</h1>
     <p class="caderno-lead">{lead}</p>
   </header>

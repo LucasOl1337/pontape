@@ -7,11 +7,12 @@ import SiteFooter from '../components/site/SiteFooter.astro';
 import { SHARE } from '../data/site/share';
 import { createHash } from 'node:crypto';
 import { PROJECT_NAME } from '../data/site/project';
+import type { Section } from '../data/site/nav';
 
 interface Props {
   title: string;
   description: string;
-  current?: 'home' | 'alimenta' | 'transparencia' | 'construir' | 'perguntas' | 'ferramentas' | 'not-found';
+  current?: Section;
   share?: keyof typeof SHARE;
   noindex?: boolean;
   /** The "em construção" strip. The home says it in its own first screen (F29). */
@@ -22,6 +23,10 @@ interface Props {
 
 const { title, description, current, share = 'home', noindex = false, strip = true, chat = true } = Astro.props;
 const card = SHARE[share];
+// One strip per screen (F44, plano 1.4): the project text, or the service text inside the Rede Alimenta.
+const stripContext = !strip ? 'none' : current === 'alimenta' ? 'service' : 'project';
+// The preview of a proposal (PUBLIC_PREVIEW=1) never counts in the official visit counter.
+const preview = import.meta.env.PUBLIC_PREVIEW === '1';
 // Share previews need absolute URLs. `site` comes from SITE_URL at build (astro.config.mjs);
 // until the domain exists the paths stay relative.
 const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
@@ -66,12 +71,12 @@ const cardImage = `${absolute(card.image)}?v=${cardVersion}`;
     <!-- Contador de visitas da Cloudflare (Web Analytics): sem cookie, sem saber quem é quem. A hospedagem
          em Workers não injeta o script sozinha, então ele vai aqui; a CSP libera só este arquivo (#55).
          O token é público por natureza: identifica o site, não uma pessoa. -->
-    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: '831beb0259ae49268aca96287454432b' })}></script>
+    {!preview && <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: '831beb0259ae49268aca96287454432b' })}></script>}
   </head>
-  <body data-strip={strip ? undefined : 'off'}>
+  <body data-strip={stripContext === 'none' && !preview ? 'off' : undefined}>
     <IconSprite />
     <a class="skip-link" href="#conteudo">Pular pro conteúdo</a>
-    {strip && <StatusStrip />}
+    <StatusStrip context={stripContext} />
     <SiteHeader current={current} chat={chat} />
     <main id="conteudo" tabindex="-1"><slot /></main>
     <SiteFooter />
