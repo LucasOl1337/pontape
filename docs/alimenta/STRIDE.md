@@ -25,7 +25,7 @@ STRIDE são seis tipos de ameaça:
 | F2 | Cadastro mínimo | Tipo, cidade, UF, CNPJ opcional e aceites. Sem nome, CPF, endereço nem telefone |
 | F3 | Doação | Categoria, conservação, kg, validade, cidade. Risco calculado pelo modelo |
 | F4 | Recomendação com AI | Candidatos por regra, leitura das páginas públicas do catálogo, 9Router, validação dura da resposta |
-| F5 | Banco | API → Postgres Supabase sa-east-1 pelo pooler, a partir do Render em Virginia |
+| F5 | Banco | API → Postgres Supabase sa-east-1 pelo pooler, a partir da API em Docker na VPS (api.pontape.org, Hostinger, EUA) |
 | F6 | Livro público | `ledger_outbox` → `ledger-ingest.yml` → livro de pontape.org, uma ação por vez |
 | F7 | Automação | GitHub Actions agendado chama `POST /ops/sweep` com `ALIMENTA_OPS_TOKEN` |
 | F8 | Pipeline e imagem | `.github/workflows/alimenta.yml`: pytest, retreino conferido, Bandit, Trivy (fs, config, imagem), deploy hook |
@@ -55,7 +55,7 @@ Seis ameaças que a banca deve ouvir primeiro. As tabelas por letra, mais abaixo
 | F1 | Alguém vira operador | Alto | Baixa | Operador só pela variável `ALIMENTA_OPERATOR_EMAILS`, nunca por cadastro | `test_auth.py::test_operator_only_from_env`; `test_cadastro.py::test_one_account_one_role_and_operator_cannot_signup` | Baixo. Falta MFA do operador |
 | F2 | Empresa usa CNPJ inválido ou baixado | Médio | Média | Dígito verificador e situação ATIVA na BrasilAPI. Retrato privado sem sócios | `test_cadastro.py::test_cnpj_check_digits_numeric_and_alphanumeric`; `test_cadastro.py::test_company_with_cnpj_keeps_private_snapshot_without_partners` | Médio. Não prova que a pessoa trabalha na empresa |
 | F2 | Distribuidor doa para si mesmo | Baixo | Baixa | A recomendação nunca sugere o próprio registro | `test_doacao.py::test_distributor_cannot_donate_to_itself` | Baixo |
-| F5 | Serviço falso se passa pelo banco | Alto | Baixa | Pooler oficial do Supabase com TLS; URL só em variável de ambiente | `DATABASE_URL` no Render, nunca no git | Baixo |
+| F5 | Serviço falso se passa pelo banco | Alto | Baixa | Pooler oficial do Supabase com TLS; URL só em variável de ambiente | `DATABASE_URL` só no `.env` do servidor (modo 600), nunca no git | Baixo |
 | F7 | Alguém chama a varredura sem ser a automação | Baixo | Média | `ALIMENTA_OPS_TOKEN` exigido; sem a variável, 503 | `test_auth.py::test_ops_token_only_on_sweep`; `test_auth.py::test_sweep_without_env_is_503` | Baixo. A varredura repetida não muda o resultado |
 | F8 | Action ou binário falso no CI (A6) | Alto | Média | Trivy por binário fixo v0.76.0 com checksum; Actions por SHA | Jobs `trivy-fs` e `imagem` em `alimenta.yml` | Baixo |
 
@@ -88,7 +88,7 @@ Seis ameaças que a banca deve ouvir primeiro. As tabelas por letra, mais abaixo
 | F4 | Dado pessoal vai para a AI | Médio | Baixa | Para a AI só vai a doação sem pessoa (categoria, kg, conservação, horas, risco, cidade, tipo) e textos públicos | `test_recomendacao.py::test_ai_ranking_is_validated_and_cites_source` | Baixo |
 | F1 | E-mail de quem tenta entrar vaza por mensagem de erro | Baixo | Média | `POST /auth/code` responde igual com e sem conta; a auditoria não guarda o e-mail | `test_cadastro.py::test_auth_code_same_answer_and_no_audit_leak` | Baixo |
 | F3 | Operador vê dado demais | Médio | Baixa | Visão do operador só com contagens, privada | `test_publico.py::test_operator_overview_is_not_public` | Baixo |
-| F5 | Dado passa por servidor fora do Brasil | Médio | Alta | Banco em sa-east-1; declarado em [LIMITES.md](LIMITES.md) | `render.yaml` (`region: virginia`) | Médio. Transferência internacional (LGPD, art. 33). Sem região sul-americana no Render |
+| F5 | Dado passa por servidor fora do Brasil | Médio | Alta | Banco em sa-east-1; declarado em [LIMITES.md](LIMITES.md) | IP de api.pontape.org (Hostinger, EUA) | Médio. Transferência internacional (LGPD, art. 33). Sem região sul-americana no Render |
 | F5 | `DATABASE_URL` vaza em log, commit ou resposta | Alto | Média | Segredo só em variável de ambiente; `.env` ignorado; `.env.example` sem valor | `.gitignore`; `alimenta/.env.example` | Médio. A API ainda usa o papel padrão do banco |
 | F6 | Livro revela quem doou | Médio | Baixa | Evento sem pessoa, e-mail nem local; código público aleatório `AL…` | [CONTRATO.md](../transparencia/CONTRATO.md); `test_livro_fila.py::test_envelope_is_accepted_by_ts_schema_shape` | Baixo |
 | F8 | Segredo do CI vaza por Action comprometida | Alto | Média | `permissions: contents: read`; Actions por SHA; jobs de scan sem segredo | `alimenta.yml` | Baixo |
@@ -102,7 +102,7 @@ Seis ameaças que a banca deve ouvir primeiro. As tabelas por letra, mais abaixo
 | F3 | Doador cria muitas doações falsas | Médio | Baixa | 5 abertas e 10 por dia por conta; suspensão | `test_doacao.py::test_registration_refusals_and_limits` | Baixo |
 | F4 | AI fora do ar ou lenta | Médio | Média | Modelo reserva; sem AI, vale a regra, sem chamada | `test_recomendacao.py::test_spare_model_when_main_fails`; `test_recomendacao.py::test_no_ai_config_means_rule_without_calls` | Baixo |
 | F2 | BrasilAPI fora do ar trava o cadastro | Baixo | Média | Fora do ar não bloqueia; timeout honesto | `test_cadastro.py::test_brasilapi_down_does_not_block`; `test_cadastro.py::test_brasilapi_timeout_is_honest` | Baixo |
-| F7 | Render dorme | Médio | Alta | Varredura agendada; o painel avisa e pede para recarregar | `.github/workflows/alimenta-varredura.yml` | Médio |
+| F7 | Servidor da API cai | Médio | Baixa | Container com `restart: unless-stopped` e healthcheck; o painel avisa e pede para recarregar | `.github/workflows/alimenta-varredura.yml` | Médio |
 | F5 | Supabase free pausa após 1 semana parado | Alto | Baixa | A varredura agendada mantém atividade | [Supabase, preços](https://supabase.com/pricing), acesso em 14/10/2026 | Médio. Sem backup automático no free |
 
 ## E · Elevation of privilege
@@ -165,7 +165,7 @@ Regras:
 - Nenhum dado de quem recebe a comida, em tabela, livro ou log.
 - Dado pessoal real nunca vai para Git, CI, seed ou print ([ARQUITETURA.md](../arquitetura/ARQUITETURA.md) §6). Teste e compose usam só dado simulado rotulado.
 - Contas de teste são marcadas `is_test=true`, ficam fora de KPI e livro, e o script de ensaio as apaga depois (`test_ensaio.py::test_full_ensaio_passes_and_cleans`).
-- **Transferência internacional.** O banco fica em sa-east-1, mas a API roda no Render em Virginia (LGPD, art. 33). Declarado em [LIMITES.md](LIMITES.md).
+- **Transferência internacional.** O banco fica em sa-east-1, mas a API roda na VPS nos Estados Unidos (LGPD, art. 33). Declarado em [LIMITES.md](LIMITES.md).
 - Falta antes de abrir o cadastro: controlador nomeado, inventário de dados, prazo de retenção, canal do titular e plano de incidente.
 
 ## Riscos residuais mais altos

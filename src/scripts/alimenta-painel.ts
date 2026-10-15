@@ -50,7 +50,7 @@ async function load() {
     }
   } catch {
     for (const key of ['kg_delivered', 'meals_estimated', 'donations', 'match']) set(key, '–');
-    if (note) note.textContent = 'O servidor da Rede Alimenta não respondeu agora. Ele dorme quando fica parado; recarregue em um minuto.';
+    if (note) note.textContent = 'O servidor da Rede Alimenta não respondeu agora. Recarregue a página.';
   }
 }
 

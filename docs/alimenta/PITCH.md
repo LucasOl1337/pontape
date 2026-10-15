@@ -8,12 +8,12 @@ A Rede Alimenta é um sistema real. O banco de produção só conta doação de 
 
 ## Antes de começar (15 minutos antes)
 
-- [ ] Acordar a API: abrir https://rede-alimenta-api-u5q4.onrender.com/health. O Render free dorme após 15 minutos parado e leva cerca de 1 minuto para acordar.
+- [ ] Conferir a API: https://api.pontape.org/health deve responder `"status":"ok"`.
 - [ ] Deixar abertas cinco abas:
   1. https://pontape.org (ou a prévia https://pontape-proposta.lucasplays2000.workers.dev se a banca for ver a versão nova)
   2. `/alimenta/doar/?exemplo=1` no mesmo site
   3. `/alimenta/painel/` no mesmo site
-  4. Swagger: https://rede-alimenta-api-u5q4.onrender.com/docs
+  4. Swagger: https://api.pontape.org/docs
   5. Última execução verde do workflow "Rede Alimenta": https://github.com/LucasOl1337/pontape/actions/workflows/alimenta.yml
 - [ ] Recarregar o painel e conferir que o bloco "Impacto real" saiu de "…" para números (zero é o esperado).
 - [ ] Ter a gravação de reserva fora da internet e o `docker compose up` local como segunda reserva.
@@ -75,7 +75,7 @@ Painel, bloco "Segurança e entrega contínua". Depois a aba do GitHub Actions.
 >
 > E fizemos a análise de ameaças STRIDE: vazamento de dado de quem doa, comida vencida, doação falsa no livro, abuso da AI. A cidade de quem doa nunca aparece em dado público.
 
-Mostrar a execução verde e o Swagger da API FastAPI no Render, com o banco no Supabase.
+Mostrar a execução verde e o Swagger da API FastAPI em api.pontape.org, com o banco no Supabase.
 
 ### 5. Transparência e fecho (1 min)
 
@@ -127,7 +127,7 @@ Minutos entre registrar a doação e escolher o destino, média das doações re
 kg entregues ÷ 0,544 kg por refeição, fator da Feeding America. Por isso a tela diz "estimadas".
 
 **8. Onde ficam os dados?**
-Banco no Supabase em São Paulo. A API roda no Render, na Virginia, porque o Render não tem região na América do Sul. Está em LIMITES.md.
+Banco no Supabase em São Paulo. A API roda em Docker no nosso servidor (Hostinger, Estados Unidos), em api.pontape.org. Está em LIMITES.md.
 
 **9. Qual vulnerabilidade vocês corrigiram?**
 11 achados do primeiro scan sumiram do atual, por identificador. Um é o `DS-0013` do Trivy no Dockerfile. Seis são CVEs do `pip` na imagem. Os números estão em `alimenta/seguranca/resumo.json` e no painel.
