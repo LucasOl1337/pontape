@@ -99,7 +99,7 @@ main:focus{ outline:none }
 .status-strip :focus-visible, .site-footer :focus-visible{ outline-color:var(--focus-on-dark) }
 .status-strip--preview{ background:var(--accent) }
 .status-strip--preview strong{ color:var(--paper) }
-.strip-preview + :is(.strip-context, .strip-example)::before{ content:"·"; margin:0 .5rem }
+.strip-preview ~ :is(.strip-context, .strip-example)::before{ content:"·"; margin:0 .5rem }
 .status-strip strong{ white-space:nowrap }
 /* On a phone the three pieces run as one sentence: two lines instead of three (F31). */
 @media (max-width:599px){
