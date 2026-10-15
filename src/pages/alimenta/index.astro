@@ -5,39 +5,43 @@ import Icon from '../../components/site/Icon.astro';
 import { PROJECT_NAME, formatDay } from '../../data/site/project';
 import { LIVRO } from '../../data/site/livro';
 import { REPO_URL } from '../../data/site/contributions';
+import { projectHref, serviceTrail } from '../../data/site/nav';
 import { ALIMENTA, DISTRIBUTORS, cities } from '../../data/alimenta/rede';
 import { alimentaLedger, donationPhrase, kgText } from '../../data/alimenta/livro';
 
 // The front door of the Rede Alimenta (round 6). Numbers come from the public book at build:
 // nothing is fetched for a visitor, and before the first donation every number is an honest zero.
+// F44: the first button opens what works for everyone today, the list (plano 1.3). The panel opens with
+// the number that is already real, and the zeros sit in one line that says why (plano 1.5).
 const { numbers, latest } = await alimentaLedger();
 const fmt = new Intl.NumberFormat('pt-BR');
-const figures = [
-  { value: fmt.format(numbers.registered), label: numbers.registered === 1 ? 'doação registrada' : 'doações registradas' },
-  { value: kgText(numbers.kg), label: 'de comida oferecida' },
-  { value: fmt.format(numbers.delivered), label: numbers.delivered === 1 ? 'entrega declarada' : 'entregas declaradas' },
-  { value: fmt.format(DISTRIBUTORS.length), label: `distribuidores com fonte, em ${cities().length} cidades` },
-];
+const site = Astro.site;
+const book = projectHref(LIVRO.href, site);
 const steps = [
-  { title: 'Entre com seu e-mail', text: 'Chega um código de 6 números. Pedimos só o e-mail, se você é pessoa, empresa ou distribuidor, e a cidade.' },
-  { title: 'Diga o que tem', text: 'Tipo de comida, quantos quilos, até quando vale e em que cidade está.' },
-  { title: 'A AI sugere quem recebe', text: 'Ela lê as fontes dos distribuidores da lista e diz qual combina mais, com o motivo. Você confirma ou escolhe outro.' },
-  { title: 'Você leva e marca entregue', text: 'Cada passo entra no livro público, com a quantidade e o destino. Seu nome e seu e-mail nunca entram.' },
+  { title: 'Veja quem recebe', text: 'Escolha a cidade e o tipo de comida. A lista mostra quem aceita, como doar, o horário e a fonte. Sem conta.' },
+  { title: 'Diga o que tem', text: 'Tipo, quilos, validade e cidade. O site já mostra quem combina, pela mesma regra que a AI usa.' },
+  { title: 'Leve até lá', text: 'Com o endereço, o contato e o aviso se precisa agendar. Quem doa leva até o distribuidor.' },
+  { title: 'Registre no livro (em teste)', text: 'Com e-mail, a AI sugere quem recebe e cada passo entra no livro público. Seu nome e seu e-mail nunca entram.' },
 ] as const;
 ---
 <BaseLayout title={`${ALIMENTA.name} · ${PROJECT_NAME}`}
-  description="Tem comida sobrando? Registre a doação, a AI sugere um distribuidor que já existe e cada passo aparece no livro público."
+  description="Tem comida sobrando? Veja quem recebe perto de você, com endereço, horário e fonte. Sem conta."
   current="alimenta">
-  <Caderno kicker={PROJECT_NAME} title={ALIMENTA.name} turn="comida que sobra, pra quem precisa."
-    lead="Quem tem comida sobrando registra a doação aqui. A AI sugere um banco de alimentos ou organização que já distribui comida perto de você. Cada passo fica no livro público, sem nome de ninguém.">
-    <p class="actions al-top"><a class="btn btn--ink" href={ALIMENTA.doar}>Registrar uma doação<Icon name="arrow-right" /></a><a class="btn" href={ALIMENTA.distribuidores}>Ver os distribuidores</a></p>
+  <Caderno trail={serviceTrail(null, site)} title={ALIMENTA.name} turn="comida que sobra, pra quem precisa."
+    lead="Tem comida sobrando? Veja quem recebe perto de você e leve. Sem conta. Cada distribuidor da lista tem a fonte pública de onde veio.">
+    <p class="actions al-top">
+      <a class="btn btn--ink" href={ALIMENTA.distribuidores}>Ver onde doar perto de você<Icon name="arrow-right" /></a>
+      <a class="btn" href={ALIMENTA.doar}>Registrar no livro (em teste)</a>
+    </p>
+    <p class="al-example-link"><a href={`${ALIMENTA.doar}?exemplo=1`}>Ver uma doação de exemplo</a> com dado inventado e marcado. Não entra no livro.</p>
 
     <section class="al-block" aria-labelledby="al-numbers-title">
-      <h2 id="al-numbers-title" class="kicker">Os números, lidos do livro</h2>
-      <ul class="al-figures">{figures.map(f => <li><strong>{f.value}</strong><span>{f.label}</span></li>)}</ul>
-      <p class="al-small">{numbers.registered === 0
-        ? 'Ainda não há doação no livro. O primeiro número aparece aqui quando alguém registrar.'
-        : `Entrega é declarada por quem doou. ${numbers.cancelled} ${numbers.cancelled === 1 ? 'doação foi cancelada' : 'doações foram canceladas'}.`}</p>
+      <h2 id="al-numbers-title" class="kicker">O que já existe hoje</h2>
+      <p class="al-lead-figure"><strong>{fmt.format(DISTRIBUTORS.length)}</strong><span>distribuidores com fonte pública, em {cities().length} cidades de São Paulo e região. <a href={ALIMENTA.distribuidores}>Ver a lista</a></span></p>
+      <p class="al-zeros">{numbers.registered === 0
+        ? 'No livro: 0 doações registradas, 0 kg e 0 entregas. É zero porque o registro ainda está em teste, não por erro. O primeiro número aparece aqui quando alguém registrar.'
+        : `No livro: ${fmt.format(numbers.registered)} ${numbers.registered === 1 ? 'doação registrada' : 'doações registradas'}, ${kgText(numbers.kg)} e ${fmt.format(numbers.delivered)} ${numbers.delivered === 1 ? 'entrega declarada' : 'entregas declaradas'}. Entrega é declarada por quem doou. ${numbers.cancelled} ${numbers.cancelled === 1 ? 'doação foi cancelada' : 'doações foram canceladas'}.`}
+        {' '}<a href={book}>Conferir no livro</a></p>
     </section>
 
     <section class="al-block" aria-labelledby="al-how-title">
@@ -53,14 +57,14 @@ const steps = [
       {latest.length === 0
         ? <p class="prose-p al-empty">Nenhuma doação no livro ainda. Quando entrar, ela aparece aqui em poucos minutos, com data e marca.</p>
         : <ol class="al-events">{latest.map(e => (
-          <li id={`d-${e.donationRef}`}><time datetime={e.occurredOn}>{formatDay(e.occurredOn)}</time><span>{donationPhrase(e)}</span><a class="al-ref mono" href={`${LIVRO.tecnico}#acoes`}>nº {e.sequence} · {e.donationRef}</a></li>
+          <li id={`d-${e.donationRef}`}><time datetime={e.occurredOn}>{formatDay(e.occurredOn)}</time><span>{donationPhrase(e)}</span><a class="al-ref mono" href={`${projectHref(LIVRO.tecnico, site)}#acoes`}>nº {e.sequence} · {e.donationRef}</a></li>
         ))}</ol>}
     </section>
 
     <section class="al-block al-check" aria-labelledby="al-check-title">
       <h2 id="al-check-title" class="kicker">Confira você mesmo</h2>
       <ul class="al-checks">
-        <li><Icon name="eye" /><p>Toda doação entra no <a href={LIVRO.href}>livro público</a> com uma marca presa à anterior. Toque em Conferir lá e o seu aparelho refaz a conta.</p></li>
+        <li><Icon name="eye" /><p>Toda doação entra no <a href={book}>livro público</a> com uma marca presa à anterior. Toque em Conferir lá e o seu aparelho refaz a conta.</p></li>
         <li><Icon name="code" /><p>O código é aberto: <a href={ALIMENTA.siteCode} rel="noopener">estas páginas</a>, <a href={ALIMENTA.code} rel="noopener">o servidor e a AI</a> e <a href={ALIMENTA.checker} rel="noopener">o conferidor</a>. Dá pra rodar no seu computador.</p></li>
         <li><Icon name="pen" /><p>Viu um distribuidor errado ou faltando? <a href={`${REPO_URL}/issues/new?template=distribuidor-alimenta.md`} rel="noopener">Abra um pedido</a> com a fonte pública. Qualquer pessoa pode.</p></li>
         <li><Icon name="lock" /><p>Nunca aparecem no livro: nome, e-mail, CNPJ ou cidade de quem doou. Aparecem o tipo de comida, os quilos, a data e o distribuidor.</p></li>
@@ -71,27 +75,29 @@ const steps = [
 
 <style>
   .al-top{ margin-top:0 }
+  .al-example-link{ margin-top:var(--space-3); font:400 var(--t-small)/1.5 var(--font-sans); color:var(--ink-2) }
+  .al-example-link a{ display:inline-flex; align-items:center; min-height:44px; font-weight:700; color:var(--ink) }
   .al-block{ margin-top:var(--space-12); padding-top:var(--space-4); border-top:2px solid var(--ink) }
   .al-small{ max-width:44rem; margin-top:var(--space-4); font:400 var(--t-small)/1.5 var(--font-sans); color:var(--ink-2) }
-  .al-figures{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-6) var(--space-4); margin-top:var(--space-6) }
-  @media (min-width:900px){ .al-figures{ grid-template-columns:repeat(4, 1fr) } }
-  .al-figures li{ display:grid; gap:.3rem; padding-top:var(--space-3); border-top:1px solid var(--rule) }
-  .al-figures strong{ font:500 clamp(2rem, 1.6rem + 1.6vw, 3rem)/1 var(--font-display); letter-spacing:-.02em }
-  .al-figures span{ font:400 var(--t-small)/1.35 var(--font-sans); color:var(--ink-2) }
+  .al-lead-figure{ display:flex; flex-wrap:wrap; align-items:baseline; gap:.3rem .9rem; margin-top:var(--space-6) }
+  .al-lead-figure strong{ font:500 clamp(2.6rem, 2rem + 2.4vw, 4rem)/1 var(--font-display); letter-spacing:-.02em }
+  .al-lead-figure span{ max-width:30rem; font:400 var(--t-ui)/1.45 var(--font-sans) }
+  .al-lead-figure a, .al-zeros a{ font-weight:700 }
+  .al-zeros{ max-width:44rem; margin-top:var(--space-4); padding-top:var(--space-3); border-top:1px solid var(--rule); font:400 var(--t-small)/1.5 var(--font-sans); color:var(--ink-2) }
   .al-steps{ display:grid; gap:var(--space-6); margin-top:var(--space-6) }
   @media (min-width:900px){ .al-steps{ grid-template-columns:repeat(4, 1fr); gap:var(--space-8) } }
   .al-steps li{ display:grid; grid-template-columns:auto 1fr; gap:.2rem .7rem; align-items:start }
   .al-step-num{ grid-row:span 2; font:italic 500 2.4rem/1 var(--font-display); color:var(--accent) }
-  .al-steps h3{ font:600 1.25rem/1.2 var(--font-serif) }
-  .al-steps p{ margin-top:.3rem; font:400 1.0625rem/1.45 var(--font-sans); color:var(--ink-2) }
+  .al-steps h3{ font:600 var(--t-card)/1.2 var(--font-serif) }
+  .al-steps p{ margin-top:.3rem; font:400 var(--t-ui)/1.45 var(--font-sans); color:var(--ink-2) }
   .al-empty{ margin-top:var(--space-4); max-width:40rem }
   .al-events{ display:grid; margin-top:var(--space-4) }
-  .al-events li{ display:grid; grid-template-columns:6.5rem 1fr; gap:.2rem var(--space-4); padding:var(--space-3) 0; border-bottom:1px solid var(--rule); font:400 1.0625rem/1.45 var(--font-sans) }
+  .al-events li{ display:grid; grid-template-columns:6.5rem 1fr; gap:.2rem var(--space-4); padding:var(--space-3) 0; border-bottom:1px solid var(--rule); font:400 var(--t-ui)/1.45 var(--font-sans) }
   .al-events time{ font:400 var(--t-small)/1.6 var(--font-mono); color:var(--ink-2) }
-  .al-ref{ grid-column:2; font-size:.8125rem; color:var(--ink-2) }
+  .al-ref{ grid-column:2; font-size:var(--t-label); color:var(--ink-2) }
   .al-checks{ display:grid; gap:var(--space-4); margin-top:var(--space-6) }
   @media (min-width:900px){ .al-checks{ grid-template-columns:1fr 1fr; gap:var(--space-6) var(--space-12) } }
-  .al-checks li{ display:grid; grid-template-columns:1.6rem 1fr; gap:.7rem; font:400 1.0625rem/1.5 var(--font-sans) }
+  .al-checks li{ display:grid; grid-template-columns:1.6rem 1fr; gap:.7rem; font:400 var(--t-ui)/1.5 var(--font-sans) }
   .al-checks .icon{ width:1.4rem; height:1.4rem; margin-top:.15rem; color:var(--accent) }
   .al-checks a{ font-weight:700 }
 </style>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Escada from '../components/cronica/Escada.astro';
+import PortasHoje from '../components/cronica/PortasHoje.astro';
 import PublicMetrics from '../components/site/PublicMetrics.astro';
 import FichaPeca from '../components/cronica/FichaPeca.astro';
 import ShareButton from '../components/site/ShareButton.astro';
@@ -33,6 +34,7 @@ const gargalo = bottleneckHref('');
     go();
     addEventListener('hashchange', go);
   </script>
+  <PortasHoje />
   <div class="front">
     <Escada ledger={ledger} />
     <PublicMetrics />
