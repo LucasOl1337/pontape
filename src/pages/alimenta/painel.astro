@@ -162,7 +162,7 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
             <li><Icon name="shield" /><p><strong>Bandit:</strong> {security.gates.bandit}.</p></li>
             <li><Icon name="shield" /><p><strong>Trivy:</strong> {security.gates.trivy}.</p></li>
             <li><Icon name="check" /><p><strong>Testes e retreino:</strong> pytest e o retreino do modelo conferido com o metrics.json.</p></li>
-            <li><Icon name="arrow-right" /><p><strong>Deploy:</strong> só sobe pro Render depois de tudo isso verde, na main.</p></li>
+            <li><Icon name="arrow-right" /><p><strong>Deploy:</strong> a main só publica depois de tudo isso verde, e a API em api.pontape.org segue a main.</p></li>
           </ul>
         </div>
       </div>
@@ -177,7 +177,7 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
         <div class="pn-kpi"><strong data-k="donations">…</strong><span>doações registradas</span></div>
         <div class="pn-kpi"><strong data-k="match">…</strong><span>tempo médio até o destino</span></div>
       </div>
-      <p class="pn-note" id="pn-live-note">Buscando os números no servidor da Rede Alimenta. Ele pode levar até um minuto pra acordar.</p>
+      <p class="pn-note" id="pn-live-note">Buscando os números no servidor da Rede Alimenta.</p>
       <p class="pn-note">Refeições estimadas: kg entregues ÷ {String(painel.kg_per_meal).replace('.', ',')} kg por refeição (<a href="https://www.feedingamerica.org/ways-to-give/faq/about-our-claims" rel="noopener">Feeding America</a>). Tempo até o destino: do registro da doação até a escolha de quem recebe. Contas de teste ficam fora. <a href="/api/alimenta/kpis">Ver os dados crus</a></p>
       <div id="pn-cities" hidden>
         <h3 class="pn-sub">Entregas por cidade do distribuidor</h3>
@@ -188,7 +188,7 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
     <section class="pn-block" aria-labelledby="pn-api-title">
       <h2 id="pn-api-title" class="pn-h2">Por dentro</h2>
       <ul class="pn-links">
-        <li><a href="https://rede-alimenta-api-u5q4.onrender.com/docs" rel="noopener">API com Swagger</a> FastAPI no Render, banco Postgres no Supabase.</li>
+        <li><a href="https://api.pontape.org/docs" rel="noopener">API com Swagger</a> FastAPI em Docker no servidor próprio, banco Postgres no Supabase.</li>
         <li><a href={`${REPO_URL}/tree/main/alimenta`} rel="noopener">Código do servidor e do modelo</a> Python, scikit-learn, Docker e Compose.</li>
         <li><a href={`${REPO_URL}/blob/main/docs/alimenta/README.md`} rel="noopener">Como funciona e como rodar</a> no seu computador com <span class="mono">docker compose up</span>.</li>
       </ul>

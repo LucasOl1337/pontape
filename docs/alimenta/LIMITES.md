@@ -66,7 +66,7 @@ A previsão não é certificado sanitário. Quem decide se a comida está boa é
 
 **Banco em São Paulo.** O Supabase do sistema real fica em sa-east-1, porque o dado é de brasileiros. O projeto antigo `rede-alimenta` (us-east-1) só teve seed simulado e sai depois. Confirmado em 14/10/2026: projeto `rede-alimenta-sp` em sa-east-1, Postgres 17, migração `0001_corte_real` aplicada pelo pooler de sessão e fumaça verde (13 tabelas, RLS ligado em todas, zero política).
 
-**API nos Estados Unidos.** A API roda no Render na região Virginia. O site e o painel ficam na Cloudflare. O Render só tem Oregon, Ohio, Virginia, Frankfurt e Singapore ([Render regions](https://render.com/docs/regions), acesso em 14/10/2026). Consequências:
+**API nos Estados Unidos.** A API roda em Docker no servidor próprio (VPS Hostinger nos Estados Unidos), em api.pontape.org. O site e o painel ficam na Cloudflare. O banco fica em São Paulo.
 
 - Todo dado de quem doa passa por servidor nos Estados Unidos. É transferência internacional de dado pessoal ([LGPD, Lei 13.709/2018, art. 33](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm), acesso em 14/10/2026). O aviso de privacidade precisa dizer isso antes de abrir o cadastro.
 - Cada consulta ao banco cruza Estados Unidos e São Paulo, uma ida e volta. A API faz poucas consultas por requisição para não somar atraso.
@@ -103,7 +103,7 @@ O código de login sai pelo SMTP padrão do Supabase. Ele só envia para membros
 
 ## Hospedagem gratuita
 
-**Render free dorme.** Um web service free para depois de 15 minutos sem tráfego. A próxima requisição acorda o serviço em cerca de 1 minuto. As 750 horas por mês valem para o workspace inteiro ([Render, plano free](https://render.com/docs/free), acesso em 14/10/2026). O painel avisa quando a API está acordando e pede para recarregar.
+**Servidor único.** A API roda num container só, com reinício automático. Se a VPS cair, a API fica fora até ela voltar; o site e a lista de onde doar continuam no ar.
 
 **Supabase free pausa.** O projeto é pausado depois de 1 semana sem atividade ([Supabase, Pricing](https://supabase.com/pricing), acesso em 14/10/2026). Quem reativa é o regente.
 
