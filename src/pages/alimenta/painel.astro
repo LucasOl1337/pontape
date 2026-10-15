@@ -17,24 +17,24 @@ import { execFileSync } from 'node:child_process';
 // versioned model, measured on the held-out test) and SIMULADO (painel.json, built from the simulated
 // dataset by alimenta/scripts/painel.py). Security comes from the real scans (resumo.json).
 const fmt = new Intl.NumberFormat('pt-BR');
-const pct = (x: number) => `${(x * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`;
+const pct = (x: number) => `${(x * 100).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
 const t = metrics.test;
 const [[tn, fp], [fn, tp]] = t.confusion_matrix.rows_true_cols_pred as [[number, number], [number, number]];
 const base = metrics.baselines;
 const compare = [
   { label: `Modelo ${metrics.model_version}`, acc: t.accuracy, main: true },
-  { label: 'Regressão logística (comparação)', acc: base.logistic_regression.accuracy },
+  { label: 'Regressão logística', acc: base.logistic_regression.accuracy },
   { label: 'Regra só de prazo', acc: base.deadline_rule.accuracy },
-  { label: 'Chutar sempre "não descarta"', acc: base.majority_class.accuracy },
+  { label: 'Chute: "não descarta"', acc: base.majority_class.accuracy },
 ];
 const maxRegion = Math.max(...painel.regions.map(r => r.discard_rate));
 const minRegion = Math.min(...painel.regions.map(r => r.discard_rate));
 const heat = (rate: number) => (rate - minRegion) / Math.max(maxRegion - minRegion, 1e-9);
-// Map of São Paulo by region centroid: west on the left, north on top.
-const lats = painel.regions.map(r => r.lat), lons = painel.regions.map(r => r.lon);
-const [latMin, latMax, lonMin, lonMax] = [Math.min(...lats), Math.max(...lats), Math.min(...lons), Math.max(...lons)];
-const mapX = (lon: number) => 60 + ((lon - lonMin) / (lonMax - lonMin)) * 280;
-const mapY = (lat: number) => 40 + ((latMax - lat) / (latMax - latMin)) * 180;
+// Schematic map of São Paulo: the five regions in their compass place (north on top, west on the
+// left), equal tiles, colour = discard rate. Kg per region is almost the same, so size would say nothing.
+const PLACE: Record<string, [number, number]> = { north: [150, 10], west: [20, 95], center: [150, 95], east: [280, 95], south: [150, 180] };
+const heatFill = (h: number) => `hsl(${Math.round(42 - 38 * h)} 85% ${Math.round(80 - 40 * h)}%)`;
+const heatInk = (h: number) => (h > 0.55 ? '#FFFFFF' : '#18191D');
 const tools = Object.entries(security.tools) as [string, { baseline: number; current: number; mitigated_ids: string[]; new_ids: string[] }][];
 let commit = '';
 try { commit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(); } catch { /* build fora do git */ }
@@ -108,18 +108,21 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
       <p class="pn-lead">{fmt.format(painel.totals.lots)} lotes simulados, {fmt.format(Math.round(painel.totals.kg))} kg. No histórico simulado, {pct(painel.totals.discard_rate)} foram descartados. O que não foi daria cerca de {fmt.format(painel.totals.meals_estimated)} refeições (estimativa).</p>
       <div class="pn-two">
         <figure class="pn-map">
-          <svg viewBox="0 0 400 260" role="img" aria-labelledby="pn-map-cap">
-            <rect x="0" y="0" width="400" height="260" rx="6" class="pn-map-bg" />
+          <svg viewBox="0 0 400 300" role="img" aria-labelledby="pn-map-cap">
             {painel.regions.map(r => {
-              const h = heat(r.discard_rate);
+              const h = heat(r.discard_rate); const [x, y] = PLACE[r.id] ?? [0, 0];
               return <g>
-                <circle cx={mapX(r.lon)} cy={mapY(r.lat)} r={22 + Math.sqrt(r.kg) / 12} fill={`hsl(${Math.round(40 - 40 * h)} 80% ${Math.round(62 - 20 * h)}%)`} fill-opacity=".85" stroke="#18191D" stroke-width="1.5" />
-                <text x={mapX(r.lon)} y={mapY(r.lat) - 2} text-anchor="middle" class="pn-map-name">{r.label}</text>
-                <text x={mapX(r.lon)} y={mapY(r.lat) + 14} text-anchor="middle" class="pn-map-val">{pct(r.discard_rate)}</text>
+                <rect x={x} y={y} width="100" height="76" rx="4" fill={heatFill(h)} stroke="#18191D" stroke-width="2" />
+                <text x={x + 50} y={y + 32} text-anchor="middle" class="pn-map-name" fill={heatInk(h)}>{r.label}</text>
+                <text x={x + 50} y={y + 56} text-anchor="middle" class="pn-map-val" fill={heatInk(h)}>{pct(r.discard_rate)}</text>
               </g>;
             })}
+            <defs><linearGradient id="pn-heat"><stop offset="0" stop-color={heatFill(0)} /><stop offset="1" stop-color={heatFill(1)} /></linearGradient></defs>
+            <rect x="20" y="272" width="120" height="12" fill="url(#pn-heat)" stroke="#18191D" />
+            <text x="20" y="298" class="pn-map-scale">{pct(minRegion)}</text>
+            <text x="140" y="298" text-anchor="end" class="pn-map-scale">{pct(maxRegion)}</text>
           </svg>
-          <figcaption id="pn-map-cap">Mapa de calor da taxa de descarte por região de São Paulo (simulado). Mais vermelho, mais desperdício; maior, mais kg. Posição aproximada do centro de cada região.</figcaption>
+          <figcaption id="pn-map-cap">Mapa de calor do descarte por região de São Paulo (simulado), na posição de cada região: norte em cima, oeste à esquerda. Mais vermelho, mais comida jogada fora. A Oeste é onde a Rede Alimenta mais faria diferença.</figcaption>
         </figure>
         <div>
           <h3 class="pn-sub">Refeições estimadas por região</h3>
@@ -214,9 +217,9 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
   .pn-two{ display:grid; gap:var(--space-6) var(--space-12) }
   @media (min-width:900px){ .pn-two{ grid-template-columns:1fr 1fr } }
   .pn-bars{ display:grid; gap:.55rem; margin-top:var(--space-3) }
-  .pn-bars li{ display:grid; grid-template-columns:minmax(7rem, 11rem) 1fr 4.2rem; gap:.6rem; align-items:center; font:400 var(--t-small)/1.3 var(--font-sans) }
+  .pn-bars li{ display:grid; grid-template-columns:minmax(8.5rem, 13rem) 1fr 4.4rem; gap:.6rem; align-items:center; font:400 var(--t-small)/1.3 var(--font-sans) }
   .pn-bars li.is-main{ font-weight:700 }
-  .pn-bar{ height:.9rem; background:var(--example-a); border:1px solid var(--rule) }
+  .pn-bar{ height:.9rem; background:var(--paper-2); border:1px solid var(--control-border) }
   .pn-bar > span{ display:block; height:100%; background:var(--info) }
   .pn-bars li.is-main .pn-bar > span{ background:var(--ink) }
   .pn-bar--warn > span{ background:var(--warning) }
@@ -234,9 +237,9 @@ const risk = { high: 'alto', medium: 'médio', low: 'baixo' } as Record<string, 
   .pn-risk--low{ color:var(--success) }
   .pn-map{ margin:var(--space-3) 0 0 }
   .pn-map svg{ width:100%; height:auto; display:block }
-  .pn-map-bg{ fill:var(--example-a); stroke:var(--rule) }
-  .pn-map-name{ font:700 13px/1 var(--font-sans); fill:#18191D }
-  .pn-map-val{ font:400 12px/1 var(--font-mono); fill:#18191D }
+  .pn-map-name{ font:700 17px/1 var(--font-sans) }
+  .pn-map-val{ font:700 18px/1 var(--font-sans) }
+  .pn-map-scale{ font:400 13px/1 var(--font-sans); fill:var(--ink-2) }
   .pn-map figcaption{ margin-top:.5rem; font:400 var(--t-small)/1.45 var(--font-sans); color:var(--ink-2) }
   .pn-tools, .pn-gates, .pn-links{ display:grid; gap:.6rem; margin-top:var(--space-3); font:400 var(--t-small)/1.45 var(--font-sans) }
   .pn-tools li{ display:flex; justify-content:space-between; gap:1rem; padding-bottom:.45rem; border-bottom:1px solid var(--rule) }
