@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Caderno from '../../components/cronica/Caderno.astro';
+import StateNote from '../../components/site/StateNote.astro';
+import { serviceTrail } from '../../data/site/nav';
 import AlimentaLogin from '../../components/alimenta/AlimentaLogin.astro';
 import { PROJECT_NAME } from '../../data/site/project';
 import { ALIMENTA, browserCatalog } from '../../data/alimenta/rede';
@@ -11,13 +13,16 @@ import '../../styles/alimenta.css';
 ---
 <BaseLayout title={`Minhas doações · ${ALIMENTA.name} · ${PROJECT_NAME}`}
   description="Suas doações na Rede Alimenta: o estado de cada uma, o destino e o registro no livro público." current="alimenta" noindex>
-  <Caderno kicker={ALIMENTA.name} title="Minhas" turn="doações."
+  <Caderno trail={serviceTrail('Minhas doações', Astro.site)} title="Minhas" turn="doações."
     lead="O estado de cada doação, pra onde vai e o registro no livro público. Só você vê esta lista.">
     <noscript><p class="al-msg" data-kind="error">Esta página precisa de JavaScript ligado.</p></noscript>
     <AlimentaLogin />
     <section id="al-mine" class="al-mine" aria-labelledby="al-mine-title" hidden>
       <h2 class="kicker" id="al-mine-title">Suas doações</h2>
-      <p class="al-hint" id="al-mine-empty" hidden>Você ainda não registrou doação. <a href={ALIMENTA.doar}>Registrar a primeira</a>.</p>
+      <StateNote kind="empty" id="al-mine-empty" title="Nenhuma doação no livro ainda" hidden headingLevel={3}>
+        <p>Pra doar não precisa estar aqui: a lista mostra quem recebe, sem conta.</p>
+        <Fragment slot="actions"><a class="btn btn--ink" href={ALIMENTA.distribuidores}>Ver onde doar</a><a class="btn al-quiet" href={ALIMENTA.doar}>Doar comida</a></Fragment>
+      </StateNote>
       <ol class="al-list" id="al-mine-list"></ol>
       <p class="al-row al-new"><a class="btn btn--ink" href={ALIMENTA.doar}>Registrar outra doação</a></p>
 

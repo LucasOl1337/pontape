@@ -13,7 +13,7 @@
 .al-field{ display:grid; gap:.35rem; font:700 var(--t-small)/1.3 var(--font-sans) }
 .al-field input, .al-field select{
   width:100%; min-height:48px; padding:.6rem .7rem; border:1.5px solid var(--ink); border-radius:0;
-  background:var(--paper); color:var(--ink); font:400 1.0625rem/1.4 var(--font-sans);
+  background:var(--paper); color:var(--ink); font:400 var(--t-ui)/1.4 var(--font-sans);
 }
 .al-field small{ font-weight:400; color:var(--ink-2) }
 .al-row{ display:flex; flex-wrap:wrap; gap:var(--space-3); align-items:center }
@@ -21,7 +21,7 @@
 @media (min-width:480px){ .al-grid2{ grid-template-columns:2fr 1fr } }
 .al-choices{ display:grid; gap:.5rem }
 @media (min-width:560px){ .al-choices--two{ grid-template-columns:1fr 1fr } .al-choices--three{ grid-template-columns:repeat(3, 1fr) } }
-.al-choice{ display:flex; align-items:flex-start; gap:.6rem; min-height:56px; padding:.6rem .8rem; border:2px solid var(--rule); cursor:pointer; font:400 1.0625rem/1.3 var(--font-sans) }
+.al-choice{ display:flex; align-items:flex-start; gap:.6rem; min-height:56px; padding:.6rem .8rem; border:2px solid var(--control-border); cursor:pointer; font:400 var(--t-ui)/1.3 var(--font-sans) }
 .al-choice:hover{ border-color:var(--ink) }
 .al-choice input{ width:22px; height:22px; flex:none; margin:.05rem 0 0; accent-color:var(--accent) }
 .al-choice:has(input:checked){ border-color:var(--accent); background:var(--paper-2) }
@@ -30,7 +30,7 @@
 .al-choice small{ font:400 var(--t-small)/1.35 var(--font-sans); color:var(--ink-2) }
 .al-check{ display:flex; gap:.6rem; align-items:flex-start; font:400 var(--t-small)/1.5 var(--font-sans); cursor:pointer }
 .al-check input{ width:22px; height:22px; flex:none; margin:0; accent-color:var(--accent) }
-.al-quiet{ border-color:var(--rule); color:var(--ink-2); font-size:var(--t-small) }
+.al-quiet{ border-color:var(--control-border); color:var(--ink-2); font-size:var(--t-small) }
 .al-quiet:hover{ background:var(--paper-3); color:var(--ink) }
 .al-danger{ border-color:var(--status-bottleneck); color:var(--status-bottleneck) }
 .al-danger:hover{ background:var(--status-bottleneck); color:var(--paper) }
@@ -39,12 +39,12 @@
 .al-msg[data-kind="ok"]{ border-left-color:var(--status-live) }
 .al-legal{ font:400 var(--t-small)/1.5 var(--font-sans) }
 .al-legal summary{ display:block; padding:.65rem 0; cursor:pointer; font-weight:700; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.18em }
-.al-legal pre{ max-height:18rem; overflow:auto; margin:.25rem 0 0; padding:.8rem; border:1px solid var(--rule); background:var(--paper-2); white-space:pre-wrap; font:400 .875rem/1.5 var(--font-sans) }
+.al-legal pre{ max-height:18rem; overflow:auto; margin:.25rem 0 0; padding:.8rem; border:1px solid var(--rule); background:var(--paper-2); white-space:pre-wrap; font:400 var(--t-small)/1.5 var(--font-sans) }
 .al-kicker{ font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
 .al-pick{ margin-top:var(--space-4); padding:var(--space-4); border:3px double var(--ink) }
 @media (max-width:520px){ .al-pick{ margin-inline:calc(-1 * var(--space-2)); padding:var(--space-3) } .al-pick .al-row .btn{ flex:1 1 100% } }
-.al-pick h3{ margin-top:.3rem; font:600 1.35rem/1.2 var(--font-serif) }
-.al-reason{ margin-top:.5rem; font:400 1.0625rem/1.5 var(--font-sans) }
+.al-pick h3{ margin-top:.3rem; font:600 var(--t-card)/1.2 var(--font-serif) }
+.al-reason{ margin-top:.5rem; font:400 var(--t-ui)/1.5 var(--font-sans) }
 .al-facts{ display:grid; gap:.4rem; margin-top:var(--space-3); font:400 var(--t-small)/1.5 var(--font-sans) }
 .al-facts dt{ font-weight:700 }
 .al-facts dd{ margin:0; color:var(--ink-2) }
@@ -53,9 +53,9 @@
 .al-others{ display:grid; gap:.5rem; margin-top:var(--space-4) }
 .al-done{ border-color:var(--status-live) }
 .al-list{ display:grid; margin-top:var(--space-6); border-top:2px solid var(--ink); max-width:46rem }
-.al-don{ display:grid; gap:.4rem; padding:var(--space-4) 0; border-bottom:1px solid var(--rule); font:400 1.0625rem/1.45 var(--font-sans) }
-.al-don h3{ font:600 1.25rem/1.2 var(--font-serif) }
-.al-state{ justify-self:start; padding:.18rem .5rem; border:1.5px solid currentColor; font:700 .75rem/1.2 var(--font-sans); letter-spacing:.06em; text-transform:uppercase }
+.al-don{ display:grid; gap:.4rem; padding:var(--space-4) 0; border-bottom:1px solid var(--rule); font:400 var(--t-ui)/1.45 var(--font-sans) }
+.al-don h3{ font:600 var(--t-card)/1.2 var(--font-serif) }
+.al-state{ justify-self:start; padding:.18rem .5rem; border:1.5px solid currentColor; font:700 var(--t-label)/1.2 var(--font-sans); letter-spacing:.06em; text-transform:uppercase }
 .al-state[data-s="destination_chosen"]{ color:var(--accent) }
 .al-state[data-s="delivered"]{ color:var(--status-live) }
 .al-state[data-s="cancelled"], .al-state[data-s="expired"]{ color:var(--ink-2) }
@@ -65,3 +65,22 @@
 .al-account{ max-width:40rem; margin-top:var(--space-12); padding-top:var(--space-4); border-top:2px solid var(--ink); font:400 var(--t-small)/1.5 var(--font-sans) }
 .al-email{ overflow-wrap:anywhere }
 .al-account .al-row{ margin-top:var(--space-3) }
+/* F44: the turned-around donation flow (plano 3.2 a 3.5). */
+.al-step{ display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; margin-bottom:.4rem; font:700 var(--t-label)/1.3 var(--font-sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2) }
+.al-example-tag{ padding:.15rem .5rem; border:1.5px solid var(--example-ink); background:repeating-linear-gradient(-45deg, var(--example-a) 0 8px, var(--example-b) 8px 16px); color:var(--example-ink); letter-spacing:.1em }
+.is-example-mode .al-step-card{ border-style:dashed; background:repeating-linear-gradient(-45deg, var(--paper) 0 18px, var(--example-a) 18px 20px) }
+.al-sub{ margin-top:var(--space-6); font:600 var(--t-card)/1.25 var(--font-serif) }
+.al-field input[aria-invalid="true"]{ border-color:var(--error); border-width:2px }
+.al-field-error{ display:flex; gap:.35rem; color:var(--error); font:700 var(--t-small)/1.4 var(--font-sans) }
+.al-field-error::before{ content:"!"; display:inline-grid; place-items:center; flex:none; width:1.2em; height:1.2em; border-radius:50%; background:var(--error); color:var(--paper); font-size:.8em }
+.al-field-error[hidden]{ display:none }
+.al-field input, .al-field select{ border-color:var(--control-border); border-width:2px }
+.al-matches{ display:grid; gap:var(--space-3); margin-top:var(--space-4) }
+.al-option{ padding:var(--space-3) 0; border-top:1px solid var(--rule) }
+.al-option h3{ font:600 var(--t-card)/1.25 var(--font-serif) }
+.al-must{ color:var(--ink); font-weight:700 }
+.al-back{ margin-top:var(--space-4) }
+.al-ledger-offer{ margin-top:var(--space-6); padding-top:var(--space-4); border-top:1px solid var(--rule) }
+.al-ledger-offer h3{ font:600 var(--t-card)/1.25 var(--font-serif) }
+.al-signup-note .state{ margin-top:var(--space-4) }
+.al-step-card .state{ max-width:none }

@@ -1,5 +1,7 @@
 // Browser side of the Rede Alimenta: every call goes to /api/alimenta/* on this origin (the Worker
 // passes it to the API). The login token lives in sessionStorage only: closing the tab logs out.
+import { writeAllowed } from '../data/alimenta/combina';
+
 const KEY = 'pontape.alimenta.sessao';
 const WAKE_AFTER_MS = 2500;
 let awake = false;
@@ -36,7 +38,15 @@ function messageOf(status: number, body: unknown): string {
 
 // The API sleeps when nobody uses it (free plan). The first call can take up to a minute, so after a
 // short wait the page says it is waking the server, instead of looking stuck.
+// Example mode (F44, plano 3.5): once on, every write is refused here, before anything leaves the page.
+// Reading (GET) still works. Nothing of the example reaches the API, the book or the numbers.
+let example = false;
+export const setExample = (on: boolean) => { example = on; };
+export const EXAMPLE_REFUSED = 'No exemplo nada é enviado. Saia do exemplo pra doar de verdade.';
+
 export async function api<T = unknown>(path: string, init: { method?: string; body?: unknown } = {}, wake?: HTMLElement | null): Promise<T> {
+  const method = init.method ?? (init.body === undefined ? 'GET' : 'POST');
+  if (!writeAllowed(method, example)) throw new ApiError(0, EXAMPLE_REFUSED);
   const headers: Record<string, string> = { accept: 'application/json' };
   const s = session();
   if (s) headers.authorization = `Bearer ${s.token}`;
@@ -47,7 +57,7 @@ export async function api<T = unknown>(path: string, init: { method?: string; bo
   }, WAKE_AFTER_MS) : undefined;
   let response: Response;
   try {
-    response = await fetch(`/api/alimenta/${path}`, { method: init.method ?? (init.body === undefined ? 'GET' : 'POST'), headers,
+    response = await fetch(`/api/alimenta/${path}`, { method, headers,
       body: init.body === undefined ? undefined : JSON.stringify(init.body), cache: 'no-store', credentials: 'omit' });
   } catch {
     throw new ApiError(0, 'Sem conexão. Confira a internet e tente de novo.');
@@ -80,6 +90,7 @@ export function el<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Record<
 }
 export const safeUrl = (url: unknown) => (typeof url === 'string' && /^https:\/\/[^\s"<>]+$/.test(url) ? url : null);
 
+export interface Health { status?: string; signup_open?: boolean; ai?: boolean }
 export interface Me { email?: string; role?: string | null; org_id?: string | null; signup_open?: boolean; is_test?: boolean;
   consents?: { kind: string; version: string }[]; current_versions?: { donation_terms?: string; privacy_notice?: string } }
 export interface Donation { id: string; public_ref?: string | null; category?: string; storage?: string; kg?: number; expires_at?: string;
