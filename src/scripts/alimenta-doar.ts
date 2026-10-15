@@ -92,10 +92,10 @@ function match(o: Offer) {
     show('al-match');
     return;
   }
-  intro.textContent = `${summary(o)} Pela regra da lista (mesma cidade, aceita esse tipo de comida e recebe de ${o.kind === 'person' ? 'pessoas' : 'empresas'}), ${found.length === 1 ? '1 lugar combina' : `${found.length} lugares combinam`}. Os com horário publicado vêm primeiro.`;
+  intro.textContent = `${summary(o)} Pela regra da lista (mesma cidade, aceita esse tipo de comida e recebe de ${o.kind === 'person' ? 'pessoas' : 'empresas'}), ${found.length === 1 ? '1 lugar combina.' : `${found.length} lugares combinam. Os com horário publicado vêm primeiro.`}`;
   body.replaceChildren(el('ol', { class: 'al-matches' }, ...found.map((d, i) => el('li', {},
     el('article', { class: i === 0 ? 'al-pick' : 'al-option' },
-      i === 0 ? el('p', { class: 'al-kicker' }, 'Combina mais pela regra') : null,
+      i === 0 ? el('p', { class: 'al-kicker' }, found.length > 1 ? 'Combina mais pela regra' : 'Combina pela regra') : null,
       el('h3', {}, d.name), el('p', { class: 'al-hint' }, `${d.kind} · ${d.city}`),
       el('dl', { class: 'al-facts' },
         el('div', {}, el('dt', {}, 'Como doar'), el('dd', {}, d.how ?? 'A fonte não diz. Fale com o contato antes de levar.')),
@@ -108,7 +108,8 @@ function match(o: Offer) {
 function ready(d: CatalogItem) {
   chosen = d;
   const book = scheduling(d.how);
-  const sources = d.sources.map(safeUrl).filter((u): u is string => Boolean(u));
+  // One link per site: two pages of the same site read as the same source twice.
+  const sources = [...new Map(d.sources.map(safeUrl).filter((u): u is string => Boolean(u)).map(u => [new URL(u).hostname, u])).values()];
   $('#al-ready-body')!.replaceChildren(
     el('p', { class: 'al-reason' }, `Destino: ${d.name}, ${d.city}.`),
     el('p', { class: 'al-hint' }, offer ? summary(offer) : ''),
@@ -297,6 +298,8 @@ if (example) {
   for (const tag of document.querySelectorAll<HTMLElement>('.al-example-tag')) tag.hidden = false;
   for (const s of document.querySelectorAll<HTMLElement>('.status-strip .strip-context')) s.hidden = true;
   for (const s of document.querySelectorAll<HTMLElement>('.status-strip .strip-example')) s.hidden = false;
+  const lead = document.querySelector('.caderno-lead');
+  if (lead) lead.textContent = 'Este é um exemplo com uma doação inventada. Os lugares são reais, da lista. Nada é enviado nem entra no livro.';
   document.body.removeAttribute('data-strip');
   for (const r of offerForm.querySelectorAll<HTMLInputElement>('input[type=radio]')) r.checked = r.value === EXAMPLE_OFFER.category || r.value === EXAMPLE_OFFER.kind || r.value === EXAMPLE_OFFER.storage;
   offerForm.kg.value = EXAMPLE_OFFER.kg;

@@ -86,3 +86,5 @@
 .al-step-card .state{ max-width:none }
 /* The date field keeps its ring while the calendar button inside it has focus (F44, 1.7). */
 .al-field input:focus{ outline:3px solid var(--accent); outline-offset:3px }
+.is-example-mode .al-matches article, .is-example-mode .al-step-card .al-facts{ background:var(--paper) }
+.al-step-card .btn--ink{ margin-top:var(--space-3) }
