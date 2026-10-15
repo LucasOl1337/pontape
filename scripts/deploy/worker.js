@@ -173,7 +173,7 @@ const ALIMENTA_ROUTES = [
   ['GET', 'me'], ['DELETE', 'me'], ['POST', 'me/consents'], ['POST', 'donors'],
   ['POST', 'donations'], ['GET', 'donations/mine'],
   ['POST', `donations/${ALIMENTA_ID}/(?:recommend|destination|delivered|cancel)`],
-  ['GET', 'distributors'], ['GET', 'health'], ['GET', 'kpis'], ['GET', 'legal/(?:donation_terms|privacy_notice)'],
+  ['GET', 'distributors'], ['GET', 'health'], ['GET', 'kpis'], ['GET', 'model'], ['GET', 'legal/(?:donation_terms|privacy_notice)'],
 ].map(([method, path]) => [method, new RegExp(`^${path}$`)]);
 export const ALIMENTA_TIMEOUT_MS = 60_000;
 const ALIMENTA_BODY_LIMIT = 16_000;

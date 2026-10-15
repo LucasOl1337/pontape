@@ -1,7 +1,26 @@
-<div class="status-strip">
-  <p class="status-strip-inner">
-    <strong>Em construção.</strong>
-    <span>Ainda não atende ninguém nem recebe dinheiro. Comida já dá pra doar na <a href="/alimenta">Rede Alimenta</a>.</span>
-    <a href="/construir/pecas">Ver o que já existe</a>
-  </p>
-</div>
+---
+import { ALIMENTA } from '../../data/alimenta/rede';
+import { projectHref } from '../../data/site/nav';
+
+// One strip per screen, and its text says what works on that screen (F44, plano 1.4). On the project
+// it says what is still being built; inside the Rede Alimenta it no longer points at the Rede
+// Alimenta: it says what works there. The preview note is a build flag (PUBLIC_PREVIEW=1) and rides in
+// the same strip, so the official build never shows it. Example mode swaps the context text for its
+// own label (alimenta-doar.ts), still one strip.
+interface Props { context?: 'project' | 'service' | 'none' }
+const { context = 'project' } = Astro.props;
+const preview = import.meta.env.PUBLIC_PREVIEW === '1';
+const site = Astro.site;
+// On the list itself the strip does not link to the page you are on.
+const onList = Astro.url.pathname.replace(/\/$/, '') === ALIMENTA.distribuidores;
+---
+{(context !== 'none' || preview) && (
+  <div class:list={['status-strip', { 'status-strip--preview': preview }]} data-strip-context={context}>
+    <p class="status-strip-inner">
+      {preview && <span class="strip-preview"><strong>Prévia da proposta.</strong> Não é o site oficial.</span>}
+      {context === 'project' && <span class="strip-context"><strong>No ar:</strong> Rede Alimenta, com AI que indica quem recebe sua doação de comida. <a href={projectHref(ALIMENTA.href, site)}>Doar comida</a></span>}
+      {context === 'service' && <span class="strip-context"><strong>Funciona sem conta:</strong> veja quem recebe, diga o que tem e leve.{!onList && <> <a href={ALIMENTA.distribuidores}>Ver onde doar</a></>}</span>}
+      <span class="strip-example" hidden><strong>Exemplo.</strong> Dado inventado pra mostrar o caminho. Não entra no livro nem nos números. <a href={ALIMENTA.doar}>Sair do exemplo</a></span>
+    </p>
+  </div>
+)}

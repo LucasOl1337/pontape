@@ -11,7 +11,7 @@ Estado em 14/10/2026 (corte r6, branch `alimenta/dominio`):
 - Cadastro de fora do time **fechado** (`ALIMENTA_SIGNUP_OPEN=false`) até existir SMTP próprio. O operador e as contas de teste funcionam.
 - Dado sintético só existe na partida a frio do modelo e nos testes. Nunca na produção.
 
-Outros documentos desta pasta: [STRIDE.md](STRIDE.md), [PITCH.md](PITCH.md), [LIMITES.md](LIMITES.md). Atenção: STRIDE, PITCH e LIMITES ainda descrevem o corte com ONG em vários pontos; a revisão deles está listada em "Pendências de documentação" abaixo.
+Outros documentos desta pasta: [STRIDE.md](STRIDE.md) (ameaças), [PITCH.md](PITCH.md) (roteiro da banca), [LIMITES.md](LIMITES.md) (o que não faz). Painel público com os indicadores: `pontape.org/alimenta/painel`.
 
 ## Problema
 
@@ -163,9 +163,14 @@ A lista exata é testada em `test_publico.py::test_old_ngo_and_offer_routes_are_
 
 Só registros reais (`is_test` fora); produção vazia mostra zero. `GET /kpis`: doações, entregas declaradas, kg entregues, refeições estimadas (kg / 0,544, fator da Feeding America, ver LIMITES), por situação, escolha `ai_top` x `other` e entregas por distribuidor do catálogo.
 
-## Pendências de documentação
+## Painel (dashboard)
 
-STRIDE.md, PITCH.md e LIMITES.md ainda citam ONG, oferta, rota e painel do corte anterior. Os pontos certos para este corte estão neste README; a revisão daqueles três fica para a próxima rodada.
+`/alimenta/painel` no site, com três tipos de número separados por selo:
+
+- **Real**, ao vivo de `GET /kpis`: kg entregues, refeições estimadas, doações, tempo médio de match (registro até a escolha do destino) e kg por cidade do distribuidor. Zero honesto até a primeira doação.
+- **Modelo**, de `metrics.json`: acurácia, ROC AUC, recall, precisão, comparação com três baselines e matriz de confusão.
+- **Simulado**, de `src/data/alimenta/painel.json` (gerado por `python -m alimenta.scripts.painel`, conferido no CI): mapa de calor do descarte por região de São Paulo, refeições estimadas por região, descarte por tipo de comida e alertas de validade crítica (até 48 h) ordenados pelo risco do modelo.
+- Segurança, de `alimenta/seguranca/resumo.json`: vulnerabilidades corrigidas, achados por ferramenta e os gates do pipeline.
 
 ## Integrantes
 

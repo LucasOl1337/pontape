@@ -8,7 +8,7 @@ import { ALIMENTA } from '../alimenta/rede';
 // The pages a search engine should know (F38), in the same form as the canonical link: absolute,
 // with the final slash of the built folders. The 404 stays out (it is noindex).
 export const SITEMAP_PATHS = ['/', LIVRO.href, LIVRO.tecnico, CONSTRUIR.href, ...CADERNOS.map(c => c.href), PERGUNTAS.href, CURRICULO.href, DIREITOS.href,
-  ALIMENTA.href, ALIMENTA.distribuidores, ALIMENTA.doar];
+  ALIMENTA.href, ALIMENTA.distribuidores, ALIMENTA.painel, ALIMENTA.doar];
 
 // The published address. SITE_URL sets it at build (astro.config.mjs); a build without it, on a
 // computer, still writes the real domain, since a sitemap only takes absolute addresses.

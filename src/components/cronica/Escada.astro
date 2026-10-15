@@ -34,10 +34,12 @@ const ways: { icon: IconName; title: string; when: string; share?: boolean; href
   { icon: 'link', title: 'Contar pra alguém', when: 'Mande este site pra quem pode ajudar.', share: true },
   { icon: 'code', title: 'Construir junto', when: 'Tem tarefa de código, design, pesquisa e mais.', href: '/construir', link: 'Ver as tarefas' },
 ];
-const LATER = 'Doar, ser voluntário e oferecer vaga ainda não abriram. Abrem quando tiver conta oficial e o projeto começar na primeira cidade.';
+// F44 (plano 1.6): one version of the truth. Food already has a way (the list); money, volunteering and
+// job offers do not yet.
+const LATER = 'Doar dinheiro, ser voluntário e oferecer vaga ainda não abriram. Abrem quando tiver conta oficial e o projeto começar na primeira cidade.';
 ---
 <section class="stage" id="inicio" aria-labelledby="stage-title" data-escada data-at="0" style={`--n:${treads.length}`}>
-  <h1 id="stage-title" class="stage-title">Caridade inteligente.</h1>
+  <h2 id="stage-title" class="stage-title">Como funciona, <em>degrau por degrau.</em></h2>
 
   <div class="stair" id="como-funciona" role="tablist" aria-label="Os degraus do projeto. Use as setas pra subir e descer." data-stair>
     {treads.map((t, k) => (
@@ -64,7 +66,7 @@ const LATER = 'Doar, ser voluntário e oferecer vaga ainda não abriram. Abrem q
         <button class="btn btn--ink" type="button" data-go="1">Ver como funciona<Icon name="arrow-right" /></button>
         <button class="btn" type="button" data-go={LAST}>Quero ajudar</button>
       </div>
-      <p class="now now--building now--foot"><Icon name={STATUSES.building.icon} /><span><strong>Ainda em construção.</strong> Ninguém é atendido ainda e doação em dinheiro não abriu. Comida já dá pra doar na <a href="/alimenta">Rede Alimenta</a>.</span></p>
+      {/* F44 (1.4): the state line now sits once, at the top of the home (PortasHoje). */}
     </div>
 
     {STEPS.map((s, i) => {

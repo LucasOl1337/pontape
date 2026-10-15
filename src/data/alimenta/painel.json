@@ -1,0 +1,194 @@
+{
+ "notice": "DEMONSTRAÇÃO · dados simulados",
+ "source": "alimenta/data/lots_history.csv",
+ "model_version": "discard_risk-v1",
+ "kg_per_meal": 0.544,
+ "totals": {
+  "lots": 6000,
+  "kg": 200677.0,
+  "discard_rate": 0.4192,
+  "meals_estimated": 226472
+ },
+ "regions": [
+  {
+   "id": "center",
+   "label": "Centro",
+   "lat": -23.5475,
+   "lon": -46.6425,
+   "lots": 1161,
+   "kg": 38913.1,
+   "discard_rate": 0.4117,
+   "kg_discarded": 14800.8,
+   "meals_estimated": 44324,
+   "demand": 0.7
+  },
+  {
+   "id": "north",
+   "label": "Norte",
+   "lat": -23.475,
+   "lon": -46.63,
+   "lots": 1204,
+   "kg": 39211.2,
+   "discard_rate": 0.3646,
+   "kg_discarded": 13266.2,
+   "meals_estimated": 47693,
+   "demand": 0.8
+  },
+  {
+   "id": "south",
+   "label": "Sul",
+   "lat": -23.66,
+   "lon": -46.68,
+   "lots": 1207,
+   "kg": 42155.3,
+   "discard_rate": 0.4374,
+   "kg_discarded": 17076.8,
+   "meals_estimated": 46100,
+   "demand": 0.6
+  },
+  {
+   "id": "east",
+   "label": "Leste",
+   "lat": -23.55,
+   "lon": -46.485,
+   "lots": 1219,
+   "kg": 41359.0,
+   "discard_rate": 0.3388,
+   "kg_discarded": 12128.4,
+   "meals_estimated": 53732,
+   "demand": 0.9
+  },
+  {
+   "id": "west",
+   "label": "Oeste",
+   "lat": -23.5725,
+   "lon": -46.73,
+   "lots": 1209,
+   "kg": 39038.4,
+   "discard_rate": 0.5434,
+   "kg_discarded": 20204.0,
+   "meals_estimated": 34622,
+   "demand": 0.4
+  }
+ ],
+ "categories": [
+  {
+   "id": "produce",
+   "label": "Hortifrúti",
+   "lots": 1748,
+   "discard_rate": 0.405
+  },
+  {
+   "id": "bakery",
+   "label": "Padaria",
+   "lots": 1397,
+   "discard_rate": 0.5183
+  },
+  {
+   "id": "dairy",
+   "label": "Laticínios",
+   "lots": 963,
+   "discard_rate": 0.1796
+  },
+  {
+   "id": "prepared_meal",
+   "label": "Refeição pronta",
+   "lots": 988,
+   "discard_rate": 0.7672
+  },
+  {
+   "id": "dry_goods",
+   "label": "Secos",
+   "lots": 904,
+   "discard_rate": 0.1681
+  }
+ ],
+ "alerts": {
+  "window_hours": 48,
+  "sample": 400,
+  "count": 225,
+  "high": 106,
+  "top": [
+   {
+    "lot": "H05194",
+    "category": "Refeição pronta",
+    "storage": "Refrigerado",
+    "region": "Sul",
+    "kg": 2.9,
+    "hours_to_expiry": 3.1,
+    "discard_proba": 0.9943,
+    "risk_level": "high"
+   },
+   {
+    "lot": "H03603",
+    "category": "Refeição pronta",
+    "storage": "Ambiente",
+    "region": "Norte",
+    "kg": 11.9,
+    "hours_to_expiry": 4.9,
+    "discard_proba": 0.9939,
+    "risk_level": "high"
+   },
+   {
+    "lot": "H01387",
+    "category": "Refeição pronta",
+    "storage": "Refrigerado",
+    "region": "Leste",
+    "kg": 31.0,
+    "hours_to_expiry": 2.7,
+    "discard_proba": 0.9916,
+    "risk_level": "high"
+   },
+   {
+    "lot": "H01339",
+    "category": "Refeição pronta",
+    "storage": "Refrigerado",
+    "region": "Sul",
+    "kg": 28.4,
+    "hours_to_expiry": 6.0,
+    "discard_proba": 0.9915,
+    "risk_level": "high"
+   },
+   {
+    "lot": "H02611",
+    "category": "Refeição pronta",
+    "storage": "Ambiente",
+    "region": "Leste",
+    "kg": 3.6,
+    "hours_to_expiry": 4.0,
+    "discard_proba": 0.9914,
+    "risk_level": "high"
+   },
+   {
+    "lot": "H05019",
+    "category": "Refeição pronta",
+    "storage": "Ambiente",
+    "region": "Centro",
+    "kg": 6.1,
+    "hours_to_expiry": 4.2,
+    "discard_proba": 0.9902,
+    "risk_level": "high"
+   },
+   {
+    "lot": "H03692",
+    "category": "Refeição pronta",
+    "storage": "Refrigerado",
+    "region": "Sul",
+    "kg": 30.3,
+    "hours_to_expiry": 2.1,
+    "discard_proba": 0.99,
+    "risk_level": "high"
+   },
+   {
+    "lot": "H00381",
+    "category": "Refeição pronta",
+    "storage": "Refrigerado",
+    "region": "Centro",
+    "kg": 2.1,
+    "hours_to_expiry": 5.5,
+    "discard_proba": 0.99,
+    "risk_level": "high"
+   }
+  ]
+ }
+}

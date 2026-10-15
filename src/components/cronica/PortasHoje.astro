@@ -1,0 +1,66 @@
+---
+import Icon from '../site/Icon.astro';
+import type { IconName } from '../site/icon-names';
+import { ALIMENTA, DISTRIBUTORS } from '../../data/alimenta/rede';
+import { CONSTRUIR } from '../../data/site/cadernos';
+import { CURRICULO } from '../../data/site/curriculo';
+import { DIREITOS } from '../../data/site/direitos';
+import { HOME_IDS } from '../../data/site/nav';
+
+// The top of the home (F44, plano 2.4): a concrete sentence, the state in one line and four doors, one
+// per person who arrives. The staircase comes after, for whoever wants the whole path. Each door says
+// whether it works today, in text, never only by colour.
+const doors: { icon: IconName; title: string; text: string; state: string; live: boolean; links: { href: string; label: string }[] }[] = [
+  { icon: 'plate', title: 'Tenho comida sobrando', live: true, state: 'Funciona, sem conta.',
+    text: `Diga o que tem e veja quem recebe entre ${DISTRIBUTORS.length} distribuidores com fonte pública, com endereço e horário.`,
+    links: [{ href: ALIMENTA.distribuidores, label: 'Ver onde doar' }] },
+  { icon: 'eye', title: 'Quero entender', live: true, state: 'Dá pra ler hoje.',
+    text: 'Os passos do projeto, cada um dizendo se já funciona, e o livro com tudo que entrou e saiu.',
+    links: [{ href: `#${HOME_IDS.comoFunciona}`, label: 'Ver como funciona' }] },
+  { icon: 'code', title: 'Quero ajudar a construir', live: true, state: 'Dá pra fazer hoje.',
+    text: 'Tem tarefa de código, design, pesquisa e texto, cada uma com o que precisa.',
+    links: [{ href: CONSTRUIR.href, label: 'Ver as tarefas' }] },
+  { icon: 'people', title: 'Preciso de ajuda', live: true, state: 'Duas ferramentas de graça.',
+    text: 'Monte seu currículo ou descubra quais direitos você tem, sem cadastro. O atendimento por pessoa é o próximo passo.',
+    links: [{ href: CURRICULO.href, label: CURRICULO.name }, { href: DIREITOS.href, label: DIREITOS.name }] },
+];
+---
+<section class="hoje" id={HOME_IDS.comecar} aria-labelledby="hoje-title">
+  <p class="kicker">PontaPé · caridade inteligente</p>
+  <h1 id="hoje-title" class="hoje-title">Doação que chega a quem pode mudar de vida, <em>com tudo à vista.</em></h1>
+  <p class="hoje-state"><Icon name="check-circle" /><span><strong>Funcionando hoje:</strong> a Rede Alimenta, que liga quem tem comida sobrando a {DISTRIBUTORS.length} distribuidores com fonte pública, com AI e <a href={ALIMENTA.painel}>painel aberto</a>. O atendimento a pessoas e a doação em dinheiro são os próximos passos.</span></p>
+  <h2 class="sr-only">O que você quer fazer?</h2>
+  <ul class="doors-today">
+    {doors.map(d => (
+      <li class:list={['door-today', { 'door-today--live': d.live }]}>
+        <Icon name={d.icon} class="door-today-icon" />
+        <h3>{d.title}</h3>
+        <p class="door-today-state"><Icon name={d.live ? 'check-circle' : 'clock'} /><span>{d.state}</span></p>
+        <p class="door-today-text">{d.text}</p>
+        <p class="door-today-links">{d.links.map(l => <a href={l.href}>{l.label}<Icon name="arrow-right" /></a>)}</p>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .hoje{ max-width:var(--page); margin:0 auto; padding:var(--space-8) var(--gutter) var(--space-12) }
+  .hoje-title{ max-width:22ch; margin-top:var(--space-3); font:500 clamp(2rem, 1.5rem + 2.4vw, 3.4rem)/1.08 var(--font-display); letter-spacing:-.02em; text-wrap:balance }
+  .hoje-title em{ font-style:italic; color:var(--accent) }
+  .hoje-state{ display:flex; gap:.55rem; align-items:flex-start; max-width:46rem; margin-top:var(--space-4); font:400 var(--t-ui)/1.5 var(--font-sans) }
+  .hoje-state .icon{ flex:none; width:1.3rem; height:1.3rem; margin-top:.15rem; color:var(--status-building) }
+  .doors-today{ display:grid; gap:var(--space-4); margin-top:var(--space-8) }
+  @media (min-width:700px){ .doors-today{ grid-template-columns:1fr 1fr } }
+  @media (min-width:1100px){ .doors-today{ grid-template-columns:repeat(4, 1fr) } }
+  .door-today{ display:flex; flex-direction:column; gap:.45rem; padding:var(--space-4); border:2px solid var(--ink); background:var(--paper) }
+  .door-today-icon{ flex:none; width:1.8rem; height:1.8rem; color:var(--accent) }
+  .door-today h3{ font:600 var(--t-card)/1.2 var(--font-serif) }
+  .door-today-state{ display:flex; gap:.4rem; align-items:center; font:700 var(--t-small)/1.3 var(--font-sans) }
+  .door-today-state .icon{ flex:none; width:1.1rem; height:1.1rem }
+  .door-today--live .door-today-state{ color:var(--success) }
+  .door-today:not(.door-today--live) .door-today-state{ color:var(--status-building) }
+  .door-today-text{ font:400 var(--t-ui)/1.45 var(--font-sans); color:var(--ink-2) }
+  .door-today-links{ display:grid; gap:.1rem; margin-top:auto }
+  .door-today-links a{ display:inline-flex; align-items:center; gap:.35rem; min-height:44px; font:700 var(--t-ui)/1.25 var(--font-sans) }
+  .door-today-links .icon{ flex:none; width:1rem; height:1rem }
+</style>

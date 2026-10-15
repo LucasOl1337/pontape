@@ -90,6 +90,8 @@ describe('Yume no Worker', () => {
     expect(YUMI_KNOWLEDGE).not.toMatch(/\bLucas\b|Oliveira|[\w.+-]+@[\w.-]+\.[a-z]{2,}/i);
     expect(YUMI_SYSTEM).not.toMatch(/\bIA\b|Bitcoin/i);
     expect(YUMI_SYSTEM).toContain('Ninguém é atendido e doação em dinheiro não é recebida hoje.');
-    expect(YUMI_SYSTEM).toContain('Posso doar comida? Sim. Crie uma conta de doador na Rede Alimenta');
+    // F44 (plano 1.6): the answer points at what works today, the list, and no longer promises an account.
+    expect(YUMI_SYSTEM).toContain('Posso doar comida? Sim, direto com quem recebe.');
+    expect(YUMI_SYSTEM).not.toContain('Crie uma conta de doador');
   });
 });

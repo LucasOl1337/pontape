@@ -26,8 +26,15 @@ document.addEventListener('click', e => {
 
 const header = $('.site-header');
 const menuBtn = $('#menu-btn');
-const closeMenu = () => { header?.classList.remove('menu-open'); menuBtn?.setAttribute('aria-expanded', 'false'); };
-menuBtn?.addEventListener('click', () => menuBtn.setAttribute('aria-expanded', String(header?.classList.toggle('menu-open'))));
+// The open menu says "Fechar" with an X (F44, plano 1.7); aria-expanded and Escape stay as they were.
+const menuLabel = $('[data-menu-label]', menuBtn ?? document);
+const setMenu = (open: boolean) => {
+  header?.classList.toggle('menu-open', open);
+  menuBtn?.setAttribute('aria-expanded', String(open));
+  if (menuLabel) menuLabel.textContent = open ? 'Fechar' : 'Menu';
+};
+const closeMenu = () => setMenu(false);
+menuBtn?.addEventListener('click', () => setMenu(!header?.classList.contains('menu-open')));
 document.querySelectorAll('.site-nav a').forEach(a => a.addEventListener('click', closeMenu));
 $('#yumi-open')?.addEventListener('click', async () => {
   closeMenu();

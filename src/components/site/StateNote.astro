@@ -1,0 +1,18 @@
+---
+import Icon from './Icon.astro';
+import { STATE_ICON, STATE_ROLE, type StateKind } from '../../data/site/estado';
+import '../../styles/estado.css';
+
+// The state component at build (F44, plano 2.2). Same markup as stateNote() in scripts/estado.ts.
+interface Props { kind: StateKind; title: string; id?: string; hidden?: boolean; headingLevel?: 2 | 3 }
+const { kind, title, id, hidden = false, headingLevel = 2 } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+---
+<section class="state" data-state={kind} id={id} hidden={hidden} role={STATE_ROLE[kind]} aria-labelledby={id ? `${id}-title` : undefined}>
+  <Icon name={STATE_ICON[kind]} class="state-icon" />
+  <div class="state-text">
+    <Heading class="state-title" id={id ? `${id}-title` : undefined}>{title}</Heading>
+    <div class="state-body"><slot /></div>
+    {Astro.slots.has('actions') && <p class="state-actions"><slot name="actions" /></p>}
+  </div>
+</section>

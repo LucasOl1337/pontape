@@ -16,6 +16,7 @@
   --t-h3:clamp(1.375rem, 1.22rem + .7vw, 1.875rem);
   --t-deck:clamp(1.25rem, 1.12rem + .6vw, 1.6875rem);
   --t-body:1.1875rem;
+  --t-ui:1.0625rem; --t-card:1.25rem;
   --t-small:.9375rem;
   --t-label:.8125rem;
 

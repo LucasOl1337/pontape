@@ -11,6 +11,7 @@ export const ALIMENTA = {
   distribuidores: '/alimenta/distribuidores',
   doar: '/alimenta/doar',
   minhas: '/alimenta/minhas-doacoes',
+  painel: '/alimenta/painel',
   code: `${REPO_URL}/tree/main/alimenta`,
   siteCode: `${REPO_URL}/tree/main/src/pages/alimenta`,
   checker: `${REPO_URL}/blob/main/tools/conferir.py`,
@@ -84,10 +85,12 @@ export const suggestUrl = (d?: Pick<Distributor, 'id' | 'name'>) => {
   return `${REPO_URL}/issues/new?${params}`;
 };
 
-// The slim catalog the browser needs on /alimenta/doar: no quotes, no notes.
+// The slim catalog the browser needs on /alimenta/doar: no quotes, no notes. The ids and the donor
+// kinds go too, so the page can match a donation by the API rule before any account (F44, plano 3.2).
 export const browserCatalog = () => DISTRIBUTORS.map(d => ({
   id: d.id, name: d.name, city: d.city, kind: KIND[d.kind], accepts: d.accepts.map(c => CATEGORY[c]),
+  acceptIds: [...d.accepts], from: [...d.receives_from], preparedMeals: d.accepts_prepared_meals,
   how: d.how_to_donate, hours: d.hours_public, address: d.address_public, contact: d.public_contact_url,
-  sources: [...new Set(d.sources.map(s => s.url))],
+  sources: [...new Set(d.sources.map(s => s.url))], checked: lastAccess(d), confidence: d.confidence,
 }));
 export type BrowserDistributor = ReturnType<typeof browserCatalog>[number];

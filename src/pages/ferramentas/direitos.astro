@@ -183,13 +183,13 @@ const yesNo = (name: string) => [{ value: 'sim', label: 'Sim' }, { value: 'nao',
 
   .dr-choices{ display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-top:var(--space-4) }
   .dr-choices--list{ grid-template-columns:1fr }
-  .dr-choice{ display:flex; align-items:center; gap:.6rem; min-height:56px; padding:.5rem .8rem; border:2px solid var(--rule); cursor:pointer; font:400 1.0625rem/1.3 var(--font-sans) }
+  .dr-choice{ display:flex; align-items:center; gap:.6rem; min-height:56px; padding:.5rem .8rem; border:2px solid var(--control-border); cursor:pointer; font:400 1.0625rem/1.3 var(--font-sans) }
   .dr-choice:hover{ border-color:var(--ink) }
   .dr-choice input{ width:22px; height:22px; flex:none; margin:0; accent-color:var(--accent) }
   .dr-choice:has(input:checked){ border-color:var(--accent); background:var(--paper-2); font-weight:700 }
 
   .dr-nav{ display:flex; justify-content:space-between; gap:var(--space-3); margin-top:var(--space-8); padding-top:var(--space-4); border-top:1px solid var(--rule) }
-  .dr-btn-quiet{ border-color:var(--rule); color:var(--ink-2); font-size:var(--t-small) }
+  .dr-btn-quiet{ border-color:var(--control-border); color:var(--ink-2); font-size:var(--t-small) }
   .dr-btn-quiet:hover{ background:var(--paper-3); color:var(--ink) }
   .dr-example{ margin-top:var(--space-4) }
   .dr-say{ margin-top:var(--space-4); padding:.7rem .85rem; border-left:3px solid var(--accent); background:var(--paper-2); font:400 var(--t-small)/1.5 var(--font-sans) }
